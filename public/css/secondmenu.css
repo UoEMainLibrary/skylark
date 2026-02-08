@@ -1,0 +1,73 @@
+@import url(https://fonts.googleapis.com/css?family=Muli);
+.cldmenu {
+	padding: 0;
+	text-align: center;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    line-height: 1em;
+    margin: 5px 40px;
+}
+.cldmenu li {
+    display: inline-block;
+    list-style: outside none none;
+    margin: 0 0.6em;
+    padding: 12px 10px;
+    position: relative;
+}
+.cldmenu li a {
+    color: #333;
+    text-decoration: none;
+}
+.cldmenu li:before,
+.cldmenu li:after {
+    -webkit-transition: all 0.35s ease;
+    transition: all 0.35s ease;
+    height: 2px;
+    width: 35%;
+    background-color: #004f71;
+    position: absolute;
+    content: '';
+    opacity: 0;
+}
+.cldmenu li:before {
+    top: 0;
+    left: 0;
+}
+.cldmenu li:after {
+    bottom: 0;
+    right: 0;
+}
+.cldmenu li:hover:before,
+.cldmenu li.hover:before,
+.cldmenu li:hover:after,
+.cldmenu li.hover:after {
+    opacity: 1;
+}
+.cldmenu li:hover:before,
+.cldmenu li.hover:before {
+    left: 65%;
+}
+.cldmenu li:hover:after,
+.cldmenu li.hover:after {
+    right: 65%;
+}
+
+
+@media (min-width: 768px) {
+    .cldmenu {
+        font-size: 14pt;
+    }
+}
+
+
+@media (min-width: 992px) {
+	.cldmenu {
+		font-size: 14pt;
+	}
+}
+
+@media (min-width: 1200px) {
+	.cldmenu {
+		font-size: 18pt;
+	}
+}

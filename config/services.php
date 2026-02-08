@@ -35,4 +35,23 @@ return [
         ],
     ],
 
+    'solr' => [
+        'endpoint' => [
+            'default' => [
+                'host' => env('SOLR_HOST', 'localhost'),
+                'port' => env('SOLR_PORT', 8080),
+                'path' => env('SOLR_PATH', '/'),
+                'collection' => env('SOLR_COLLECTION', 'solr/search'),
+                'timeout' => 30,
+            ],
+        ],
+        'container_id' => env('SOLR_CONTAINER_ID', '1'),
+        'container_field' => env('SOLR_CONTAINER_FIELD', 'location.comm'),
+        'results_per_page' => env('SOLR_RESULTS_PER_PAGE', 10),
+    ],
+
+    'google_analytics' => [
+        'tracking_id' => env('GA_TRACKING_ID'),
+    ],
+
 ];
