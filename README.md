@@ -1,59 +1,348 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Skylark - Laravel Rebuild of Skylight
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern Laravel 12 rebuild of the University of Edinburgh's Skylight digital collections discovery interface.
 
-## About Laravel
+## Project Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Original Application**: [Skylight](../skylight) - A CodeIgniter-based discovery interface for DSpace repositories
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Goal**: Rebuild Skylight in Laravel 12 with modern architecture and best practices
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Timeline**: 9 weeks
 
-## Learning Laravel
+**Current Status**: ✅ Solr integration POC complete and tested
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## What's Been Implemented
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Phase 1: Solr Integration Proof-of-Concept ✅
 
-## Laravel Sponsors
+Successfully implemented and tested Solr integration with the live DSpace repository.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Key Achievements:**
+- ✅ Connects to production Solr instance at `collectionsinternal.is.ed.ac.uk`
+- ✅ Retrieves data from **66,585+ documents** in the repository
+- ✅ Implements search, faceting, and record retrieval
+- ✅ Created reusable `SolrService` class
+- ✅ Built demonstration Artisan command
 
-### Premium Partners
+**Implementation Approach:**
+- Uses Laravel's HTTP Client for direct Solr communication
+- Clean, maintainable service layer architecture
+- Compatible with DSpace's non-standard Solr configuration
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Phase 2: Homepage Implementation ✅
+
+Converted the original CodeIgniter homepage to modern Laravel Blade templates.
+
+**Key Achievements:**
+- ✅ Master Blade layout with template inheritance
+- ✅ Reusable partials (navigation, search bar, footer)
+- ✅ All 40+ collection boxes and links converted
+- ✅ Complete asset migration (CSS, images, JavaScript)
+- ✅ Responsive Bootstrap 3 layout preserved
+- ✅ Collapsible sections functional
+
+**Structure:**
+- `resources/views/layouts/app.blade.php` - Master layout
+- `resources/views/home.blade.php` - Homepage content
+- `resources/views/partials/` - Reusable components
+- `public/css/` - Theme stylesheets
+- `public/images/` - All collection images and assets
+
+## Getting Started
+
+### Prerequisites
+
+- PHP 8.3+
+- Composer
+- Laravel Herd (or similar local PHP server)
+- Access to the University of Edinburgh network (for Solr access)
+
+### Installation
+
+1. **Clone and Install Dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
+
+2. **Environment Configuration**
+   
+   The `.env` file is already configured with the Solr connection:
+   ```env
+   SOLR_BASE_URL=http://collectionsinternal.is.ed.ac.uk:8080/solr/search/
+   SOLR_CONTAINER_ID=1
+   SOLR_CONTAINER_FIELD=location.comm
+   SOLR_RESULTS_PER_PAGE=10
+   ```
+
+3. **Generate Application Key** (if not already set)
+   ```bash
+   php artisan key:generate
+   ```
+
+### Viewing the Homepage
+
+The homepage has been fully converted to Laravel Blade templates and is ready to view:
+
+**Visit the site:**
+- **Herd URL**: `http://skylark.test/`
+- **Or run dev server**: `php artisan serve` then visit `http://127.0.0.1:8000/`
+
+**What you'll see:**
+- Complete University of Edinburgh Collections homepage
+- 4 major online collection sections (Archives, Art, Musical Instruments, Iconics)
+- 20+ digital image collection links
+- Collapsible sections for "Visit Us" and "Participate"
+- Fully functional navigation and search bar
+- All original styling and images preserved
+
+### Running the Solr POC
+
+The proof-of-concept demonstrates three key Solr capabilities:
+
+**Basic Test (all records):**
+```bash
+php artisan app:solr-poc
+```
+
+**Search with Specific Query:**
+```bash
+php artisan app:solr-poc --query="edinburgh"
+php artisan app:solr-poc --query="music"
+php artisan app:solr-poc --query="author:Smith"
+```
+
+**Expected Output:**
+- 📊 Total results count (66,585+ documents)
+- 📋 Table of search results with ID, Title, Author, Date
+- 🏷️ Facet information
+- 📄 Full record details with all metadata fields
+
+### POC Output Example
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║           Solr Proof-of-Concept Demonstration               ║
+╚══════════════════════════════════════════════════════════════╝
+
+━━━ 1. Simple Search ━━━
+Query: *:*
+
+Total results found: 66585
+Showing first 5 results:
+
++-----+--------------+-------------------------------------+----------+
+| No. | ID           | Title                               | Date     |
++-----+--------------+-------------------------------------+----------+
+| 1   | 10683/98434  | E to EARS                           | 2017-... |
+| 2   | 10683/1383   | Levels of Reality Poster            | 2010-... |
+...
+
+✓ All demonstrations completed successfully!
+```
+
+## Project Structure
+
+```
+app/
+├── Console/Commands/
+│   └── SolrProofOfConcept.php    # POC demonstration command
+├── Services/
+│   └── SolrService.php            # Solr integration service
+└── Providers/
+    └── AppServiceProvider.php     # Service registrations
+
+config/
+├── services.php                   # Solr & Google Analytics config
+└── theme.php                      # Theme configuration
+
+resources/views/
+├── layouts/
+│   └── app.blade.php              # Master layout template
+├── partials/
+│   ├── nav.blade.php              # Navigation bar
+│   ├── collection-search.blade.php # Search bar component
+│   └── footer-content.blade.php   # Footer component
+└── home.blade.php                 # Homepage view
+
+public/
+├── css/                           # Theme stylesheets
+├── images/                        # Collection images & logos
+│   └── clickboxes/                # Collection thumbnail images
+└── js/                            # Custom JavaScript
+
+routes/
+└── web.php                        # Web routes (homepage, etc.)
+
+SOLR_POC_README.md                # Detailed POC documentation
+```
+
+## Architecture
+
+### SolrService
+
+The `SolrService` class provides a clean interface to DSpace Solr:
+
+```php
+use App\Services\SolrService;
+
+// Injected via Laravel's container
+public function __construct(SolrService $solr) 
+{
+    $this->solr = $solr;
+}
+
+// Simple search
+$results = $this->solr->search('edinburgh', [], ['rows' => 10]);
+
+// Search with facets
+$results = $this->solr->searchWithFacets('music');
+
+// Get a single record
+$record = $this->solr->getRecord('10683/98434');
+```
+
+**Available Methods:**
+- `search($query, $filters, $options)` - Execute search queries
+- `searchWithFacets($query, $filters, $facetFields)` - Search with faceting
+- `getRecord($id, $includeHighlight)` - Retrieve single record
+- `getFacets($query, $filters, $facetFields)` - Get facets without documents
+
+## Documentation
+
+- **[SOLR_POC_README.md](SOLR_POC_README.md)** - Detailed Solr POC documentation
+  - Implementation details
+  - Configuration guide
+  - Troubleshooting
+  - Next steps and future enhancements
+
+## Technology Stack
+
+- **Framework**: Laravel 12.x
+- **PHP**: 8.3.30
+- **Testing**: Pest 4
+- **Code Style**: Laravel Pint
+- **Local Server**: Laravel Herd
+- **Search Engine**: Apache Solr (via DSpace)
+
+## Original Skylight Application
+
+The original application being rebuilt:
+- **Location**: `/Users/chrisgibson/Herd/skylight`
+- **Local Customizations**: `/Users/chrisgibson/Herd/skylight-local`
+- **Framework**: CodeIgniter (forked version)
+- **Current Status**: Production system serving multiple collections
+
+## Next Steps
+
+### Immediate Next Steps
+
+1. **Search Functionality**
+   - Create search controller connected to SolrService
+   - Build search results view with faceting
+   - Implement pagination
+   - Add result sorting options
+
+2. **Record Display**
+   - Create record controller
+   - Build record detail page template
+   - Display metadata fields
+   - Show digital objects/bitstreams
+   - Implement related items
+
+3. **Browse Features**
+   - Browse by author/subject/type
+   - Browse routes and views
+   - Alphabetical navigation
+
+### Phase 2: Core Features (In Progress)
+
+- [x] Homepage with navigation ✅
+- [ ] Search interface with results display
+- [ ] Individual record pages
+- [ ] Faceted navigation
+- [ ] Browse by author/subject/type
+- [ ] Pagination
+- [ ] RSS feeds
+- [ ] OAI-PMH endpoint
+
+### Phase 3: Advanced Features
+
+- [ ] Multiple collection support
+- [ ] Theme system
+- [ ] Static content pages
+- [ ] Admin interface
+- [ ] Caching layer
+- [ ] Search highlighting
+- [ ] Spellcheck/suggestions
+
+### Phase 4: Migration & Deployment
+
+- [ ] Migrate collection configurations
+- [ ] Theme customizations
+- [ ] Testing with all collections
+- [ ] Performance optimization
+- [ ] Deployment to production
+
+## Development Commands
+
+```bash
+# Run tests
+php artisan test
+
+# Format code
+vendor/bin/pint
+
+# Run development server
+php artisan serve
+
+# Build frontend assets
+npm run dev
+npm run build
+
+# Run Solr POC
+php artisan app:solr-poc [--query=search_term]
+```
+
+## Environment Variables
+
+Key environment variables for development:
+
+```env
+APP_NAME=Skylark
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://skylark.test
+
+# Solr Configuration
+SOLR_BASE_URL=http://collectionsinternal.is.ed.ac.uk:8080/solr/search/
+SOLR_CONTAINER_ID=1
+SOLR_CONTAINER_FIELD=location.comm
+SOLR_RESULTS_PER_PAGE=10
+```
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+This is a rebuild project with a 9-week timeline. Development follows Laravel best practices and the [Laravel Boost guidelines](.cursor/rules/laravel-boost.mdc).
 
-## Code of Conduct
+## Resources
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Laravel 12 Documentation**: https://laravel.com/docs/12.x
+- **DSpace Documentation**: https://wiki.lyrasis.org/display/DSDOC/
+- **Apache Solr**: https://solr.apache.org/guide/
+- **Original Skylight**: https://github.com/UoEMainLibrary/skylight
+- **University of Edinburgh Collections**: http://collections.ed.ac.uk/
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is developed for the University of Edinburgh. See original Skylight license for details.
+
+---
+
+**Project Start Date**: February 2026  
+**Target Completion**: 9 weeks from start  
+**Current Phase**: Phase 2 - Homepage Implementation ✅  
+**Completed Phases**: 
+- Phase 1: Solr Integration POC ✅
+- Phase 2: Homepage Blade Templates ✅
