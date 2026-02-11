@@ -54,4 +54,8 @@ return [
         'tracking_id' => env('GA_TRACKING_ID'),
     ],
 
+    'dspace' => [
+        'bitstream_url' => env('DSPACE_BITSTREAM_URL', 'http://test.collectionsmanager.is.ed.ac.uk/bitstream/10683/'),
+    ],
+
 ];
