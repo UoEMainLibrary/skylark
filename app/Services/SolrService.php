@@ -14,17 +14,20 @@ class SolrService
 
     protected int $resultsPerPage;
 
+    protected bool $isDSpace;
+
     public function __construct()
     {
         $config = config('services.solr');
 
-        // Build the base URL for DSpace Solr
-        // Using direct HTTP client due to Solarium issues with DSpace's non-standard Solr setup
+        // Build the base URL for Solr (DSpace or ArchivesSpace)
+        // Using direct HTTP client due to Solarium issues with non-standard Solr setups
         $this->baseUrl = env('SOLR_BASE_URL', 'http://localhost:8080/solr/search/');
 
         $this->containerId = $config['container_id'];
         $this->containerField = $config['container_field'];
         $this->resultsPerPage = $config['results_per_page'];
+        $this->isDSpace = env('SOLR_REPOSITORY_TYPE', 'dspace') === 'dspace';
     }
 
     /**
@@ -49,8 +52,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Apply additional filters
         foreach ($filters as $key => $value) {
@@ -104,8 +109,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Apply additional filters
         foreach ($filters as $key => $value) {
@@ -177,8 +184,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Execute the query
         $response = Http::timeout(30)->get("{$this->baseUrl}select".$this->buildSolrQuery($params, $filterQueries));
@@ -217,8 +226,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Apply additional filters
         foreach ($filters as $key => $value) {
@@ -301,8 +312,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Apply filters with wildcard support
         foreach ($filters as $filter) {
