@@ -16,6 +16,9 @@ Route::get('/search/{query}/{filters?}', [SearchController::class, 'index'])
     ->where('filters', '.*')
     ->name('search.index');
 
+// Image proxy test endpoint (for debugging)
+Route::get('/record/test-proxy', [RecordController::class, 'testProxy'])->name('record.test');
+
 // Image proxy route for DSpace bitstreams
 Route::get('/record/{id}/{seq}/{filename}', [RecordController::class, 'proxyImage'])
     ->where('id', '[0-9]+')
