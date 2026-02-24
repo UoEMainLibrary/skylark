@@ -1,14 +1,18 @@
 <div class="col-xs-6 col-md-3 box">
     @php
-        $titleField = 'dctitleen';
+        // Support both DSpace and ArchivesSpace field names
+        $titleField = isset($doc['dctitleen']) ? 'dctitleen' : 'title';
         $thumbnailField = 'dcformatthumbnailen';
         $bitstreamField = 'dcformatoriginalen';
         
-        // Get title
-        $title = $doc[$titleField][0] ?? $doc[$titleField] ?? 'Untitled';
+        // Get title (handle both array and string values)
+        $title = $doc[$titleField] ?? 'Untitled';
         if (is_array($title)) {
             $title = $title[0] ?? 'Untitled';
         }
+        
+        // Strip HTML tags
+        $title = strip_tags($title);
         
         // Get document ID
         $docId = $doc['id'] ?? $doc['handle'] ?? '';
@@ -68,7 +72,16 @@
         }
         
         // Truncate title for display
-        $displayTitle = strlen($title) > 15 ? substr($title, 0, 15) . '...' : $title;
+        // DSpace: 15 character limit with ellipsis
+        // ArchivesSpace: Truncate at first comma (if present)
+        if (isset($doc['title'])) {
+            // ArchivesSpace - truncate at first comma
+            $commaPos = strpos($title, ',');
+            $displayTitle = $commaPos !== false ? substr($title, 0, $commaPos) : $title;
+        } else {
+            // DSpace - 15 character limit
+            $displayTitle = strlen($title) > 15 ? substr($title, 0, 15) . '...' : $title;
+        }
     @endphp
     
     <a href="{{ url('/record/' . $docId) }}?highlight={{ urlencode($query) }}" title="{{ $title }}">

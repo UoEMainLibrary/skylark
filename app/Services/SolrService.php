@@ -22,8 +22,8 @@ class SolrService
     {
         $config = config('services.solr');
 
-        // Build the base URL for DSpace Solr
-        // Using direct HTTP client due to Solarium issues with DSpace's non-standard Solr setup
+        // Build the base URL for Solr (DSpace or ArchivesSpace)
+        // Using direct HTTP client due to Solarium issues with non-standard Solr setups
         $this->baseUrl = env('SOLR_BASE_URL', 'http://localhost:8080/solr/search/');
 
         $this->containerId = $config['container_id'];
@@ -55,8 +55,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Apply additional filters
         foreach ($filters as $key => $value) {
@@ -110,8 +112,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Apply additional filters
         foreach ($filters as $key => $value) {
@@ -258,15 +262,20 @@ class SolrService
         $filterQueries[] = "-handle:\"{$fullHandle}\"";
         $filterQueries[] = "-id:\"{$currentId}\"";
 
-        // Execute query
-        $response = Http::timeout(30)->get("{$this->baseUrl}select".$this->buildSolrQuery($params, $filterQueries));
+        // Execute query with error handling
+        try {
+            $response = Http::timeout(30)->get("{$this->baseUrl}select".$this->buildSolrQuery($params, $filterQueries));
 
-        if (! $response->successful()) {
+            if (! $response->successful()) {
+                return [];
+            }
+
+            $data = $response->json();
+            $docs = $data['response']['docs'] ?? [];
+        } catch (\Exception $e) {
+            // If related items query fails, return empty array (don't block page load)
             return [];
         }
-
-        $data = $response->json();
-        $docs = $data['response']['docs'] ?? [];
 
         // Limit to 5 results and transform field names
         $related = array_slice($docs, 0, 5);
@@ -294,8 +303,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Apply additional filters
         foreach ($filters as $key => $value) {
@@ -378,8 +389,10 @@ class SolrService
         // Apply container scoping
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
-        // Apply resource type filter (DSpace items)
-        $filterQueries[] = 'search.resourcetype:2';
+        // Apply resource type filter (DSpace items only)
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
 
         // Apply filters with wildcard support
         foreach ($filters as $filter) {

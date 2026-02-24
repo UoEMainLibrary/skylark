@@ -24,11 +24,18 @@ return [
     |
     */
 
+    // DSpace filters (clds)
     'filters' => [
         'Type' => 'type_filter',
         'Subject' => 'subject_filter',
         'Origin' => 'place_filter',
     ],
+
+    // ArchivesSpace filters (eerc) - for reference/testing
+    // 'filters' => [
+    //     'Subject' => 'subjects',
+    //     'Person' => 'agents',
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -39,11 +46,18 @@ return [
     |
     */
 
+    // DSpace sort fields (clds)
     'sort_fields' => [
         'Relevancy' => 'score',
         'Title' => 'dc.title_sort',
         'Subject' => 'dc.subject_sort',
     ],
+
+    // ArchivesSpace sort fields (eerc) - for reference/testing
+    // 'sort_fields' => [
+    //     'Relevancy' => 'score',
+    //     'Title' => 'title_sort',
+    // ],
 
     'default_sort' => 'score desc',
 
@@ -56,6 +70,7 @@ return [
     |
     */
 
+    // DSpace display fields (clds)
     'searchresult_display' => [
         'Title',
         'Brief',
@@ -65,6 +80,16 @@ return [
         'Origin',
         'Thumbnail',
     ],
+
+    // ArchivesSpace display fields (eerc) - for reference/testing
+    // 'searchresult_display' => [
+    //     'Title',
+    //     'Custodian',
+    //     'Subject',
+    //     'Agents',
+    //     'Identifier',
+    //     'Brief',
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -111,6 +136,20 @@ return [
     |
     */
 
+    // DSpace field mappings (commented for ArchivesSpace testing)
+    // 'field_mappings' => [
+    //     'Title' => 'dc.title.en',
+    //     'Brief' => 'dc.abstract.en',
+    //     'Custodian' => 'dc.creator.en',
+    //     'Subject' => 'dc.subject.en',
+    //     'Type' => 'dc.type.en',
+    //     'Origin' => 'dc.coverage.spatial.en',
+    //     'Date' => 'dc.coverage.temporal.en',
+    //     'Thumbnail' => 'dc.format.thumbnail.en',
+    //     'Bitstream' => 'dc.format.original.en',
+    // ],
+
+    // DSpace field mappings (clds)
     'field_mappings' => [
         'Title' => 'dc.title.en',
         'Brief' => 'dc.abstract.en',
@@ -133,4 +172,18 @@ return [
         'LMS URI' => 'cld.externalURI.LMS',
         'Other URI' => 'cld.externalURI.other',
     ],
+
+    // ArchivesSpace field mappings (eerc) - for reference/testing
+    // 'field_mappings' => [
+    //     'Title' => 'title',
+    //     'Brief' => 'scopecontent',
+    //     'Custodian' => 'creators',
+    //     'Subject' => 'subjects',
+    //     'Type' => 'primary_type',
+    //     'Identifier' => 'component_id',
+    //     'Agents' => 'agents',
+    //     'Date' => 'dates',
+    //     'Thumbnail' => '',
+    //     'Bitstream' => '',
+    // ],
 ];
