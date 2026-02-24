@@ -2,46 +2,150 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\BitstreamHelper;
+use App\Services\SolrService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class RecordController extends Controller
 {
+    public function __construct(protected SolrService $solrService) {}
+
     /**
-     * Test endpoint to verify DSpace connectivity
-     * Access via /record/test-proxy to check configuration
+     * Display a single record detail page
      */
-    public function testProxy()
+    public function show(Request $request, string $id)
     {
-        $bitstreamUrl = config('services.dspace.bitstream_url');
-        $testUrl = $bitstreamUrl.'51352/2/0025556c.jpg.jpg';
+        // Fetch record from Solr
+        $record = $this->solrService->getRecord($id);
 
-        $info = [
-            'config_bitstream_url' => $bitstreamUrl,
-            'test_url' => $testUrl,
-            'app_debug' => config('app.debug'),
-            'app_env' => config('app.env'),
-        ];
-
-        try {
-            $response = Http::withOptions([
-                'verify' => false,
-                'timeout' => 10,
-            ])->get($testUrl);
-
-            $info['test_result'] = 'SUCCESS';
-            $info['status_code'] = $response->status();
-            $info['content_type'] = $response->header('Content-Type');
-            $info['content_length'] = $response->header('Content-Length');
-            $info['body_size_bytes'] = strlen($response->body());
-            $info['body_starts_with_jpeg'] = str_starts_with($response->body(), "\xFF\xD8\xFF");
-        } catch (\Exception $e) {
-            $info['test_result'] = 'FAILED';
-            $info['error_message'] = $e->getMessage();
-            $info['error_class'] = get_class($e);
+        if (! $record) {
+            abort(404, 'Record not found');
         }
 
-        return response()->json($info, 200, [], JSON_PRETTY_PRINT);
+        // Get configuration
+        $recordDisplay = config('skylight.recorddisplay', []);
+        $fieldMappings = config('skylight.field_mappings', []);
+        $filters = array_keys(config('skylight.filters', []));
+        $relatedFieldMappings = config('skylight.related_fields', []);
+
+        // Get field names (with dots removed)
+        $bitstreamField = str_replace('.', '', $fieldMappings['Bitstream'] ?? '');
+        $thumbnailField = str_replace('.', '', $fieldMappings['Thumbnail'] ?? '');
+        $titleField = str_replace('.', '', $fieldMappings['Title'] ?? '');
+        $parentCollectionField = str_replace('.', '', $fieldMappings['Parent Collection'] ?? '');
+        $subCollectionField = str_replace('.', '', $fieldMappings['Sub Collections'] ?? '');
+        $internalUriField = str_replace('.', '', $fieldMappings['Internal URI'] ?? '');
+        $aspaceUriField = str_replace('.', '', $fieldMappings['ASpace URI'] ?? '');
+        $lunaUriField = str_replace('.', '', $fieldMappings['LUNA URI'] ?? '');
+        $lmsUriField = str_replace('.', '', $fieldMappings['LMS URI'] ?? '');
+        $otherUriField = str_replace('.', '', $fieldMappings['Other URI'] ?? '');
+
+        // Get record title
+        $recordTitle = 'Untitled';
+        if (isset($record[$titleField]) && ! empty($record[$titleField])) {
+            $titleValue = $record[$titleField];
+            $recordTitle = is_array($titleValue) ? ($titleValue[0] ?? 'Untitled') : $titleValue;
+        }
+
+        // Get highlight query parameter
+        $highlightQuery = $request->query('highlight', '');
+
+        // Fetch related items
+        $relatedItems = $this->solrService->getRelatedItems($id, $record, $relatedFieldMappings);
+
+        // Parse bitstreams
+        $bitstreams = $this->parseBitstreams($record, $bitstreamField, $thumbnailField);
+
+        return view('record.show', [
+            'record' => $record,
+            'recordTitle' => $recordTitle,
+            'recordDisplay' => $recordDisplay,
+            'fieldMappings' => $fieldMappings,
+            'filters' => $filters,
+            'bitstreamField' => $bitstreamField,
+            'thumbnailField' => $thumbnailField,
+            'parentCollectionField' => $parentCollectionField,
+            'subCollectionField' => $subCollectionField,
+            'internalUriField' => $internalUriField,
+            'aspaceUriField' => $aspaceUriField,
+            'lunaUriField' => $lunaUriField,
+            'lmsUriField' => $lmsUriField,
+            'otherUriField' => $otherUriField,
+            'highlightQuery' => $highlightQuery,
+            'relatedItems' => $relatedItems,
+            'bitstreams' => $bitstreams,
+        ]);
+    }
+
+    /**
+     * Parse bitstreams into structured data
+     */
+    protected function parseBitstreams(array $record, string $bitstreamField, string $thumbnailField): array
+    {
+        $parsed = [
+            'main_image' => null,
+            'images' => [],
+            'thumbnails' => [],
+            'audio' => [],
+            'video' => [],
+            'pdf' => [],
+        ];
+
+        if (! isset($record[$bitstreamField])) {
+            return $parsed;
+        }
+
+        $bitstreams = is_array($record[$bitstreamField]) ? $record[$bitstreamField] : [$record[$bitstreamField]];
+
+        // Sort and process bitstreams
+        $imageArray = [];
+        foreach ($bitstreams as $bitstream) {
+            $seq = BitstreamHelper::getSequence($bitstream);
+
+            if (BitstreamHelper::isImage($bitstream)) {
+                $imageArray[$seq] = $bitstream;
+            } elseif (BitstreamHelper::isAudio($bitstream)) {
+                $parsed['audio'][] = [
+                    'uri' => BitstreamHelper::getUri($bitstream),
+                    'filename' => BitstreamHelper::getFilename($bitstream),
+                ];
+            } elseif (BitstreamHelper::isVideo($bitstream)) {
+                $parsed['video'][] = [
+                    'uri' => BitstreamHelper::getUri($bitstream),
+                    'filename' => BitstreamHelper::getFilename($bitstream),
+                ];
+            } elseif (BitstreamHelper::isPdf($bitstream)) {
+                $parsed['pdf'][] = [
+                    'uri' => BitstreamHelper::getUri($bitstream),
+                    'filename' => BitstreamHelper::getFilename($bitstream),
+                    'size' => BitstreamHelper::getFormattedSize($bitstream),
+                ];
+            }
+        }
+
+        // Sort images by sequence
+        ksort($imageArray);
+
+        // First image is the main image
+        $isFirst = true;
+        foreach ($imageArray as $seq => $bitstream) {
+            $imageData = [
+                'uri' => BitstreamHelper::getUri($bitstream),
+                'filename' => BitstreamHelper::getFilename($bitstream),
+                'description' => BitstreamHelper::getDescription($bitstream),
+                'seq' => $seq,
+            ];
+
+            if ($isFirst) {
+                $parsed['main_image'] = $imageData;
+                $isFirst = false;
+            } else {
+                $parsed['images'][] = $imageData;
+            }
+        }
+
+        return $parsed;
     }
 
     /**
@@ -61,17 +165,6 @@ class RecordController extends Controller
         $bitstreamUrl = config('services.dspace.bitstream_url');
         $url = $bitstreamUrl.$id.'/'.$seq.'/'.$filename;
 
-        // Log the attempt in non-production environments
-        if (config('app.debug')) {
-            Log::info('Image proxy attempt', [
-                'url' => $url,
-                'bitstream_base' => $bitstreamUrl,
-                'id' => $id,
-                'seq' => $seq,
-                'filename' => $filename,
-            ]);
-        }
-
         try {
             // Fetch image from DSpace with SSL verification disabled (for self-signed certs)
             // Matches CodeIgniter's stream_context_create with verify_peer => false
@@ -81,24 +174,6 @@ class RecordController extends Controller
             ])->get($url);
 
             if (! $response->successful()) {
-                $statusCode = $response->status();
-                $errorBody = substr($response->body(), 0, 500);
-
-                // Log failure details
-                Log::warning('Image proxy failed', [
-                    'url' => $url,
-                    'status' => $statusCode,
-                    'error' => $errorBody,
-                ]);
-
-                // In debug mode, return detailed error
-                if (config('app.debug')) {
-                    return response("Image proxy failed:\nURL: {$url}\nStatus: {$statusCode}\nError: {$errorBody}", 404)
-                        ->header('Content-Type', 'text/plain')
-                        ->header('X-Debug-Url', $url)
-                        ->header('X-Debug-Status', $statusCode);
-                }
-
                 abort(404, 'Image not found');
             }
 
@@ -106,38 +181,13 @@ class RecordController extends Controller
             $contentType = $response->header('Content-Type', 'application/octet-stream');
             $contentLength = $response->header('Content-Length', strlen($response->body()));
 
-            // Log success in debug mode
-            if (config('app.debug')) {
-                Log::info('Image proxy success', [
-                    'url' => $url,
-                    'content_type' => $contentType,
-                    'content_length' => $contentLength,
-                ]);
-            }
-
             // Return streaming response with proper headers
             return response($response->body())
                 ->header('Content-Type', $contentType)
                 ->header('Content-Length', $contentLength)
                 ->header('Cache-Control', 'public, max-age=31536000') // Cache for 1 year
-                ->header('Expires', gmdate('D, d M Y H:i:s', time() + 31536000).' GMT')
-                ->header('X-Proxied-From', config('app.debug') ? $url : 'dspace'); // Debug header
+                ->header('Expires', gmdate('D, d M Y H:i:s', time() + 31536000).' GMT');
         } catch (\Exception $e) {
-            // Log the exception
-            Log::error('Image proxy exception', [
-                'url' => $url,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            // In debug mode, return detailed error
-            if (config('app.debug')) {
-                return response("Image proxy exception:\nURL: {$url}\nError: {$e->getMessage()}", 500)
-                    ->header('Content-Type', 'text/plain')
-                    ->header('X-Debug-Url', $url)
-                    ->header('X-Debug-Error', substr($e->getMessage(), 0, 200));
-            }
-
             abort(404, 'Image not found');
         }
     }

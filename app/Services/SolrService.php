@@ -16,6 +16,8 @@ class SolrService
 
     protected bool $isDSpace;
 
+    protected string $handlePrefix;
+
     public function __construct()
     {
         $config = config('services.solr');
@@ -28,6 +30,7 @@ class SolrService
         $this->containerField = $config['container_field'];
         $this->resultsPerPage = $config['results_per_page'];
         $this->isDSpace = env('SOLR_REPOSITORY_TYPE', 'dspace') === 'dspace';
+        $this->handlePrefix = config('skylight.handle_prefix', '10683');
     }
 
     /**
@@ -171,9 +174,12 @@ class SolrService
      */
     public function getRecord(string $id, bool $includeHighlight = false): ?array
     {
+        // Construct full handle (e.g., 10683/51352)
+        $fullHandle = $this->handlePrefix.'/'.$id;
+
         // Build query parameters
         $params = [
-            'q' => "handle:\"{$id}\" OR id:\"{$id}\"",
+            'q' => "handle:\"{$fullHandle}\" OR id:\"{$id}\"",
             'rows' => 1,
             'wt' => 'json',
         ];
@@ -203,7 +209,78 @@ class SolrService
             return null;
         }
 
-        return $docs[0];
+        // Transform field names (remove dots)
+        return $this->transformFieldNames($docs[0]);
+    }
+
+    /**
+     * Get related items for a record
+     */
+    public function getRelatedItems(string $currentId, array $record, array $relatedFieldMappings): array
+    {
+        $queries = [];
+
+        // Build queries for each related field
+        foreach ($relatedFieldMappings as $displayName => $solrField) {
+            // Get field name without dots
+            $fieldKey = str_replace('.', '', $solrField);
+
+            if (isset($record[$fieldKey]) && ! empty($record[$fieldKey])) {
+                $values = is_array($record[$fieldKey]) ? $record[$fieldKey] : [$record[$fieldKey]];
+
+                foreach ($values as $value) {
+                    if (! empty($value)) {
+                        $queries[] = $solrField.':'.json_encode($value);
+                    }
+                }
+            }
+        }
+
+        if (empty($queries)) {
+            return [];
+        }
+
+        // Construct full handle for exclusion
+        $fullHandle = $this->handlePrefix.'/'.$currentId;
+
+        // Build Solr query
+        $params = [
+            'q' => implode(' OR ', $queries),
+            'rows' => 6, // Get 6 so we can exclude current and return 5
+            'wt' => 'json',
+        ];
+
+        // Build filter queries
+        $filterQueries = [];
+        $filterQueries[] = "{$this->containerField}:{$this->containerId}";
+
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
+
+        // Exclude current record by full handle and ID
+        $filterQueries[] = "-handle:\"{$fullHandle}\"";
+        $filterQueries[] = "-id:\"{$currentId}\"";
+
+        // Execute query with error handling
+        try {
+            $response = Http::timeout(30)->get("{$this->baseUrl}select".$this->buildSolrQuery($params, $filterQueries));
+
+            if (! $response->successful()) {
+                return [];
+            }
+
+            $data = $response->json();
+            $docs = $data['response']['docs'] ?? [];
+        } catch (\Exception $e) {
+            // If related items query fails, return empty array (don't block page load)
+            return [];
+        }
+
+        // Limit to 5 results and transform field names
+        $related = array_slice($docs, 0, 5);
+
+        return array_map(fn ($doc) => $this->transformFieldNames($doc), $related);
     }
 
     /**
