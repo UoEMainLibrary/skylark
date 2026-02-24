@@ -13,6 +13,7 @@ return [
     'results_per_page' => env('SKYLIGHT_RESULTS_PER_PAGE', 20),
     'facet_limit' => 10,
     'filter_delimiter' => ':',
+    'handle_prefix' => env('SKYLIGHT_HANDLE_PREFIX', '10683'),
 
     /*
     |--------------------------------------------------------------------------
@@ -67,6 +68,42 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Record Display Fields
+    |--------------------------------------------------------------------------
+    |
+    | Fields to display on individual record pages
+    |
+    */
+
+    'recorddisplay' => [
+        'Title',
+        'Type',
+        'Summary',
+        'Description',
+        'Custodian',
+        'Custodial History',
+        'Origin',
+        'Date',
+        'Identifier',
+        'Further Resources',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Related Items Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Fields used to find related items
+    |
+    */
+
+    'related_fields' => [
+        'Type' => 'dc.type.en',
+        'Subject' => 'dc.subject.en',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Field Mappings
     |--------------------------------------------------------------------------
     |
@@ -77,12 +114,23 @@ return [
     'field_mappings' => [
         'Title' => 'dc.title.en',
         'Brief' => 'dc.abstract.en',
+        'Summary' => 'dc.description.abstract.en',
+        'Description' => 'dc.description.en',
         'Custodian' => 'dc.creator.en',
+        'Custodial History' => 'cld.custodialHistory.en',
         'Subject' => 'dc.subject.en',
         'Type' => 'dc.type.en',
         'Origin' => 'dc.coverage.spatial.en',
         'Date' => 'dc.coverage.temporal.en',
+        'Identifier' => 'dc.identifier.other',
         'Thumbnail' => 'dc.format.thumbnail.en',
         'Bitstream' => 'dc.format.original.en',
+        'Parent Collection' => 'dc.relation.ispartof.en',
+        'Sub Collections' => 'dc.relation.haspart.en',
+        'Internal URI' => 'cld.internalURI.en',
+        'ASpace URI' => 'cld.externalURI.ArchivesSpace',
+        'LUNA URI' => 'cld.externalURI.LUNA',
+        'LMS URI' => 'cld.externalURI.LMS',
+        'Other URI' => 'cld.externalURI.other',
     ],
 ];
