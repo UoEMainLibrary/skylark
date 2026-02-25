@@ -19,7 +19,10 @@
                             @foreach($facet['active_terms'] as $term)
                                 @php
                                     // Build URL to remove this filter
-                                    $pattern = '/' . rawurlencode($facet['name']) . $delimiter . '"' . $term['name'] . '"';
+                                    // Normalize term to match how it appears in base_search URL
+                                    // (spaces/newlines -> +, but keep pipes as literal | since Laravel decodes them)
+                                    $encodedTerm = str_replace(["\r\n", "\n", "\r", ' '], '+', $term['name']);
+                                    $pattern = '/' . rawurlencode($facet['name']) . $delimiter . '"' . $encodedTerm . '"';
                                     $removeUrl = str_replace($pattern, '', $base_search);
                                     $removeUrl = rtrim($removeUrl, '/');
                                 @endphp
@@ -35,7 +38,10 @@
                             @foreach($facet['inactive_terms'] as $term)
                                 @php
                                     // Build URL to add this filter
-                                    $addUrl = $base_search . '/' . $facet['name'] . ':"' . $term['name'] . '"';
+                                    // Replace spaces with + and encode special characters (newlines, pipes, etc.)
+                                    $encodedTerm = str_replace(["\r\n", "\n", "\r", ' '], '+', $term['name']);
+                                    $encodedTerm = str_replace('|', '%7C', $encodedTerm);
+                                    $addUrl = $base_search . '/' . $facet['name'] . ':"' . $encodedTerm . '"';
                                 @endphp
                                 <div class="facet-term">
                                     <a href="{{ $addUrl }}{{ $base_parameters }}">

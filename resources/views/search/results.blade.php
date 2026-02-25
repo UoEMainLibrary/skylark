@@ -10,6 +10,9 @@
 
 @section('content')
 <div class="container">
+    <!-- Collection type header (if applicable) -->
+    @include('search.partials.collection_header')
+    
     <div class="row">
         <!-- Main results column -->
         <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12" id="search-results">

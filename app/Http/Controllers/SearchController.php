@@ -52,7 +52,7 @@ class SearchController extends Controller
                 $offset,
                 $sortBy,
                 $rows,
-                $parsedFilters['solr_filters']
+                $parsedFilters['url_filters']
             );
         } catch (\Exception $e) {
             return view('search.error', [
@@ -130,10 +130,13 @@ class SearchController extends Controller
                 if (isset($configFilters[$filterName])) {
                     $solrField = $configFilters[$filterName];
 
-                    // Add wildcards for partial matching
-                    // Remove quotes, add wildcards, re-add quotes
-                    $value = trim($filterValue, '"');
-                    $solrFilters[] = "{$solrField}:*{$value}*";
+                    // Apply Solr escaping: convert spaces and %20 to + (leave pipes as-is)
+                    $escapedValue = preg_replace('# #', '+', $filterValue);
+                    $escapedValue = preg_replace('#%20#', '+', $escapedValue);
+                    
+                    // Build filter with wildcards: field:*"value"*
+                    // This allows flexible matching despite newlines/whitespace in stored values
+                    $solrFilters[] = "{$solrField}:*{$escapedValue}*";
                 }
             }
         }
