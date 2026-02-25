@@ -6,7 +6,7 @@
                 @csrf
                 <div class="icon-addon addon-lg">
                     <div class="input-group-btn">
-                        <input type="text" placeholder="Search the Collection Level Descriptions" class="form-control" name="q" id="q" >
+                        <input type="text" placeholder="Search the Collection Level Descriptions" class="form-control" name="q" id="q" value="{{ $searchbox_query ?? '' }}">
                         <label class="glyphicon glyphicon-search" rel="tooltip"></label>
                         <input type="submit" name="submit_search" class="btn" value="Search" id="submit_search" title="Search the Collection Level Descriptions" />
                     </div>

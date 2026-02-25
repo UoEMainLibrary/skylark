@@ -487,7 +487,7 @@ class SolrService
         $fieldToName = array_flip($configFilters);
 
         foreach ($facetData as $facetField => $facetTerms) {
-            $displayName = $fieldToName[$facetField] ?? $facetField;
+            $facetDisplayName = $fieldToName[$facetField] ?? $facetField;
 
             $activeTerms = [];
             $inactiveTerms = [];
@@ -499,18 +499,26 @@ class SolrService
                     $termCount = $facetTerms[$i + 1];
 
                     // Extract display name from "|||" delimiter (e.g., "rare books ||| Rare Books" -> "Rare Books")
-                    $displayName = $termName;
+                    $termDisplayName = $termName;
                     if (str_contains($termName, '|||')) {
                         $parts = preg_split('/\|\|\|/', $termName);
                         if (isset($parts[1])) {
-                            $displayName = trim($parts[1]);
+                            $termDisplayName = trim($parts[1]);
                         }
                     }
 
                     // Check if this term is active
+                    // activeFilters contains URL segments like: Type:"rare+books+|||+Rare+Books"
+                    // termName is the raw Solr value like: "rare books\n|||\nRare Books" (with newlines)
                     $isActive = false;
+                    
+                    // Normalize the term name to match URL encoding (spaces/newlines -> +)
+                    // Note: Laravel already decodes %7C to | in route parameters, so leave pipes as-is
+                    $normalizedTermName = str_replace(["\r\n", "\n", "\r", ' '], '+', $termName);
+                    
                     foreach ($activeFilters as $activeFilter) {
-                        if (str_contains($activeFilter, $termName)) {
+                        // Check if the filter contains this normalized term
+                        if (str_contains($activeFilter, $normalizedTermName)) {
                             $isActive = true;
                             break;
                         }
@@ -518,7 +526,7 @@ class SolrService
 
                     $term = [
                         'name' => $termName,
-                        'display_name' => $displayName,
+                        'display_name' => $termDisplayName,
                         'count' => $termCount,
                         'active' => $isActive,
                     ];
@@ -532,7 +540,7 @@ class SolrService
             }
 
             $facets[] = [
-                'name' => $displayName,
+                'name' => $facetDisplayName,
                 'field' => $facetField,
                 'terms' => array_merge($activeTerms, $inactiveTerms),
                 'active_terms' => $activeTerms,

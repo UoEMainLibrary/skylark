@@ -135,3 +135,25 @@
 .icon-addon:hover .fa {
     color: #2580db;
 }
+
+/* Fix grid layout - ensure consistent box heights */
+#search-results .box {
+    margin-bottom: 30px;
+}
+
+#search-results .recordtitle {
+    min-height: 3em;
+}
+
+/* Clear floats to prevent layout breaks */
+@media (min-width: 992px) {
+    #search-results .box:nth-child(4n+1) {
+        clear: left;
+    }
+}
+
+@media (max-width: 991px) {
+    #search-results .box:nth-child(2n+1) {
+        clear: left;
+    }
+}
