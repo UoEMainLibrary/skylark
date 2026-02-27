@@ -145,6 +145,17 @@
     min-height: 3em;
 }
 
+/* Center images horizontally */
+#search-results .imagebox {
+    text-align: center;
+}
+
+#search-results .imagebox img {
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+}
+
 /* Clear floats to prevent layout breaks */
 @media (min-width: 992px) {
     #search-results .box:nth-child(4n+1) {

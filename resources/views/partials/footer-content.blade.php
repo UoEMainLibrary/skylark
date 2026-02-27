@@ -21,9 +21,9 @@
                 </div>
                 <div class="col-sm-4">
                     <ul>
-                        <li><a href="{{ url('/accessibility') }}">Website accessibility</a></li>
+                        <li><a href="{{ route('accessibility') }}">Website accessibility</a></li>
                         <li><a href="https://www.ed.ac.uk/about/website/freedom-information">Freedom of information publication scheme</a></li>
-                        <li><a href="https://www.ed.ac.uk/information-services/library-museum-gallery/heritage-collections/using-the-collections/digitisation/image-licensing/takedown-policy" target="_blank" title="Takedown Policy">Takedown Policy</a></li>
+                        <li><a href="{{ route('takedown') }}">Takedown Policy</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-4 col-xs-6">

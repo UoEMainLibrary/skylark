@@ -1023,3 +1023,30 @@ a[target="_blank"]:has(.social:hover)::after {
     top: auto;
     padding: 1px;
 }
+
+/* Collections as Data page styles */
+.zipimage {
+    filter: grayscale(50%) !important;
+}
+
+.bantext {
+    font-family: inherit;
+    font-size: 50pt;
+    font-weight: bold;
+    color: #1A4367;
+    text-align: center;
+}
+
+.ccby {
+    height: 20% !important;
+    width: 20% !important;
+}
+
+.wrap {
+    font-size: 15pt;
+}
+
+.wrap-bold {
+    font-size: 15pt;
+    font-weight: bold;
+}
