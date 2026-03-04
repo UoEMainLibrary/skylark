@@ -36,10 +36,10 @@ class SolrService
     /**
      * Execute a search query against Solr
      */
-    public function search(string $query = '*:*', array $filters = [], array $options = []): array
+    public function search(string $query, array $filters = [], int $page = 1, ?string $sortBy = null): array
     {
-        $start = $options['start'] ?? 0;
-        $rows = $options['rows'] ?? $this->resultsPerPage;
+        $start = ($page - 1) * $this->resultsPerPage;
+        $rows = $this->resultsPerPage;
 
         // Build query parameters
         $params = [
@@ -66,9 +66,8 @@ class SolrService
         }
 
         // Set sort if provided
-        if (isset($options['sort'])) {
-            $order = $options['sort_order'] ?? 'asc';
-            $params['sort'] = "{$options['sort']} {$order}";
+        if ($sortBy) {
+            $params['sort'] = $sortBy;
         }
 
         // Execute the query with properly formatted filter queries
@@ -216,8 +215,14 @@ class SolrService
     /**
      * Get related items for a record
      */
-    public function getRelatedItems(string $currentId, array $record, array $relatedFieldMappings): array
+    public function getRelatedItems(array $record, int $limit = 10): array
     {
+        $relatedFieldMappings = config('skylight.related_fields', []);
+        
+        if (empty($relatedFieldMappings)) {
+            return [];
+        }
+        
         $queries = [];
 
         // Build queries for each related field
@@ -240,13 +245,19 @@ class SolrService
             return [];
         }
 
+        // Get current record ID for exclusion
+        $currentId = $record['Id'] ?? $record['id'] ?? null;
+        if (!$currentId) {
+            return [];
+        }
+        
         // Construct full handle for exclusion
         $fullHandle = $this->handlePrefix.'/'.$currentId;
 
         // Build Solr query
         $params = [
             'q' => implode(' OR ', $queries),
-            'rows' => 6, // Get 6 so we can exclude current and return 5
+            'rows' => $limit,
             'wt' => 'json',
         ];
 
@@ -554,7 +565,7 @@ class SolrService
     /**
      * Transform Solr field names by removing dots
      */
-    protected function transformFieldNames(array $doc): array
+    public function transformFieldNames(array $doc): array
     {
         $transformed = [];
 

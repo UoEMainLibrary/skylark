@@ -3,21 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\BitstreamHelper;
-use App\Services\SolrService;
+use App\Services\RepositoryFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class RecordController extends Controller
 {
-    public function __construct(protected SolrService $solrService) {}
+    public function __construct(protected RepositoryFactory $repositoryFactory) {}
+
+    /**
+     * Get collection-aware view name
+     */
+    protected function collectionView(string $view): string
+    {
+        $collection = config('app.current_collection', 'clds');
+        $collectionView = "{$collection}.{$view}";
+
+        return view()->exists($collectionView) ? $collectionView : $view;
+    }
 
     /**
      * Display a single record detail page
      */
-    public function show(Request $request, string $id)
+    public function show(Request $request, string $id, ?string $type = null)
     {
-        // Fetch record from Solr
-        $record = $this->solrService->getRecord($id);
+        // Get repository service for current collection
+        $repository = $this->repositoryFactory->current();
+
+        // Fetch record from repository (pass type if available for ArchivesSpace)
+        $record = method_exists($repository, 'getRecordWithType')
+            ? $repository->getRecordWithType($id, $type)
+            : $repository->getRecord($id);
 
         if (! $record) {
             abort(404, 'Record not found');
@@ -52,12 +68,12 @@ class RecordController extends Controller
         $highlightQuery = $request->query('highlight', '');
 
         // Fetch related items
-        $relatedItems = $this->solrService->getRelatedItems($id, $record, $relatedFieldMappings);
+        $relatedItems = $repository->getRelatedItems($record, config('skylight.related_number', 10));
 
         // Parse bitstreams
         $bitstreams = $this->parseBitstreams($record, $bitstreamField, $thumbnailField);
 
-        return view('record.show', [
+        return view($this->collectionView('record.show'), [
             'record' => $record,
             'recordTitle' => $recordTitle,
             'recordDisplay' => $recordDisplay,
