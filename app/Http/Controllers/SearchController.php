@@ -2,14 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\SolrService;
+use App\Services\RepositoryFactory;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
     public function __construct(
-        protected SolrService $solrService
+        protected RepositoryFactory $repositoryFactory
     ) {}
+
+    /**
+     * Get collection-aware view name
+     */
+    protected function collectionView(string $view): string
+    {
+        $collection = config('app.current_collection', 'clds');
+        $collectionView = "{$collection}.{$view}";
+
+        return view()->exists($collectionView) ? $collectionView : $view;
+    }
 
     /**
      * Handle search form POST and redirect to GET URL
@@ -23,8 +34,11 @@ class SearchController extends Controller
             $query = '*';
         }
 
-        // Redirect to search URL
-        return redirect()->route('search.index', ['query' => $query]);
+        // Build collection-aware search URL
+        $collection = config('app.current_collection', 'clds');
+        $prefix = $collection === 'eerc' ? '/eerc' : '';
+        
+        return redirect("{$prefix}/search/{$query}");
     }
 
     /**
@@ -44,9 +58,12 @@ class SearchController extends Controller
         $sortBy = $request->get('sort_by', config('skylight.default_sort'));
         $rows = (int) $request->get('num_results', config('skylight.results_per_page'));
 
+        // Get repository service for current collection
+        $repository = $this->repositoryFactory->current();
+
         // Execute search
         try {
-            $results = $this->solrService->searchWithHighlighting(
+            $results = $repository->searchWithHighlighting(
                 $query,
                 $parsedFilters['solr_filters'],
                 $offset,
@@ -55,7 +72,7 @@ class SearchController extends Controller
                 $parsedFilters['url_filters']
             );
         } catch (\Exception $e) {
-            return view('search.error', [
+            return view($this->collectionView('search.error'), [
                 'error' => $e->getMessage(),
                 'query' => $query,
             ]);
@@ -103,7 +120,7 @@ class SearchController extends Controller
             'delimiter' => config('skylight.filter_delimiter'),
         ];
 
-        return view('search.results', $data);
+        return view($this->collectionView('search.results'), $data);
     }
 
     /**
@@ -130,13 +147,16 @@ class SearchController extends Controller
                 if (isset($configFilters[$filterName])) {
                     $solrField = $configFilters[$filterName];
 
-                    // Apply Solr escaping: convert spaces and %20 to + (leave pipes as-is)
-                    $escapedValue = preg_replace('# #', '+', $filterValue);
-                    $escapedValue = preg_replace('#%20#', '+', $escapedValue);
-                    
-                    // Build filter with wildcards: field:*"value"*
-                    // This allows flexible matching despite newlines/whitespace in stored values
-                    $solrFilters[] = "{$solrField}:*{$escapedValue}*";
+                    // Apply Solr escaping like CodeIgniter's solrEscape:
+                    // Convert spaces and %20 to + (Solr/URL convention)
+                    // URL: %22Working+life%22 -> filterValue: "Working+life" (already has +, keep it)
+                    // Or: "Working life" -> "Working+life"
+                    $escapedValue = str_replace(' ', '+', $filterValue);
+                    $escapedValue = str_replace('%20', '+', $escapedValue);
+
+                    // Build filter WITHOUT wildcards (matching CodeIgniter)
+                    // CodeIgniter uses exact phrase matching: subjects:"Working+life"
+                    $solrFilters[] = "{$solrField}:{$escapedValue}";
                 }
             }
         }
