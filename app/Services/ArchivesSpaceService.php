@@ -517,7 +517,7 @@ class ArchivesSpaceService implements RepositoryInterface
         }
 
         try {
-            $response = Http::post("{$apiUrl}/users/{$username}/login", [
+            $response = Http::asForm()->post("{$apiUrl}/users/{$username}/login", [
                 'password' => $password,
             ]);
 
@@ -560,6 +560,15 @@ class ArchivesSpaceService implements RepositoryInterface
         }
 
         return null;
+    }
+
+    /**
+     * Get collection tree structure (alias for getTree with no resourceId required)
+     */
+    public function getCollectionTree(): array
+    {
+        $tree = $this->getTree('');
+        return $tree ?? ['children' => []];
     }
 
     /**

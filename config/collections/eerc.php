@@ -32,8 +32,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'solr_core' => 'solr/archivesspace',
-    'solr_base' => env('ARCHIVESSPACE_SOLR_URL', 'http://lac-archivesspace-live4.is.ed.ac.uk:8983/'),
-    'link_url' => env('ARCHIVESSPACE_LINK_URL', 'http://lac-archivesspace-live4.is.ed.ac.uk:8081'),
+    'solr_base' => env('ARCHIVESSPACE_SOLR_URL', 'http://lac-archivesspace-live5.is.ed.ac.uk:8983/'),
+    'link_url' => env('ARCHIVESSPACE_LINK_URL', 'https://archivesspace.collections.ed.ac.uk'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,8 +41,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'archivesspace_user' => env('ARCHIVESSPACE_API_USER', 'apiread'),
-    'archivesspace_password' => env('ARCHIVESSPACE_API_PASSWORD', 'Auxilium1'),
-    'archivesspace_url' => env('ARCHIVESSPACE_API_URL', 'http://lac-archivesspace-live4.is.ed.ac.uk:8089'),
+    'archivesspace_password' => env('ARCHIVESSPACE_API_PASSWORD', 'K1X7QNOrkViWihRo'),
+    'archivesspace_url' => env('ARCHIVESSPACE_API_URL', 'https://aspaceapi.collections.ed.ac.uk'),
     'archivesspace_tree' => '/repositories/15/resources/86984/tree',
 
     /*

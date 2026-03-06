@@ -3,14 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
+use App\Services\RepositoryFactory;
 
 class PageController extends Controller
 {
+    public function __construct(
+        protected RepositoryFactory $repositoryFactory
+    ) {}
     /**
      * Display the About page
      */
     public function about()
     {
+        $collection = config('app.current_collection', 'clds');
+        
+        if ($collection === 'eerc') {
+            return $this->eercPageWithSidebar('eerc.pages.about');
+        }
+        
         return view('pages.about');
     }
 
@@ -91,7 +101,119 @@ class PageController extends Controller
      */
     public function accessibility()
     {
+        $collection = config('app.current_collection', 'clds');
+        
+        if ($collection === 'eerc') {
+            return $this->eercPageWithSidebar('eerc.pages.accessibility');
+        }
+        
         return view('pages.accessibility');
+    }
+
+    /**
+     * Display the EERC Overview/Browse Collections page
+     */
+    public function overview()
+    {
+        $repository = $this->repositoryFactory->current();
+        
+        // Fetch the collection tree from ArchivesSpace
+        $tree = method_exists($repository, 'getCollectionTree') 
+            ? $repository->getCollectionTree() 
+            : ['children' => []];
+
+        // Fetch subject and person facets for sidebar
+        $subjectFacet = ['terms' => []];
+        $personFacet = ['terms' => []];
+
+        if (method_exists($repository, 'browseTerms')) {
+            $subjectFacet = $repository->browseTerms('Subject', 10);
+            $personFacet = $repository->browseTerms('Person', 10);
+        }
+
+        return view('eerc.pages.overview', [
+            'tree' => $tree,
+            'subjectFacet' => $subjectFacet,
+            'personFacet' => $personFacet,
+        ]);
+    }
+
+    /**
+     * Display the EERC People page
+     */
+    public function people()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.people');
+    }
+
+    /**
+     * Display the EERC RESP Archive Project page
+     */
+    public function resp()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.resp');
+    }
+
+    /**
+     * Display the EERC Searching and Using page
+     */
+    public function using()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.using');
+    }
+
+    /**
+     * Display the EERC Exhibition Gallery page
+     */
+    public function exhibitionGallery()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.exhibition_gallery');
+    }
+
+    /**
+     * Display the EERC Kids Only page
+     */
+    public function kidsOnly()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.kids_only');
+    }
+
+    /**
+     * Display the EERC Contact page
+     */
+    public function contact()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.contact');
+    }
+
+    /**
+     * Display the EERC Map page
+     */
+    public function map()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.map');
+    }
+
+    /**
+     * Helper method to render EERC pages with sidebar facets
+     */
+    protected function eercPageWithSidebar(string $view)
+    {
+        $repository = $this->repositoryFactory->current();
+        
+        // Fetch subject and person facets for sidebar
+        $subjectFacet = ['terms' => []];
+        $personFacet = ['terms' => []];
+
+        if (method_exists($repository, 'browseTerms')) {
+            $subjectFacet = $repository->browseTerms('Subject', 10);
+            $personFacet = $repository->browseTerms('Person', 10);
+        }
+
+        return view($view, [
+            'subjectFacet' => $subjectFacet,
+            'personFacet' => $personFacet,
+        ]);
     }
 
     /**
