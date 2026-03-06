@@ -77,43 +77,14 @@ Route::prefix('eerc')->name('eerc.')->group(function () {
         ->name('record.show');
 
     // EERC Static pages
-    Route::get('/resp', function () {
-        return view('eerc.pages.resp');
-    })->name('resp');
-
-    Route::get('/about', function () {
-        return view('eerc.pages.about');
-    })->name('about');
-
-    Route::get('/people', function () {
-        return view('eerc.pages.people');
-    })->name('people');
-
-    Route::get('/using', function () {
-        return view('eerc.pages.using');
-    })->name('using');
-
-    Route::get('/overview', function () {
-        return view('eerc.pages.overview');
-    })->name('overview');
-
-    Route::get('/map', function () {
-        return view('eerc.pages.map');
-    })->name('map');
-
-    Route::get('/exhibition_gallery', function () {
-        return view('eerc.pages.exhibition_gallery');
-    })->name('exhibition_gallery');
-
-    Route::get('/kids_only', function () {
-        return view('eerc.pages.kids_only');
-    })->name('kids_only');
-
-    Route::get('/contact', function () {
-        return view('eerc.pages.contact');
-    })->name('contact');
-
-    Route::get('/accessibility', function () {
-        return view('eerc.pages.accessibility');
-    })->name('accessibility');
+    Route::get('/resp', [PageController::class, 'resp'])->name('resp');
+    Route::get('/about', [PageController::class, 'about'])->name('about');
+    Route::get('/people', [PageController::class, 'people'])->name('people');
+    Route::get('/using', [PageController::class, 'using'])->name('using');
+    Route::get('/overview', [PageController::class, 'overview'])->name('overview');
+    Route::get('/exhibition_gallery', [PageController::class, 'exhibitionGallery'])->name('exhibition_gallery');
+    Route::get('/kids_only', [PageController::class, 'kidsOnly'])->name('kids_only');
+    Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+    Route::get('/accessibility', [PageController::class, 'accessibility'])->name('accessibility');
+    Route::get('/map', [PageController::class, 'map'])->name('map');
 });
