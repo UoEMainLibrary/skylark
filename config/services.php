@@ -56,6 +56,7 @@ return [
 
     'dspace' => [
         'bitstream_url' => env('DSPACE_BITSTREAM_URL', 'http://test.collectionsmanager.is.ed.ac.uk/bitstream/10683/'),
+        'rewrite_bitstream_urls' => env('REWRITE_BITSTREAM_URLS', false),
     ],
 
 ];

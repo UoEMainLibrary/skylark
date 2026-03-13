@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\BitstreamHelper;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -367,7 +368,7 @@ class RefreshMapData extends Command
 
                     $thumbnail = $this->findThumbnailInResults($data['response']['docs'] ?? []);
                     if ($thumbnail) {
-                        $location['thumbnail_url'] = $thumbnail;
+                        $location['thumbnail_url'] = BitstreamHelper::rewriteBitstreamUrl($thumbnail);
                     }
                 }
             } catch (\Exception $e) {

@@ -115,6 +115,23 @@ class BitstreamHelper
     }
 
     /**
+     * Rewrite external digitalpreservation URLs to use the app's own domain.
+     * Enabled via REWRITE_BITSTREAM_URLS=true in .env (for Caddy proxy on the server).
+     */
+    public static function rewriteBitstreamUrl(string $url): string
+    {
+        if (! config('services.dspace.rewrite_bitstream_urls')) {
+            return $url;
+        }
+
+        return str_replace(
+            'https://digitalpreservation.is.ed.ac.uk',
+            rtrim(config('app.url'), '/'),
+            $url
+        );
+    }
+
+    /**
      * Check if bitstream is an image
      */
     public static function isImage(string $metadataValue): bool

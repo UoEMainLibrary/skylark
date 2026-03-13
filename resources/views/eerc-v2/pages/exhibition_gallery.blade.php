@@ -34,7 +34,7 @@
                 </div>
                 <div class="mt-4">
                     <video controls width="100%" preload="auto" title="MILLS-revised" poster="{{ asset('collections/eerc/images/MILLS-revised-720.png') }}" class="rounded-md">
-                        <source src="https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/56448/MILLS-revised-720.mp4">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/56448/MILLS-revised-720.mp4') }}">
                         Sorry, your browser doesn't support embedded videos.
                     </video>
                 </div>
