@@ -108,7 +108,7 @@
 
                                                                     if (isset($digitalObj['file_versions'][0])) {
                                                                         $doFile = $digitalObj['title'] ?? '';
-                                                                        $doUrl = $digitalObj['file_versions'][0]['file_uri'] ?? '';
+                                                                        $doUrl = \App\Helpers\BitstreamHelper::rewriteBitstreamUrl($digitalObj['file_versions'][0]['file_uri'] ?? '');
 
                                                                         if (str_ends_with(strtolower($doFile), '.mp3') || str_ends_with(strtolower($doFile), '.wav')) {
                                                                             $audioFiles[] = ['url' => $doUrl, 'file' => $doFile];

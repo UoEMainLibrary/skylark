@@ -108,9 +108,9 @@
                                                             foreach($jsonArray as $digitalObj) {
                                                                 $digitalObj = is_string($digitalObj) ? json_decode($digitalObj, true) : $digitalObj;
                                                                 
-                                                                if(isset($digitalObj['file_versions'][0])) {
-                                                                    $doFile = $digitalObj['title'] ?? '';
-                                                                    $doUrl = $digitalObj['file_versions'][0]['file_uri'] ?? '';
+                                                if(isset($digitalObj['file_versions'][0])) {
+                                                    $doFile = $digitalObj['title'] ?? '';
+                                                    $doUrl = \App\Helpers\BitstreamHelper::rewriteBitstreamUrl($digitalObj['file_versions'][0]['file_uri'] ?? '');
                                                                     
                                                                     if(str_ends_with(strtolower($doFile), '.mp3') || str_ends_with(strtolower($doFile), '.wav')) {
                                                                         $audioFiles[] = ['url' => $doUrl, 'file' => $doFile];
