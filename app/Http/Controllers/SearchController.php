@@ -176,7 +176,9 @@ class SearchController extends Controller
      */
     protected function buildBaseSearchUrl(string $query, array $filters): string
     {
-        $url = url('/search/'.$query);
+        $collection = config('app.current_collection', 'clds');
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+        $url = url("{$prefix}/search/{$query}");
 
         foreach ($filters as $filter) {
             $url .= '/'.$filter;
