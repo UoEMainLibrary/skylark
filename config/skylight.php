@@ -3,6 +3,19 @@
 return [
     /*
     |--------------------------------------------------------------------------
+    | RESP Skin Version
+    |--------------------------------------------------------------------------
+    |
+    | Controls which front-end skin is used for the EERC/RESP collection.
+    | Version 1: Original Bootstrap 3 skin
+    | Version 2: Modern Tailwind CSS skin
+    |
+    */
+
+    'resp_skin_version' => (int) env('RESP_SKIN_VERSION', 1),
+
+    /*
+    |--------------------------------------------------------------------------
     | Search Results Configuration
     |--------------------------------------------------------------------------
     |

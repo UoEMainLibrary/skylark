@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,6 +7,29 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Source Sans 3', 'Source Sans Pro', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-resp-teal-50: #e6f2f5;
+    --color-resp-teal-100: #b3d9e2;
+    --color-resp-teal-200: #80c0cf;
+    --color-resp-teal-300: #4da7bc;
+    --color-resp-teal-400: #268ea8;
+    --color-resp-teal-500: #00748f;
+    --color-resp-teal-600: #00526f;
+    --color-resp-teal-700: #003d53;
+    --color-resp-teal-800: #002837;
+    --color-resp-teal-900: #00141b;
+
+    --color-resp-slate-50: #f0f2f4;
+    --color-resp-slate-100: #d4d9de;
+    --color-resp-slate-200: #9aaebc;
+    --color-resp-slate-300: #6b8494;
+    --color-resp-slate-400: #4a7787;
+    --color-resp-slate-500: #485760;
+    --color-resp-slate-600: #373b41;
+    --color-resp-slate-700: #2a2e33;
+
+    --color-resp-plum: #4b2f42;
+    --color-resp-navy: #163772;
 }

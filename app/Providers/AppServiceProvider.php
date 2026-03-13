@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Services\SolrService;
+use App\View\Composers\EercNavComposer;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('layouts.eerc-v2', EercNavComposer::class);
     }
 }
