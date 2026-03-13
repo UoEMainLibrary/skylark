@@ -57,7 +57,7 @@ Route::prefix('eerc')->name('eerc.')->group(function () {
             $personFacet = $repository->browseTerms('Person', 10);
         }
 
-        return view('eerc.home', [
+        return view(PageController::eercViewName('eerc.home'), [
             'subjectFacet' => $subjectFacet,
             'personFacet' => $personFacet,
         ]);
@@ -87,4 +87,7 @@ Route::prefix('eerc')->name('eerc.')->group(function () {
     Route::get('/contact', [PageController::class, 'contact'])->name('contact');
     Route::get('/accessibility', [PageController::class, 'accessibility'])->name('accessibility');
     Route::get('/map', [PageController::class, 'map'])->name('map');
+    Route::get('/project-history', [PageController::class, 'projectHistory'])->name('project_history');
+    Route::get('/creative-engagement', [PageController::class, 'creativeEngagement'])->name('creative_engagement');
+    Route::get('/bsl', [PageController::class, 'bsl'])->name('bsl');
 });

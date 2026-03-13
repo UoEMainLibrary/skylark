@@ -12,12 +12,16 @@ class RecordController extends Controller
     public function __construct(protected RepositoryFactory $repositoryFactory) {}
 
     /**
-     * Get collection-aware view name
+     * Get collection-aware view name, respecting skin version for EERC.
      */
     protected function collectionView(string $view): string
     {
         $collection = config('app.current_collection', 'clds');
         $collectionView = "{$collection}.{$view}";
+
+        if ($collection === 'eerc') {
+            return PageController::eercViewName($collectionView);
+        }
 
         return view()->exists($collectionView) ? $collectionView : $view;
     }

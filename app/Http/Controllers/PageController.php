@@ -2,25 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
 use App\Services\RepositoryFactory;
+use Illuminate\Support\Facades\Http;
 
 class PageController extends Controller
 {
     public function __construct(
         protected RepositoryFactory $repositoryFactory
     ) {}
+
+    /**
+     * Resolve an EERC view name based on the active skin version.
+     * e.g. 'eerc.home' becomes 'eerc-v2.home' when skin version is 2.
+     */
+    public static function eercViewName(string $view): string
+    {
+        if (config('skylight.resp_skin_version') === 2) {
+            return preg_replace('/^eerc\./', 'eerc-v2.', $view);
+        }
+
+        return $view;
+    }
+
     /**
      * Display the About page
      */
     public function about()
     {
         $collection = config('app.current_collection', 'clds');
-        
+
         if ($collection === 'eerc') {
             return $this->eercPageWithSidebar('eerc.pages.about');
         }
-        
+
         return view('pages.about');
     }
 
@@ -102,11 +116,11 @@ class PageController extends Controller
     public function accessibility()
     {
         $collection = config('app.current_collection', 'clds');
-        
+
         if ($collection === 'eerc') {
             return $this->eercPageWithSidebar('eerc.pages.accessibility');
         }
-        
+
         return view('pages.accessibility');
     }
 
@@ -116,10 +130,10 @@ class PageController extends Controller
     public function overview()
     {
         $repository = $this->repositoryFactory->current();
-        
+
         // Fetch the collection tree from ArchivesSpace
-        $tree = method_exists($repository, 'getCollectionTree') 
-            ? $repository->getCollectionTree() 
+        $tree = method_exists($repository, 'getCollectionTree')
+            ? $repository->getCollectionTree()
             : ['children' => []];
 
         // Fetch subject and person facets for sidebar
@@ -131,7 +145,7 @@ class PageController extends Controller
             $personFacet = $repository->browseTerms('Person', 10);
         }
 
-        return view('eerc.pages.overview', [
+        return view(static::eercViewName('eerc.pages.overview'), [
             'tree' => $tree,
             'subjectFacet' => $subjectFacet,
             'personFacet' => $personFacet,
@@ -195,13 +209,37 @@ class PageController extends Controller
     }
 
     /**
-     * Helper method to render EERC pages with sidebar facets
+     * Display the EERC Project History page (v2 replacement for People)
      */
-    protected function eercPageWithSidebar(string $view)
+    public function projectHistory()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.project_history');
+    }
+
+    /**
+     * Display the EERC Creative Engagement and Research page
+     */
+    public function creativeEngagement()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.creative_engagement');
+    }
+
+    /**
+     * Display the EERC BSL landing page
+     */
+    public function bsl()
+    {
+        return $this->eercPageWithSidebar('eerc.pages.bsl');
+    }
+
+    /**
+     * Helper method to render EERC pages with sidebar facets.
+     * Automatically resolves the view based on active skin version.
+     */
+    protected function eercPageWithSidebar(string $view, array $extraData = [])
     {
         $repository = $this->repositoryFactory->current();
-        
-        // Fetch subject and person facets for sidebar
+
         $subjectFacet = ['terms' => []];
         $personFacet = ['terms' => []];
 
@@ -210,10 +248,10 @@ class PageController extends Controller
             $personFacet = $repository->browseTerms('Person', 10);
         }
 
-        return view($view, [
+        return view(static::eercViewName($view), array_merge([
             'subjectFacet' => $subjectFacet,
             'personFacet' => $personFacet,
-        ]);
+        ], $extraData));
     }
 
     /**
