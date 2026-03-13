@@ -52,7 +52,9 @@ class SearchController extends Controller
     {
         // Get all segments after /search/{query}/
         $segments = $request->segments();
-        $filterSegments = array_slice($segments, 2); // Skip 'search' and query
+        $collection = config('app.current_collection', 'clds');
+        $skipCount = $collection === 'clds' ? 2 : 3; // Skip 'search' + query (+ collection prefix)
+        $filterSegments = array_slice($segments, $skipCount);
 
         // Parse filters from URL segments
         $parsedFilters = $this->parseFilters($filterSegments);
@@ -181,7 +183,7 @@ class SearchController extends Controller
         $url = url("{$prefix}/search/{$query}");
 
         foreach ($filters as $filter) {
-            $url .= '/'.$filter;
+            $url .= '/'.rawurlencode($filter);
         }
 
         return $url;
