@@ -21,16 +21,13 @@ class DSpaceService implements RepositoryInterface
 
     public function __construct()
     {
-        $config = config('services.solr');
+        $fallback = config('services.solr');
 
-        // Build the base URL for Solr (DSpace or ArchivesSpace)
-        // Using direct HTTP client due to Solarium issues with non-standard Solr setups
         $this->baseUrl = env('SOLR_BASE_URL', 'http://localhost:8080/solr/search/');
-
-        $this->containerId = $config['container_id'];
-        $this->containerField = $config['container_field'];
-        $this->resultsPerPage = $config['results_per_page'];
-        $this->isDSpace = env('SOLR_REPOSITORY_TYPE', 'dspace') === 'dspace';
+        $this->containerId = config('skylight.container_id', $fallback['container_id']);
+        $this->containerField = config('skylight.container_field', $fallback['container_field']);
+        $this->resultsPerPage = config('skylight.results_per_page', $fallback['results_per_page']);
+        $this->isDSpace = config('skylight.repository_type', 'dspace') === 'dspace';
         $this->handlePrefix = config('skylight.handle_prefix', '10683');
     }
 
@@ -219,11 +216,11 @@ class DSpaceService implements RepositoryInterface
     public function getRelatedItems(array $record, int $limit = 10): array
     {
         $relatedFieldMappings = config('skylight.related_fields', []);
-        
+
         if (empty($relatedFieldMappings)) {
             return [];
         }
-        
+
         $queries = [];
 
         // Build queries for each related field
@@ -248,10 +245,10 @@ class DSpaceService implements RepositoryInterface
 
         // Get current record ID for exclusion
         $currentId = $record['Id'] ?? $record['id'] ?? null;
-        if (!$currentId) {
+        if (! $currentId) {
             return [];
         }
-        
+
         // Construct full handle for exclusion
         $fullHandle = $this->handlePrefix.'/'.$currentId;
 
@@ -571,9 +568,14 @@ class DSpaceService implements RepositoryInterface
         $transformed = [];
 
         foreach ($doc as $key => $value) {
-            // Remove dots from field names (dc.title.en -> dctitleen)
             $newKey = str_replace('.', '', $key);
             $transformed[$newKey] = $value;
+        }
+
+        // Extract numeric ID from handle (e.g., "10683/18492" -> "18492")
+        if (isset($doc['handle'])) {
+            $handleParts = explode('/', $doc['handle']);
+            $transformed['id'] = end($handleParts);
         }
 
         return $transformed;

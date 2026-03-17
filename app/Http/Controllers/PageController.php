@@ -35,6 +35,10 @@ class PageController extends Controller
             return $this->eercPageWithSidebar('eerc.pages.about');
         }
 
+        if ($collection === 'mimed') {
+            return view('mimed.pages.about');
+        }
+
         return view('pages.about');
     }
 
@@ -43,6 +47,12 @@ class PageController extends Controller
      */
     public function feedback()
     {
+        $collection = config('app.current_collection', 'clds');
+
+        if ($collection === 'mimed') {
+            return view('mimed.pages.feedback');
+        }
+
         return view('pages.feedback');
     }
 
@@ -91,6 +101,12 @@ class PageController extends Controller
      */
     public function licensing()
     {
+        $collection = config('app.current_collection', 'clds');
+
+        if ($collection === 'mimed') {
+            return view('mimed.pages.licensing');
+        }
+
         return view('pages.licensing');
     }
 
@@ -107,7 +123,47 @@ class PageController extends Controller
      */
     public function takedown()
     {
+        $collection = config('app.current_collection', 'clds');
+
+        if ($collection === 'mimed') {
+            return view('mimed.pages.takedown');
+        }
+
         return view('pages.takedown');
+    }
+
+    /**
+     * Display the MIMEd homepage with browse facets
+     */
+    public function mimedHome()
+    {
+        $repository = $this->repositoryFactory->current();
+
+        $facets = [];
+        $baseSearch = url('/mimed/search/*:*');
+        $configFilters = config('skylight.filters', []);
+
+        try {
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            // Solr unreachable — render without facets
+        }
+
+        return view('mimed.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+        ]);
+    }
+
+    /**
+     * Display the MIMEd IIIF page
+     */
+    public function mimedIiif()
+    {
+        return view('mimed.pages.iiif');
     }
 
     /**
@@ -119,6 +175,10 @@ class PageController extends Controller
 
         if ($collection === 'eerc') {
             return $this->eercPageWithSidebar('eerc.pages.accessibility');
+        }
+
+        if ($collection === 'mimed') {
+            return view('mimed.pages.accessibility');
         }
 
         return view('pages.accessibility');

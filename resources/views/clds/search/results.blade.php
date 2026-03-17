@@ -11,7 +11,7 @@
 @section('content')
 <div class="container">
     <!-- Collection type header (if applicable) -->
-    @include('search.partials.collection_header')
+    @include('clds.search.partials.collection_header')
     
     <div class="row">
         <!-- Main results column -->

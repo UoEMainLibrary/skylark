@@ -40,7 +40,7 @@ class SearchController extends Controller
 
         // Build collection-aware search URL
         $collection = config('app.current_collection', 'clds');
-        $prefix = $collection === 'eerc' ? '/eerc' : '';
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
 
         return redirect("{$prefix}/search/{$query}");
     }
@@ -50,11 +50,10 @@ class SearchController extends Controller
      */
     public function index(Request $request, string $query = '*')
     {
-        // Get all segments after /search/{query}/
-        $segments = $request->segments();
-        $collection = config('app.current_collection', 'clds');
-        $skipCount = $collection === 'clds' ? 2 : 3; // Skip 'search' + query (+ collection prefix)
-        $filterSegments = array_slice($segments, $skipCount);
+        // Extract filter segments from the raw URI to preserve %2F inside filter values.
+        // $request->segments() decodes %2F to / before splitting, which breaks filters
+        // containing slashes (e.g., "Mouthpiece/Mouthpieces/Musical Instrument").
+        $filterSegments = $this->extractFilterSegments($request, $query);
 
         // Parse filters from URL segments
         $parsedFilters = $this->parseFilters($filterSegments);
@@ -130,6 +129,46 @@ class SearchController extends Controller
     }
 
     /**
+     * Extract filter segments from the raw request URI.
+     *
+     * Filter values may contain "/" (encoded as %2F in the URL).
+     * Using $request->segments() decodes %2F to "/" before splitting,
+     * which corrupts those filters. The raw URI preserves %2F, so
+     * splitting on literal "/" correctly separates filter segments.
+     */
+    protected function extractFilterSegments(Request $request, string $query): array
+    {
+        $rawUri = strtok($request->getRequestUri(), '?');
+
+        $collection = config('app.current_collection', 'clds');
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+
+        // Try both encoded and raw forms of the query in the path
+        $needles = [
+            "{$prefix}/search/{$query}/",
+            "{$prefix}/search/".rawurlencode($query).'/',
+        ];
+
+        $filterString = '';
+        foreach ($needles as $needle) {
+            $pos = strpos($rawUri, $needle);
+            if ($pos !== false) {
+                $filterString = substr($rawUri, $pos + strlen($needle));
+                break;
+            }
+        }
+
+        if (empty($filterString)) {
+            return [];
+        }
+
+        // Split on literal "/" — encoded slashes (%2F) inside values are preserved
+        $rawSegments = explode('/', $filterString);
+
+        return array_map('urldecode', array_filter($rawSegments, fn ($s) => $s !== ''));
+    }
+
+    /**
      * Parse filter segments from URL
      */
     protected function parseFilters(array $segments): array
@@ -153,16 +192,12 @@ class SearchController extends Controller
                 if (isset($configFilters[$filterName])) {
                     $solrField = $configFilters[$filterName];
 
-                    // Apply Solr escaping like CodeIgniter's solrEscape:
-                    // Convert spaces and %20 to + (Solr/URL convention)
-                    // URL: %22Working+life%22 -> filterValue: "Working+life" (already has +, keep it)
-                    // Or: "Working life" -> "Working+life"
-                    $escapedValue = str_replace(' ', '+', $filterValue);
-                    $escapedValue = str_replace('%20', '+', $escapedValue);
+                    // Restore newlines around "|||" — Solr stores them with \n delimiters.
+                    // Handle both formats: space-separated (old links) and already-newlined
+                    // (from urlencode/urldecode roundtrip in new links).
+                    $solrValue = str_replace(' ||| ', "\n|||\n", $filterValue);
 
-                    // Build filter WITHOUT wildcards (matching CodeIgniter)
-                    // CodeIgniter uses exact phrase matching: subjects:"Working+life"
-                    $solrFilters[] = "{$solrField}:{$escapedValue}";
+                    $solrFilters[] = "{$solrField}:{$solrValue}";
                 }
             }
         }
