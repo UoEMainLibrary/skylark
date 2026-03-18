@@ -53,7 +53,11 @@ return [
     'handle_prefix' => '/repositories/15/',
     'container_id' => ['"/repositories/15/resources/86984"'],
     'container_field' => 'resource',
-    'query_restriction' => [],
+    'excluded_records' => [
+        '/repositories/15/archival_objects/190197',
+        '/repositories/15/archival_objects/208190',
+        '/repositories/15/archival_objects/228537',
+    ],
 
     /*
     |--------------------------------------------------------------------------

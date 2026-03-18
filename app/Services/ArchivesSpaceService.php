@@ -161,14 +161,14 @@ class ArchivesSpaceService implements RepositoryInterface
     {
         // Construct the full URI path based on ID and type
         $handlePrefix = config('skylight.handle_prefix', '/repositories/15/');
-        
+
         // Convert type to plural form for URI path
-        $typePath = match($type) {
+        $typePath = match ($type) {
             'archival_object' => 'archival_objects',
             'resource' => 'resources',
             default => 'resources',
         };
-        
+
         $fullHandle = $handlePrefix.$typePath.'/'.$id;
 
         $params = [
@@ -244,15 +244,15 @@ class ArchivesSpaceService implements RepositoryInterface
 
         // Build filter query string (matching CodeIgniter)
         $filterQuery = implode(' OR ', $queryValues);
-        
+
         $containerField = config('skylight.container_field');
         $containerIds = config('skylight.container_id', []);
         $currentId = $record['Id'] ?? $record['_raw']['id'] ?? null;
 
         $url = "{$this->solrBase}/{$this->solrCore}/select?q=*:*";
-        
+
         // Add container filter
-        if ($containerField && !empty($containerIds)) {
+        if ($containerField && ! empty($containerIds)) {
             $url .= '&fq=';
             foreach ($containerIds as $index => $containerId) {
                 if ($index > 0) {
@@ -261,19 +261,19 @@ class ArchivesSpaceService implements RepositoryInterface
                 $url .= $containerField.':'.$containerId;
             }
         }
-        
+
         // Add the related items filter
         $url .= '&fq='.$filterQuery;
-        
+
         // Exclude current record (no URL encoding to preserve slashes)
         if ($currentId) {
             $url .= '&fq=-id:'.$currentId;
         }
-        
+
         // Exclude PUI records and only include archival_object and resource types
         $url .= '&fq=-id:*pui';
         $url .= '&fq=types:"archival_object"+types:"resource"';
-        
+
         $url .= '&rows='.$limit;
         $url .= '&wt=json';
 
@@ -295,7 +295,7 @@ class ArchivesSpaceService implements RepositoryInterface
                 if ($docId === $currentId) {
                     continue;
                 }
-                
+
                 $relatedItems[] = $transformed;
             }
 
@@ -365,6 +365,25 @@ class ArchivesSpaceService implements RepositoryInterface
     }
 
     /**
+     * Note type fields that live inside the JSON blob's notes array
+     * rather than as top-level Solr fields.
+     *
+     * @var string[]
+     */
+    protected static array $noteTypeFields = [
+        'scopecontent',
+        'accessrestrict',
+        'userestrict',
+        'bioghist',
+        'relatedmaterial',
+        'phystech',
+        'altformavail',
+        'physdesc',
+        'processinfo',
+        'note_bibliography',
+    ];
+
+    /**
      * Transform field names from ArchivesSpace schema to display names
      */
     public function transformFieldNames(array $record, bool $forSearchResults = false): array
@@ -372,30 +391,54 @@ class ArchivesSpaceService implements RepositoryInterface
         $fieldMappings = config('skylight.field_mappings', []);
         $transformed = [];
 
+        $allNotes = null;
+
         foreach ($fieldMappings as $displayName => $solrField) {
-            if (isset($record[$solrField])) {
-                // Special handling for notes field - extract from JSON field instead
-                if ($solrField === 'notes') {
-                    // Truncate for search results, full text for detail pages
-                    $interviewSummary = $this->extractInterviewSummary($record, $forSearchResults);
-                    if ($interviewSummary) {
-                        $transformed[$displayName] = $interviewSummary;
-                    }
-                } elseif ($solrField === 'dates') {
-                    // Extract dates from JSON field which has full structure
-                    $dates = $this->extractDates($record);
-                    if (!empty($dates)) {
-                        $transformed[$displayName] = $dates;
-                    }
-                } elseif ($solrField === 'extents') {
-                    // Extract extents from JSON field which has full structure
-                    $extents = $this->extractExtents($record);
-                    if (!empty($extents)) {
-                        $transformed[$displayName] = $extents;
-                    }
-                } else {
-                    $transformed[$displayName] = $record[$solrField];
+            // Special handling for the interview summary (scopecontent via 'notes')
+            if ($solrField === 'notes') {
+                $interviewSummary = $this->extractInterviewSummary($record, $forSearchResults);
+                if ($interviewSummary) {
+                    $transformed[$displayName] = $interviewSummary;
                 }
+
+                continue;
+            }
+
+            // Extract dates and extents from the JSON blob
+            if ($solrField === 'dates') {
+                $dates = $this->extractDates($record);
+                if (! empty($dates)) {
+                    $transformed[$displayName] = $dates;
+                }
+
+                continue;
+            }
+
+            if ($solrField === 'extents') {
+                $extents = $this->extractExtents($record);
+                if (! empty($extents)) {
+                    $transformed[$displayName] = $extents;
+                }
+
+                continue;
+            }
+
+            // Note-type fields stored inside the JSON blob
+            if (in_array($solrField, self::$noteTypeFields, true)) {
+                if ($allNotes === null) {
+                    $allNotes = $this->extractAllNotes($record);
+                }
+
+                if (! empty($allNotes[$solrField])) {
+                    $transformed[$displayName] = $allNotes[$solrField];
+                }
+
+                continue;
+            }
+
+            // Standard top-level Solr fields
+            if (isset($record[$solrField])) {
+                $transformed[$displayName] = $record[$solrField];
             }
         }
 
@@ -411,54 +454,75 @@ class ArchivesSpaceService implements RepositoryInterface
     }
 
     /**
-     * Extract interview summary from ArchivesSpace JSON field
-     * Extracts from notes[0] which contains the scopecontent/biographical interview
-     * For search results, only the first subnote is used and truncated
-     * For detail pages, all subnotes are concatenated
+     * Extract ALL notes from the ArchivesSpace JSON field, keyed by note type.
+     * Returns e.g. ['scopecontent' => [...], 'accessrestrict' => [...], 'bioghist' => [...]]
+     *
+     * @return array<string, string[]>
      */
-    protected function extractInterviewSummary(array $record, bool $truncate = true): ?string
+    protected function extractAllNotes(array $record): array
     {
-        if (!isset($record['json'])) {
-            return null;
+        if (! isset($record['json'])) {
+            return [];
         }
 
         $jsonData = is_string($record['json']) ? json_decode($record['json'], true) : $record['json'];
 
-        if (!$jsonData || !isset($jsonData['notes'])) {
-            return null;
+        if (! $jsonData || empty($jsonData['notes'])) {
+            return [];
         }
 
-        // Find the scopecontent note (usually notes[0])
-        $scopecontentNote = null;
+        $notes = [];
+
         foreach ($jsonData['notes'] as $note) {
-            if (isset($note['type']) && $note['type'] === 'scopecontent') {
-                $scopecontentNote = $note;
-                break;
+            $type = $note['type'] ?? null;
+            if (! $type) {
+                continue;
+            }
+
+            if (($note['jsonmodel_type'] ?? '') === 'note_multipart') {
+                foreach ($note['subnotes'] ?? [] as $subnote) {
+                    if (! empty($subnote['content'])) {
+                        $notes[$type][] = $subnote['content'];
+                    }
+                }
+            } elseif (($note['jsonmodel_type'] ?? '') === 'note_bibliography') {
+                if (! empty($note['content'][0])) {
+                    $notes['note_bibliography'][] = $note['content'][0];
+                }
+            } else {
+                if (! empty($note['content'][0])) {
+                    $notes[$type][] = $note['content'][0];
+                }
             }
         }
 
-        if (!$scopecontentNote || !isset($scopecontentNote['subnotes'])) {
+        return $notes;
+    }
+
+    /**
+     * Extract interview summary from ArchivesSpace JSON field.
+     * For search results, only the first subnote is used and truncated.
+     * For detail pages, all subnotes are concatenated.
+     */
+    protected function extractInterviewSummary(array $record, bool $truncate = true): ?string
+    {
+        $allNotes = $this->extractAllNotes($record);
+        $scopecontentParts = $allNotes['scopecontent'] ?? [];
+
+        if (empty($scopecontentParts)) {
             return null;
         }
 
-        // For search results, only use first subnote and truncate
         if ($truncate) {
-            $content = trim($scopecontentNote['subnotes'][0]['content'] ?? '');
+            $content = trim($scopecontentParts[0]);
             if (strlen($content) > 200) {
                 return substr($content, 0, 200).'...';
             }
+
             return $content;
         }
 
-        // For detail pages, concatenate all subnotes with paragraph breaks
-        $allContent = [];
-        foreach ($scopecontentNote['subnotes'] as $subnote) {
-            if (isset($subnote['content'])) {
-                $allContent[] = trim($subnote['content']);
-            }
-        }
-
-        return implode("\n\n", $allContent);
+        return implode("\n\n", array_map('trim', $scopecontentParts));
     }
 
     /**
@@ -467,13 +531,13 @@ class ArchivesSpaceService implements RepositoryInterface
      */
     protected function extractDates(array $record): array
     {
-        if (!isset($record['json'])) {
+        if (! isset($record['json'])) {
             return [];
         }
 
         $jsonData = is_string($record['json']) ? json_decode($record['json'], true) : $record['json'];
 
-        if (!$jsonData || !isset($jsonData['dates']) || !is_array($jsonData['dates'])) {
+        if (! $jsonData || ! isset($jsonData['dates']) || ! is_array($jsonData['dates'])) {
             return [];
         }
 
@@ -486,13 +550,13 @@ class ArchivesSpaceService implements RepositoryInterface
      */
     protected function extractExtents(array $record): array
     {
-        if (!isset($record['json'])) {
+        if (! isset($record['json'])) {
             return [];
         }
 
         $jsonData = is_string($record['json']) ? json_decode($record['json'], true) : $record['json'];
 
-        if (!$jsonData || !isset($jsonData['extents']) || !is_array($jsonData['extents'])) {
+        if (! $jsonData || ! isset($jsonData['extents']) || ! is_array($jsonData['extents'])) {
             return [];
         }
 
@@ -568,6 +632,7 @@ class ArchivesSpaceService implements RepositoryInterface
     public function getCollectionTree(): array
     {
         $tree = $this->getTree('');
+
         return $tree ?? ['children' => []];
     }
 
@@ -615,6 +680,13 @@ class ArchivesSpaceService implements RepositoryInterface
             foreach ($containerIds as $containerId) {
                 $url .= '&fq='.urlencode("{$containerField}:{$containerId}");
             }
+        }
+
+        // Exclude specific records (and their descendants) from search results
+        $excludedRecords = config('skylight.excluded_records', []);
+        foreach ($excludedRecords as $excludedId) {
+            $url .= '&fq='.urlencode("-id:\"{$excludedId}\"");
+            $url .= '&fq='.urlencode("-ancestors:\"{$excludedId}\"");
         }
 
         // Add filters without URL encoding (like CodeIgniter)

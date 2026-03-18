@@ -136,6 +136,11 @@ class PageController extends Controller
             ? $repository->getCollectionTree()
             : ['children' => []];
 
+        // The old site only displays the first 5 top-level branches
+        if (! empty($tree['children'])) {
+            $tree['children'] = array_slice($tree['children'], 0, 5);
+        }
+
         // Fetch subject and person facets for sidebar
         $subjectFacet = ['terms' => []];
         $personFacet = ['terms' => []];

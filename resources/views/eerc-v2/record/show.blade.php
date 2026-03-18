@@ -33,10 +33,12 @@
                                 }
 
                                 if ($displayField === 'Notable persons / organisations') {
-                                    $notableValue = is_array($record[$displayField]) ? ($record[$displayField][0] ?? '') : $record[$displayField];
-                                    if (trim($notableValue) === trim($interviewer)) {
+                                    $notableValues = is_array($record[$displayField]) ? $record[$displayField] : [$record[$displayField]];
+                                    $notableValues = array_filter($notableValues, fn($v) => trim($v) !== trim($interviewer));
+                                    if (empty($notableValues)) {
                                         $shouldDisplay = false;
                                     }
+                                    $record[$displayField] = array_values($notableValues);
                                 }
                             @endphp
 
@@ -160,14 +162,35 @@
                                                 </div>
                                             @endif
                                         @elseif($displayField === 'Interview summary')
+                                            @php
+                                                $summary = is_array($record[$displayField]) ? ($record[$displayField][0] ?? '') : $record[$displayField];
+                                                $cleanSummary = strip_tags($summary);
+                                                $paragraphs = array_filter(array_map('trim', explode("\n\n", $cleanSummary)));
+                                                $isLong = count($paragraphs) > 3 || mb_strlen($cleanSummary) > 600;
+                                            @endphp
+                                            <div>
+                                                <div id="interview-summary" class="prose prose-sm max-w-none @if($isLong) max-h-36 overflow-hidden @endif"
+                                                     @if($isLong) style="mask-image: linear-gradient(to bottom, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);" @endif>
+                                                    @foreach($paragraphs as $paragraph)
+                                                        <p>{!! nl2br(e($paragraph)) !!}</p>
+                                                    @endforeach
+                                                </div>
+                                                @if($isLong)
+                                                    <button type="button" id="summary-toggle"
+                                                            onclick="var el = document.getElementById('interview-summary'); var btn = this; if (el.classList.contains('max-h-36')) { el.classList.remove('max-h-36', 'overflow-hidden'); el.style.maskImage = ''; el.style.webkitMaskImage = ''; btn.textContent = 'Read less'; } else { el.classList.add('max-h-36', 'overflow-hidden'); el.style.maskImage = 'linear-gradient(to bottom, black 60%, transparent 100%)'; el.style.webkitMaskImage = 'linear-gradient(to bottom, black 60%, transparent 100%)'; btn.textContent = 'Read more'; }"
+                                                            class="mt-2 text-sm font-medium text-resp-teal-600 hover:text-resp-teal-700 hover:underline">
+                                                        Read more
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        @elseif(in_array($displayField, ['Access', 'Usage Statement', 'Biographical history', 'Related', 'Physical', 'Alternative Format', 'Physical Description', 'Processing Information']))
+                                            @php
+                                                $noteValues = is_array($record[$displayField]) ? $record[$displayField] : [$record[$displayField]];
+                                            @endphp
                                             <div class="prose prose-sm max-w-none">
-                                                @php
-                                                    $summary = is_array($record[$displayField]) ? ($record[$displayField][0] ?? '') : $record[$displayField];
-                                                    $paragraphs = explode("\n\n", $summary);
-                                                    foreach ($paragraphs as $paragraph) {
-                                                        echo '<p>' . nl2br(e(trim($paragraph))) . '</p>';
-                                                    }
-                                                @endphp
+                                                @foreach($noteValues as $noteValue)
+                                                    <p>{!! strip_tags(trim($noteValue), '<a><em><strong><br>') !!}</p>
+                                                @endforeach
                                             </div>
                                         @elseif(is_array($record[$displayField]))
                                             {{ implode(', ', $record[$displayField]) }}

@@ -8,13 +8,13 @@
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Searching and Using the Collection</h1>
 
         <div class="mt-6 prose prose-lg max-w-none">
-            <div class="float-right ml-6 mb-4 hidden sm:block">
+            <div class="float-right ml-6 mb-6 hidden sm:block">
                 <img src="{{ asset('collections/eerc/images/thumbs_processed/thumbnail_DG38-3-4-1.JPG') }}" alt="Interviews of Ena Forteath aged 78" class="w-64 rounded-lg shadow-sm">
             </div>
 
             <p>At the heart of the Regional Ethnology of Scotland Project (RESP) is a collection of digital audio files containing hundreds of hours of fieldwork recordings which provide a rich and fascinating insight into many aspects of life and society in Scotland. The collections are arranged initially by geographic study area, then named interviewer and then by interviewee. When searching the catalogue you will find all digital files, including audio recordings, transcriptions and any available photographs located on the individual interviewee pages or fieldworker page.</p>
 
-            <div class="clear-both">
+            <div class="clear-both pt-2">
                 <img src="{{ asset('collections/eerc/images/resp-handwriting2.png') }}" alt="Part of a handwritten transcription from an interview" class="mx-auto my-6 max-w-lg rounded-lg shadow-sm">
             </div>
 
@@ -28,11 +28,11 @@
 
             <p>You can click on the thumbnail images located on the 'Home' and 'People' pages to take you through to the relevant catalogue record.</p>
 
-            <div class="not-prose my-6 flex flex-col items-center gap-4 sm:flex-row">
+            <div class="not-prose my-8 flex flex-col items-center">
                 <img src="{{ asset('collections/eerc/images/resp-montage.png') }}" alt="Montage of interview photographs" class="max-w-md rounded-lg shadow-sm">
             </div>
 
-            <div class="not-prose my-6 flex items-start gap-6">
+            <div class="not-prose my-8 flex flex-col items-start gap-6 sm:flex-row">
                 <div class="shrink-0 hidden sm:block">
                     <img src="{{ asset('collections/eerc/images/example-map.png') }}" alt="Example Map" class="w-56 rounded-lg shadow-sm">
                 </div>
