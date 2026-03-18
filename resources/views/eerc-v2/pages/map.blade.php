@@ -93,7 +93,7 @@
             <div id="popup-content"></div>
         </div>
 
-        <div class="mt-6 prose max-w-none">
+        <div class="mt-6 prose prose-lg max-w-none">
             <p>The above map displays key geographical locations mentioned in RESP interviews. Pan, zoom, and click on a pin to reveal the place name. Click on the link in the pop-up window to view all interviews relating to the chosen pin.</p>
             <p>Map data is refreshed automatically. More places will be added as the digital catalogue grows.</p>
         </div>

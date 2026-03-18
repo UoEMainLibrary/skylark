@@ -5,28 +5,40 @@
 @section('content')
 <div class="lg:grid lg:grid-cols-4 lg:gap-8">
     {{-- Main content --}}
-    <div class="lg:col-span-3 space-y-8">
-        {{-- Photo grid --}}
-        <div id="photo-grid" class="grid grid-cols-3 gap-1 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 overflow-hidden rounded-lg">
-            {{-- Populated by JavaScript --}}
-        </div>
+    <div class="lg:col-span-3">
+        <div class="gap-6 sm:grid sm:grid-cols-[180px_1fr] lg:grid-cols-[220px_1fr]">
+            {{-- Photo montage (left column) --}}
+            <div id="photo-grid" class="hidden grid-cols-2 gap-1 self-start overflow-hidden rounded-lg sm:grid">
+                {{-- Populated by JavaScript --}}
+            </div>
 
-        {{-- Introduction --}}
-        <div class="prose prose-lg max-w-none">
-            <p>The Regional Ethnology of Scotland Archive Project, funded by the Scotland Inheritance Trust, was established in 2017 to catalogue, preserve and share a collection of oral history recordings made by local volunteers under the guidance of the RESP. The Archive Project is dedicated to preserving and sharing the voices of those who have participated in the Study and this website provides an accessible way to engage with the collected interviews. The recordings presented here come primarily from Dumfries &amp; Galloway and East Lothian and the Western Isles, Tayside, Edinburgh, the Scottish Borders, Argyll, and West Lothian.</p>
+            {{-- Text content (right of photos) --}}
+            <div class="relative min-w-0">
+                {{-- Watermark --}}
+                <div class="pointer-events-none absolute inset-0 flex items-end justify-center overflow-hidden opacity-[0.06]" aria-hidden="true">
+                    <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="" class="w-96 max-w-none translate-y-16">
+                </div>
 
-            <p>By collecting biographical interviews with hundreds of people, their life stories, traditions, and local knowledge have created a living archive that tells us about change and continuity across Scotland, from the Victorian era to the present day. This approach reflects the RESP belief in the value of individual testimony to inform and enrich our understanding of our shared cultural lives.</p>
+                <div class="prose prose-lg relative max-w-none">
+                    <p>The RESP Archive Project was established in 2018 in collaboration with the Centre for Research Collections at the University of Edinburgh. Originally conceived as a cataloguing project to improve the discoverability of hundreds of audio recordings created by the RESP the project has developed through the creation of this website to ensure that the collections are both readily accessible and carefully curated and digitally preserved for future access.</p>
 
-            <p>Through this website you can explore our entire archive, which extends to hundreds of recordings, find out more about the Project, have a look round our exhibition space and, for our younger audience, have fun learning about oral history and our archive through a series of guided worksheets on our Kids Only page.</p>
+                    <p>The central ethos of the RESP is to make the collections freely available for study, teaching and community access. The project has achieved this by creating a digital platform that allows users to explore and engage with the collection with full access to audio recordings, photographs, and transcripts all in the one place. We have also provided space to engage with creative output in our <a href="{{ url('/eerc/exhibition') }}">Exhibition gallery</a>.</p>
 
-            <p>This website strives to make our recordings as accessible as possible and so each interview is available to listen to in full and presented alongside a summary and full transcription. In this way we aim to make our content open and accessible for research, teaching, and community engagement.</p>
-        </div>
+                    <p>Digital materials are often at risk of being lost so through careful curation we can allow all of our content to be open and accessible for research, teaching, and community engagement. Each individual item has been digitally preserved in order to safeguard our collection and with the aim to ensure that the materials and stories within remain available for generations to come.</p>
 
-        {{-- Featured images from the brief --}}
-        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <img src="{{ asset('collections/eerc/images/v2/06-EL39_01_FWpage.jpg') }}" alt="Fieldwork in East Lothian" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm">
-            <img src="{{ asset('collections/eerc/images/v2/11-EL6-3-4-6.jpg') }}" alt="Interview photograph" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm">
-            <img src="{{ asset('collections/eerc/images/v2/12- DG29-1-4-21_logan ploughing with clydesdales.jpg') }}" alt="Ploughing with Clydesdales" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm hidden sm:block">
+                    <p>Over the years, the project has spanned Dumfries &amp; Galloway and East Lothian and also the Western Isles, Tayside, Edinburgh, the Scottish Borders, Argyll and West Lothian creating a geographically and thematically broad collection.</p>
+
+                    <p>The RESP Archive is managed and maintained as a University of Edinburgh Collection.</p>
+                </div>
+
+                {{-- Logos at bottom --}}
+                <div class="relative mt-6 flex items-center gap-6">
+                    <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="EERC / RESP Logo" class="h-16 w-16">
+                    <a href="https://www.ed.ac.uk/information-services/library-museum-gallery/cultural-heritage-collections/crc" target="_blank" rel="noopener">
+                        <img src="{{ asset('collections/eerc/images/CRC_logo.gif') }}" alt="Centre for Research Collections" class="h-14 w-auto">
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -43,9 +55,10 @@ document.addEventListener('DOMContentLoaded', function() {
         var all = @json(json_decode(file_get_contents(resource_path('data/eerc_photos.json')), true));
         if (!all || !all.length) return;
 
-        var start = Math.floor(Math.random() * (all.length - 18));
-        var photos = all.slice(start, start + 18);
+        var shuffled = all.slice().sort(function() { return 0.5 - Math.random(); });
+        var photos = shuffled.slice(0, 16);
         var grid = document.getElementById('photo-grid');
+        grid.classList.remove('hidden');
 
         photos.forEach(function(photo) {
             var link = document.createElement('a');

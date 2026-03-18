@@ -4,11 +4,16 @@
 
 @section('content')
 <div class="mx-auto max-w-4xl">
-    {{-- Header --}}
-    <div class="text-center">
-        <h1 class="text-4xl font-bold tracking-tight text-blue-600">Kids Activity Zone</h1>
-        <p class="mt-4 text-lg text-gray-600">The activity sheets on this page are a great way to learn more about the recordings made by the RESP. There are lots of fun questions to answer and some creative tasks to do. Choose any of the themes below and then click on the PDF link to get started. If you like the worksheets there are some ideas that might help you to explore the archive further and even suggestions for how to carry out your own Oral History Project.</p>
+    {{-- Header with stars --}}
+    <div class="flex items-center justify-center gap-4">
+        <img src="{{ asset('collections/eerc/images/stars.gif') }}" alt="" class="hidden w-24 sm:block" aria-hidden="true">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold tracking-tight text-blue-600">Kids Activity Zone</h1>
+        </div>
+        <img src="{{ asset('collections/eerc/images/stars.gif') }}" alt="" class="hidden w-24 sm:block" aria-hidden="true">
     </div>
+
+    <p class="mt-4 text-center text-lg text-gray-600">The activity sheets on this page are a great way to learn more about the recordings made by the RESP. There are lots of fun questions to answer and some creative tasks to do. Choose any of the themes below and then click on the PDF link to get started. If you like the worksheets there are some ideas that might help you to explore the archive further and even suggestions for how to carry out your own Oral History Project.</p>
 
     <p class="mt-6 text-center font-semibold italic text-gray-700">Click on the boxes below to open each worksheet and play the clips alongside when it tells you in the worksheet...</p>
 
@@ -48,11 +53,17 @@
 
     {{-- Featured interview --}}
     <div class="mt-10 flex flex-col items-center gap-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm sm:flex-row">
-        <img src="{{ asset('collections/eerc/images/kids_only_1.png') }}" alt="Kalli and Hannah" class="w-40 rounded-lg">
+        <img src="{{ asset('collections/eerc/images/kids_only_1.png') }}" alt="Kalli and Hannah" class="w-56 shrink-0 rounded-lg sm:w-64">
         <div>
             <p class="text-gray-700">Kalli Hunter and Hannah Green were 8 years old when they were interviewed by Flora Burns in 2014. Click on the link below to hear them telling Flora all about their school day at St Ninian's school in Dumfries.</p>
             <a href="{{ url('/eerc/record/165204/archival_object') }}" class="mt-2 inline-block text-sm font-medium text-resp-teal-600 hover:underline">Listen to their interview &rarr;</a>
         </div>
+    </div>
+
+    {{-- Bottom stars --}}
+    <div class="mt-8 flex items-center justify-between px-8">
+        <img src="{{ asset('collections/eerc/images/stars.gif') }}" alt="" class="w-16" aria-hidden="true">
+        <img src="{{ asset('collections/eerc/images/stars.gif') }}" alt="" class="w-16" aria-hidden="true">
     </div>
 </div>
 @endsection

@@ -82,20 +82,11 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
                 {{-- Logo and Title --}}
-                <div class="flex items-center gap-4">
-                    <a href="{{ url('/eerc') }}" class="shrink-0" title="RESP Archive Project homepage">
-                        <img src="{{ asset('collections/eerc/images/eerc_horse_logo_transp.png') }}"
-                             alt="RESP horse logo"
-                             class="h-20 w-auto brightness-0 invert">
-                    </a>
-                    <div>
-                        <a href="{{ url('/eerc') }}" class="group block">
-                            <h1 class="text-xl font-bold leading-tight tracking-tight sm:text-2xl">
-                                Regional Ethnology of<br>Scotland Project
-                            </h1>
-                        </a>
-                    </div>
-                </div>
+                <a href="{{ url('/eerc') }}" class="block shrink-0" title="RESP Archive Project homepage">
+                    <img src="{{ asset('collections/eerc/images/v2/resp-banner-logo.png') }}"
+                         alt="Regional Ethnology of Scotland Project"
+                         class="h-20 w-auto sm:h-24">
+                </a>
 
                 {{-- Search --}}
                 <div class="w-full sm:max-w-sm">
