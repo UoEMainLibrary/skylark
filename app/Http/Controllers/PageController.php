@@ -39,6 +39,10 @@ class PageController extends Controller
             return view('mimed.pages.about');
         }
 
+        if ($collection === 'art') {
+            return view('art.pages.about');
+        }
+
         return view('pages.about');
     }
 
@@ -107,6 +111,10 @@ class PageController extends Controller
             return view('mimed.pages.licensing');
         }
 
+        if ($collection === 'art') {
+            return view('art.pages.licensing');
+        }
+
         return view('pages.licensing');
     }
 
@@ -127,6 +135,10 @@ class PageController extends Controller
 
         if ($collection === 'mimed') {
             return view('mimed.pages.takedown');
+        }
+
+        if ($collection === 'art') {
+            return view('art.pages.takedown');
         }
 
         return view('pages.takedown');
@@ -167,6 +179,46 @@ class PageController extends Controller
     }
 
     /**
+     * Display the Art Collection homepage
+     */
+    public function artHome()
+    {
+        return view('art.home');
+    }
+
+    /**
+     * Display the Art IIIF page
+     */
+    public function artIiif()
+    {
+        return view('art.pages.iiif');
+    }
+
+    /**
+     * Display the Art Focus page
+     */
+    public function artFocus()
+    {
+        return view('art.pages.focus');
+    }
+
+    /**
+     * Display the Art Commissioning page
+     */
+    public function artComissioning()
+    {
+        return view('art.pages.comissioning');
+    }
+
+    /**
+     * Display the Art Loans page
+     */
+    public function artLoans()
+    {
+        return view('art.pages.loans');
+    }
+
+    /**
      * Display the Accessibility Statement page
      */
     public function accessibility()
@@ -179,6 +231,10 @@ class PageController extends Controller
 
         if ($collection === 'mimed') {
             return view('mimed.pages.accessibility');
+        }
+
+        if ($collection === 'art') {
+            return view('art.pages.accessibility');
         }
 
         return view('pages.accessibility');
