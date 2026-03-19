@@ -82,10 +82,11 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
                 {{-- Logo and Title --}}
-                <a href="{{ url('/eerc') }}" class="block shrink-0" title="RESP Archive Project homepage">
-                    <img src="{{ asset('collections/eerc/images/v2/resp-banner-logo.png') }}"
-                         alt="Regional Ethnology of Scotland Project"
-                         class="h-20 w-auto sm:h-24">
+                <a href="{{ url('/eerc') }}" class="flex shrink-0 items-center gap-3" title="RESP Archive Project homepage">
+                    <img src="{{ asset('collections/eerc/images/v2/eerc_horse_logo_transp.png') }}"
+                         alt=""
+                         class="h-16 w-auto sm:h-20">
+                    <span class="text-xl font-semibold leading-tight tracking-tight text-white sm:text-2xl">Regional Ethnology<br>of Scotland Archive Project</span>
                 </a>
 
                 {{-- Search --}}
@@ -139,7 +140,7 @@
                     <span class="sr-only">(opens in a new tab)</span>
                 </a>
                 <a href="https://www.instagram.com/RESParchiveproject/" target="_blank" rel="noopener" title="RESP Instagram" class="opacity-70 transition-opacity hover:opacity-100">
-                    <img src="{{ asset('collections/eerc/images/instagram_icon.png') }}" alt="RESP Instagram" class="h-10 w-auto">
+                    <img src="{{ asset('collections/eerc/images/instagram.png') }}" alt="RESP Instagram" class="h-10 w-auto">
                     <span class="sr-only">(opens in a new tab)</span>
                 </a>
             </div>

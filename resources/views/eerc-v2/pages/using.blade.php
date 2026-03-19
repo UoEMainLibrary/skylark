@@ -8,32 +8,36 @@
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Searching and Using the Collection</h1>
 
         <div class="mt-6 prose prose-lg max-w-none">
-            <div class="float-right ml-6 mb-6 hidden sm:block">
+            <div class="float-left mr-6 mb-4 hidden sm:block">
                 <img src="{{ asset('collections/eerc/images/thumbs_processed/thumbnail_DG38-3-4-1.JPG') }}" alt="Interviews of Ena Forteath aged 78" class="w-64 rounded-lg shadow-sm">
             </div>
 
             <p>At the heart of the Regional Ethnology of Scotland Project (RESP) is a collection of digital audio files containing hundreds of hours of fieldwork recordings which provide a rich and fascinating insight into many aspects of life and society in Scotland. The collections are arranged initially by geographic study area, then named interviewer and then by interviewee. When searching the catalogue you will find all digital files, including audio recordings, transcriptions and any available photographs located on the individual interviewee pages or fieldworker page.</p>
 
-            <div class="clear-both pt-2">
-                <img src="{{ asset('collections/eerc/images/resp-handwriting2.png') }}" alt="Part of a handwritten transcription from an interview" class="mx-auto my-6 max-w-lg rounded-lg shadow-sm">
+            <div class="clear-both">
+                <img src="{{ asset('collections/eerc/images/resp-handwriting2.png') }}" alt="Part of a handwritten transcription from an interview" class="my-6 w-full rounded-lg shadow-sm">
+            </div>
+
+            <div class="float-right ml-6 mb-4 hidden sm:block">
+                <img src="{{ asset('collections/eerc/images/thumbs_processed/thumbnail_DG3-3-4-14.jpeg') }}" alt="Interviews of John Armstrong aged 72" class="w-72 rounded-lg shadow-sm">
             </div>
 
             <h2>Browse the Collections</h2>
 
-            <p>The <a href="{{ url('/eerc/overview') }}">Browse the Collections</a> page will take you to the full searchable catalogue of the collection. To browse you can click through a series of drop down lists by using the + and – buttons. The arrangement reflects the full archival catalogue and is by regional study, fieldworker, then individual interviewee.</p>
+            <p>The <a href="{{ url('/eerc/overview') }}">Browse the Collections</a> page will take you to the full searchable catalogue of the collection. To browse you can click through a series of drop down lists by using the + and &minus; buttons. The arrangement reflects the full archival catalogue and is by regional study, fieldworker, then individual interviewee.</p>
 
             <p>All audio recordings relating to individual interviews will be found by clicking on <em>Interviews of</em> pages.</p>
 
             <p>If you know the name of the individual interviewer or interviewee you are looking for, have the unique reference number or an idea of the subject area that you would like to explore you can search using the search box located on the header of each page. For best results when carrying out a name search, use surname only in the first instance. Alternatively you can click through listings of subjects and named persons, which are located on the left of each web page.</p>
 
-            <p>You can click on the thumbnail images located on the 'Home' and 'People' pages to take you through to the relevant catalogue record.</p>
+            <p>You can click on the thumbnail images located on the &lsquo;Home&rsquo; and &lsquo;People&rsquo; pages to take you through to the relevant catalogue record.</p>
 
-            <div class="not-prose my-8 flex flex-col items-center">
+            <div class="not-prose clear-both my-8 flex flex-col items-center">
                 <img src="{{ asset('collections/eerc/images/resp-montage.png') }}" alt="Montage of interview photographs" class="max-w-md rounded-lg shadow-sm">
             </div>
 
             <div class="not-prose my-8 flex flex-col items-start gap-6 sm:flex-row">
-                <div class="shrink-0 hidden sm:block">
+                <div class="hidden shrink-0 sm:block">
                     <img src="{{ asset('collections/eerc/images/example-map.png') }}" alt="Example Map" class="w-56 rounded-lg shadow-sm">
                 </div>
                 <p class="text-base text-gray-700">Alternatively, you can explore the collection geographically via our <a href="{{ url('/eerc/map') }}" class="font-medium text-resp-teal-600 hover:underline">Interactive Map</a>. Zoom in and out of the map and click on the pins to link through to a list of relevant interviews.</p>
@@ -70,7 +74,7 @@
 
             <p>In making material available online RESP acts in good faith. However, despite appropriate safeguards and due diligence searches prior to the release of any material, we recognise that from time to time material published online may be in breach of GDPR, contain sensitive personal data, or include content that may be regarded by some as offensive or defamatory. If you are concerned that you have found material on this website, which you feel is offensive or defamatory, or you are concerned that material pertaining to yourself is on this website without your permission, please contact us in writing and this issue will be dealt with immediately. For further advice regarding appropriate reporting procedures please follow this link <a href="https://www.ed.ac.uk/library/heritage-collections/using-the-collections/digitisation/image-licensing/takedown-policy" target="_blank" rel="noopener">Takedown Policy</a>.</p>
 
-            <img src="{{ asset('collections/eerc/images/resp-handwriting3.png') }}" alt="Part of a handwritten transcription from an interview" class="mx-auto my-6 max-w-lg rounded-lg shadow-sm">
+            <img src="{{ asset('collections/eerc/images/resp-handwriting3.png') }}" alt="Part of a handwritten transcription from an interview" class="my-6 w-full rounded-lg shadow-sm">
         </div>
     </div>
 

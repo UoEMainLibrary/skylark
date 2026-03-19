@@ -7,28 +7,10 @@
     <div class="lg:col-span-3">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Browse the Collections</h1>
 
-        {{-- Featured pages --}}
-        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <a href="{{ url('/eerc/exhibition') }}" class="group relative overflow-hidden rounded-lg shadow-sm">
-                <img src="{{ asset('collections/eerc/images/animal_encounters_resp.png') }}" alt="Exhibition Gallery" class="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                <div class="absolute bottom-0 left-0 p-4">
-                    <h3 class="text-lg font-bold text-white">Exhibition Gallery</h3>
-                    <p class="mt-0.5 text-sm text-white/80">Films, exhibitions &amp; publications</p>
-                </div>
-            </a>
-            <a href="{{ url('/eerc/kids') }}" class="group relative overflow-hidden rounded-lg shadow-sm">
-                <img src="{{ asset('collections/eerc/images/kids_only_1.png') }}" alt="Kids Activity Zone" class="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                <div class="absolute bottom-0 left-0 p-4">
-                    <h3 class="text-lg font-bold text-white">Kids Activity Zone</h3>
-                    <p class="mt-0.5 text-sm text-white/80">Worksheets &amp; activities for young learners</p>
-                </div>
-            </a>
-        </div>
+        <p class="mt-4 text-lg text-gray-700">Explore the RESP archive by browsing the collection tree below. Click the + and &minus; buttons to expand or collapse each section.</p>
 
         {{-- Collection tree --}}
-        <div class="mt-8">
+        <div class="mt-6">
             @if(!empty($tree['children']))
             <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
                 <ul class="divide-y divide-gray-100 p-2">

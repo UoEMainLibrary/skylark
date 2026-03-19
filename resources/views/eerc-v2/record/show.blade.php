@@ -44,8 +44,8 @@
 
                             @if($shouldDisplay)
                                 <tr>
-                                    <th class="w-40 bg-gray-50 px-4 py-3 text-left text-sm font-medium text-gray-600 align-top">{{ $displayField }}</th>
-                                    <td class="px-4 py-3 text-sm text-gray-800">
+                                    <th class="w-40 bg-resp-teal-50 px-4 py-3 text-left text-sm font-semibold text-resp-teal-700 align-top">{{ $displayField }}</th>
+                                    <td class="px-4 py-3 text-base text-gray-800">
                                         @if($displayField === 'Subject' && in_array($displayField, $filters))
                                             <div class="flex flex-wrap gap-1.5">
                                             @php $subjects = is_array($record[$displayField]) ? $record[$displayField] : [$record[$displayField]]; @endphp
@@ -169,15 +169,15 @@
                                                 $isLong = count($paragraphs) > 3 || mb_strlen($cleanSummary) > 600;
                                             @endphp
                                             <div>
-                                                <div id="interview-summary" class="prose prose-sm max-w-none @if($isLong) max-h-36 overflow-hidden @endif"
-                                                     @if($isLong) style="mask-image: linear-gradient(to bottom, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);" @endif>
+                                                <div id="interview-summary" class="prose prose-sm max-w-none @if($isLong) max-h-[4.5rem] overflow-hidden @endif"
+                                                     @if($isLong) style="mask-image: linear-gradient(to bottom, black 50%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);" @endif>
                                                     @foreach($paragraphs as $paragraph)
                                                         <p>{!! nl2br(e($paragraph)) !!}</p>
                                                     @endforeach
                                                 </div>
                                                 @if($isLong)
                                                     <button type="button" id="summary-toggle"
-                                                            onclick="var el = document.getElementById('interview-summary'); var btn = this; if (el.classList.contains('max-h-36')) { el.classList.remove('max-h-36', 'overflow-hidden'); el.style.maskImage = ''; el.style.webkitMaskImage = ''; btn.textContent = 'Read less'; } else { el.classList.add('max-h-36', 'overflow-hidden'); el.style.maskImage = 'linear-gradient(to bottom, black 60%, transparent 100%)'; el.style.webkitMaskImage = 'linear-gradient(to bottom, black 60%, transparent 100%)'; btn.textContent = 'Read more'; }"
+                                                            onclick="var el = document.getElementById('interview-summary'); var btn = this; if (el.classList.contains('max-h-[4.5rem]')) { el.classList.remove('max-h-[4.5rem]', 'overflow-hidden'); el.style.maskImage = ''; el.style.webkitMaskImage = ''; btn.textContent = 'Read less'; } else { el.classList.add('max-h-[4.5rem]', 'overflow-hidden'); el.style.maskImage = 'linear-gradient(to bottom, black 50%, transparent 100%)'; el.style.webkitMaskImage = 'linear-gradient(to bottom, black 50%, transparent 100%)'; btn.textContent = 'Read more'; }"
                                                             class="mt-2 text-sm font-medium text-resp-teal-600 hover:text-resp-teal-700 hover:underline">
                                                         Read more
                                                     </button>

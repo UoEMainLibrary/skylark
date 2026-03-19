@@ -19,17 +19,38 @@
             <p>This quote is at the very heart of the work of both the RESP and RESP Archive Project where local partnerships and volunteers have been central to the success of our work: both in terms of how much the Project has been able to achieve and, in the authenticity, and relevance of the resulting archive of material.</p>
 
             <p>To date, around 280 volunteer fieldworkers and 585 volunteer interviewees, who range in age from 8 to 102, have contributed over 1,000 recordings (more than 700 hours of spoken word testimony) as well as many hundreds of images and supporting documents.</p>
-
-            <p>The work of the EERC, RESP and the RESP Archive Project has been entirely funded by the Scotland Inheritance Fund and now, through this website, is preserved and made available on an open access basis under the ongoing care of the Centre for Research Collections at the University of Edinburgh.</p>
-
-            <p>You can read more about the EERC, RESP and the RESP Archive Project here [LINK TO DOCUMENT — URL TBC]</p>
         </div>
 
-        {{-- Photo gallery --}}
+        {{-- Map and group photo --}}
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+                <img src="{{ asset('collections/eerc/images/example-map.png') }}" alt="Map of Scotland showing RESP study areas" class="w-full rounded-lg shadow-sm">
+            </div>
+            <div>
+                <img src="{{ asset('collections/eerc/images/v2/01 A sporting memories session.jpg') }}" alt="A sporting memories session with volunteers and participants" class="w-full rounded-lg object-cover shadow-sm">
+            </div>
+        </div>
+
+        <div class="mt-8 prose prose-lg max-w-none">
+            <p>The work of the EERC, RESP and the RESP Archive Project has been entirely funded by the Scotland Inheritance Fund and now, through this website, is preserved and made available on an open access basis under the ongoing care of the Centre for Research Collections at the University of Edinburgh.</p>
+
+            <p>You can read more about the EERC, RESP and the RESP Archive Project here [LINK TO DOCUMENT &mdash; URL TBC].</p>
+        </div>
+
+        {{-- Logos row --}}
+        <div class="mt-8 flex flex-wrap items-center gap-8">
+            <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="EERC / RESP Logo" class="h-20 w-20">
+            <a href="https://www.ed.ac.uk/information-services/library-museum-gallery/cultural-heritage-collections/crc" target="_blank" rel="noopener">
+                <img src="{{ asset('collections/eerc/images/CRC_logo.gif') }}" alt="Centre for Research Collections" class="h-16 w-auto">
+            </a>
+            <img src="{{ asset('collections/eerc/images/v2/eerc_horse_logo_transp.png') }}" alt="EERC Pictish Horse Logo" class="h-16 w-auto">
+        </div>
+
+        {{-- Additional photos --}}
         <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <img src="{{ asset('collections/eerc/images/v2/09-EL40-7-4-2.jpg') }}" alt="Interview photograph" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm">
-            <img src="{{ asset('collections/eerc/images/v2/13 -ES5-1-4-5.JPG') }}" alt="Archive photograph" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm">
-            <img src="{{ asset('collections/eerc/images/v2/08-EL40-6-4-2.jpg') }}" alt="Community engagement" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm hidden sm:block">
+            <img src="{{ asset('collections/eerc/images/v2/09-EL40-7-4-2.jpg') }}" alt="Interview photograph" class="aspect-4/3 w-full rounded-lg object-cover object-top shadow-sm">
+            <img src="{{ asset('collections/eerc/images/v2/02 Vikkie, Dick, Katie and Ailsa.jpg') }}" alt="Vikkie, Dick, Katie and Ailsa" class="aspect-4/3 w-full rounded-lg object-cover object-top shadow-sm">
+            <img src="{{ asset('collections/eerc/images/v2/13 -ES5-1-4-5.JPG') }}" alt="Archive photograph" class="aspect-4/3 w-full rounded-lg object-cover object-top shadow-sm hidden sm:block">
         </div>
     </div>
 

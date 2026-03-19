@@ -51,12 +51,14 @@
         @endforeach
     </div>
 
-    {{-- Featured interview --}}
-    <div class="mt-10 flex flex-col items-center gap-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm sm:flex-row">
-        <img src="{{ asset('collections/eerc/images/kids_only_1.png') }}" alt="Kalli and Hannah" class="w-56 shrink-0 rounded-lg sm:w-64">
-        <div>
-            <p class="text-gray-700">Kalli Hunter and Hannah Green were 8 years old when they were interviewed by Flora Burns in 2014. Click on the link below to hear them telling Flora all about their school day at St Ninian's school in Dumfries.</p>
-            <a href="{{ url('/eerc/record/165204/archival_object') }}" class="mt-2 inline-block text-sm font-medium text-resp-teal-600 hover:underline">Listen to their interview &rarr;</a>
+    {{-- Featured interview (4/8 split) --}}
+    <div class="mt-10 grid grid-cols-1 gap-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm sm:grid-cols-3">
+        <div class="sm:col-span-1">
+            <img src="{{ asset('collections/eerc/images/kids_only_1.png') }}" alt="Kalli and Hannah" class="w-full rounded-lg">
+        </div>
+        <div class="flex flex-col justify-center sm:col-span-2">
+            <p class="text-lg text-gray-700">Kalli Hunter and Hannah Green were 8 years old when they were interviewed by Flora Burns in 2014. Click on the link below to hear them telling Flora all about their school day at St Ninian&rsquo;s school in Dumfries.</p>
+            <a href="{{ url('/eerc/record/165204/archival_object') }}" class="mt-3 inline-block font-medium text-resp-teal-600 hover:underline">Listen to their interview &rarr;</a>
         </div>
     </div>
 
