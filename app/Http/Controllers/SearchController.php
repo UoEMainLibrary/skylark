@@ -40,7 +40,7 @@ class SearchController extends Controller
 
         // Build collection-aware search URL
         $collection = config('app.current_collection', 'clds');
-        $prefix = $collection === 'eerc' ? '/eerc' : '';
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
 
         return redirect("{$prefix}/search/{$query}");
     }
@@ -50,18 +50,17 @@ class SearchController extends Controller
      */
     public function index(Request $request, string $query = '*')
     {
-        // Get all segments after /search/{query}/
-        $segments = $request->segments();
-        $collection = config('app.current_collection', 'clds');
-        $skipCount = $collection === 'clds' ? 2 : 3; // Skip 'search' + query (+ collection prefix)
-        $filterSegments = array_slice($segments, $skipCount);
+        // Extract filter segments from the raw URI to preserve %2F inside filter values.
+        // $request->segments() decodes %2F to / before splitting, which breaks filters
+        // containing slashes (e.g., "Mouthpiece/Mouthpieces/Musical Instrument").
+        $filterSegments = $this->extractFilterSegments($request, $query);
 
         // Parse filters from URL segments
         $parsedFilters = $this->parseFilters($filterSegments);
 
         // Get pagination and sort parameters
         $offset = (int) $request->get('offset', 0);
-        $sortBy = $request->get('sort_by', config('skylight.default_sort'));
+        $sortBy = $request->get('sort_by', '');
         $rows = (int) $request->get('num_results', config('skylight.results_per_page'));
 
         // Get repository service for current collection
@@ -130,6 +129,46 @@ class SearchController extends Controller
     }
 
     /**
+     * Extract filter segments from the raw request URI.
+     *
+     * Filter values may contain "/" (encoded as %2F in the URL).
+     * Using $request->segments() decodes %2F to "/" before splitting,
+     * which corrupts those filters. The raw URI preserves %2F, so
+     * splitting on literal "/" correctly separates filter segments.
+     */
+    protected function extractFilterSegments(Request $request, string $query): array
+    {
+        $rawUri = strtok($request->getRequestUri(), '?');
+
+        $collection = config('app.current_collection', 'clds');
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+
+        // Try both encoded and raw forms of the query in the path
+        $needles = [
+            "{$prefix}/search/{$query}/",
+            "{$prefix}/search/".rawurlencode($query).'/',
+        ];
+
+        $filterString = '';
+        foreach ($needles as $needle) {
+            $pos = strpos($rawUri, $needle);
+            if ($pos !== false) {
+                $filterString = substr($rawUri, $pos + strlen($needle));
+                break;
+            }
+        }
+
+        if (empty($filterString)) {
+            return [];
+        }
+
+        // Split on literal "/" — encoded slashes (%2F) inside values are preserved
+        $rawSegments = explode('/', $filterString);
+
+        return array_map('urldecode', array_filter($rawSegments, fn ($s) => $s !== ''));
+    }
+
+    /**
      * Parse filter segments from URL
      */
     protected function parseFilters(array $segments): array
@@ -153,16 +192,12 @@ class SearchController extends Controller
                 if (isset($configFilters[$filterName])) {
                     $solrField = $configFilters[$filterName];
 
-                    // Apply Solr escaping like CodeIgniter's solrEscape:
-                    // Convert spaces and %20 to + (Solr/URL convention)
-                    // URL: %22Working+life%22 -> filterValue: "Working+life" (already has +, keep it)
-                    // Or: "Working life" -> "Working+life"
-                    $escapedValue = str_replace(' ', '+', $filterValue);
-                    $escapedValue = str_replace('%20', '+', $escapedValue);
+                    // Restore newlines around "|||" — Solr stores them with \n delimiters.
+                    // Handle both formats: space-separated (old links) and already-newlined
+                    // (from urlencode/urldecode roundtrip in new links).
+                    $solrValue = str_replace(' ||| ', "\n|||\n", $filterValue);
 
-                    // Build filter WITHOUT wildcards (matching CodeIgniter)
-                    // CodeIgniter uses exact phrase matching: subjects:"Working+life"
-                    $solrFilters[] = "{$solrField}:{$escapedValue}";
+                    $solrFilters[] = "{$solrField}:{$solrValue}";
                 }
             }
         }
@@ -171,6 +206,157 @@ class SearchController extends Controller
             'solr_filters' => $solrFilters,
             'url_filters' => $urlFilters,
         ];
+    }
+
+    /**
+     * Display the advanced search form
+     */
+    public function advancedForm()
+    {
+        $searchFields = config('skylight.search_fields', []);
+
+        return view($this->collectionView('search.advanced'), [
+            'searchFields' => $searchFields,
+        ]);
+    }
+
+    /**
+     * Handle advanced search form POST — build URL and redirect to GET
+     */
+    public function advancedPost(Request $request)
+    {
+        $searchFields = config('skylight.search_fields', []);
+        $collection = config('app.current_collection', 'clds');
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+
+        $filterUrl = '';
+        foreach ($searchFields as $label => $field) {
+            $escapedLabel = str_replace(' ', '_', $label);
+            $val = trim((string) $request->input($escapedLabel, ''));
+            if ($val !== '') {
+                $filterUrl .= '/'.rawurlencode($label).':'.$val;
+            }
+        }
+
+        $operator = $request->input('operator', 'OR');
+
+        return redirect("{$prefix}/advanced/search{$filterUrl}?operator={$operator}");
+    }
+
+    /**
+     * Display advanced search results
+     */
+    public function advancedSearch(Request $request, ?string $filters = null)
+    {
+        $collection = config('app.current_collection', 'clds');
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+        $searchFields = config('skylight.search_fields', []);
+        $configFilters = config('skylight.filters', []);
+        $delimiter = config('skylight.filter_delimiter', ':');
+        $rows = (int) $request->get('num_results', config('skylight.results_per_page'));
+        $offset = (int) $request->get('offset', 0);
+        $sortBy = $request->get('sort_by', '');
+        $operator = $request->get('operator', 'OR');
+
+        // Parse filter segments from the URL path
+        $rawUri = strtok($request->getRequestUri(), '?');
+        $searchPrefix = "{$prefix}/advanced/search/";
+        $pos = strpos($rawUri, $searchPrefix);
+        $filterString = $pos !== false ? substr($rawUri, $pos + strlen($searchPrefix)) : '';
+
+        $solrFilters = [];
+        $urlFilters = [];
+        $savedSearch = [];
+        $message = '<h3>Currently searching the following fields:</h3>';
+
+        if (! empty($filterString)) {
+            $rawSegments = explode('/', $filterString);
+            foreach ($rawSegments as $segment) {
+                if (empty($segment)) {
+                    continue;
+                }
+                $decoded = urldecode($segment);
+                $urlFilters[] = $segment;
+                $parts = explode($delimiter, $decoded, 2);
+
+                if (count($parts) === 2) {
+                    $fieldLabel = $parts[0];
+                    $fieldValue = $parts[1];
+
+                    if (isset($searchFields[$fieldLabel])) {
+                        $solrFilters[] = $searchFields[$fieldLabel].':'.$fieldValue;
+                        $savedSearch[$fieldLabel] = $fieldValue;
+                        $message .= '<strong>'.$fieldLabel.'</strong> : '.urldecode($fieldValue).'<br/>';
+                    }
+                }
+            }
+        }
+
+        $repository = $this->repositoryFactory->current();
+
+        try {
+            $results = $repository->searchWithHighlighting(
+                '*:*',
+                $solrFilters,
+                $offset,
+                $sortBy,
+                $rows,
+                []
+            );
+        } catch (\Exception $e) {
+            return view($this->collectionView('search.error'), [
+                'error' => $e->getMessage(),
+                'query' => '*:*',
+            ]);
+        }
+
+        $baseSearch = url("{$prefix}/advanced/search");
+        foreach ($urlFilters as $f) {
+            $baseSearch .= '/'.$f;
+        }
+
+        $baseParameters = '?operator='.$operator;
+        if (! empty($sortBy)) {
+            $baseParameters .= '&sort_by='.$sortBy;
+        }
+
+        $startRow = $offset + 1;
+        $endRow = min($offset + $rows, $results['total']);
+
+        $paginationLinks = $this->buildPaginationLinks(
+            $results['total'],
+            $rows,
+            $offset,
+            $baseSearch,
+            $baseParameters
+        );
+
+        $data = [
+            'docs' => $results['docs'],
+            'total' => $results['total'],
+            'query' => '*:*',
+            'searchbox_query' => '',
+            'base_search' => $baseSearch,
+            'base_parameters' => $baseParameters,
+            'facets' => $results['facets'],
+            'highlights' => $results['highlights'],
+            'suggestions' => $results['suggestions'] ?? [],
+            'startRow' => $startRow,
+            'endRow' => $endRow,
+            'offset' => $offset,
+            'rows' => $rows,
+            'sort_by' => $sortBy,
+            'sort_options' => config('skylight.sort_fields'),
+            'paginationLinks' => $paginationLinks,
+            'active_filters' => [],
+            'delimiter' => $delimiter,
+            'message' => $message,
+            'searchFields' => $searchFields,
+            'savedSearch' => $savedSearch,
+            'operator' => $operator,
+        ];
+
+        return view($this->collectionView('search.results'), $data);
     }
 
     /**

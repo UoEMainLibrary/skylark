@@ -171,6 +171,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Schema.org Mappings
+    |--------------------------------------------------------------------------
+    */
+    'schema_links' => [
+        'Title' => 'name',
+        'Alternative Title' => 'alternativeName',
+        'Maker' => 'creator',
+        'Author' => 'author',
+        'Subject' => 'about',
+        'Instrument' => 'name',
+        'Abstract' => 'description',
+        'Date' => 'dateCreated',
+        'Thumbnail' => 'thumbnailUrl',
+        'Place Made' => 'locationCreated',
+        'Date Made' => 'dateCreated',
+        'Period' => 'temporalCoverage',
+        'Accession Number' => 'identifier',
+        'Description' => 'description',
+        'Collection' => 'isPartOf',
+        'Notes' => 'musicalKey',
+        'Rights Holder' => 'copyrightHolder',
+        'Instrument Family' => 'category',
+        'Link' => 'url',
+        'ImageUri' => 'image',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Meta Fields
     |--------------------------------------------------------------------------
     */

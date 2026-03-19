@@ -18,11 +18,8 @@
                             {{-- Active filters (with remove button) --}}
                             @foreach($facet['active_terms'] as $term)
                                 @php
-                                    // Build URL to remove this filter
-                                    // Normalize term to match how it appears in base_search URL
-                                    // (spaces/newlines -> +, but keep pipes as literal | since Laravel decodes them)
-                                    $encodedTerm = str_replace(["\r\n", "\n", "\r", ' '], '+', $term['name']);
-                                    $pattern = '/' . rawurlencode($facet['name']) . $delimiter . '"' . $encodedTerm . '"';
+                                    $encodedTerm = urlencode($term['name']);
+                                    $pattern = '/' . rawurlencode($facet['name']) . $delimiter . '%22' . $encodedTerm . '%22';
                                     $removeUrl = str_replace($pattern, '', $base_search);
                                     $removeUrl = rtrim($removeUrl, '/');
                                 @endphp
@@ -37,11 +34,8 @@
                             {{-- Inactive filters (clickable to add) --}}
                             @foreach($facet['inactive_terms'] as $term)
                                 @php
-                                    // Build URL to add this filter
-                                    // Replace spaces with + and encode special characters (newlines, pipes, etc.)
-                                    $encodedTerm = str_replace(["\r\n", "\n", "\r", ' '], '+', $term['name']);
-                                    $encodedTerm = str_replace('|', '%7C', $encodedTerm);
-                                    $addUrl = $base_search . '/' . $facet['name'] . ':"' . $encodedTerm . '"';
+                                    $encodedTerm = urlencode($term['name']);
+                                    $addUrl = $base_search . '/' . $facet['name'] . ':%22' . $encodedTerm . '%22';
                                 @endphp
                                 <div class="facet-term">
                                     <a href="{{ $addUrl }}{{ $base_parameters }}">

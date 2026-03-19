@@ -64,7 +64,7 @@
                     <fieldset class="search">
                         <input type="text" name="q" aria-label="Website searchbox" value="{{ isset($searchbox_query) ? urldecode($searchbox_query) : '' }}" id="q" />
                         <input type="submit" name="submit_search" class="btn" value="Search" id="submit_search" aria-label="Submit search button"/>
-                        <a href="{{ url('/mimed/search/*:*') }}" class="advanced">Advanced<br>Search</a>
+                        <a href="{{ url('/mimed/advanced') }}" class="advanced">Advanced<br>Search</a>
                     </fieldset>
                 </form>
             </div>

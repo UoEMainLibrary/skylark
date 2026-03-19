@@ -10,6 +10,45 @@
 
 @section('content')
 <div class="col-main">
+<div class="content">
+    @if(isset($searchFields))
+
+<h1>Advanced Search</h1>
+
+<p><strong><a href="#" id="showform">Change Advanced Search options</a></strong></p>
+
+<div class="searchform" style="display:none">
+    <p><strong>Hint: </strong> To match an exact phrase, try using quotation marks, eg. <em>"a search phrase"</em></p>
+<form action="{{ url('/mimed/advanced/post') }}" method="post" accept-charset="utf-8">
+@csrf
+@foreach($searchFields as $label => $field)
+@php $escapedLabel = str_replace(' ', '_', $label); @endphp
+<p><label for="{{ $escapedLabel }}" style="width: 100px; float: left; display: block; text-align: right;">{{ $label }}</label><input type="text" name="{{ $escapedLabel }}" value="" id="{{ $escapedLabel }}" style="margin-left: 15px;"  /></p>
+@endforeach
+<p><label for="operators" style="width: 100px; float: left; display: block; text-align: right;">Default search operator</label><select name="operator" style="margin-left:15px;">
+<option value="OR"{{ ($operator ?? 'OR') === 'OR' ? ' selected="selected"' : '' }}>OR (any terms may match)</option>
+<option value="AND"{{ ($operator ?? 'OR') === 'AND' ? ' selected="selected"' : '' }}>AND (all terms must match)</option>
+</select></p><p style="margin-left: 120px;"><em>Use <strong>AND</strong> for narrow searches and <strong>OR</strong> for broad searches</em></p><input type="submit" name="search" value="Search" style="margin-left: 120px" class="btn" /></form>
+</div>
+
+<script>
+    $("#showform").click(function() {
+        $(".searchform").show();
+        $(this).hide();
+        $(".message").hide();
+        @if(isset($savedSearch))
+            @foreach($savedSearch as $key => $val)
+                $("input#{{ str_replace(' ', '_', $key) }}").val('{{ urldecode($val) }}');
+            @endforeach
+        @endif
+        return false;
+    });
+</script>
+    @endif
+    @if(isset($message))
+        <div class="message">{!! $message !!}</div>
+    @endif
+</div>
     @if($total === 0)
         <div class="content">
             <h1>No results found</h1>

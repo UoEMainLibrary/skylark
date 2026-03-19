@@ -7,7 +7,8 @@
         {{-- Active filters --}}
         @foreach($facet['active_terms'] as $term)
             @php
-                $encodedTerm = urlencode($term['name']);
+                $normalizedName = str_replace(["\r\n|||\r\n", "\n|||\n"], ' ||| ', $term['name']);
+                $encodedTerm = urlencode($normalizedName);
                 $pattern = '/' . rawurlencode($facet['name']) . $delimiter . '%22' . $encodedTerm . '%22';
                 $removeUrl = str_replace($pattern, '', $base_search);
                 $removeUrl = rtrim($removeUrl, '/');
@@ -28,7 +29,8 @@
                 @else
                     @foreach($facet['inactive_terms'] as $term)
                         @php
-                            $encodedTerm = urlencode($term['name']);
+                            $normalizedName = str_replace(["\r\n|||\r\n", "\n|||\n"], ' ||| ', $term['name']);
+                            $encodedTerm = urlencode($normalizedName);
                             $addUrl = $base_search . '/' . $facet['name'] . ':%22' . $encodedTerm . '%22';
                         @endphp
                         <li>

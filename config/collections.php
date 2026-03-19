@@ -24,6 +24,7 @@ return [
     'available' => [
         'clds',
         'eerc',
+        'mimed',
     ],
 
     /*
@@ -49,8 +50,6 @@ return [
     */
     'prefixes' => [
         'eerc' => 'eerc',
-        // Future collections can be added here
-        // 'art' => 'art',
-        // 'mimed' => 'mimed',
+        'mimed' => 'mimed',
     ],
 ];

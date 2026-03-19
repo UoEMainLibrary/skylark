@@ -12,6 +12,7 @@
             @php
                 $makerField = str_replace('.', '', $fieldMappings['Maker'] ?? $fieldMappings['Author'] ?? '');
                 $filters = array_keys(config('skylight.filters', []));
+                $schema = config('skylight.schema_links', []);
             @endphp
 
             <div class="tags">
@@ -119,15 +120,18 @@
                                             $values = is_array($record[$element]) ? $record[$element] : [$record[$element]];
                                         @endphp
                                         @foreach($values as $idx => $metadataValue)
-                                            @php $metadataValue = str_replace('|', "\u{00A0}", $metadataValue); @endphp
+                                            @php
+                                                $metadataValue = str_replace('|', "\u{00A0}", $metadataValue);
+                                                $schemaAttr = $schema[$key] ?? null;
+                                            @endphp
                                             @if(in_array($key, $filters))
                                                 @php
                                                     $origFilter = urlencode($metadataValue);
                                                     $lowerFilter = urlencode(strtolower($metadataValue));
                                                 @endphp
-                                                <a href="{{ url('/mimed/search/*:*/' . $key . ':%22' . $lowerFilter . '+%7C%7C%7C+' . $origFilter . '%22') }}" title="{{ $metadataValue }}">{{ $metadataValue }}</a>
+                                                @if($schemaAttr)<span itemprop="{{ $schemaAttr }}"><a href="{{ url('/mimed/search/*:*/' . $key . ':%22' . $lowerFilter . '+%7C%7C%7C+' . $origFilter . '%22') }}" title="{{ $metadataValue }}">{{ $metadataValue }}</a></span>@else<a href="{{ url('/mimed/search/*:*/' . $key . ':%22' . $lowerFilter . '+%7C%7C%7C+' . $origFilter . '%22') }}" title="{{ $metadataValue }}">{{ $metadataValue }}</a>@endif
                                             @else
-                                                {{ $metadataValue }}
+                                                @if($schemaAttr)<span itemprop="{{ $schemaAttr }}">{{ $metadataValue }}</span>@else{{ $metadataValue }}@endif
                                             @endif
                                             @if($idx < count($values) - 1); @endif
                                         @endforeach
@@ -195,18 +199,6 @@
                 @endphp
                 <li @class(['first' => $rIndex === 0, 'last' => $rIndex === count($relatedItems) - 1])>
                     <a class="related-record" href="{{ url('/mimed/record/' . $relId) }}" title="{{ $relTitle }}">{{ $relTitle }}</a>
-                    <div class="tags">
-                        @if(isset($relDoc[$authorFieldName]) && !empty($relDoc[$authorFieldName]))
-                            @php $relAuthors = is_array($relDoc[$authorFieldName]) ? $relDoc[$authorFieldName] : [$relDoc[$authorFieldName]]; @endphp
-                            @foreach($relAuthors as $relAuthor)
-                                @php
-                                    $relOrigFilter = urlencode($relAuthor);
-                                    $relLowerFilter = urlencode(strtolower($relAuthor));
-                                @endphp
-                                <a href="{{ url('/mimed/search/*:*/Maker:%22' . $relLowerFilter . '+%7C%7C%7C+' . $relOrigFilter . '%22') }}">{{ $relAuthor }}</a>
-                            @endforeach
-                        @endif
-                    </div>
                 </li>
             @endforeach
         @else

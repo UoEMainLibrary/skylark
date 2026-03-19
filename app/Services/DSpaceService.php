@@ -21,16 +21,13 @@ class DSpaceService implements RepositoryInterface
 
     public function __construct()
     {
-        $config = config('services.solr');
+        $fallback = config('services.solr');
 
-        // Build the base URL for Solr (DSpace or ArchivesSpace)
-        // Using direct HTTP client due to Solarium issues with non-standard Solr setups
         $this->baseUrl = env('SOLR_BASE_URL', 'http://localhost:8080/solr/search/');
-
-        $this->containerId = $config['container_id'];
-        $this->containerField = $config['container_field'];
-        $this->resultsPerPage = $config['results_per_page'];
-        $this->isDSpace = env('SOLR_REPOSITORY_TYPE', 'dspace') === 'dspace';
+        $this->containerId = config('skylight.container_id', $fallback['container_id']);
+        $this->containerField = config('skylight.container_field', $fallback['container_field']);
+        $this->resultsPerPage = config('skylight.results_per_page', $fallback['results_per_page']);
+        $this->isDSpace = config('skylight.repository_type', 'dspace') === 'dspace';
         $this->handlePrefix = config('skylight.handle_prefix', '10683');
     }
 
@@ -214,55 +211,54 @@ class DSpaceService implements RepositoryInterface
     }
 
     /**
-     * Get related items for a record
+     * Get related items for a record.
+     *
+     * Matches the old CodeIgniter behaviour: takes the first value from each
+     * related field and runs a free-text OR query (no field prefix), so
+     * "Clarinet" can match in title, description, subject, etc.
      */
     public function getRelatedItems(array $record, int $limit = 10): array
     {
         $relatedFieldMappings = config('skylight.related_fields', []);
-        
+
         if (empty($relatedFieldMappings)) {
             return [];
         }
-        
-        $queries = [];
 
-        // Build queries for each related field
+        // Collect the first value from each configured related field
+        $queryTerms = [];
         foreach ($relatedFieldMappings as $displayName => $solrField) {
-            // Get field name without dots
             $fieldKey = str_replace('.', '', $solrField);
 
             if (isset($record[$fieldKey]) && ! empty($record[$fieldKey])) {
                 $values = is_array($record[$fieldKey]) ? $record[$fieldKey] : [$record[$fieldKey]];
+                $firstValue = $values[0] ?? null;
 
-                foreach ($values as $value) {
-                    if (! empty($value)) {
-                        $queries[] = $solrField.':'.json_encode($value);
-                    }
+                if (! empty($firstValue)) {
+                    $queryTerms[] = '"'.addcslashes($firstValue, '"').'"';
                 }
             }
         }
 
-        if (empty($queries)) {
+        if (empty($queryTerms)) {
             return [];
         }
 
         // Get current record ID for exclusion
         $currentId = $record['Id'] ?? $record['id'] ?? null;
-        if (!$currentId) {
+        if (! $currentId) {
             return [];
         }
-        
-        // Construct full handle for exclusion
+
         $fullHandle = $this->handlePrefix.'/'.$currentId;
 
-        // Build Solr query
+        // Free-text OR query with handle exclusion (matches old CI behaviour)
         $params = [
-            'q' => implode(' OR ', $queries),
-            'rows' => $limit,
+            'q' => implode(' OR ', $queryTerms).' -handle:"'.$fullHandle.'"',
+            'rows' => 5,
             'wt' => 'json',
         ];
 
-        // Build filter queries
         $filterQueries = [];
         $filterQueries[] = "{$this->containerField}:{$this->containerId}";
 
@@ -270,11 +266,6 @@ class DSpaceService implements RepositoryInterface
             $filterQueries[] = 'search.resourcetype:2';
         }
 
-        // Exclude current record by full handle and ID
-        $filterQueries[] = "-handle:\"{$fullHandle}\"";
-        $filterQueries[] = "-id:\"{$currentId}\"";
-
-        // Execute query with error handling
         try {
             $response = Http::timeout(30)->get("{$this->baseUrl}select".$this->buildSolrQuery($params, $filterQueries));
 
@@ -285,14 +276,10 @@ class DSpaceService implements RepositoryInterface
             $data = $response->json();
             $docs = $data['response']['docs'] ?? [];
         } catch (\Exception $e) {
-            // If related items query fails, return empty array (don't block page load)
             return [];
         }
 
-        // Limit to 5 results and transform field names
-        $related = array_slice($docs, 0, 5);
-
-        return array_map(fn ($doc) => $this->transformFieldNames($doc), $related);
+        return array_map(fn ($doc) => $this->transformFieldNames($doc), $docs);
     }
 
     /**
@@ -524,13 +511,13 @@ class DSpaceService implements RepositoryInterface
                     // termName is the raw Solr value like: "rare books\n|||\nRare Books" (with newlines)
                     $isActive = false;
 
-                    // Normalize the term name to match URL encoding (spaces/newlines -> +)
-                    // Note: Laravel already decodes %7C to | in route parameters, so leave pipes as-is
-                    $normalizedTermName = str_replace(["\r\n", "\n", "\r", ' '], '+', $termName);
+                    // Normalize term for comparison: collapse newlines to spaces
+                    $normalizedTermName = str_replace(["\r\n", "\n", "\r"], ' ', $termName);
 
                     foreach ($activeFilters as $activeFilter) {
-                        // Check if the filter contains this normalized term
-                        if (str_contains($activeFilter, $normalizedTermName)) {
+                        // Normalize the active filter the same way (decode + to space)
+                        $normalizedFilter = str_replace('+', ' ', $activeFilter);
+                        if (str_contains($normalizedFilter, $normalizedTermName)) {
                             $isActive = true;
                             break;
                         }
@@ -571,9 +558,14 @@ class DSpaceService implements RepositoryInterface
         $transformed = [];
 
         foreach ($doc as $key => $value) {
-            // Remove dots from field names (dc.title.en -> dctitleen)
             $newKey = str_replace('.', '', $key);
             $transformed[$newKey] = $value;
+        }
+
+        // Extract numeric ID from handle (e.g., "10683/18492" -> "18492")
+        if (isset($doc['handle'])) {
+            $handleParts = explode('/', $doc['handle']);
+            $transformed['id'] = end($handleParts);
         }
 
         return $transformed;
