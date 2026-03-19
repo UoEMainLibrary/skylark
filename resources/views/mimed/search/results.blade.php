@@ -1,0 +1,159 @@
+@extends('layouts.mimed')
+
+@section('title')
+    @if($query !== '*' && $query !== '*:*')
+        Search Results for "{{ urldecode($query) }}" - MIMEd
+    @else
+        Search Results - MIMEd
+    @endif
+@endsection
+
+@section('content')
+@php
+    $fieldMappings = config('skylight.field_mappings', []);
+    $titleField = str_replace('.', '', $fieldMappings['Title'] ?? '');
+    $authorField = str_replace('.', '', $fieldMappings['Author'] ?? '');
+    $abstractField = str_replace('.', '', $fieldMappings['Abstract'] ?? '');
+    $imageUriField = str_replace('.', '', $fieldMappings['ImageUri'] ?? '');
+    $sortOptions = config('skylight.sort_fields', []);
+
+    $sortParam = preg_replace("/[?&]sort_by=[_a-zA-Z+%20. ]+/", "", $base_parameters);
+    $sort = ($sortParam === '') ? '?sort_by=' : '&sort_by=';
+@endphp
+
+<div class="col-main">
+<div class="content">
+    @if(isset($searchFields))
+
+<h1>Advanced Search</h1>
+
+<p><strong><a href="#" id="showform">Change Advanced Search options</a></strong></p>
+
+<div class="searchform" style="display:none">
+    <p><strong>Hint: </strong> To match an exact phrase, try using quotation marks, eg. <em>"a search phrase"</em></p>
+<form action="{{ url('/mimed/advanced/post') }}" method="post" accept-charset="utf-8">
+@csrf
+@foreach($searchFields as $label => $field)
+@php $escapedLabel = str_replace(' ', '_', $label); @endphp
+<p><label for="{{ $escapedLabel }}" style="width: 100px; float: left; display: block; text-align: right;">{{ $label }}</label><input type="text" name="{{ $escapedLabel }}" value="" id="{{ $escapedLabel }}" style="margin-left: 15px;"  /></p>
+@endforeach
+<p><label for="operators" style="width: 100px; float: left; display: block; text-align: right;">Default search operator</label><select name="operator" style="margin-left:15px;">
+<option value="OR"{{ ($operator ?? 'OR') === 'OR' ? ' selected="selected"' : '' }}>OR (any terms may match)</option>
+<option value="AND"{{ ($operator ?? 'OR') === 'AND' ? ' selected="selected"' : '' }}>AND (all terms must match)</option>
+</select></p><p style="margin-left: 120px;"><em>Use <strong>AND</strong> for narrow searches and <strong>OR</strong> for broad searches</em></p><input type="submit" name="search" value="Search" style="margin-left: 120px" class="btn" /></form>
+</div>
+
+<script>
+    $("#showform").click(function() {
+        $(".searchform").show();
+        $(this).hide();
+        $(".message").hide();
+        @if(isset($savedSearch))
+            @foreach($savedSearch as $key => $val)
+                $("input#{{ str_replace(' ', '_', $key) }}").val('{{ urldecode($val) }}');
+            @endforeach
+        @endif
+        return false;
+    });
+</script>
+    @endif
+    @if(isset($message))
+        <div class="message">{!! $message !!}</div>
+    @endif
+    <div class="listing-filter">
+        <span class="no-results">
+            <strong>{{ $startRow }}-{{ $endRow }}</strong> of
+            <strong>{{ $total }}</strong> results
+        </span>
+
+        <span class="sort">
+            <strong>Sort by</strong>
+            @foreach($sortOptions as $label => $field)
+                @if($label === 'Relevancy')
+                    <em><a href="{{ $base_search }}{{ $sortParam }}{{ $sort }}{{ $field }}+desc">{{ $label }}</a></em>
+                @else
+                    <em>{{ $label }}</em>
+                    <a href="{{ $base_search }}{{ $sortParam }}{{ $sort }}{{ $field }}+asc">A-Z</a> |
+                    <a href="{{ $base_search }}{{ $sortParam }}{{ $sort }}{{ $field }}+desc">Z-A</a>
+                @endif
+            @endforeach
+        </span>
+    </div>
+
+    <ul class="listing">
+        @foreach($docs as $index => $doc)
+            <li @class(['first' => $index === 0, 'last' => $index === count($docs) - 1])>
+                <div class="item-div">
+                    <div class="iteminfo">
+                        <h3><a href="{{ url('/mimed/record/' . $doc['id']) }}?highlight={{ $query }}">{{ $doc[$titleField][0] ?? 'Untitled' }}</a></h3>
+                        <div class="tags">
+                            @if(isset($doc[$authorField]))
+                                @foreach($doc[$authorField] as $i => $author)
+                                    @php
+                                        $origFilter = urlencode($author);
+                                        $lowerFilter = urlencode(strtolower($author));
+                                    @endphp
+                                    <a href="{{ url('/mimed/search/*:*/Maker:%22' . $lowerFilter . '+%7C%7C%7C+' . $origFilter . '%22') }}">{{ str_replace('|', "\u{00A0}", $author) }}</a>{{ $i < count($doc[$authorField]) - 1 ? ' ' : '' }}
+                                @endforeach
+                            @endif
+
+                            @if(isset($doc[$abstractField]))
+                                @php
+                                    $abstract = str_replace('|', "\u{00A0}", $doc[$abstractField][0] ?? '');
+                                    $words = explode(' ', $abstract);
+                                    $max = min(40, count($words));
+                                    $suffix = count($words) > 40 ? '...' : '';
+                                    $shortened = implode(' ', array_slice($words, 0, $max));
+                                @endphp
+                                <p>{{ $shortened }}{{ $suffix }}</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="thumbnail-image">
+                        @if(isset($doc[$imageUriField]))
+                            @foreach($doc[$imageUriField] as $imageUri)
+                                @php $imageUri = str_replace('http://', 'https://', $imageUri); @endphp
+                                @if(str_contains($imageUri, 'luna'))
+                                    <div class="thumbnail-placeholder"></div>
+                                    <a title="{{ $doc[$titleField][0] ?? '' }}" class="fancybox" rel="group" href="{{ $imageUri }}">
+                                        <img src="{{ $imageUri }}" class="record-thumbnail-search" title="{{ $doc[$titleField][0] ?? '' }}" loading="lazy"/>
+                                    </a>
+                                    @break
+                                @endif
+                            @endforeach
+                        @endif
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </li>
+        @endforeach
+    </ul>
+
+    <div class="pagination">
+        <span class="no-results">
+            <strong>{{ $startRow }}-{{ $endRow }}</strong> of
+            <strong>{{ $total }}</strong> results
+        </span>
+        {!! $paginationLinks !!}
+    </div>
+</div>
+</div>
+<div class="col-sidebar">
+    @include('mimed.search.partials.facets')
+</div>
+
+@push('scripts')
+<script>
+    const thumbnailImages = document.querySelectorAll(".thumbnail-image");
+    thumbnailImages.forEach(function(div) {
+        var img = div.querySelector("img");
+        var placeholder = div.querySelector(".thumbnail-placeholder");
+        if (!img || !placeholder) return;
+        function loaded() { placeholder.style.display = "none"; }
+        if (img.complete) { loaded(); }
+        else { img.addEventListener("load", loaded); }
+    });
+</script>
+@endpush
+@endsection

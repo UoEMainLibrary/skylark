@@ -68,6 +68,13 @@ Route::prefix('mimed')->name('mimed.')->group(function () {
         return view('mimed.mirador', ['manifest' => $manifest]);
     })->name('mirador');
 
+    Route::get('/advanced', fn () => redirect('/mimed/advanced/form'))->name('advanced');
+    Route::get('/advanced/form', [SearchController::class, 'advancedForm'])->name('advanced.form');
+    Route::post('/advanced/post', [SearchController::class, 'advancedPost'])->name('advanced.post');
+    Route::get('/advanced/search/{filters?}', [SearchController::class, 'advancedSearch'])
+        ->where('filters', '.*')
+        ->name('advanced.search');
+
     Route::get('/about', [PageController::class, 'about'])->name('about');
     Route::get('/iiif', [PageController::class, 'mimedIiif'])->name('iiif');
     Route::get('/licensing', [PageController::class, 'licensing'])->name('licensing');

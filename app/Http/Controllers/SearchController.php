@@ -60,7 +60,7 @@ class SearchController extends Controller
 
         // Get pagination and sort parameters
         $offset = (int) $request->get('offset', 0);
-        $sortBy = $request->get('sort_by', config('skylight.default_sort'));
+        $sortBy = $request->get('sort_by', '');
         $rows = (int) $request->get('num_results', config('skylight.results_per_page'));
 
         // Get repository service for current collection
@@ -206,6 +206,157 @@ class SearchController extends Controller
             'solr_filters' => $solrFilters,
             'url_filters' => $urlFilters,
         ];
+    }
+
+    /**
+     * Display the advanced search form
+     */
+    public function advancedForm()
+    {
+        $searchFields = config('skylight.search_fields', []);
+
+        return view($this->collectionView('search.advanced'), [
+            'searchFields' => $searchFields,
+        ]);
+    }
+
+    /**
+     * Handle advanced search form POST — build URL and redirect to GET
+     */
+    public function advancedPost(Request $request)
+    {
+        $searchFields = config('skylight.search_fields', []);
+        $collection = config('app.current_collection', 'clds');
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+
+        $filterUrl = '';
+        foreach ($searchFields as $label => $field) {
+            $escapedLabel = str_replace(' ', '_', $label);
+            $val = trim((string) $request->input($escapedLabel, ''));
+            if ($val !== '') {
+                $filterUrl .= '/'.rawurlencode($label).':'.$val;
+            }
+        }
+
+        $operator = $request->input('operator', 'OR');
+
+        return redirect("{$prefix}/advanced/search{$filterUrl}?operator={$operator}");
+    }
+
+    /**
+     * Display advanced search results
+     */
+    public function advancedSearch(Request $request, ?string $filters = null)
+    {
+        $collection = config('app.current_collection', 'clds');
+        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+        $searchFields = config('skylight.search_fields', []);
+        $configFilters = config('skylight.filters', []);
+        $delimiter = config('skylight.filter_delimiter', ':');
+        $rows = (int) $request->get('num_results', config('skylight.results_per_page'));
+        $offset = (int) $request->get('offset', 0);
+        $sortBy = $request->get('sort_by', '');
+        $operator = $request->get('operator', 'OR');
+
+        // Parse filter segments from the URL path
+        $rawUri = strtok($request->getRequestUri(), '?');
+        $searchPrefix = "{$prefix}/advanced/search/";
+        $pos = strpos($rawUri, $searchPrefix);
+        $filterString = $pos !== false ? substr($rawUri, $pos + strlen($searchPrefix)) : '';
+
+        $solrFilters = [];
+        $urlFilters = [];
+        $savedSearch = [];
+        $message = '<h3>Currently searching the following fields:</h3>';
+
+        if (! empty($filterString)) {
+            $rawSegments = explode('/', $filterString);
+            foreach ($rawSegments as $segment) {
+                if (empty($segment)) {
+                    continue;
+                }
+                $decoded = urldecode($segment);
+                $urlFilters[] = $segment;
+                $parts = explode($delimiter, $decoded, 2);
+
+                if (count($parts) === 2) {
+                    $fieldLabel = $parts[0];
+                    $fieldValue = $parts[1];
+
+                    if (isset($searchFields[$fieldLabel])) {
+                        $solrFilters[] = $searchFields[$fieldLabel].':'.$fieldValue;
+                        $savedSearch[$fieldLabel] = $fieldValue;
+                        $message .= '<strong>'.$fieldLabel.'</strong> : '.urldecode($fieldValue).'<br/>';
+                    }
+                }
+            }
+        }
+
+        $repository = $this->repositoryFactory->current();
+
+        try {
+            $results = $repository->searchWithHighlighting(
+                '*:*',
+                $solrFilters,
+                $offset,
+                $sortBy,
+                $rows,
+                []
+            );
+        } catch (\Exception $e) {
+            return view($this->collectionView('search.error'), [
+                'error' => $e->getMessage(),
+                'query' => '*:*',
+            ]);
+        }
+
+        $baseSearch = url("{$prefix}/advanced/search");
+        foreach ($urlFilters as $f) {
+            $baseSearch .= '/'.$f;
+        }
+
+        $baseParameters = '?operator='.$operator;
+        if (! empty($sortBy)) {
+            $baseParameters .= '&sort_by='.$sortBy;
+        }
+
+        $startRow = $offset + 1;
+        $endRow = min($offset + $rows, $results['total']);
+
+        $paginationLinks = $this->buildPaginationLinks(
+            $results['total'],
+            $rows,
+            $offset,
+            $baseSearch,
+            $baseParameters
+        );
+
+        $data = [
+            'docs' => $results['docs'],
+            'total' => $results['total'],
+            'query' => '*:*',
+            'searchbox_query' => '',
+            'base_search' => $baseSearch,
+            'base_parameters' => $baseParameters,
+            'facets' => $results['facets'],
+            'highlights' => $results['highlights'],
+            'suggestions' => $results['suggestions'] ?? [],
+            'startRow' => $startRow,
+            'endRow' => $endRow,
+            'offset' => $offset,
+            'rows' => $rows,
+            'sort_by' => $sortBy,
+            'sort_options' => config('skylight.sort_fields'),
+            'paginationLinks' => $paginationLinks,
+            'active_filters' => [],
+            'delimiter' => $delimiter,
+            'message' => $message,
+            'searchFields' => $searchFields,
+            'savedSearch' => $savedSearch,
+            'operator' => $operator,
+        ];
+
+        return view($this->collectionView('search.results'), $data);
     }
 
     /**
