@@ -8,13 +8,35 @@
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">About the Project</h1>
 
         <div class="mt-6 prose prose-lg max-w-none">
+
+            {{-- Interviewee portrait floated right beside opening paragraph --}}
+            <div class="not-prose float-right ml-6 mb-4 hidden w-48 sm:block">
+                <img src="{{ asset('collections/eerc/images/v2/DG17-1-4-1.jpg') }}" alt="RESP interviewee at home" class="rounded-lg shadow-sm">
+            </div>
+
             <p>The RESP Archive Project was established in 2018 in collaboration with the Centre for Research Collections at the University of Edinburgh. Originally conceived as a cataloguing project to ensure the ongoing digital security of this collection and improve the discoverability of the audio recordings created by the RESP the remit was soon expanded to include the creation of this website.</p>
 
             <p>A central ethos of the RESP was to make the recordings fully accessible and freely available, both now and for future generations, whether for research, as a teaching resource or wider community use — particularly within the communities where the recordings were made. This website aims to fulfil this remit by ensuring full access to the audio recordings, photographs, and transcripts for each interviewee, presented on dedicated interviewee pages. Additional pages have been included to enhance engagement and include: an Exhibition Gallery, which showcases creative outputs from the Project; a Kids Only page of resources designed to encourage children to learn more about oral history; and an interactive map to help with place-based research.</p>
 
+            <div class="clear-both"></div>
+
+            {{-- Volunteers looking at documents, floated left --}}
+            <div class="not-prose float-left mr-6 mb-4 hidden w-64 sm:block">
+                <img src="{{ asset('collections/eerc/images/v2/DG11-2-4-5.jpg') }}" alt="Volunteers reviewing archive photographs and documents" class="rounded-lg shadow-sm">
+            </div>
+
             <p>Over the course of the Project, the RESP has gathered fieldwork from Dumfries &amp; Galloway and East Lothian and, to a smaller extent, the Western Isles, Tayside, Edinburgh, the Scottish Borders, Argyll and West Lothian. The Collection covers all aspects of our cultural lives: from birth customs to working practices, foodways to transport, landscape to law &amp; order, shops to gardens and fashion to schooldays. Including the donated recordings, the timespan when the recordings were made covers over 50 years, from the 1970s to the 2020s, and with Interviewees ranging in age from 7 to 102, the first-person accounts shared here take us from the present day back to the Victorian era, in over 1,000 recordings and more than 700 hours of audio.</p>
 
+            <div class="clear-both"></div>
+
+            {{-- Man in garden, floated right --}}
+            <div class="not-prose float-right ml-6 mb-4 hidden w-56 sm:block">
+                <img src="{{ asset('collections/eerc/images/v2/EL26-1-4-3.jpg') }}" alt="RESP interviewee in his garden" class="rounded-lg shadow-sm">
+            </div>
+
             <p>The result is a Collection which is broad in timespan, geography and subject matter and offers enormous potential for dedicated and comparative research either within the Collection itself, or in providing comparative material for studies more broadly.</p>
+
+            <div class="clear-both"></div>
         </div>
 
         {{-- Team card --}}
@@ -43,10 +65,15 @@
             <p class="mt-2">Enquiries regarding the RESP Archive should be directed in the first instance to: <a href="mailto:HeritageCollections@ed.ac.uk" class="font-medium text-resp-teal-600 hover:underline">HeritageCollections@ed.ac.uk</a> — Please address your enquiry to &lsquo;RESP Archive&rsquo;.</p>
         </div>
 
-        {{-- Images --}}
-        <div class="mt-8 grid grid-cols-2 gap-4">
-            <img src="{{ asset('collections/eerc/images/v2/10-FW39_02_FWpage.jpg') }}" alt="Fieldwork photograph" class="rounded-lg object-cover shadow-sm">
-            <img src="{{ asset('collections/eerc/images/v2/07-EL39-2-4-1.JPG') }}" alt="Interview photograph" class="rounded-lg object-cover shadow-sm">
+        {{-- Montage and additional photos --}}
+        <div class="mt-8">
+            <img src="{{ asset('collections/eerc/images/v2/montage.jpg') }}" alt="Montage of RESP interviewees and community events" class="w-full rounded-lg shadow-sm">
+        </div>
+
+        <div class="mt-4 grid grid-cols-3 gap-3">
+            <img src="{{ asset('collections/eerc/images/v2/DG42-3-4-1.jpg') }}" alt="RESP interviewee" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm">
+            <img src="{{ asset('collections/eerc/images/v2/EL40-7-4-1.jpg') }}" alt="Interviewee at a community event" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm">
+            <img src="{{ asset('collections/eerc/images/v2/10-FW39_02_FWpage.jpg') }}" alt="Fieldwork photograph" class="aspect-4/3 w-full rounded-lg object-cover shadow-sm">
         </div>
     </div>
 
