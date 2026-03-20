@@ -193,9 +193,8 @@ class SearchController extends Controller
                     $solrField = $configFilters[$filterName];
 
                     // Restore newlines around "|||" — Solr stores them with \n delimiters.
-                    // Handle both formats: space-separated (old links) and already-newlined
-                    // (from urlencode/urldecode roundtrip in new links).
-                    $solrValue = str_replace(' ||| ', "\n|||\n", $filterValue);
+                    // Handles all variants: no spaces, space-separated, or already-newlined.
+                    $solrValue = preg_replace('/\s*\|\|\|\s*/', "\n|||\n", $filterValue);
 
                     $solrFilters[] = "{$solrField}:{$solrValue}";
                 }
