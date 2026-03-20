@@ -83,6 +83,49 @@ Route::prefix('mimed')->name('mimed.')->group(function () {
     Route::get('/feedback', [PageController::class, 'feedback'])->name('feedback');
 });
 
+// Art Sub-Collection Routes
+Route::prefix('art')->name('art.')->group(function () {
+    Route::get('/', [PageController::class, 'artHome'])->name('home');
+
+    Route::post('/redirect', [SearchController::class, 'redirect'])->name('search.redirect');
+
+    Route::get('/search/{query}/{filters?}', [SearchController::class, 'index'])
+        ->where('query', '[^/]+')
+        ->where('filters', '.*')
+        ->name('search.index');
+
+    Route::get('/record/{id}/{seq}/{filename}', [RecordController::class, 'proxyImage'])
+        ->where('id', '[0-9]+')
+        ->where('seq', '[0-9]+')
+        ->name('record.image');
+
+    Route::get('/record/{id}', [RecordController::class, 'show'])
+        ->where('id', '[0-9]+')
+        ->name('record.show');
+
+    Route::get('/mirador', function (\Illuminate\Http\Request $request) {
+        $manifest = filter_var($request->query('manifest', ''), FILTER_VALIDATE_URL) ?: '';
+
+        return view('art.mirador', ['manifest' => $manifest]);
+    })->name('mirador');
+
+    Route::get('/advanced', fn () => redirect('/art/advanced/form'))->name('advanced');
+    Route::get('/advanced/form', [SearchController::class, 'advancedForm'])->name('advanced.form');
+    Route::post('/advanced/post', [SearchController::class, 'advancedPost'])->name('advanced.post');
+    Route::get('/advanced/search/{filters?}', [SearchController::class, 'advancedSearch'])
+        ->where('filters', '.*')
+        ->name('advanced.search');
+
+    Route::get('/about', [PageController::class, 'about'])->name('about');
+    Route::get('/focus', [PageController::class, 'artFocus'])->name('focus');
+    Route::get('/comissioning', [PageController::class, 'artComissioning'])->name('comissioning');
+    Route::get('/loans', [PageController::class, 'artLoans'])->name('loans');
+    Route::get('/iiif', [PageController::class, 'artIiif'])->name('iiif');
+    Route::get('/licensing', [PageController::class, 'licensing'])->name('licensing');
+    Route::get('/takedown', [PageController::class, 'takedown'])->name('takedown');
+    Route::get('/accessibility', [PageController::class, 'accessibility'])->name('accessibility');
+});
+
 // EERC Sub-Collection Routes
 Route::prefix('eerc')->name('eerc.')->group(function () {
     // EERC Homepage

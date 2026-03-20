@@ -25,6 +25,7 @@ return [
         'clds',
         'eerc',
         'mimed',
+        'art',
     ],
 
     /*
@@ -51,5 +52,6 @@ return [
     'prefixes' => [
         'eerc' => 'eerc',
         'mimed' => 'mimed',
+        'art' => 'art',
     ],
 ];
