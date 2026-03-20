@@ -6,7 +6,7 @@
 <div class="lg:grid lg:grid-cols-4 lg:gap-8">
     {{-- Main content --}}
     <div class="lg:col-span-3">
-        <div class="gap-6 sm:grid sm:grid-cols-[180px_1fr] lg:grid-cols-[200px_1fr]">
+        <div class="gap-6 sm:grid sm:grid-cols-[280px_1fr] lg:grid-cols-[300px_1fr]">
             {{-- Photo montage (left column, masonry) --}}
             <div id="photo-grid" class="hidden columns-2 gap-1 self-start overflow-hidden rounded-lg sm:block">
                 {{-- Populated by JavaScript --}}
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!all || !all.length) return;
 
         var shuffled = all.slice().sort(function() { return 0.5 - Math.random(); });
-        var photos = shuffled.slice(0, 20);
+        var photos = shuffled.slice(0, 16);
         var grid = document.getElementById('photo-grid');
         grid.classList.remove('hidden');
 

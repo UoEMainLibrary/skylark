@@ -7,37 +7,37 @@
     <div class="lg:col-span-3 space-y-10">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Exhibition Gallery</h1>
 
-        {{-- Thumbnail navigation --}}
-        <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {{-- Thumbnail navigation — 3 cols on sm, wrapping onto 2 rows --}}
+        <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
             <a href="#animal-encounters" class="group overflow-hidden rounded-lg shadow-sm">
-                <div class="aspect-video w-full overflow-hidden bg-gray-100">
+                <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
                     <img src="{{ asset('collections/eerc/images/animal_encounters_resp.png') }}" alt="Animal Encounters" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
                 </div>
-                <p class="px-2 py-1.5 text-xs font-medium text-gray-700 group-hover:text-resp-teal-600">Animal Encounters</p>
+                <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">Animal Encounters</p>
             </a>
             <a href="#musselburgh-mills" class="group overflow-hidden rounded-lg shadow-sm">
-                <div class="aspect-video w-full overflow-hidden bg-gray-100">
+                <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
                     <img src="{{ asset('collections/eerc/images/MILLS-revised-720.png') }}" alt="Musselburgh Mills" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
                 </div>
-                <p class="px-2 py-1.5 text-xs font-medium text-gray-700 group-hover:text-resp-teal-600">&ldquo;A right industrial wee town!&rdquo;</p>
+                <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">&ldquo;A right industrial wee town!&rdquo;</p>
             </a>
             <a href="#haddington-voices" class="group overflow-hidden rounded-lg shadow-sm">
-                <div class="flex aspect-video w-full items-center justify-center overflow-hidden bg-resp-teal-50 text-resp-teal-300">
-                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                <div class="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-resp-teal-50 text-resp-teal-300">
+                    <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
                 </div>
-                <p class="px-2 py-1.5 text-xs font-medium text-gray-700 group-hover:text-resp-teal-600">Haddington Voices</p>
+                <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">Haddington Voices</p>
             </a>
             <a href="#charlie-horne" class="group overflow-hidden rounded-lg shadow-sm">
-                <div class="flex aspect-video w-full items-center justify-center overflow-hidden bg-resp-teal-50 text-resp-teal-300">
-                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                <div class="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-resp-teal-50 text-resp-teal-300">
+                    <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
                 </div>
-                <p class="px-2 py-1.5 text-xs font-medium text-gray-700 group-hover:text-resp-teal-600">Charlie Horne</p>
+                <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">Charlie Horne</p>
             </a>
             <a href="#days-work" class="group overflow-hidden rounded-lg shadow-sm">
-                <div class="flex aspect-video w-full items-center justify-center overflow-hidden bg-resp-teal-50 text-resp-teal-300">
-                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+                <div class="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-resp-teal-50 text-resp-teal-300">
+                    <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
                 </div>
-                <p class="px-2 py-1.5 text-xs font-medium text-gray-700 group-hover:text-resp-teal-600">All in A Day&rsquo;s Work</p>
+                <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">All in A Day&rsquo;s Work</p>
             </a>
         </div>
 
