@@ -150,11 +150,15 @@ html {
     width: 90%;
 }
 
-iframe {
+.img-container iframe {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.sketchfab-embed-wrapper {
+    margin-left: 3rem;
 }
 
 @media (max-width: 575.99px) {
