@@ -79,7 +79,7 @@
         <footer>
             <div class="footer-links">
                 <div class="site-links">
-                    <a href="{{ url('/mimed') }}">Musical Instruments Museusms Edinburgh</a>
+                    <a href="{{ url('/mimed') }}">Musical Instruments Museums Edinburgh</a>
                     <a href="{{ url('/mimed/about') }}">About this Collection</a>
                     <a href="{{ url('/mimed/iiif') }}">IIIF</a>
                     <a href="{{ url('/mimed/feedback') }}" class="last">Feedback</a>
