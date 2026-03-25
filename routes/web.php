@@ -44,6 +44,13 @@ Route::get('/record/{id}', [RecordController::class, 'show'])
     ->name('record.show');
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'coimbra-colls',
+    'route_name' => 'coimbra-colls',
+    'home' => [PageController::class, 'coimbraCollsHome'],
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'mimed',
     'route_name' => 'mimed',
     'home' => [PageController::class, 'mimedHome'],

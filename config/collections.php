@@ -30,6 +30,7 @@ return [
         'eerc',
         'mimed',
         'art',
+        'coimbra-colls',
     ],
 
     /*
@@ -57,5 +58,6 @@ return [
         'eerc' => 'eerc',
         'mimed' => 'mimed',
         'art' => 'art',
+        'coimbra-colls' => 'coimbra-colls',
     ],
 ];

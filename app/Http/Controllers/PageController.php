@@ -179,6 +179,14 @@ class PageController extends Controller
     }
 
     /**
+    * Display the Art Collection homepage
+    */
+    public function coimbraCollsHome()
+    {
+        return view('coimbra-colls.home');
+    }
+
+    /**
      * Display the Art Collection homepage
      */
     public function artHome()
