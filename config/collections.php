@@ -1,5 +1,9 @@
 <?php
 
+/*
+| For adding collections and migrating from legacy Skylight, see docs/collection-migration.md
+*/
+
 return [
     /*
     |--------------------------------------------------------------------------

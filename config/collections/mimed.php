@@ -1,44 +1,17 @@
 <?php
 
-return [
-    /*
-    |--------------------------------------------------------------------------
-    | Collection Information
-    |--------------------------------------------------------------------------
-    */
+$dspaceDefaults = require __DIR__.'/defaults/dspace.php';
+
+return array_merge($dspaceDefaults, [
     'appname' => 'mimed',
     'fullname' => 'MUSICAL INSTRUMENT MUSEUMS EDINBURGH',
     'theme' => 'mimed',
     'url_prefix' => 'mimed',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Contact Information
-    |--------------------------------------------------------------------------
-    */
     'adminemail' => 'schgals@ed.ac.uk',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Repository Configuration
-    |--------------------------------------------------------------------------
-    */
-    'repository_type' => 'dspace',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Container Configuration
-    |--------------------------------------------------------------------------
-    */
-    'handle_prefix' => env('SKYLIGHT_HANDLE_PREFIX', '10683'),
     'container_id' => env('MIMED_CONTAINER_ID', 'adb5ed4d-6b42-4c8a-a6d1-afc0c08943f9'),
-    'container_field' => 'location.coll',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Field Mappings (DSpace/LIDO Schema)
-    |--------------------------------------------------------------------------
-    */
     'field_mappings' => [
         'Title' => 'dc.title.en',
         'Alternative Title' => 'dc.title.alternative.en',
@@ -80,11 +53,6 @@ return [
         'Other URI' => 'cld.externalURI.other',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Display Configuration
-    |--------------------------------------------------------------------------
-    */
     'recorddisplay' => [
         'Alternative Title',
         'Instrument',
@@ -117,11 +85,6 @@ return [
         'Thumbnail',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Search Configuration
-    |--------------------------------------------------------------------------
-    */
     'search_fields' => [
         'Title' => 'dc.title',
         'Type' => 'dc.type',
@@ -130,11 +93,6 @@ return [
         'Accession Number' => 'dc.identifier.en',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Filter Configuration
-    |--------------------------------------------------------------------------
-    */
     'filters' => [
         'Instrument' => 'type_filter',
         'Maker' => 'author_filter',
@@ -142,14 +100,7 @@ return [
         'Period' => 'period_filter',
         'Collection' => 'collection_filter',
     ],
-    'filter_delimiter' => ':',
-    'date_filters' => [],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Sort Configuration
-    |--------------------------------------------------------------------------
-    */
     'sort_fields' => [
         'Relevancy' => 'score',
         'Maker' => 'dc.contributor.author_sort',
@@ -157,11 +108,6 @@ return [
     ],
     'default_sort' => 'dc.title_sort asc',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Related Items Configuration
-    |--------------------------------------------------------------------------
-    */
     'related_fields' => [
         'Instrument' => 'dc.type.en',
         'Genus' => 'dc.type.genus.en',
@@ -169,11 +115,6 @@ return [
     ],
     'related_number' => 10,
 
-    /*
-    |--------------------------------------------------------------------------
-    | Schema.org Mappings
-    |--------------------------------------------------------------------------
-    */
     'schema_links' => [
         'Title' => 'name',
         'Alternative Title' => 'alternativeName',
@@ -197,11 +138,6 @@ return [
         'ImageUri' => 'image',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Meta Fields
-    |--------------------------------------------------------------------------
-    */
     'meta_fields' => [
         'Title' => 'dc.title',
         'Alternative Title' => 'dc.title.alternative.en',
@@ -210,11 +146,6 @@ return [
         'Type' => 'dc.type',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Feed Fields
-    |--------------------------------------------------------------------------
-    */
     'feed_fields' => [
         'Title' => 'Title',
         'Author' => 'Author',
@@ -225,59 +156,11 @@ return [
         'Date' => 'Date',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Display Options
-    |--------------------------------------------------------------------------
-    */
     'results_per_page' => 10,
-    'share_buttons' => false,
-    'homepage_recentitems' => false,
-    'homepage_randomitems' => false,
-    'display_thumbnail' => true,
-    'link_bitstream' => true,
 
-    /*
-    |--------------------------------------------------------------------------
-    | Lightbox Configuration
-    |--------------------------------------------------------------------------
-    */
-    'lightbox' => true,
-    'lightbox_mimes' => ['image/jpeg', 'image/gif', 'image/png'],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Highlight Fields
-    |--------------------------------------------------------------------------
-    */
     'highlight_fields' => 'dc.title.en,dc.contributor.author,dc.subject.en,lido.country.en,dc.description.en,dc.relation.ispartof.en',
 
-    /*
-    |--------------------------------------------------------------------------
-    | OAI-PMH Configuration
-    |--------------------------------------------------------------------------
-    */
     'oaipmhcollection' => 'hdl_10683_14558',
-    'oaipmhallowed' => true,
 
-    /*
-    |--------------------------------------------------------------------------
-    | Cache Configuration
-    |--------------------------------------------------------------------------
-    */
-    'cache' => false,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Sitemap Configuration
-    |--------------------------------------------------------------------------
-    */
-    'sitemap_type' => 'internal',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Google Analytics
-    |--------------------------------------------------------------------------
-    */
     'ga_code' => env('MIMED_GA_CODE', ''),
-];
+]);
