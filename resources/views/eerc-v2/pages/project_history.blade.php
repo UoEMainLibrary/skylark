@@ -23,6 +23,10 @@
 
             <p>This quote is at the very heart of the work of the RESP where local partnerships and volunteers have been central to the success of our work: both in terms of how much the Project has been able to achieve, and in the authenticity and relevance of the resulting archive of material.</p>
 
+            <div class="not-prose float-right ml-6 mb-4 hidden w-72 sm:block">
+                <img src="{{ asset('collections/eerc/images/v2/community-grid.jpeg') }}" alt="Montage of RESP volunteers and community fieldwork" class="w-full rounded-lg shadow-sm">
+            </div>
+
             <p>To date, around 280 volunteer fieldworkers and 585 volunteer interviewees, who range in age from 8 to 102, have contributed over 1,000 recordings (more than 700 hours of spoken word testimony) as well as many hundreds of images and supporting documents.</p>
 
             <p>The work of the EERC and the RESP has been entirely funded by the Scotland Inheritance Fund and now, through this website, is preserved and made available on an open access basis under the ongoing care of the Centre for Research Collections at the University of Edinburgh.</p>

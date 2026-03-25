@@ -29,13 +29,13 @@
                     <li>Customs and Beliefs</li>
                     <li>The experience of War</li>
                 </ul>
-                <div class="mx-auto shrink-0 sm:mx-0 sm:w-56">
+                <div class="mx-auto shrink-0 sm:mx-0 sm:w-[8.4rem]">
                     <img src="{{ asset('collections/eerc/images/v2/creative/image1.jpeg') }}" alt="Historical photograph of a woman carrying a basket" class="rounded-lg shadow-sm">
                 </div>
             </div>
 
             <div class="not-prose my-6">
-                <img src="{{ asset('collections/eerc/images/v2/creative/image2.jpeg') }}" alt="Historical photograph of a group of working men" class="mx-auto max-w-md rounded-lg shadow-sm">
+                <img src="{{ asset('collections/eerc/images/v2/creative/image2.jpeg') }}" alt="Historical photograph of a group of working men" class="mx-auto max-w-[16.8rem] rounded-lg shadow-sm">
             </div>
 
             <h2>Creative Output</h2>
@@ -70,7 +70,7 @@
             </div>
 
             <div class="not-prose my-6 flex justify-center">
-                <img src="{{ asset('collections/eerc/images/v2/creative/image6.jpeg') }}" alt="Haddington Active and Sporting Memories Group" width="558" height="284" class="h-auto max-w-full rounded-lg shadow-sm sm:max-w-[558px]">
+                <img src="{{ asset('collections/eerc/images/v2/creative/group-sporting-memories.jpg') }}" alt="Haddington Active and Sporting Memories Group" class="h-auto max-w-full rounded-lg shadow-sm sm:max-w-[419px]">
             </div>
 
             <h2>Schools and Education</h2>
@@ -83,7 +83,7 @@
             </ul>
 
             <div class="not-prose mt-8 flex justify-center">
-                <img src="{{ asset('collections/eerc/images/v2/creative/image7.jpeg') }}" alt="School children participating in RESP activities" class="max-w-2xl rounded-lg shadow-sm">
+                <img src="{{ asset('collections/eerc/images/v2/creative/image7.jpeg') }}" alt="School children participating in RESP activities" class="max-w-[25.2rem] rounded-lg shadow-sm">
             </div>
         </div>
     </div>
