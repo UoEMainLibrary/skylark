@@ -47,6 +47,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'coimbra-colls',
     'route_name' => 'coimbra-colls',
     'home' => [PageController::class, 'coimbraCollsHome'],
+    'mirador_view' => 'mimed.mirador',
     'feedback' => true,
 ]);
 
