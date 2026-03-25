@@ -354,6 +354,31 @@ class PageController extends Controller
     }
 
     /**
+     * Browse all Subject or Person facet terms (sidebar “View all” target).
+     */
+    public function eercBrowse(string $facet)
+    {
+        $filters = config('skylight.filters', []);
+
+        if (! isset($filters[$facet])) {
+            abort(404);
+        }
+
+        $repository = $this->repositoryFactory->current();
+
+        if (! method_exists($repository, 'browseTerms')) {
+            abort(404);
+        }
+
+        $browseData = $repository->browseTerms($facet, 500);
+
+        return $this->eercPageWithSidebar('eerc.pages.browse', [
+            'browseFacet' => $facet,
+            'browseData' => $browseData,
+        ]);
+    }
+
+    /**
      * Helper method to render EERC pages with sidebar facets.
      * Automatically resolves the view based on active skin version.
      */

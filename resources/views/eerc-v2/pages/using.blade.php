@@ -33,14 +33,14 @@
             <p>You can click on the thumbnail images located on the &lsquo;Home&rsquo; and &lsquo;People&rsquo; pages to take you through to the relevant catalogue record.</p>
 
             <div class="not-prose clear-both my-8 flex flex-col items-center">
-                <img src="{{ asset('collections/eerc/images/resp-montage.png') }}" alt="Montage of interview photographs" class="max-w-md rounded-lg shadow-sm">
+                <img src="{{ asset('collections/eerc/images/v2/montage.jpg') }}" alt="Montage of RESP interviewees and community events" class="max-w-2xl rounded-lg shadow-sm">
             </div>
 
-            <div class="not-prose my-8 flex flex-col items-start gap-6 sm:flex-row">
+            <div class="not-prose my-8 flex flex-col items-center gap-6 sm:flex-row sm:items-center">
                 <div class="hidden shrink-0 sm:block">
                     <img src="{{ asset('collections/eerc/images/example-map.png') }}" alt="Example Map" class="w-56 rounded-lg shadow-sm">
                 </div>
-                <p class="text-base text-gray-700">Alternatively, you can explore the collection geographically via our <a href="{{ url('/eerc/map') }}" class="font-medium text-resp-teal-600 hover:underline">Interactive Map</a>. Zoom in and out of the map and click on the pins to link through to a list of relevant interviews.</p>
+                <p class="text-base text-gray-700 sm:flex-1">Alternatively, you can explore the collection geographically via our <a href="{{ url('/eerc/map') }}" class="font-medium text-resp-teal-600 hover:underline">Interactive Map</a>. Zoom in and out of the map and click on the pins to link through to a list of relevant interviews.</p>
             </div>
 
             <h2>Access and Restrictions</h2>

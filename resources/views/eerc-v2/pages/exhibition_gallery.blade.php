@@ -7,33 +7,33 @@
     <div class="lg:col-span-3 space-y-10">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Exhibition Gallery</h1>
 
-        {{-- Thumbnail navigation — 3 cols on sm, wrapping onto 2 rows --}}
-        <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <a href="#animal-encounters" class="group overflow-hidden rounded-lg shadow-sm">
+        {{-- Thumbnail navigation: flex + wrap + justify-center → row1 [X][X][X], row2 centred [X][X] with same tile width (gap-4 = 1rem) --}}
+        <div class="mt-6 flex w-full flex-wrap justify-center gap-4">
+            <a href="#animal-encounters" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
                     <img src="{{ asset('collections/eerc/images/animal_encounters_resp.png') }}" alt="Animal Encounters" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
                 </div>
                 <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">Animal Encounters</p>
             </a>
-            <a href="#musselburgh-mills" class="group overflow-hidden rounded-lg shadow-sm">
+            <a href="#musselburgh-mills" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
                     <img src="{{ asset('collections/eerc/images/MILLS-revised-720.png') }}" alt="Musselburgh Mills" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
                 </div>
                 <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">&ldquo;A right industrial wee town!&rdquo;</p>
             </a>
-            <a href="#haddington-voices" class="group overflow-hidden rounded-lg shadow-sm">
+            <a href="#haddington-voices" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-resp-teal-50 text-resp-teal-300">
                     <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
                 </div>
                 <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">Haddington Voices</p>
             </a>
-            <a href="#charlie-horne" class="group overflow-hidden rounded-lg shadow-sm">
+            <a href="#charlie-horne" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-resp-teal-50 text-resp-teal-300">
                     <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
                 </div>
                 <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">Charlie Horne</p>
             </a>
-            <a href="#days-work" class="group overflow-hidden rounded-lg shadow-sm">
+            <a href="#days-work" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
                     <img src="{{ asset('collections/eerc/images/v2/am-cover.jpg') }}" alt="All in a Day's Work cover" class="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
                 </div>
@@ -126,14 +126,6 @@
             </div>
         </article>
 
-        {{-- BSL section link --}}
-        <div class="rounded-lg bg-resp-teal-50 p-6">
-            <h2 class="text-lg font-semibold text-resp-teal-900">British Sign Language (BSL) Content</h2>
-            <p class="mt-2 text-sm text-resp-teal-800">We are developing a dedicated BSL section for the RESP Archive.</p>
-            <a href="{{ url('/eerc/bsl') }}" class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-resp-teal-600 hover:underline">
-                Visit BSL page &rarr;
-            </a>
-        </div>
     </div>
 
     <div class="mt-8 lg:mt-0">

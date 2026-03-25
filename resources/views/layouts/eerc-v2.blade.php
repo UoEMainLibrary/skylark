@@ -38,7 +38,7 @@
     </a>
 
     {{-- Navigation --}}
-    <nav class="bg-resp-slate-600 text-white relative z-40" aria-label="Main navigation">
+    <nav class="sticky top-0 z-50 bg-resp-slate-600 text-white shadow-md" aria-label="Main navigation">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between">
                 {{-- Mobile menu button --}}

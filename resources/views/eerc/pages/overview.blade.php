@@ -145,7 +145,7 @@
             @if(isset($subjectFacet) && !empty($subjectFacet['terms']))
             <ul class="list-group">
                 <li class="list-group-item active">
-                    <h4 href="{{ url('/eerc/browse/Subject') }}">
+                    <h4 href="{{ route('eerc.browse', ['facet' => 'Subject']) }}">
                         Subject
                     </h4>
                 </li>
@@ -158,7 +158,7 @@
                 @endforeach
                 
                 @if(count($subjectFacet['terms']) >= 10)
-                <li class="list-group-item"><a href="{{ url('/eerc/browse/Subject') }}">More ...</a></li>
+                <li class="list-group-item"><a href="{{ route('eerc.browse', ['facet' => 'Subject']) }}">More ...</a></li>
                 @endif
             </ul>
             @endif
@@ -166,7 +166,7 @@
             @if(isset($personFacet) && !empty($personFacet['terms']))
             <ul class="list-group">
                 <li class="list-group-item active">
-                    <h4 href="{{ url('/eerc/browse/Person') }}">
+                    <h4 href="{{ route('eerc.browse', ['facet' => 'Person']) }}">
                         Person
                     </h4>
                 </li>
@@ -179,7 +179,7 @@
                 @endforeach
                 
                 @if(count($personFacet['terms']) >= 10)
-                <li class="list-group-item"><a href="{{ url('/eerc/browse/Person') }}">More ...</a></li>
+                <li class="list-group-item"><a href="{{ route('eerc.browse', ['facet' => 'Person']) }}">More ...</a></li>
                 @endif
             </ul>
             @endif

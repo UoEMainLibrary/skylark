@@ -39,6 +39,10 @@
             <div class="clear-both"></div>
         </div>
 
+        <div class="mt-8">
+            <img src="{{ asset('collections/eerc/images/v2/montage.jpg') }}" alt="Montage of RESP interviewees and community events" class="w-full rounded-lg shadow-sm">
+        </div>
+
         {{-- Team card --}}
         <div class="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
             <h2 class="text-lg font-semibold text-gray-900">Project Team</h2>
@@ -63,11 +67,6 @@
         <div class="mt-8 rounded-lg bg-gray-100 p-6 text-sm text-gray-600">
             <p>The RESP Archive is managed and maintained as a University of Edinburgh Collection.</p>
             <p class="mt-2">Enquiries regarding the RESP Archive should be directed in the first instance to: <a href="mailto:HeritageCollections@ed.ac.uk" class="font-medium text-resp-teal-600 hover:underline">HeritageCollections@ed.ac.uk</a> — Please address your enquiry to &lsquo;RESP Archive&rsquo;.</p>
-        </div>
-
-        {{-- Montage and additional photos --}}
-        <div class="mt-8">
-            <img src="{{ asset('collections/eerc/images/v2/montage.jpg') }}" alt="Montage of RESP interviewees and community events" class="w-full rounded-lg shadow-sm">
         </div>
 
         <div class="mt-4 grid grid-cols-3 gap-3">

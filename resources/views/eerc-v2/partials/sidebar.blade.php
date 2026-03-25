@@ -19,7 +19,7 @@
             @endforeach
             @if(count($subjectFacet['terms']) >= 10)
             <li>
-                <a href="{{ url('/eerc/browse/Subject') }}"
+                <a href="{{ route('eerc.browse', ['facet' => 'Subject']) }}"
                    class="block px-4 py-2.5 text-center text-sm font-medium text-resp-teal-600 transition-colors hover:bg-resp-teal-50">
                     View all subjects &rarr;
                 </a>
@@ -48,7 +48,7 @@
             @endforeach
             @if(count($personFacet['terms']) >= 10)
             <li>
-                <a href="{{ url('/eerc/browse/Person') }}"
+                <a href="{{ route('eerc.browse', ['facet' => 'Person']) }}"
                    class="block px-4 py-2.5 text-center text-sm font-medium text-resp-teal-600 transition-colors hover:bg-resp-teal-50">
                     View all people &rarr;
                 </a>

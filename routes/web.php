@@ -155,6 +155,10 @@ Route::prefix('eerc')->name('eerc.')->group(function () {
         ->where('filters', '.*')
         ->name('search.index');
 
+    Route::get('/browse/{facet}', [PageController::class, 'eercBrowse'])
+        ->where('facet', 'Subject|Person')
+        ->name('browse');
+
     // EERC Record detail page
     Route::get('/record/{id}/{type?}', [RecordController::class, 'show'])
         ->where('id', '[0-9]+')

@@ -210,7 +210,7 @@
                             @endforeach
                             @if(count($facet['terms']) >= 10)
                             <li>
-                                <a href="{{ url('/eerc/browse/' . $facet['name']) }}" class="block px-4 py-2.5 text-center text-sm font-medium text-resp-teal-600 transition-colors hover:bg-resp-teal-50">
+                                <a href="{{ route('eerc.browse', ['facet' => $facet['name']]) }}" class="block px-4 py-2.5 text-center text-sm font-medium text-resp-teal-600 transition-colors hover:bg-resp-teal-50">
                                     View all &rarr;
                                 </a>
                             </li>

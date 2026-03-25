@@ -1,25 +1,29 @@
 @extends('layouts.eerc-v2')
 
-@section('title', 'RESP Archive Project')
+@section('title', 'Home - RESP Archive')
 
 @section('content')
 <div class="lg:grid lg:grid-cols-4 lg:gap-8">
     {{-- Main content --}}
     <div class="lg:col-span-3">
-        <div class="gap-6 sm:grid sm:grid-cols-[280px_1fr] lg:grid-cols-[300px_1fr]">
+        {{-- Relative to full intro row so top offset is predictable; text column stacked above watermark --}}
+        <div class="relative gap-6 sm:grid sm:grid-cols-[280px_1fr] lg:grid-cols-[300px_1fr]">
+            {{-- Watermark: 200px below top of this block (below main padding, aligned with start of photo/text row). Centred on text column from sm+. --}}
+            <div
+                class="pointer-events-none absolute left-1/2 z-0 -translate-x-1/2 overflow-hidden opacity-[0.06] sm:left-[calc(280px+1.5rem+(100%-280px-1.5rem)/2)] lg:left-[calc(300px+1.5rem+(100%-300px-1.5rem)/2)]"
+                style="top: 200px;"
+                aria-hidden="true">
+                <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="" class="w-96 max-w-none">
+            </div>
+
             {{-- Photo montage (left column, masonry) --}}
-            <div id="photo-grid" class="hidden columns-2 gap-1 self-start overflow-hidden rounded-lg sm:block">
+            <div id="photo-grid" class="relative z-10 hidden columns-2 gap-1 self-start overflow-hidden rounded-lg sm:block">
                 {{-- Populated by JavaScript --}}
             </div>
 
             {{-- Text content (right of photos) --}}
-            <div class="relative min-w-0">
-                {{-- Watermark (centred vertically) --}}
-                <div class="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden opacity-[0.06]" aria-hidden="true">
-                    <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="" class="w-96 max-w-none">
-                </div>
-
-                <div class="prose prose-lg relative max-w-none">
+            <div class="relative z-10 min-w-0">
+                <div class="prose prose-lg max-w-none">
                     <p>The RESP Archive Project was established in 2018 in collaboration with the Centre for Research Collections at the University of Edinburgh. Originally conceived as a cataloguing project to improve the discoverability of hundreds of audio recordings created by the RESP the project has developed through the creation of this website to ensure that the collections are both readily accessible and carefully curated and digitally preserved for future access.</p>
 
                     <p>The central ethos of the RESP is to make the collections freely available for study, teaching and community access. The project has achieved this by creating a digital platform that allows users to explore and engage with the collection with full access to audio recordings, photographs, and transcripts all in the one place. We have also provided space to engage with creative output in our <a href="{{ url('/eerc/exhibition') }}">Exhibition gallery</a>.</p>
@@ -30,7 +34,7 @@
 
                     <p class="!mb-0 flex items-start gap-4">
                         <span class="flex-1">The RESP Archive is managed and maintained as a University of Edinburgh Collection.</span>
-                        <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="EERC / RESP Logo" class="!my-0 h-14 w-14 shrink-0 rounded-full">
+                        <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="EERC / RESP Logo" class="!my-0 h-24 w-24 shrink-0 rounded-full sm:h-28 sm:w-28">
                     </p>
                 </div>
             </div>
