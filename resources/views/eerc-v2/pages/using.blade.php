@@ -9,7 +9,7 @@
 
         <div class="mt-6 prose prose-lg max-w-none">
             <div class="float-left mr-6 mb-4 hidden sm:block">
-                <img src="{{ asset('collections/eerc/images/thumbs_processed/thumbnail_DG38-3-4-1.JPG') }}" alt="Interviews of Ena Forteath aged 78" class="w-64 rounded-lg shadow-sm">
+                <img src="{{ asset('collections/eerc/images/v2/MG-0690-crop2.jpg') }}" alt="Photograph from the RESP archive collection" class="w-64 rounded-lg shadow-sm">
             </div>
 
             <p>At the heart of the Regional Ethnology of Scotland Project (RESP) is a collection of digital audio files containing hundreds of hours of fieldwork recordings which provide a rich and fascinating insight into many aspects of life and society in Scotland. The collections are arranged initially by geographic study area, then named interviewer and then by interviewee. When searching the catalogue you will find all digital files, including audio recordings, transcriptions and any available photographs located on the individual interviewee pages or fieldworker page.</p>
