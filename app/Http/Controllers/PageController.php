@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
 use App\Services\RepositoryFactory;
 use Illuminate\Support\Facades\Http;
 
@@ -32,7 +33,7 @@ class PageController extends Controller
         $collection = config('app.current_collection', 'clds');
 
         if ($collection === 'eerc') {
-            return $this->eercPageWithSidebar('eerc.pages.about');
+            return $this->eercDynamicPage('eerc-about', 'eerc.pages.about');
         }
 
         if ($collection === 'mimed') {
@@ -226,7 +227,7 @@ class PageController extends Controller
         $collection = config('app.current_collection', 'clds');
 
         if ($collection === 'eerc') {
-            return $this->eercPageWithSidebar('eerc.pages.accessibility');
+            return $this->eercDynamicPage('eerc-accessibility', 'eerc.pages.accessibility');
         }
 
         if ($collection === 'mimed') {
@@ -286,7 +287,7 @@ class PageController extends Controller
      */
     public function resp()
     {
-        return $this->eercPageWithSidebar('eerc.pages.resp');
+        return $this->eercDynamicPage('eerc-resp', 'eerc.pages.resp');
     }
 
     /**
@@ -294,7 +295,7 @@ class PageController extends Controller
      */
     public function using()
     {
-        return $this->eercPageWithSidebar('eerc.pages.using');
+        return $this->eercDynamicPage('eerc-using', 'eerc.pages.using');
     }
 
     /**
@@ -302,7 +303,7 @@ class PageController extends Controller
      */
     public function exhibitionGallery()
     {
-        return $this->eercPageWithSidebar('eerc.pages.exhibition_gallery');
+        return $this->eercDynamicPage('eerc-exhibition-gallery', 'eerc.pages.exhibition_gallery');
     }
 
     /**
@@ -318,7 +319,7 @@ class PageController extends Controller
      */
     public function contact()
     {
-        return $this->eercPageWithSidebar('eerc.pages.contact');
+        return $this->eercDynamicPage('eerc-contact', 'eerc.pages.contact');
     }
 
     /**
@@ -334,7 +335,7 @@ class PageController extends Controller
      */
     public function projectHistory()
     {
-        return $this->eercPageWithSidebar('eerc.pages.project_history');
+        return $this->eercDynamicPage('eerc-project-history', 'eerc.pages.project_history');
     }
 
     /**
@@ -342,7 +343,7 @@ class PageController extends Controller
      */
     public function creativeEngagement()
     {
-        return $this->eercPageWithSidebar('eerc.pages.creative_engagement');
+        return $this->eercDynamicPage('eerc-creative-engagement', 'eerc.pages.creative_engagement');
     }
 
     /**
@@ -350,7 +351,7 @@ class PageController extends Controller
      */
     public function bsl()
     {
-        return $this->eercPageWithSidebar('eerc.pages.bsl');
+        return $this->eercDynamicPage('eerc-bsl', 'eerc.pages.bsl');
     }
 
     /**
@@ -373,6 +374,22 @@ class PageController extends Controller
             'subjectFacet' => $subjectFacet,
             'personFacet' => $personFacet,
         ], $extraData));
+    }
+
+    /**
+     * Render an EERC page from the database, falling back to static Blade.
+     */
+    protected function eercDynamicPage(string $slug, string $fallbackView): mixed
+    {
+        if (config('skylight.resp_skin_version') === 2) {
+            $page = Page::where('slug', $slug)->first();
+
+            if ($page) {
+                return $this->eercPageWithSidebar('eerc.pages.dynamic', ['page' => $page]);
+            }
+        }
+
+        return $this->eercPageWithSidebar($fallbackView);
     }
 
     /**
