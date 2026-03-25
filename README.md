@@ -305,6 +305,17 @@ npm run build
 php artisan app:solr-poc [--query=search_term]
 ```
 
+## Deployment (`deploy.sh`)
+
+[`deploy.sh`](deploy.sh) is a small **server-side update** script for an existing git checkout. It:
+
+1. **`git pull`** — fetches the latest code on the current branch.
+2. **`composer install --no-dev`** — production PHP dependencies (`--optimize-autoloader`, non-interactive).
+3. **`npm install`** then **`npm run build`** — Node deps and a Vite production asset build.
+4. **Clears Laravel caches** — `config:clear`, `view:clear`, `route:clear`, `cache:clear`.
+
+Run it from the project root (e.g. `./deploy.sh`). It does **not** run database migrations, `php artisan optimize`, or queue restarts—add those separately if your environment needs them.
+
 ## Environment Variables
 
 Key environment variables for development:
