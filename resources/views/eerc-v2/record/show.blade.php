@@ -183,7 +183,7 @@
                                                     </button>
                                                 @endif
                                             </div>
-                                        @elseif(in_array($displayField, ['Access', 'Usage Statement', 'Biographical history', 'Related', 'Physical', 'Alternative Format', 'Physical Description', 'Processing Information']))
+                                        @elseif(in_array($displayField, ['Access', 'Usage Statement', 'Biographical history', 'Related', 'Physical', 'Alternative Format', 'Physical Description']))
                                             @php
                                                 $noteValues = is_array($record[$displayField]) ? $record[$displayField] : [$record[$displayField]];
                                             @endphp

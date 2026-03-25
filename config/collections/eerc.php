@@ -95,7 +95,6 @@ return [
         'Alternative Format' => 'altformavail',
         'Physical Description' => 'physdesc',
         'Audio links and images' => 'digital_object_uris',
-        'Processing Information' => 'processinfo',
     ],
 
     /*
@@ -122,7 +121,6 @@ return [
         'Alternative Format',
         'Audio links and images',
         'Language',
-        'Processing Information',
     ],
 
     'searchresult_display' => [

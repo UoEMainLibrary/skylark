@@ -134,6 +134,74 @@ Legacy app layout (sibling **skylight** CodeIgniter project, often next to this 
 
 Production Skylight instances often use **per-vhost** config; copy those values into the new `config/collections/foo.php` and `.env`.
 
+### View templates: CodeIgniter → Blade
+
+Legacy PHP views live under `skylight/application/views/` (e.g. `header.php`, `search_results.php`, `record.php`, `application/views/static/{appname}/`). When porting markup into `resources/views/{collection}/`, use the mappings below.
+
+#### URL and asset helpers
+
+| Legacy (CodeIgniter / Skylight) | Laravel / Blade |
+|----------------------------------|-----------------|
+| `base_url()` | **Not equivalent** to a single helper. Use `url('/')` for the app root if you truly need the site base; most links should use `route('…')` or `url('/prefix/…')` instead of reconstructing CI’s index.php behaviour. |
+| `base_url() . 'assets/…'` | Put files under `public/…` and use `asset('…')` (e.g. `asset('assets/…')`). |
+| `base_url() . 'theme/…'` | Same: move under `public/` or bundle via Vite; reference with `asset()` or `@vite`. |
+| `site_url('path')` | `url('/path')` or, preferably, a **named route**: `route('collection.action')`. |
+| `current_url()` | `url()->current()` or `request()->fullUrl()`. |
+| `base_url() . index_page() . …` + `skylight_url_prefix` | Replace with explicit prefixed routes (see `Route::prefix` in `routes/web.php`); avoid carrying over `index.php` segments. |
+| Concat paths like `base_url() . $prefix . $recordURL` | Build in the controller (or a small presenter) and pass a single URL string, or use `url($path)` with validated segments. |
+
+**`<base href="…">`** (common in `header.php`, combining `base_url()`, `index_page()`, and `skylight_url_prefix`): in Laravel you usually **remove** the `<base>` tag and use **explicit** `url()` / `route()` / `asset()` on every link, stylesheet, and script so behaviour stays predictable.
+
+#### Config in views
+
+| Legacy | Laravel |
+|--------|---------|
+| `$this->config->item('skylight_appname')` | `config('skylight.appname')` or the appropriate `config('collections…')` key after merge. |
+| `$this->config->item('skylight_url_prefix')` | Prefer **named routes** and `url('/prefix/…')`; optional `config('skylight.url_prefix')` if you still need the string. |
+| Other `$this->config->item('skylight_*')` | Mirror into `config/collections/{collection}.php` (and `config/skylight.php`); read with `config('skylight.key')` — **not** `env()` in views. |
+
+#### Output and escaping
+
+| Legacy | Blade |
+|--------|--------|
+| `<?php echo $x; ?>` / `<?= $x ?>` | `{{ $x }}` |
+| `html_escape($x)` | `{{ $x }}` |
+
+#### Forms
+
+| Legacy | Blade |
+|--------|--------|
+| `form_open(…)` / `form_close()` | `<form action="{{ route('…') }}" method="post">` with `@csrf`; add `@method('PUT')` etc. when spoofing verbs. |
+| `form_open_multipart()` | Same as above with `enctype="multipart/form-data"`. |
+
+#### Includes and layout
+
+| Legacy | Laravel |
+|--------|---------|
+| `$this->load->view('partial', $data)` | `@include('partial', ['key' => $value])` |
+| Repeated header/footer | `@extends('layouts…')`, `@section('content')`, `@yield` |
+
+#### Skylight utilities in views (`$this->skylight_utilities`)
+
+Many views call `$this->skylight_utilities->getField(…)`, `getBitstreamLink(…)`, etc. **Do not** port that pattern into Blade. Move the logic into a **controller**, **view composer**, **Blade component**, or a dedicated PHP class, and pass **simple variables** into the view (e.g. `$titleField`, `$bitstreamUrl`).
+
+#### Search-and-replace and grep (views)
+
+Work **per directory** (e.g. one collection’s views at a time) and review each match; Skylight mixes internal and external URLs.
+
+**Useful greps** over `skylight/application/views/`:
+
+- `base_url`, `site_url`, `index_page`
+- `config->item`
+- `skylight_utilities`
+- `form_open`, `form_close`, `anchor(`
+- `<?php echo`, `<?=`
+
+**Rules of thumb:**
+
+- Paths that are **static files** under the web root → `public/…` + `asset('…')`.
+- Paths that are **application routes** (search, record, about) → `route()` / `url()`, not `asset()`.
+
 ---
 
 ## Reference implementations
