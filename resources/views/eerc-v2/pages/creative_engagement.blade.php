@@ -22,7 +22,7 @@
                         <li>Childhood and school life</li>
                         <li>Working life</li>
                         <li>The experience of women</li>
-                        <li>The changing physical landscape, both rural and urban</li>
+                        <li>The changing physical landscape</li>
                         <li>Changing agricultural life</li>
                         <li>Language and locality</li>
                     </ul>
