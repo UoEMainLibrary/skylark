@@ -35,8 +35,8 @@
                     <p>The RESP Archive is managed and maintained as a University of Edinburgh Collection.</p>
                 </div>
 
-                <div class="not-prose mt-8">
-                    <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="EERC / RESP Logo" class="h-40 w-40 rounded-full shadow-sm sm:h-48 sm:w-48">
+                <div class="not-prose mt-8 flex justify-center">
+                    <img src="{{ asset('collections/eerc/images/v2/resp_circular_logo.png') }}" alt="EERC / RESP Logo" class="h-40 w-40 shrink-0 rounded-full shadow-sm sm:h-48 sm:w-48">
                 </div>
             </div>
         </div>
