@@ -49,6 +49,11 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'home' => [PageController::class, 'coimbraCollsHome'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/virtual-exhibition', [PageController::class, 'coimbraCollsVirtualExhibition'])->name('virtual-exhibition');
+        Route::get('/about', [PageController::class, 'coimbraCollsAbout'])->name('about');
+        Route::get('/feedback', [PageController::class, 'coimbraCollsFeedback'])->name('feedback');
+    },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([

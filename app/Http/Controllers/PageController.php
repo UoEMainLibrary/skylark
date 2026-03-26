@@ -179,11 +179,40 @@ class PageController extends Controller
     }
 
     /**
-    * Display the Art Collection homepage
+    * Display the Coimbra Colls Collection homepage
     */
     public function coimbraCollsHome()
     {
         return view('coimbra-colls.home');
+    }
+
+    /**
+    * Display the Coimbra Colls Accessiblity page
+    */
+
+
+    /**
+    * Display the Coimbra Colls Virtual Exhibition page
+    */
+    public function coimbraCollsVirtualExhibition()
+    {
+        return view('coimbra-colls.pages.virtual-exhibition');
+    }
+
+    /**
+    * Display the Coimbra Colls Virtual Exhibition page
+    */
+    public function coimbraCollsAbout()
+    {
+        return view('coimbra-colls.pages.about');
+    }
+
+    /**
+    * Display the Coimbra Colls Virtual Exhibition page
+    */
+    public function coimbraCollsFeedback()
+    {
+        return view('coimbra-colls.pages.feedback');
     }
 
     /**
@@ -243,6 +272,10 @@ class PageController extends Controller
 
         if ($collection === 'art') {
             return view('art.pages.accessibility');
+        }
+
+        if ($collection === 'coimbra-colls') {
+            return view('coimbra-colls.pages.accessibility');
         }
 
         return view('pages.accessibility');

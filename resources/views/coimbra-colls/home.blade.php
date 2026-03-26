@@ -1,39 +1,41 @@
-@extends('layouts.art')
+@extends('layouts.coimbra-colls')
 
-@section('title', 'University of Edinburgh Art Collection')
+@section('title', 'Coimbra Collections')
 
 @section('content')
-<section class="introduction">
-    <div class="container-fluid">
-        <a class="w-100" href="{{ url('/art/record/112492') }}"><img class="d-block w-100"
-                src="https://images.is.ed.ac.uk/luna/servlet/iiif/UoEart~1~1~76079~393273/1651,2210,7000,3500/1000,500/0/default.jpg"
-                alt="Whittle"></a>
+<div class="content">
+    <!-- todo replace two with sass or less -->
+    <div>
+        <div class="parallax img0 inactive"></div>
+        <div class="parallax img1 inactive"></div>
+        <div class="parallax img2 inactive"></div>
+        <div class="parallax img3 inactive"></div>
+        <div class="parallax img4 inactive"></div>
+        <div class="parallax img5 inactive"></div>
+        <div class="parallax img6 inactive"></div>
+        <div class="parallax img7 inactive"></div>
+        <div class="parallax img8 inactive"></div>
+        <div class="parallax img9 inactive"></div>
+        <div class="parallax img10 inactive"></div>
+        <div class="parallax img11 inactive"></div>
+        <div class="parallax img12 inactive"></div>
+
+
+
+        <div class="main-categories row" id="content">
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22anthropology+%7C%7C%7C+Anthropology%22'>Anthropology</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22antiquities+%7C%7C%7C+Antiquities%22'><div class="border-top"></div>Antiquities</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22art+%7C%7C%7C+Art%22'><div class="border-top"></div>Art</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22early+printed+books+%7C%7C%7C+Early+printed+books%22'><div class="border-top"></div>Early books</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22language+and+languages+%7C%7C%7C+Language+and+languages%22'><div class="border-top"></div>Language</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22manuscripts+%7C%7C%7C+Manuscripts%22'><div class="border-top"></div>Manuscripts</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22medicine+%7C%7C%7C+Medicine%22'><div class="border-top"></div>Medicine</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22musical+instruments+%7C%7C%7C+Musical+Instruments%22'><div class="border-top"></div>Music</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22natural+history+%7C%7C%7C+Natural+history%22'><div class="border-top"></div>Natural history</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22politics+and+government+%7C%7C%7C+Politics+and+government%22'><div class="border-top"></div>Politics</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22social+history+%7C%7C%7C+Social+History%22'><div class="border-top"></div>Social History</a>
+            <a class="col-xs-6 col-md-2" href='./search/*:*/Category:%22science+%7C%7C%7C+Science%22'><div class="border-top"></div>Science</a>
+            <a class="col-xs-12 col-md-12 border-b" href='./search/*:*/Category:%22technology+%7C%7C%7C+Technology%22'><div class="border-top"></div>Technology</a>
+        </div>
     </div>
-</section>
-<div class="background-banner">
-    <div class="container-fluid text">
-        <h2>About</h2>
-        <p class="paragraph-part">
-            The University of Edinburgh has been engaged with the practices of commissioning, purchasing and displaying
-            the work of artists for nearly 350 years. The early stages of this collecting were closely linked with
-            galvanising the institution's identity and status as a place of learning and inspiration, through the
-            commissioning and collecting of portraits and busts of Professors and key alumni.<br><br>
-            The present day Art Collection is comprised of two institutional collections – the University of Edinburgh
-            Fine Art Collection and the Edinburgh College of Art Collection. Now amounting to nearly 8,000 artworks
-            spanning two millennia, the collection is divided into twelve named sub-collections which can be viewed <a
-                href="{{ url('/art/search/*:*/Collection') }}">here</a>.
-            <br><br>
-            Alongside <a href="{{ url('/art/comissioning') }}">commissioning</a> new work, displaying the collection across campus, and
-            lending to external venues, greater emphasis is now placed on the acquisition and use of artworks in the
-            support and development of research and teaching.
-            <br><br>
-            In addition to searching the collection via these pages, The University of Edinburgh Art Collection also has
-            two discrete areas on <a href="https://www.artuk.org/about/about">Art UK</a>; one for the <a
-                href="https://artuk.org/visit/venues/university-of-edinburgh-5095">University's Fine Art Collection</a>
-            and one for <a
-                href="https://artuk.org/visit/venues/edinburgh-college-of-art-university-of-edinburgh-7553">Edinburgh
-                College of Art</a>.
-        </p>
-    </div>
-</div>
 @endsection

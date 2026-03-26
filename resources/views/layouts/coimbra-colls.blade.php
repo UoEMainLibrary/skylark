@@ -1,234 +1,185 @@
 <!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
 <!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
 <!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-
 <head>
     <meta charset="utf-8">
-    <title>@yield('title', 'University of Edinburgh Art Collection')</title>
 
+    <title>@yield('title', 'Coimbra Collections')</title>
+
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+    Remove this if you use the .htaccess -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <meta name="description" content="">
     <meta name="author" content="">
+
+    <!-- Mobile viewport optimized: j.mp/bplateviewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="shortcut icon" href="{{ asset('collections/art/images/favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ asset('collections/art/images/apple-touch-icon.png') }}">
+    <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 
-    <link rel="stylesheet" href="{{ asset('assets/fancybox/source/jquery.fancybox.css') }}?v=2.1.4" type="text/css" media="screen" />
-    <link rel="stylesheet" href="https://releases.flowplayer.org/6.0.4/skin/minimalist.css">
-    <link rel="stylesheet" href="{{ asset('assets/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="shortcut icon" href="{{ asset('collections/coimbra-colls/images/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{ asset('collections/coimbra-colls/images/apple-touch-icon.png') }}">
 
-    <script src="{{ asset('assets/modernizr/modernizr-1.7.min.js') }}"></script>
-    <script src="{{ asset('assets/jquery-1.11.0/jquery-1.11.0.min.js') }}"></script>
-    <script src="{{ asset('assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
-    <script src="https://cdn.rawgit.com/mejackreed/Leaflet-IIIF/master/leaflet-iiif.js"></script>
-    <script src="{{ asset('assets/openseadragon/openseadragon.min.js') }}"></script>
+    <!-- CSS: implied media="all" -->
+    <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css')}}" type="text/css" media="screen" />
+    <link rel="stylesheet" href="{{ asset('assets/flowplayer-7.0.4/skin/skin.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/font-awesome/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('collections/coimbra-colls/css/style.css')}}">
+    <link rel="stylesheet" href="{{ asset('collections/coimbra-colls//css/animate.css')}}">
 
-    @if(config('skylight.ga_code'))
+    <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF95rAHOZQlQ7atjmr9HC2e4M2cS-u1Gs&callback=initMap" async defer></script>
+    <script src="{{ asset('assets/modernizr/modernizr-1.7.min.js')}}"></script>
+    <script src="{{ asset('assets/jquery-1.11.0/jquery-1.11.0.min.js')}}"></script>
+    <script src="{{ asset('assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js')}}"></script>
+    <script src="{{ asset('assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js')}}"></script>
+    <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
+    <script src="{{ asset('assets/google-analytics/analytics.js')}}"></script>
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('skylight.ga_code') }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
+        function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', '{{ config('skylight.ga_code') }}');
     </script>
-    @endif
+    <!-- End Google Analytics -->
 
-    <script src="https://releases.flowplayer.org/6.0.4/flowplayer.min.js"></script>
+    <script src="{{ asset('assets/flowplayer-7.0.4/flowplayer.min.js')}}"></script>
+
+    <!-- global options -->
     <script>
         flowplayer.conf = {
-            analytics: "{{ config('skylight.ga_code') }}"
+             analytics: "{{ config('skylight.ga_code') }}"
         };
     </script>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/3321181a33.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{{ asset('collections/art/css/style.css') }}?v=2">
+    <?php /* if (isset($solr)) { ?><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+        <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
+
+        <?php
+
+        foreach($metafields as $label => $element) {
+            $field = "";
+            if(isset($recorddisplay[$label])) {
+                $field = $recorddisplay[$label];
+                if(isset($solr[$field])) {
+                    $values = $solr[$field];
+                    foreach($values as $value) {
+                        ?>  <meta name="<?php echo $element; ?>" content="<?php echo $value; ?>"> <?php
+                    }
+                }
+            }
+        }
+    } */?>
 </head>
 
 <body>
-    <script>
-        function warnNewTab() {
-            return confirm("This link will open in a new tab. Proceed?");
-        }
-    </script>
-    <div class="skip-links" style="position: absolute;">
+    <div class="skip-links">
         <a class="screen-reader-text" href="{{ url()->current() }}#main">Skip to content</a>
     </div>
-    <div id="container">
-        <header>
-            <div class="container-fluid header">
-                <div class="header-logo">
-                    <a href="{{ url('/art') }}">
-                        <img class="header-img"
-                            onmouseout="this.src='{{ asset('collections/art/images/UoE_Stacked-Logo_Blue-dark.png') }}'"
-                            onmouseover="this.src='{{ asset('collections/art/images/UoE_Stacked-Logo_Blue-light.png') }}'"
-                            src="{{ asset('collections/art/images/UoE_Stacked-Logo_Blue-dark.png') }}">
-                    </a>
-                </div>
-                <nav class="navbar navbar-expand-lg navbar-light custom-nav">
-                    <div class="d-flex flex-grow-1">
-                        <span class="w-100 d-lg-none d-block"></span>
-                        <a class="navbar-brand-two mx-auto d-lg-none d-inline-block" href="#">
-                        <div class="w-100 text-right">
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="collapse navbar-collapse flex-grow-1 text-right" id="myNavbar">
-                        <ul class="navbar-nav ml-auto flex-nowrap">
-                            <li class="nav-item">
-                                <a href="{{ url('/art') }}" class="nav-link text-nowrap m-2 menu-item">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('/art/focus') }}" class="nav-link text-nowrap m-2 menu-item">In Focus</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('/art/comissioning') }}" class="nav-link text-nowrap m-2 menu-item">Commissioning</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ url('/art/loans') }}" class="nav-link text-nowrap m-2 menu-item">Loans</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#contact" class="nav-link text-nowrap m-2 menu-item b-right">Contact</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-
+    <nav class="navbar navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" title="Coimbra Group Website link" target="_blank" href="http://www.coimbra-group.eu/"><span class="visually-hidden"> (opens in a new tab)</span></a>
             </div>
-            <section class="search">
-                <form action="{{ url('/art/redirect') }}" method="post">
-                    @csrf
-                    <div class="container-fluid">
-                        <div class="input-group">
-                            <input type="text" class="form-control"
-                                placeholder="Search 8,000 artworks spanning two millenia"
-                                aria-describedby="basic-addon2" name="q" value="{{ isset($searchbox_query) ? urldecode($searchbox_query) : '' }}" id="q">
-                            <div class="input-group-append">
-                                <input type="submit" class="btn btn-outline-secondary" name="submit_search"
-                                    value="Search" id="submit_search" />
-                                <input type="button" class="btn btn-outline-secondary" name="submit_search"
-                                    value="Advanced Search" onclick="location.href='{{ url('/art/advanced') }}';" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </section>
-        </header>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active dropdown"><a href="#">Home</a></li>
+                    <li><a href="{{ url('/coimbra-colls/feedback') }}">Feedback</a></li>
+                    <li><a href="{{ url('/coimbra-colls/about') }}">About</a></li>
+                    <li><a href="{{ url('/coimbra-colls/virtual-exhibition') }}">Virtual Exhibition</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="./search">All records</a></li>
+                    <li class="search">
+                        <form role="search" action="{{ url('/coimbra-colls/redirect') }}" method="post">
+                            <input id="uoe-search" type="text"
+                                   placeholder="Search..." name="q"
+                                   value="<?php if (isset($searchbox_query)) echo urldecode($searchbox_query); ?>"/>
+                            <button type="submit" name="submit_search" value="Search">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-        <div id="main" role="main" class="clearfix">
+@yield('content')
 
-            @yield('content')
+</div> <!--END of ROW - move into col sidebar -->
+</div><!--END of container - move into col sidebar -->
+<div class="footer">
+    <div class="hidden-xs col-md-2 text-center">
+        <a href="https://www.ed.ac.uk" title="Link to University of Edinburgh Home Page" target="_blank" href="https://www.ed.ac.uk"> <img
+                style="height: 100px; width: 100px; position: relative; margin: 25px auto"
+                src="{{ asset('collections/coimbra-colls/images/eduni-logo.png') }}"
+                alt="University of Edinburgh Logo"></a>
+    </div>
+    <div class="col-xs-12 col-md-10">
+        <ul>
+            <li><a href="https://www.ed.ac.uk/about/website/website-terms-conditions">Terms &amp; conditions</a></li>
+            <li><a title="Website Accessibility Link" target="_blank" href="{{url('/coimbra-colls/accessibility')}}">Accessibility (Opens in a new tab)</a></li>
+            <li><a href="https://www.ed.ac.uk/about/website/privacy">Privacy &amp; cookies</a></li>
 
-</div><footer class="page-footer font-small stylish-color-dark pt-4">
-
-    <div class="container text-center text-md-left">
-
-        <hr>
-
-        <ul id="contact" class="list-unstyled list-inline text-center py-2">
-            <li class="list-inline-item">
-                <h5 class="mb-1">For more information on borrowing, gifting or of viewing artwork</h5>
-            </li>
-            <li class="list-inline-item">
-                <a href="mailto:HeritageCollections@ed.ac.uk" class="btn btn-danger btn-rounded">Contact us!</a>
-            </li>
         </ul>
 
-        <hr>
+        <p>Hosted by The University of Edinburgh</p>
+        <p>Copyright © 2017 Coimbra Group</p>
+    </div>
 
-        <div class="row">
+</div>
 
-            <div class="col-md-4 mx-auto">
-                <h5 class="font-weight-bold mt-3 mb-4">Art Collections Curator</h5>
-                <p>University of Edinburgh<br/>
-                    Main Library<br/>
-                    30 George Square<br/>
-                    Edinburgh<br/>
-                    EH8 9LJ<br/>
-                </p>
+<!-- Modal -->
+<div class="modal fade" id="newTabNotice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Notice</h4>
             </div>
-
-            <hr class="clearfix w-100 d-md-none">
-
-            <div class="col-md-2 mx-auto">
-                <h5 class="font-weight-bold mt-3 mb-4">Links</h5>
-                <ul class="list-unstyled">
-                    <li><a href="{{ url('/art') }}">UoE Art Collection</a></li>
-                    <li><a href="{{ url('/art/about') }}">About</a></li>
-                    <li><a href="{{ url('/art/iiif') }}">IIIF</a></li>
-                    <li><a href="{{ url('/art/feedback') }}">Feedback</a></li>
-                </ul>
+            <div class="modal-body">
+                <p>This link will open in a new tab. Would you like to proceed?</p>
             </div>
-
-            <hr class="clearfix w-100 d-md-none">
-
-            <div class="col-md-2 mx-auto">
-                <h5 class="font-weight-bold mt-3 mb-4">Links</h5>
-                <ul class="list-unstyled">
-                    <li><a href="https://www.ed.ac.uk/about/website/privacy">Privacy & Cookies</a></li>
-                    <li><a href="{{ url('/art/takedown') }}">Takedown Policy</a></li>
-                    <li><a href="{{ url('/art/licensing') }}">Licensing & Copyright</a></li>
-                    <li><a href="{{ url('/art/accessibility') }}">Accessibility</a></li>
-                </ul>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="openTab" type="button" class="btn btn-primary">Proceed</button>
             </div>
-
-            <hr class="clearfix w-100 d-md-none">
-
         </div>
-
     </div>
-
-    <ul class="list-unstyled list-inline text-center">
-        <li class="list-inline-item">
-            <a href="https://www.facebook.com/UniversityOfEdinburghFineArtCollection" class="btn-floating btn-fb mx-1" title="UoE Fine Art Collection Facebook Page">
-                <i class="fab fa-facebook-f"> </i>
-            </a>
-        </li>
-        <li class="list-inline-item">
-            <a href="https://twitter.com/UoEArtColl" class="btn-floating btn-tw mx-1" title="UoE Fine Art Collection Twitter Page">
-                <i class="fab fa-twitter"> </i>
-            </a>
-        </li>
-        <li class="list-inline-item">
-            <a href="https://uoeartandarchives.tumblr.com/" class="btn-floating btn-gplus mx-1" title="UoE Fine Art Collection Tumblr Page">
-                <i class="fab fa-tumblr"></i>
-            </a>
-        </li>
-        <li class="list-inline-item">
-            <a href="https://podcasts.apple.com/gb/podcast/the-collection-podcast/id1086099131" class="btn-floating btn-dribbble mx-1" title="UoE The Collection Podcast">
-                <i class="fab fa-itunes-note"></i>
-            </a>
-        </li>
-    </ul>
-
-    <div class="footer-copyright text-center py-3">This collection is part of <a href="https://collections.ed.ac.uk/">University Collections.</a><br/>Unless explicitly stated otherwise, all material is copyright &copy; {{ date('Y') }}
-        <a href="https://www.ed.ac.uk/">University of Edinburgh.</a>
-    </div>
-
-</footer>
-<script type="text/javascript" src="{{ asset('assets/fancybox/lib/jquery.mousewheel-3.0.6.pack.js') }}"></script>
-<script type="text/javascript" src="{{ asset('assets/fancybox/source/jquery.fancybox.pack.js') }}?v=2.1.4"></script>
-<script type="text/javascript" src="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-buttons.js') }}?v=1.0.5"></script>
-<script type="text/javascript" src="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-media.js') }}?v=1.0.5"></script>
-<script type="text/javascript" src="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-thumbs.js') }}?v=1.0.7"></script>
-<script src="{{ asset('collections/art/js/script.js') }}"></script>
+</div>
 <script>
-    $(document).ready(function() {
-        $(".fancybox").fancybox();
+    $('#newTabNotice').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var href = button.data('href');
+
+        var modal = $(this);
+        modal.find('#openTab').off('click').on('click', function () {
+            window.open(href, '_blank');
+            modal.modal('hide');
+        });
     });
 </script>
-    </div>
+
+<script src="{{ asset('collections/coimbra-colls/js/script.js')}}"></script>
+<script src="{{ asset('collections/coimbra-colls/js/google_map.js')}}"></script>
+<script src="{{ asset('collections/coimbra-colls/js/disable_map_scroll.js')}}"></script>
+<script src="{{ asset('collections/coimbra-colls/js/home_page_slideshow.js')}}"></script>
+<script src="{{ asset('collections/coimbra-colls/js/map_view.js')}}"></script>
+<script src="{{ asset('collections/coimbra-colls/js/visible.js')}}"></script>
 </body>
+
 </html>
