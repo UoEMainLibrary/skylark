@@ -175,7 +175,8 @@ public/
 routes/
 └── web.php                        # Web routes (homepage, etc.)
 
-SOLR_POC_README.md                # Detailed POC documentation
+docs/
+└── collection-migration.md        # Collections & Skylight → Laravel notes
 ```
 
 ## Architecture
@@ -211,11 +212,7 @@ $record = $this->solr->getRecord('10683/98434');
 
 ## Documentation
 
-- **[SOLR_POC_README.md](SOLR_POC_README.md)** - Detailed Solr POC documentation
-  - Implementation details
-  - Configuration guide
-  - Troubleshooting
-  - Next steps and future enhancements
+- **[docs/collection-migration.md](docs/collection-migration.md)** — Registering collections, config, routes, views, and migrating templates from Skylight (CodeIgniter).
 
 ## Technology Stack
 
