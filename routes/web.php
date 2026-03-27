@@ -6,6 +6,27 @@ use App\Http\Controllers\SearchController;
 use App\Routing\CollectionRouteRegistrar;
 use Illuminate\Support\Facades\Route;
 
+/*
+ * Dedicated collection hostnames (OPENBOOKS_HOST, etc.) register Route::domain(...) groups here
+ * before the unconstrained `/` route so GET / resolves to the collection home, not clds.home.
+ */
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'openbooks',
+    'route_name' => 'openbooks',
+    'domain_hosts' => array_keys(array_filter(
+        config('collections.domains', []),
+        static fn (string $collection): bool => $collection === 'openbooks',
+    )),
+    'home' => [PageController::class, 'openbooksHome'],
+    'mirador_view' => 'openbooks.mirador',
+    'iiif' => [PageController::class, 'openbooksIiif'],
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/browse/{facet}', [PageController::class, 'openbooksBrowse'])
+            ->where('facet', '[A-Za-z]+');
+    },
+]);
+
 Route::get('/', function () {
     return view('clds.home');
 })->name('home');

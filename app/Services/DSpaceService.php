@@ -382,6 +382,11 @@ class DSpaceService implements RepositoryInterface
             'facet.mincount' => 1,
         ];
 
+        $documentFieldList = config('skylight.solr_document_field_list');
+        if (is_string($documentFieldList) && $documentFieldList !== '') {
+            $params['fl'] = $documentFieldList;
+        }
+
         // Build filter queries array
         $filterQueries = [];
 
@@ -416,11 +421,16 @@ class DSpaceService implements RepositoryInterface
         $params['spellcheck.onlyMorePopular'] = 'false';
         $params['spellcheck.count'] = 5;
 
-        // Add facet fields from config
+        // Add facet fields from config (standard + date facets)
         $facetFieldParams = [];
         $configFilters = config('skylight.filters', []);
-        foreach ($configFilters as $filterName => $filterField) {
+        foreach ($configFilters as $filterField) {
             $facetFieldParams[] = $filterField;
+        }
+        foreach (config('skylight.date_filters', []) as $filterField) {
+            if (! in_array($filterField, $facetFieldParams, true)) {
+                $facetFieldParams[] = $filterField;
+            }
         }
 
         // Execute the query
@@ -482,8 +492,11 @@ class DSpaceService implements RepositoryInterface
     ): array {
         $facets = [];
 
-        // Reverse map: solr field -> display name
+        // Reverse map: solr field -> display name (filters + date facets)
         $fieldToName = array_flip($configFilters);
+        foreach (config('skylight.date_filters', []) as $label => $solrField) {
+            $fieldToName[$solrField] = $label;
+        }
 
         foreach ($facetData as $facetField => $facetTerms) {
             $facetDisplayName = $fieldToName[$facetField] ?? $facetField;
@@ -544,10 +557,151 @@ class DSpaceService implements RepositoryInterface
                 'terms' => array_merge($activeTerms, $inactiveTerms),
                 'active_terms' => $activeTerms,
                 'inactive_terms' => $inactiveTerms,
+                'queries' => [],
             ];
         }
 
         return $facets;
+    }
+
+    /**
+     * Browse facet terms (Skylight-compatible shape for theme browse pages).
+     *
+     * @return array{rows: int, facet: array{name: string, terms: list<array{name: string, display_name: string, count: int}>, termcount: int}}
+     */
+    public function browseTerms(string $field, int $rows = 30, int $offset = 0, string $prefix = ''): array
+    {
+        $filters = config('skylight.filters', []);
+        $dateFilters = config('skylight.date_filters', []);
+        $facetField = $filters[$field] ?? $dateFilters[$field] ?? null;
+
+        if ($facetField === null || $this->containerId === '') {
+            return [
+                'rows' => 0,
+                'facet' => ['name' => $field, 'terms' => [], 'termcount' => 0],
+            ];
+        }
+
+        $offset = max(0, $offset);
+        $rows = max(1, $rows);
+        $limit = $rows + 1;
+
+        $params = [
+            'q' => '*:*',
+            'rows' => 0,
+            'wt' => 'json',
+            'facet' => 'true',
+            'facet.mincount' => 1,
+            'facet.sort' => 'index',
+            'facet.field' => $facetField,
+            'facet.limit' => $limit,
+            'facet.offset' => $offset,
+        ];
+
+        if ($prefix !== '') {
+            $params['facet.prefix'] = $prefix;
+        }
+
+        $filterQueries = [
+            "{$this->containerField}:{$this->containerId}",
+        ];
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
+
+        $queryString = $this->buildSolrQuery($params, $filterQueries);
+        $response = Http::timeout(30)->get("{$this->baseUrl}select{$queryString}");
+
+        if (! $response->successful()) {
+            return [
+                'rows' => 0,
+                'facet' => ['name' => $field, 'terms' => [], 'termcount' => 0],
+            ];
+        }
+
+        $data = $response->json();
+        $numFound = (int) ($data['response']['numFound'] ?? 0);
+        $facetPairs = $data['facet_counts']['facet_fields'][$facetField] ?? [];
+
+        $terms = [];
+        for ($i = 0; $i < count($facetPairs); $i += 2) {
+            if (! isset($facetPairs[$i + 1])) {
+                break;
+            }
+            $rawName = $facetPairs[$i];
+            $count = $facetPairs[$i + 1];
+            $displayName = $rawName;
+            if (str_contains((string) $rawName, '|||')) {
+                $parts = preg_split('/\|\|\|/', (string) $rawName);
+                if (isset($parts[1])) {
+                    $displayName = trim($parts[1]);
+                }
+            }
+            $terms[] = [
+                'name' => rawurlencode(str_replace(["\r\n", "\n", "\r"], ' ', (string) $rawName)),
+                'display_name' => $displayName,
+                'count' => $count,
+            ];
+            if (count($terms) >= $rows) {
+                break;
+            }
+        }
+
+        return [
+            'rows' => $numFound,
+            'facet' => [
+                'name' => $field,
+                'terms' => $terms,
+                'termcount' => count($terms),
+            ],
+        ];
+    }
+
+    /**
+     * Total number of distinct facet values for browse pagination.
+     */
+    public function countBrowseTerms(string $field, string $prefix = ''): int
+    {
+        $filters = config('skylight.filters', []);
+        $dateFilters = config('skylight.date_filters', []);
+        $facetField = $filters[$field] ?? $dateFilters[$field] ?? null;
+
+        if ($facetField === null || $this->containerId === '') {
+            return 0;
+        }
+
+        $params = [
+            'q' => '*:*',
+            'rows' => 0,
+            'wt' => 'json',
+            'facet' => 'true',
+            'facet.mincount' => 1,
+            'facet.sort' => 'index',
+            'facet.field' => $facetField,
+            'facet.limit' => 100000,
+        ];
+
+        if ($prefix !== '') {
+            $params['facet.prefix'] = $prefix;
+        }
+
+        $filterQueries = [
+            "{$this->containerField}:{$this->containerId}",
+        ];
+        if ($this->isDSpace) {
+            $filterQueries[] = 'search.resourcetype:2';
+        }
+
+        $response = Http::timeout(30)->get("{$this->baseUrl}select".$this->buildSolrQuery($params, $filterQueries));
+
+        if (! $response->successful()) {
+            return 0;
+        }
+
+        $data = $response->json();
+        $facetPairs = $data['facet_counts']['facet_fields'][$facetField] ?? [];
+
+        return (int) (count($facetPairs) / 2);
     }
 
     /**

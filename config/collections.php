@@ -30,6 +30,7 @@ return [
         'eerc',
         'mimed',
         'art',
+        'openbooks',
         'coimbra-colls',
     ],
 
@@ -58,6 +59,24 @@ return [
         'eerc' => 'eerc',
         'mimed' => 'mimed',
         'art' => 'art',
+        'openbooks' => 'openbooks',
         'coimbra-colls' => 'coimbra-colls',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dedicated hostnames (same routes as the prefixed collection, at URL root)
+    |--------------------------------------------------------------------------
+    |
+    | Map full hostnames to collection keys. Checked before prefix detection.
+    | Set OPENBOOKS_HOST locally (e.g. openbooks.skylark.test) and on staging.
+    |
+    */
+    'domains' => array_filter(
+        [
+            env('OPENBOOKS_HOST', '') => 'openbooks',
+        ],
+        fn (string $host): bool => $host !== '',
+        ARRAY_FILTER_USE_KEY
+    ),
 ];

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\RepositoryFactory;
+use App\Support\CollectionUrl;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -38,9 +39,7 @@ class SearchController extends Controller
             $query = '*';
         }
 
-        // Build collection-aware search URL
-        $collection = config('app.current_collection', 'clds');
-        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+        $prefix = CollectionUrl::pathPrefix();
 
         return redirect("{$prefix}/search/{$query}");
     }
@@ -140,8 +139,7 @@ class SearchController extends Controller
     {
         $rawUri = strtok($request->getRequestUri(), '?');
 
-        $collection = config('app.current_collection', 'clds');
-        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+        $prefix = CollectionUrl::pathPrefix();
 
         // Try both encoded and raw forms of the query in the path
         $needles = [
@@ -225,8 +223,7 @@ class SearchController extends Controller
     public function advancedPost(Request $request)
     {
         $searchFields = config('skylight.search_fields', []);
-        $collection = config('app.current_collection', 'clds');
-        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+        $prefix = CollectionUrl::pathPrefix();
 
         $filterUrl = '';
         foreach ($searchFields as $label => $field) {
@@ -247,8 +244,7 @@ class SearchController extends Controller
      */
     public function advancedSearch(Request $request, ?string $filters = null)
     {
-        $collection = config('app.current_collection', 'clds');
-        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+        $prefix = CollectionUrl::pathPrefix();
         $searchFields = config('skylight.search_fields', []);
         $configFilters = config('skylight.filters', []);
         $delimiter = config('skylight.filter_delimiter', ':');
@@ -363,8 +359,7 @@ class SearchController extends Controller
      */
     protected function buildBaseSearchUrl(string $query, array $filters): string
     {
-        $collection = config('app.current_collection', 'clds');
-        $prefix = $collection === 'clds' ? '' : "/{$collection}";
+        $prefix = CollectionUrl::pathPrefix();
         $url = url("{$prefix}/search/{$query}");
 
         foreach ($filters as $filter) {

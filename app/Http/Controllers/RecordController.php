@@ -6,6 +6,7 @@ use App\Helpers\BitstreamHelper;
 use App\Services\RepositoryFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class RecordController extends Controller
 {
@@ -120,6 +121,7 @@ class RecordController extends Controller
 
         // Sort and process bitstreams
         $imageArray = [];
+        $pdfBitstreams = [];
         foreach ($bitstreams as $bitstream) {
             $seq = BitstreamHelper::getSequence($bitstream);
 
@@ -136,12 +138,16 @@ class RecordController extends Controller
                     'filename' => BitstreamHelper::getFilename($bitstream),
                 ];
             } elseif (BitstreamHelper::isPdf($bitstream)) {
-                $parsed['pdf'][] = [
-                    'uri' => BitstreamHelper::getUri($bitstream),
-                    'filename' => BitstreamHelper::getFilename($bitstream),
-                    'size' => BitstreamHelper::getFormattedSize($bitstream),
-                ];
+                $pdfBitstreams[] = $bitstream;
             }
+        }
+
+        foreach (BitstreamHelper::orderPdfBitstreamsForDownload($pdfBitstreams) as $bitstream) {
+            $parsed['pdf'][] = [
+                'uri' => BitstreamHelper::getUri($bitstream),
+                'filename' => BitstreamHelper::getFilename($bitstream),
+                'size' => BitstreamHelper::getFormattedSize($bitstream),
+            ];
         }
 
         // Sort images by sequence
@@ -181,9 +187,8 @@ class RecordController extends Controller
         $filename = str_replace("'", '%27', $filename);
         $filename = str_replace(',', '%2C', $filename);
 
-        // Construct DSpace bitstream URL
-        $bitstreamUrl = config('services.dspace.bitstream_url');
-        $url = $bitstreamUrl.$id.'/'.$seq.'/'.$filename;
+        $url = $this->dSpaceBitstreamUrl($id, $seq, $filename);
+        $requestLooksLikePdf = str_ends_with(strtolower(rawurldecode($filename)), '.pdf');
 
         try {
             // Fetch image from DSpace with SSL verification disabled (for self-signed certs)
@@ -197,18 +202,66 @@ class RecordController extends Controller
                 abort(404, 'Image not found');
             }
 
+            $body = $response->body();
+
+            if ($requestLooksLikePdf && $this->responseIsNonPdfPayload($response->header('Content-Type', ''), $body)) {
+                abort(404, 'This bitstream is not a PDF (often sequence 1 is a IIIF manifest). Use another link on the record page or a different sequence number.');
+            }
+
             // Get content type from response or default to application/octet-stream
             $contentType = $response->header('Content-Type', 'application/octet-stream');
-            $contentLength = $response->header('Content-Length', strlen($response->body()));
+            $contentLength = $response->header('Content-Length', strlen($body));
 
             // Return streaming response with proper headers
-            return response($response->body())
+            return response($body)
                 ->header('Content-Type', $contentType)
                 ->header('Content-Length', $contentLength)
                 ->header('Cache-Control', 'public, max-age=31536000') // Cache for 1 year
                 ->header('Expires', gmdate('D, d M Y H:i:s', time() + 31536000).' GMT');
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e) {
+            throw $e;
         } catch (\Exception $e) {
             abort(404, 'Image not found');
         }
+    }
+
+    /**
+     * Join base URL with item id, sequence, and filename without duplicating or dropping slashes.
+     */
+    protected function dSpaceBitstreamUrl(string $id, string $seq, string $filenameEncoded): string
+    {
+        $base = rtrim((string) config('services.dspace.bitstream_url'), '/');
+
+        return $base.'/'.$id.'/'.$seq.'/'.$filenameEncoded;
+    }
+
+    /**
+     * DSpace sometimes stores IIIF presentation JSON with a ".pdf" name or sends application/octet-stream for JSON.
+     */
+    protected function responseIsNonPdfPayload(string $contentTypeHeader, string $body): bool
+    {
+        $mime = strtolower(trim(Str::before($contentTypeHeader, ';')));
+
+        if (str_contains($mime, 'json')) {
+            return true;
+        }
+
+        return $this->bodyLooksLikeIiifPresentationJson($body);
+    }
+
+    protected function bodyLooksLikeIiifPresentationJson(string $body): bool
+    {
+        $trim = ltrim($body);
+        if ($trim === '' || $trim[0] !== '{') {
+            return false;
+        }
+
+        if (! str_contains($trim, '"@type"')) {
+            return false;
+        }
+
+        return str_contains($trim, 'sc:Manifest')
+            || str_contains($trim, '"Manifest"')
+            || (str_contains($trim, 'iiif.io') && str_contains($trim, 'presentation'));
     }
 }
