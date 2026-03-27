@@ -31,5 +31,7 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <!-- Registers Open Books dedicated-host routes in tests (see tests/Feature/OpenBooksCollectionTest.php) -->
+        <env name="OPENBOOKS_HOST" value="openbooks.testing"/>
     </php>
 </phpunit>

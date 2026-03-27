@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\CollectionUrl;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,8 +23,27 @@ class CollectionMiddleware
         config(['app.current_collection' => $collection]);
         $request->attributes->set('collection', $collection);
 
+        $host = $request->getHost();
+        $domainMap = config('collections.domains', []);
+        $atDedicatedHost = isset($domainMap[$host]) && $domainMap[$host] === $collection;
+
+        $pathPrefix = '';
+        if (! $atDedicatedHost) {
+            $urlPrefix = config('skylight.url_prefix');
+            if ($urlPrefix !== null && $urlPrefix !== '') {
+                $pathPrefix = '/'.$urlPrefix;
+            }
+        }
+
+        config([
+            'app.collection_path_prefix' => $pathPrefix,
+            'app.collection_at_dedicated_host' => $atDedicatedHost,
+        ]);
+
         // Share collection with all views
         view()->share('current_collection', $collection);
+        view()->share('collection_at_dedicated_host', $atDedicatedHost);
+        view()->share('collectionUrl', static fn (string $path = ''): string => CollectionUrl::url($path));
 
         return $next($request);
     }
@@ -33,6 +53,13 @@ class CollectionMiddleware
      */
     protected function detectCollection(Request $request): string
     {
+        $host = $request->getHost();
+        $domainMap = config('collections.domains', []);
+
+        if (isset($domainMap[$host])) {
+            return $domainMap[$host];
+        }
+
         $detectionMethod = config('collections.detection', 'prefix');
 
         switch ($detectionMethod) {

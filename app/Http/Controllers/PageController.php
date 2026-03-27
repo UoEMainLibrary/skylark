@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\DSpaceService;
 use App\Services\RepositoryFactory;
+use App\Support\CollectionUrl;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
 
 class PageController extends Controller
 {
@@ -39,6 +43,10 @@ class PageController extends Controller
             return view('mimed.pages.about');
         }
 
+        if ($collection === 'openbooks') {
+            return view('openbooks.pages.about');
+        }
+
         if ($collection === 'art') {
             return view('art.pages.about');
         }
@@ -55,6 +63,10 @@ class PageController extends Controller
 
         if ($collection === 'mimed') {
             return view('mimed.pages.feedback');
+        }
+
+        if ($collection === 'openbooks') {
+            return view('openbooks.pages.feedback');
         }
 
         return view('pages.feedback');
@@ -111,6 +123,10 @@ class PageController extends Controller
             return view('mimed.pages.licensing');
         }
 
+        if ($collection === 'openbooks') {
+            return view('openbooks.pages.licensing');
+        }
+
         if ($collection === 'art') {
             return view('art.pages.licensing');
         }
@@ -137,6 +153,10 @@ class PageController extends Controller
             return view('mimed.pages.takedown');
         }
 
+        if ($collection === 'openbooks') {
+            return view('openbooks.pages.takedown');
+        }
+
         if ($collection === 'art') {
             return view('art.pages.takedown');
         }
@@ -152,7 +172,7 @@ class PageController extends Controller
         $repository = $this->repositoryFactory->current();
 
         $facets = [];
-        $baseSearch = url('/mimed/search/*:*');
+        $baseSearch = CollectionUrl::url('search/*:*');
         $configFilters = config('skylight.filters', []);
 
         try {
@@ -179,37 +199,129 @@ class PageController extends Controller
     }
 
     /**
-    * Display the Coimbra Colls Collection homepage
-    */
+     * Display the Open Books homepage with browse facets
+     */
+    public function openbooksHome()
+    {
+        $repository = $this->repositoryFactory->current();
+
+        $facets = [];
+        $baseSearch = CollectionUrl::url('search/*:*');
+        $configFilters = config('skylight.filters', []);
+
+        try {
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0, []);
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            report($e);
+        }
+
+        return view('openbooks.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+        ]);
+    }
+
+    /**
+     * Display the Open Books IIIF page
+     */
+    public function openbooksIiif()
+    {
+        return view('openbooks.pages.iiif');
+    }
+
+    /**
+     * Browse all values for a facet (Skylight /browse/{facet}).
+     */
+    public function openbooksBrowse(Request $request, string $facet): View
+    {
+        $facet = urldecode($facet);
+        $allowed = array_merge(
+            array_keys(config('skylight.filters', [])),
+            array_keys(config('skylight.date_filters', []))
+        );
+        if (! in_array($facet, $allowed, true)) {
+            abort(404);
+        }
+
+        $repository = $this->repositoryFactory->current();
+        if (! $repository instanceof DSpaceService) {
+            abort(404);
+        }
+
+        $rows = 30;
+        $offset = max(0, (int) $request->query('offset', 0));
+        $prefix = (string) $request->query('prefix', '');
+
+        $browseData = $repository->browseTerms($facet, $rows, $offset, $prefix);
+        $collectionTotal = (int) ($browseData['rows'] ?? 0);
+        $facetBlock = $browseData['facet'] ?? ['name' => $facet, 'terms' => [], 'termcount' => 0];
+        $termsOnPage = $facetBlock['terms'] ?? [];
+
+        $totalFacetValues = $repository->countBrowseTerms($facet, $prefix);
+        $browseUrl = $prefix !== ''
+            ? CollectionUrl::url('browse/'.$facet).'?prefix='.urlencode($prefix)
+            : CollectionUrl::url('browse/'.$facet);
+
+        $prevOffset = max(0, $offset - $rows);
+        $nextOffset = $offset + $rows;
+        $hasPrev = $offset > 0;
+        $hasNext = $nextOffset < $totalFacetValues;
+        $queryJoin = str_contains($browseUrl, '?') ? '&' : '?';
+
+        return view('openbooks.browse', [
+            'browseFacet' => $facet,
+            'facet' => $facetBlock,
+            'collectionTotal' => $collectionTotal,
+            'browseUrl' => $browseUrl,
+            'offset' => $offset,
+            'rows' => $rows,
+            'prefix' => $prefix,
+            'totalFacetValues' => $totalFacetValues,
+            'startRow' => $totalFacetValues > 0 ? $offset + 1 : 0,
+            'endRow' => min($offset + count($termsOnPage), $totalFacetValues),
+            'hasPrev' => $hasPrev,
+            'hasNext' => $hasNext,
+            'prevUrl' => $hasPrev ? $browseUrl.$queryJoin.'offset='.$prevOffset : '',
+            'nextUrl' => $hasNext ? $browseUrl.$queryJoin.'offset='.$nextOffset : '',
+            'base_search' => CollectionUrl::url('search/*'),
+            'delimiter' => config('skylight.filter_delimiter'),
+        ]);
+    }
+
+    /**
+     * Display the Coimbra Colls Collection homepage
+     */
     public function coimbraCollsHome()
     {
         return view('coimbra-colls.home');
     }
 
     /**
-    * Display the Coimbra Colls Accessiblity page
-    */
-
+     * Display the Coimbra Colls Accessiblity page
+     */
 
     /**
-    * Display the Coimbra Colls Virtual Exhibition page
-    */
+     * Display the Coimbra Colls Virtual Exhibition page
+     */
     public function coimbraCollsVirtualExhibition()
     {
         return view('coimbra-colls.pages.virtual-exhibition');
     }
 
     /**
-    * Display the Coimbra Colls Virtual Exhibition page
-    */
+     * Display the Coimbra Colls Virtual Exhibition page
+     */
     public function coimbraCollsAbout()
     {
         return view('coimbra-colls.pages.about');
     }
 
     /**
-    * Display the Coimbra Colls Virtual Exhibition page
-    */
+     * Display the Coimbra Colls Virtual Exhibition page
+     */
     public function coimbraCollsFeedback()
     {
         return view('coimbra-colls.pages.feedback');
@@ -268,6 +380,10 @@ class PageController extends Controller
 
         if ($collection === 'mimed') {
             return view('mimed.pages.accessibility');
+        }
+
+        if ($collection === 'openbooks') {
+            return view('openbooks.pages.accessibility');
         }
 
         if ($collection === 'art') {

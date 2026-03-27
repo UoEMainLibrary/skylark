@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\SolrService;
 use App\View\Composers\EercNavComposer;
+use App\View\Composers\OpenBooksLayoutComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('layouts.eerc-v2', EercNavComposer::class);
+        View::composer('layouts.openbooks', OpenBooksLayoutComposer::class);
     }
 }
