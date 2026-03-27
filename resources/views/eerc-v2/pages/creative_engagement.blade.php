@@ -13,10 +13,10 @@
 
             <h2>Suggestions for research, PhD or dissertation topics</h2>
 
-            <p>The RESP Archive collection can provide ample source material for studies focused on a varied number of subjects as either the sole source of research data or to present alongside your own research material, including:</p>
+            <p class="!mb-3">The RESP Archive collection can provide ample source material for studies focused on a varied number of subjects as either the sole source of research data or to present alongside your own research material, including:</p>
 
-            {{-- Do not wrap lists in not-prose: Typography strips bullets for the whole subtree. Images only → not-prose. --}}
-            <div class="my-6 space-y-6">
+            {{-- Wrapper sits between p and ul, so margins don’t collapse like a direct p→ul; keep mt-0 and tighter p mb to match Creative Output spacing. --}}
+            <div class="mb-6 mt-0 space-y-6">
                 <div class="grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-2">
                     <ul class="mb-0">
                         <li>Childhood and school life</li>
@@ -34,12 +34,18 @@
                         <li>The experience of War</li>
                     </ul>
                 </div>
-                <div class="not-prose grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-6">
+                <div class="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
                     <div class="flex h-[300px] items-center justify-center">
                         <img src="{{ asset('collections/eerc/images/v2/creative/image1.jpeg') }}" alt="Historical photograph of a woman carrying a basket" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
                     </div>
                     <div class="flex h-[300px] items-center justify-center">
                         <img src="{{ asset('collections/eerc/images/v2/creative/image2.jpeg') }}" alt="Historical photograph of a group of working men" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
+                    </div>
+                    <div class="flex h-[300px] items-center justify-center">
+                        <img src="{{ asset('collections/eerc/images/v2/creative/EL6-3-4-7.jpg') }}" alt="Photograph from the RESP archive collection" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
+                    </div>
+                    <div class="flex h-[300px] items-center justify-center">
+                        <img src="{{ asset('collections/eerc/images/v2/creative/EL39-7-4-4.jpg') }}" alt="Photograph from the RESP archive collection" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
                     </div>
                 </div>
             </div>

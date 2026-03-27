@@ -133,3 +133,19 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    var baseTitle = 'Exhibition Gallery - RESP Archive';
+    var charlieTitle = 'Charlie Horne: The Past is Still With Us – Exhibition Gallery - RESP Archive';
+
+    function syncTitleFromHash() {
+        document.title = window.location.hash === '#charlie-horne' ? charlieTitle : baseTitle;
+    }
+
+    document.addEventListener('DOMContentLoaded', syncTitleFromHash);
+    window.addEventListener('hashchange', syncTitleFromHash);
+})();
+</script>
+@endpush
