@@ -34,12 +34,10 @@
 
         }
     }
-
-
 @endphp
 <script src="{{ asset('assets/openseadragon/openseadragon.min.js') }}"></script>
-<div id="content"></div>
-<div id="openseadragon" class="cover-image-container full-width" ></div>
+<div id="content" class="container content col-xs-12">
+    <div id="openseadragon" class="cover-image-container full-width" ></div>
     <script type="text/javascript">
         OpenSeadragon({
             id: "openseadragon",
@@ -53,35 +51,90 @@
             tileSources: ["{{ $coverImageJSON }}"]
         });
     </script>
-
-
     <!--Record information-->
-    <br><br>
-<div class="record-info">
-    <br>
-    <br>
-    <h1 class="itemtitle">
-        <div class="backbtn">
-            <i class="fa fa-arrow-left" aria-hidden="true" type="button" value="Back to Search Results" title="Back to Search Results" onClick="history.go(-1);"></i>
-        </div>
-        {{ $title }}
-    </h1>
-    <div class="description">
+    <div class="record-info">
+        <h1 class="itemtitle">
+            <div class="backbtn">
+                <i class="fa fa-arrow-left" aria-hidden="true" type="button" value="Back to Search Results" title="Back to Search Results" onClick="history.go(-1);"></i>
+            </div>
+            {{ $title }}
+        </h1>
+        <div class="description">
 
         @foreach($recordDisplay as $key)
             @php $element = str_replace('.', '', $fieldMappings[$key] ?? '');
+            $n = 0;
             @endphp
             @if(isset($record[$element]))
                <div class="row"><span class="field">{{$key}}</span></div>
                @foreach($record[$element] as $index => $metadatavalue)
-               <p>Hello</p>
-               @endforeach
+                  @if(in_array($key, $filters))
+                     @php
+                        $orig_filter = urlencode($metadatavalue);
+                        $lower_orig_filter = urlencode(strtolower($metadatavalue));
+                     @endphp
+                     <a href="/coimbra-colls/search/*:*/{{ $key }}:%22{{ $lower_orig_filter }}+%7C%7C%7C+{{ $orig_filter}}%22">{{ $metadatavalue }}</a><br>
+                  @else
+                     @if(stripos($element, 'uri') !== false)
+                        @php
+                            $uriValue = $record[$element][$n];
+                            if (stripos($uriValue, 'http') === false) {
+                               $uriValue = 'https://' . $uriValue;
+                            }
+                        @endphp
+                        <a title="URL Links for item" target="_blank" rel="noopener noreferrer" href="{{ $uriValue }}">
+                            {{ $uriValue }} (Opens in a new tab)
+                        </a>
+                     @else
+                        {{ $record[$element][$n] }}<br>
+                     @endif
+                  @endif
 
-            @endif
-        @endforeach
+                  @php $n++; @endphp
+             @endforeach
 
-    </div>
-</div>
+        @endif
+      @endforeach
+        <div id="map"></div>
+            @php
+                $mapLocation = $record[$location][0] ?? '';
+            @endphp
+            <script>
+                 $(window).on('load', function () {
+                    const coords = "58.376935, 26.721221";
+                    const pin = "{{ asset('collections/coimbra-colls/images/pinpoint.png') }}";
 
+                    console.log('map element:', document.getElementById('map'));
+                    console.log('google exists:', typeof google !== 'undefined');
+                    console.log('google.maps exists:', typeof google !== 'undefined' && typeof google.maps !== 'undefined');
+                    console.log('parsed coords:', convertToCoordinates(coords));
+
+                    initMap(convertToCoordinates(coords));
+                    console.log('map after init:', map);
+
+                    addLocation(coords, "Art collection", 0, pin, 1);
+                    console.log('markers after add:', markers);
+                });
+            </script>
+            <div class="institution-logo row">
+                @if (isset($record[$logoImageName]))
+                    @php
+                    //echo $record[$logoImageName][0];
+                    $t_segments = explode("##", $record[$logoImageName][0]);
+                    $t_filename = $t_segments[1];
+
+                    $t_handle = $t_segments[3];
+                    $t_handle_id = preg_replace('/^.*\//', '',$t_handle);
+                    $t_seq = $t_segments[4];
+                    //$t_uri = './record/' . $t_handle_id . '/' . $t_seq . '/' . $t_filename;
+                    $thumbnailUrl = url("/record/{$t_handle_id}/{$t_seq}/{$t_filename}");
+                    $LogoLink = '<a title="Link to Institution" target="_blank" href="' . $institutionUri . '"><img src = "' . $thumbnailUrl . '" class="uni-thumbnail" /><span class="visually-hidden"> (opens in a new tab)</span></a>';
+                    echo $LogoLink;
+                    @endphp
+                @endif
+            </div><!--logo-->
+        </div><!--description-->
+    </div><!--record-info-->
+</div><!--content-->
 
 @endsection
