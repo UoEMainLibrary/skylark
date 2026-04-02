@@ -7,6 +7,7 @@ return array_merge($dspaceDefaults, [
     'fullname' => 'Coimbra Collections',
     'theme' => 'coimbra-colls',
     'url_prefix' => 'coimbra-colls',
+    'image_server' => 'https://cantaloupe.is.ed.ac.uk',
 
     'adminemail' => 'lddt@mlist.is.ed.ac.uk',
 
