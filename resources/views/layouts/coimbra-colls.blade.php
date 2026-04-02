@@ -22,7 +22,7 @@
     <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 
     <link rel="shortcut icon" href="{{ asset('collections/coimbra-colls/images/favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{ asset('collections/coimbra-colls/images/apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('collections/coimbra-colls/images/apple-touch-icon.png') }}">
 
     <!-- CSS: implied media="all" -->
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css')}}" type="text/css" media="screen" />
@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="{{ asset('collections/coimbra-colls//css/animate.css')}}">
 
     <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF95rAHOZQlQ7atjmr9HC2e4M2cS-u1Gs&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF95rAHOZQlQ7atjmr9HC2e4M2cS-u1Gs" async defer></script>
     <script src="{{ asset('assets/modernizr/modernizr-1.7.min.js')}}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jquery-1.11.0.min.js')}}"></script>
     <script src="{{ asset('collections/coimbra-colls/js/google_map.js')}}"></script>
