@@ -32,6 +32,8 @@ return [
         'art',
         'openbooks',
         'coimbra-colls',
+        'guardbook',
+        'coimbra',
     ],
 
     /*
@@ -61,6 +63,8 @@ return [
         'art' => 'art',
         'openbooks' => 'openbooks',
         'coimbra-colls' => 'coimbra-colls',
+        'guardbook' => 'guardbook',
+        'coimbra' => 'coimbra',
     ],
 
     /*

@@ -25,9 +25,11 @@ return array_merge($dspaceDefaults, [
     | Container Configuration
     |--------------------------------------------------------------------------
     */
-    'container_id' => env('APP_ENV') === 'production'
+    /*'container_id' => env('APP_ENV') === 'production'
         ? '12779059-f8a5-4a44-9f85-08772679bf3f'
-        : '7f32ba59-795e-40e8-b869-5b2a5114a4be',
+        : '7f32ba59-795e-40e8-b869-5b2a5114a4be',*/
+
+    'container_id' =>  '12779059-f8a5-4a44-9f85-08772679bf3f',
 
     /*
     |--------------------------------------------------------------------------
