@@ -87,6 +87,15 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'guardbook',
+    'route_name' => 'guardbook',
+    'home' => [PageController::class, 'guardbookHome'],
+    'mirador_view' => 'mimed.mirador',
+    'iiif' => [PageController::class, 'mimedIiif'],
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'art',
     'route_name' => 'art',
     'home' => [PageController::class, 'artHome'],

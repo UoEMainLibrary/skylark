@@ -51,6 +51,10 @@ class PageController extends Controller
             return view('art.pages.about');
         }
 
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.about');
+        }
+
         return view('pages.about');
     }
 
@@ -68,6 +72,11 @@ class PageController extends Controller
         if ($collection === 'openbooks') {
             return view('openbooks.pages.feedback');
         }
+
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.feedback');
+        }
+
 
         return view('pages.feedback');
     }
@@ -131,6 +140,9 @@ class PageController extends Controller
             return view('art.pages.licensing');
         }
 
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.licensing');
+        }
         return view('pages.licensing');
     }
 
@@ -159,6 +171,10 @@ class PageController extends Controller
 
         if ($collection === 'art') {
             return view('art.pages.takedown');
+        }
+
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.takedown');
         }
 
         return view('pages.takedown');
@@ -191,8 +207,8 @@ class PageController extends Controller
     }
 
     /**
-     * Display the MIMEd IIIF page
-     */
+    * Display the MIMEd IIIF page
+    */
     public function mimedIiif()
     {
         return view('mimed.pages.iiif');
@@ -328,6 +344,33 @@ class PageController extends Controller
     }
 
     /**
+    * Display the Guardbook homepage
+    */
+    public function guardbookHome()
+    {
+
+        $repository = $this->repositoryFactory->current();
+        $facets = [];
+        $baseSearch = CollectionUrl::url('search/*:*');
+        $configFilters = config('skylight.filters', []);
+
+        try {
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
+            //dd($results);
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            dd($e->getMessage(), $e);
+        }
+
+        return view('guardbook.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+        ]);
+    }
+
+    /**
      * Display the Art Collection homepage
      */
     public function artHome()
@@ -392,6 +435,10 @@ class PageController extends Controller
 
         if ($collection === 'coimbra-colls') {
             return view('coimbra-colls.pages.accessibility');
+        }
+
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.accessibility');
         }
 
         return view('pages.accessibility');

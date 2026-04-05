@@ -1,0 +1,369 @@
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, menu, nav, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+article, aside, details, figcaption, figure,
+footer, header, menu, nav, section {
+    display: block;
+}
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after,
+q:before, q:after { content: ""; content: none; }
+ins { background-color: #ff9; color: #000; text-decoration: none; }
+mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bold; }
+del { text-decoration: line-through; }
+abbr[title], dfn[title] { border-bottom: 1px dotted; cursor: help; }
+table { border-collapse: collapse; border-spacing: 0; }
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #999; margin: 1em 0; padding: 0; }
+input, select { vertical-align: middle; }
+
+
+/* Default Styles --------------------------------------------------------------------------------------------------------*/
+
+html 							{ -webkit-font-smoothing: antialiased; }
+<<<<<<< HEAD
+body 							{ background: #EEEEEE; font-size: 16px;}
+=======
+body 							{ background: #EEEEEE; font-size: 12pt;}
+>>>>>>> master
+body, select, input, textarea 	{ color: #555; font-family: 'Source Sans Pro', sans-serif; }
+
+h1, h2, h3, h4, h5, h6          { text-rendering: optimizeLegibility; color: #000000; font-weight: bold; }
+h1 								{ font-size: 24pt; line-height: 24px; margin: 18px 0 17px 0; position: relative; color: #373B41;}
+h2 								{ font-size: 20pt; line-height: 36px; margin: 0 0 0 0; }
+h3 								{ color: #373B41; font-size: 16pt; line-height: 18px; margin: 0 0 9px 0; }
+h5                              {font-size: 16px;}
+
+h1.itemtitle 					{ font-family: 'Special Elite', cursive; font-size: 27px; line-height: 30px;
+    margin: 15px 0 10px 0; position: relative; color: #373B41; }
+.left-title h1.itemtitle, .full-title h1.itemtitle
+{ margin-top: 0; padding-top: 10px; }
+
+h1 a.heading-link               { color: #999; text-decoration: none; }
+h1 a.heading-link:hover         { text-decoration: underline; }
+
+p 								{ font-size: 12pt; margin-bottom: 18px; }
+
+a                               {text-decoration: underline;}
+a, a:active, a:visited          { color: #163772; }
+a:hover 						{ text-decoration: underline; color: #999; }
+ul 								{ padding-left: 40px; }
+
+
+/* Site Css ///////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/* Structure -------------------------------------------------------------------------------------------------------------*/
+.container 			{ background: #ffffff;}
+header .container   { padding: 0;}
+.col-main			{ float: left; margin-right: 0; }
+
+/* header */
+.navbar             { margin-bottom: 0;}
+
+.navbar-default .navbar-nav > li > a { color: #3c3c3c;  text-decoration: none;}
+.navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover { background-color: #a50034; color: #FFFFFF;  }
+
+.navbar-default     { background-color: #999; border: 0;}
+
+.uoe-logo {
+    display: block;
+    width: 300px;
+    height: 72px;
+    float: left;
+    background: url(../images/logo-sml.png) no-repeat 0 0;
+    margin-right: 30px;
+    margin-top: 5px;
+}
+
+/* Common Containers & Subclasses ----------------------------------------------------------------------------------------*/
+
+
+#collection-title	{ display: block;
+    float: left;
+    color: #605F5F;
+    text-rendering: optimizeLegibility;
+    font-family: 'IM Fell DW Pica', serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 47px;
+    line-height: 30px;
+    padding-top: 15px;
+    padding-left: 30px;}
+
+#collection-sub-title       { font-size: 29px;  line-height: 28px;  }
+#collection-title a         { text-decoration: none; color: #a50034;}
+#collection-title a:hover   { text-decoration: none; color: #008046;}
+#collection-search          { float: right; }
+
+.search-box                 { width: 280px;}
+.sidebar-nav                { padding-top: 10px;  }
+
+.index-content{
+    padding-left: 0;
+}
+
+.list-group-item>.badge {
+    background-color: #3c3c3c;
+    font-size: 16px;
+}
+
+.text-muted {
+    color: #3c3c3c;
+}
+
+.form-control {
+    font-size: 19px;
+}
+
+#menu                           { width: 940px; background-color: #EEEDE8; margin: 0 auto; height: 33px; }
+.menu-links li					{ display: inline; float: right; height: 33px; padding-left: 0; padding-right: 0; }
+.menu-links li a 			    { font-weight: bold; font-size: 16px; text-transform: uppercase; float: left;
+    text-decoration: none; margin-left: 10px; color: #666666; display: inline-block;
+    height: 33px; line-height: 2.5em; padding-left: 20px; padding-right: 20px;text-align: center; }
+.menu-links li a:hover		    { background-color: #a50034; color: #FFFFFF;}
+
+/** content pages*/
+.content a                      { color: #a50034;}
+.content a:visited              { color: #a50034;}
+.content a:hover                { color: #008046;}
+
+.btn-info                       { background-color: #a50034; color: #FFFFFF; letter-spacing: 1px; margin-bottom: 5px;}
+.btn-info:hover                 { background-color: #008046; color: #FFFFFF;}
+
+.btn-info a                     { color: #FFFFFF; letter-spacing: 1px;}
+.btn-info a:active              { color: #FFFFFF; letter-spacing: 1px;}
+.btn-info a:visited             { color: #FFFFFF; letter-spacing: 1px;}
+
+.item-div                       { width: 660px; text-align: left; display: block; }
+.iteminfo                       { display: block; min-height:40px; text-align: left; width: 100%; float:left; }
+.iteminfo h3                    { font-size: 25px; margin-top: 5px; }
+.sort                           { float: right;  text-align: right; }
+
+/** side panel */
+.list-group-item.active         { background-color: #a50034; color: #FFFFFF;}
+.list-group-item.active:hover   { background-color: #008046; color: #FFFFFF;}
+
+.list-group-item.active a       { color: #FFFFFF; letter-spacing: 1px;}
+
+.related-items .list-group-item.active         { background-color: #a50034; color: #FFFFFF;}
+.related-items .list-group-item.active:hover   { background-color: #008046; color: #FFFFFF;}
+
+/** Search results */
+.search-row {
+    border-bottom: 1px solid #999;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.results-num {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+/** footer */
+
+footer                          { padding-top: 10px; padding-bottom: 10px;}
+
+.footer-logos                   { padding-bottom: 20px; }
+
+.footer-policies                { font-size: 19px; margin-bottom: 5px; color: #555555;  text-align: center;}
+
+.footer-policies a, a:active, a:visited         { color: #a50034;}
+.footer-policies a:hover 						{ text-decoration: underline; color: #008046;}
+.footer-copyright                               { font-size: 16px;}
+
+.index-img {
+    padding-bottom: 20px;
+}
+
+/** images in text */
+.gap-right {
+    margin-right: 10px;
+}
+
+.gap-left {
+    margin-left: 10px;
+}
+
+/* Custom Containers & Subclasses ----------------------------------------------------------------------------------------*/
+
+.tags					            { margin-top: 5px;  }
+.tags a 				            { color: #fff; font-size: 20px; background: #999; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; padding: 2px 6px; line-height: 20px; margin-right: 8px; margin-top: 6px; text-decoration: none; display:inline-block; }
+.tags a.bold			            { font-weight: bold; }
+.tags a:hover			            { background: #a50034; color: #ffffff; text-decoration: none; }
+.tags a:visited			            { background: #a50034; color: #ffffff; text-decoration: none; }
+.tags a:visited:hover		        { background: #008046; color: #ffffff; text-decoration: none; }
+
+
+/** pagination */
+.pagination > .active > span        { background-color: #a50034; color: #ffffff;  }
+
+.pagination > li > a                { color: #a50034;  }
+
+
+.quote                              { margin-left: 50px; margin-right: 50px; margin-top: 10px;  }
+q                                   { quotes: "“" "”" "‘" "’"; display: block; font-weight: bold;  }
+q:before                            { content: open-quote;  }
+q:after                             { content: close-quote;  }
+.float-right                        { float: right;  }
+
+.feedback_form                      { padding: 0 20px;}
+.feedback_form label                { display: block; width: 100px;}
+#recaptcha_table                    { width: 480px; }
+
+
+/* <END> Site Css \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+
+
+/* Non-semantic Helper Classes --------------------------------------------------------------------------------------------------------*/
+
+.ir 			{ display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; } /* For image replacement */
+.hidden 		{ display: none; visibility: hidden; } /* Hide for both screenreaders and browsers: css-discuss.incutio.com/wiki/Screenreader_Visibility */
+.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; } /* Hide only visually, but have it available for screenreaders: by Jon Neal.*/
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; } /* Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: drupal.org/node/897638 */
+.invisible 		{ visibility: hidden; } /* Hide visually and from screenreaders, but maintain layout */
+.clearfix:before, .clearfix:after 	{ content: "\0020"; display: block; height: 0; overflow: hidden; } /* The Magnificent Clearfix: Updated to prevent margin-collapsing on child elements.j.mp/bestclearfix */
+.clearfix:after 					{ clear: both; }
+.clearfix 							{ zoom: 1; } /* Fix clearfix: blueprintcss.lighthouseapp.com/projects/15318/tickets/5-extra-margin-padding-bottom-of-page */
+
+
+/* Media queries for responsive design --------------------------------------------------------------------------------------------------------*/
+
+@media all and (orientation:portrait) {
+    /* Style adjustments for portrait mode goes here */
+}
+
+@media all and (orientation:landscape) {
+    /* Style adjustments for landscape mode goes here */
+}
+
+@media screen and (max-device-width: 480px) {
+    /* Grade-A Mobile Browsers (Opera Mobile, Mobile Safari, Android Chrome) consider this: www.cloudfour.com/css-media-query-for-mobile-is-fools-gold/ */
+    /* Uncomment if you don't want iOS and WinMobile to mobile-optimize the text for you: j.mp/textsizeadjust */
+    /* html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
+}
+
+/* Print styles --------------------------------------------------------------------------------------------------------*/
+
+@media print {
+    * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important;
+        -ms-filter: none !important; } /* Black prints faster: sanbeiji.com/archives/953 */
+    a, a:visited { color: #444 !important; text-decoration: underline; }
+    a[href]:after { content: " (" attr(href) ")"; }
+    abbr[title]:after { content: " (" attr(title) ")"; }
+    .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
+    pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+    thead { display: table-header-group; } /* css-discuss.incutio.com/wiki/Printing_Tables */
+    tr, img { page-break-inside: avoid; }
+    @page { margin: 0.5cm; }
+    p, h2, h3 { orphans: 3; widows: 3; }
+    h2, h3{ page-break-after: avoid; }
+}
+
+/* ---------------------
+
+        Hilighter
+
+------------------------*/
+
+.form-control:focus-visible, 
+button:focus-visible, 
+button:focus, 
+input:focus-visible, 
+a:focus-visible {
+    position: relative;
+}
+
+.form-control:focus-visible:after, 
+button:focus-visible:after, 
+button:focus:after, 
+input:focus-visible:after, 
+a:focus-visible:after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    outline: 4px solid #ffd900;
+    outline-offset: -3px;
+    box-shadow: 0 0 0 4px #a50034;
+    pointer-events: none;
+    z-index: 1;
+    display: block;
+}
+
+a:focus-visible {
+    display: inline-block;
+    overflow: visible;
+}
+
+a div:focus-visible {
+    outline: 4px solid #ffd900;
+    outline-offset: 4px;
+    box-shadow: 0 0 0 8px #a50034;
+}
+
+.form-control:focus-visible,
+input:focus-visible,
+select:focus-visible,
+input:focus,
+.pdfviewer:focus-within {
+    outline: 4px solid #ffd900;
+    box-shadow: 0 0 0 8px #a50034;
+}
+
+/* ---------------------
+
+      Skip to Main
+
+------------------------*/
+.screen-reader-text {
+    position: absolute !important;
+    clip-path: circle(0%);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    width: 1px;
+    word-wrap: normal!important;
+}
+
+.screen-reader-text:hover, .screen-reader-text:active, .screen-reader-text:focus {
+    z-index: 100000;
+    top: 5px;
+    left: 5px;
+    display: block;
+    width: auto;
+    height: auto;
+    text-decoration: none;
+    color: black;
+    border-radius: 3px;
+    background-color: #ffffff;
+    font-size: 12pt;
+    font-weight: bold;
+    line-height: normal;
+    clip-path: circle(100%);
+    padding: 8px;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    height: 1px; width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap; /* Added to prevent text wrapping */
+  }

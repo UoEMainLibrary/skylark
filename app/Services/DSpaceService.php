@@ -19,6 +19,8 @@ class DSpaceService implements RepositoryInterface
 
     protected string $handlePrefix;
 
+    protected bool $filterSort;
+
     public function __construct()
     {
         $fallback = config('services.solr');
@@ -29,6 +31,7 @@ class DSpaceService implements RepositoryInterface
         $this->resultsPerPage = config('skylight.results_per_page', $fallback['results_per_page']);
         $this->isDSpace = config('skylight.repository_type', 'dspace') === 'dspace';
         $this->handlePrefix = config('skylight.handle_prefix', '10683');
+        $this->filterSort = (bool) config('skylight.filter_sort', false);
     }
 
     /**
@@ -381,6 +384,10 @@ class DSpaceService implements RepositoryInterface
             'facet.limit' => config('skylight.facet_limit', 10),
             'facet.mincount' => 1,
         ];
+
+        if ($this->filterSort) {
+            $params['facet.sort'] = 'index';
+        }
 
         $documentFieldList = config('skylight.solr_document_field_list');
         if (is_string($documentFieldList) && $documentFieldList !== '') {
