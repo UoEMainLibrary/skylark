@@ -78,4 +78,9 @@
 
     </div>
 </div>
+
+<div class="col-sidebar">
+{{--<pre>{{ var_export($facets, true) }}</pre>--}}
+    @include('alumni.search.partials.facets')
+</div>
 @endsection
