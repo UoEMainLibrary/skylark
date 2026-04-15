@@ -412,7 +412,34 @@ class PageController extends Controller
     */
     public function alumniHome()
     {
-        return view('alumni.home');
+        /*
+        dd([
+            'container_id' => config('skylight.container_id'),
+            'container_field' => config('skylight.container_field'),
+        ]);
+        */
+
+
+        $repository = $this->repositoryFactory->current();
+        $facets = [];
+        $baseSearch = CollectionUrl::url('search/*:*');
+        $configFilters = config('skylight.filters', []);
+
+        try {
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
+            //dd($repository);
+            //dd($results);
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            dd($e->getMessage(), $e);
+        }
+
+        return view('alumni.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+        ]);
     }
 
     /**

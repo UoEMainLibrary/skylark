@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>OpenLayers</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/latest/css/ol.css" type="text/css">
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+    var locationsArray = [];
+    locationsArray.push([-3.1865286802087667,55.947601552780945,'./record/124627','A Torch Racer [Golden Boy]','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76064~216415/full/50,/0/default.jpg']);
+    locationsArray.push([-3.1728735541139486,55.924065556710296,'./record/125646','Ashworth Laboratories Reliefs','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75496~199487/full/50,/0/default.jpg']);
+    locationsArray.push([-3.187773225191677,55.94470577127447,'./record/124626','bite / Haynes Nano Stage','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75478~199496/full/50,/0/default.jpg']);
+    locationsArray.push([-3.1760278319154622,55.92417375945154,'./record/124622','David Brewster','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75491~199503/full/50,/0/default.jpg']);
+    locationsArray.push([-3.200566799999933,55.9446641,'./record/124637','Edinburgh College of Art War Memorial','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76048~216390/full/50,/0/default.jpg']);
+    locationsArray.push([-3.174783286932552,55.922592767138546,'./record/124631','Egeria','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76060~216407/full/50,/0/default.jpg']);
+    locationsArray.push([-3.171768483999813,55.92165496175868,'./record/125651','Galapagos','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76049~216396/full/50,/0/default.jpg']);
+    locationsArray.push([-3.174879846457088,55.92405353416485,'./record/125647','Geology','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75492~199474/full/50,/0/default.jpg']);
+    locationsArray.push([-3.189092872027004,55.94289129160527,'./record/124633','Interleaved','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75941~214332/full/50,/0/default.jpg']);
+    //locationsArray.push([,55.93725504776363 -3.171162304762447,'./record/124636','Let my blood be a seed of freedom','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75484~199489/full/50,/0/default.jpg']);
+    locationsArray.push([-3.1865286802087667,55.947601552780945,'./record/124634','Old College War Memorial','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75485~199493/full/50,/0/default.jpg']);
+    locationsArray.push([-3.1887280916009786,55.94388265692646,'./record/124628','Orbis','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76051~216418/full/50,/0/default.jpg']);
+    locationsArray.push([-3.174783286932552,55.922592767138546,'./record/124632','Parthenope','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76063~216404/full/50,/0/default.jpg']);
+    locationsArray.push([-3.187773225191677,55.94470577127447,'./record/124625','Rhino head','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76050~216416/full/50,/0/default.jpg']);
+    locationsArray.push([-3.1774654959474447,55.92309171844544,'./record/125648','Sculptural Relief Crew Building','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75494~199472/full/50,/0/default.jpg']);
+    locationsArray.push([-3.1715968226228597,55.923121775547955,'./record/125649','Sculptural Relief on Sanderson Building','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75495~199471/full/50,/0/default.jpg']);
+    locationsArray.push([-3.2014873598848226,55.86512837034616,'./record/124623','Sprinting Afghan Hound','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75488~199501/full/50,/0/default.jpg']);
+    locationsArray.push([-3.200173077467525,55.86466178578094,'./record/124624','Startled Horse Rising','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75489~199499/full/50,/0/default.jpg']);
+    locationsArray.push([-3.1887280916009786,55.94388265692646,'./record/124629','The Dreamer','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75479~199495/full/50,/0/default.jpg']);
+    locationsArray.push([-3.1885993455682637,55.94546278070555,'./record/125650','The Next Big Thing...is a Series of Little Things','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76077~216419/full/50,/0/default.jpg']);
+    locationsArray.push([-3.169762191656673,55.93818947112505,'./record/124635','The Protégé','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~75482~199491/full/50,/0/default.jpg']);
+    locationsArray.push([-3.3030277000000297,55.93036069999999,'./record/124630','Tottenham Court Road Mosaic Arches','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~76052~216417/full/50,/0/default.jpg']);
+    locationsArray.push([-3.2011654948030355,55.86597723885854,'./record/124621','William Dick','https://images.is.ed.ac.uk/luna/servlet/iiif/uoeart~1~1~74378~169295/full/50,/0/default.jpg']);
+    </script>
+    <script src="./bundle.js"></script>
+  </body>
+</html>

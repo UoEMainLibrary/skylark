@@ -1,79 +1,67 @@
-@extends('layouts.art')
+@extends('layouts.alumni')
 
 @section('title')
     @if($query !== '*' && $query !== '*:*')
-        Search Results for "{{ urldecode($query) }}" - University of Edinburgh Art Collection
+        Search Results for "{{ urldecode($query) }}" - {{ config('skylight.fullname') }}
     @else
-        Search Results - University of Edinburgh Art Collection
+        Search Results - {{ config('skylight.fullname') }}
     @endif
 @endsection
 
 @section('content')
-<div class="row">
-    <div class="col-lg-9">
-        @if(isset($searchFields))
+@php
+    $fieldMappings = config('skylight.field_mappings', []);
 
-<h3 class="adv-search">Advanced Search</h3>
+    $title_field = str_replace('.', '', $fieldMappings['Title'] ?? '');
+    $author_field = str_replace('.', '', $fieldMappings['Author'] ?? '');
+    $date_field = str_replace('.', '', $fieldMappings['Year'] ?? '');
+    $type_field = str_replace('.', '', $fieldMappings['Type'] ?? '');
+    $bitstream_field = str_replace('.', '', $fieldMappings['Bitstream'] ?? '');
+    $thumbnail_field = str_replace('.', '', $fieldMappings['Thumbnail'] ?? '');
+    $subject_field = str_replace('.', '', $fieldMappings['Subject'] ?? '');
+    $collection_field = str_replace('.', '', $fieldMappings['Collection'] ?? '');
 
-<p class="adv-search"><strong><a href="#" id="showform">Change Advanced Search options</a></strong></p>
+    $clean_base_parameters = preg_replace("/[?&]sort_by=[_a-zA-Z+%20. ]+/", "", $base_parameters ?? '');
+    $sort = $clean_base_parameters === '' ? '?sort_by=' : '&sort_by=';
+@endphp
 
-<div class="searchform" style="display:none">
-    <p><strong>Hint: </strong> To match an exact phrase, try using quotation marks, eg. <em>"a search phrase"</em></p>
-<form action="{{ url('/art/advanced/post') }}" method="post" accept-charset="utf-8">
-@csrf
-@foreach($searchFields as $label => $field)
-@php $escapedLabel = str_replace(' ', '_', $label); @endphp
-<p><label for="{{ $escapedLabel }}" style="width: 100px; float: left; display: block; text-align: right;">{{ $label }}</label><input type="text" name="{{ $escapedLabel }}" value="" id="{{ $escapedLabel }}" style="margin-left: 15px;"  /></p>
-@endforeach
-<p><label for="operators" style="width: 100px; float: left; display: block; text-align: right;">Default search operator</label><select name="operator" style="margin-left:15px;">
-<option value="OR"{{ ($operator ?? 'OR') === 'OR' ? ' selected="selected"' : '' }}>OR (any terms may match)</option>
-<option value="AND"{{ ($operator ?? 'OR') === 'AND' ? ' selected="selected"' : '' }}>AND (all terms must match)</option>
-</select></p><p style="margin-left: 120px;"><em>Use <strong>AND</strong> for narrow searches and <strong>OR</strong> for broad searches</em></p><input type="submit" name="search" value="Search" style="margin-left: 120px" class="btn" /></form>
-</div>
+<div class="col-content">
+    @if(isset($message))
+        <div class="message">{!! $message !!}</div>
+    @endif
 
-<script>
-    $("#showform").click(function() {
-        $(".searchform").show();
-        $(this).hide();
-        $(".message").hide();
-        @if(isset($savedSearch))
-            @foreach($savedSearch as $key => $val)
-                $("input#{{ str_replace(' ', '_', $key) }}").val('{{ urldecode($val) }}');
-            @endforeach
-        @endif
-        return false;
-    });
-</script>
-        @endif
-        @if(isset($message))
-            <div class="message">{!! $message !!}</div>
-        @endif
+    @if(empty($docs) || $rows == 0)
+        <div class="content">
+            <h1>No results found</h1>
+            <p>Your search for <strong>{{ urldecode($query) }}</strong> did not return any results.</p>
+            <p>Try broadening your search or <a href="{{ url('/alumni/search/*:*') }}">browse all items</a>.</p>
+        </div>
+    @else
 
-        @if($total === 0)
-            <div class="content">
-                <h1>No results found</h1>
-                <p>Your search for <strong>{{ urldecode($query) }}</strong> did not return any results.</p>
-                <p>Try broadening your search or <a href="{{ url('/art/search/*:*') }}">browse all items</a>.</p>
-            </div>
-        @else
-        @php
-            $sortParam = empty($base_parameters) ? '?sort_by=' : '&sort_by=';
-        @endphp
         <div class="listing-filter">
             <span class="no-results">
-                <strong>{{ $startRow }}-{{ $endRow }}</strong> of
-                <strong>{{ $total }}</strong> results
+                <strong>{{ $startrow }}-{{ $endrow }}</strong> of
+                <strong>{{ $rows }}</strong> results
             </span>
 
             <span class="sort">
                 <strong>Sort by</strong>
                 @foreach($sort_options as $label => $field)
-                    @if($label === 'Relevancy')
-                        <em><a href="{{ $base_search }}{{ $base_parameters }}{{ $sortParam }}{{ $field }}+desc" title="{{ $label }}">{{ $label }}</a></em>
+                    @if($label == 'Relevancy')
+                        <em>
+                            <a href="{{ $base_search . $clean_base_parameters . $sort . $field . '+desc' }}">
+                                {{ $label }}
+                            </a>
+                        </em>
                     @else
                         <em>{{ $label }}</em>
-                        <a href="{{ $base_search }}{{ $base_parameters }}{{ $sortParam }}{{ $field }}+asc" title="Sort by alphabetical order">A-Z</a> |
-                        <a href="{{ $base_search }}{{ $base_parameters }}{{ $sortParam }}{{ $field }}+desc" title="Sort by reverse alphabetical order">Z-A</a>
+                        @if($label != 'Year')
+                            <a href="{{ $base_search . $clean_base_parameters . $sort . $field . '+asc' }}">A-Z</a> |
+                            <a href="{{ $base_search . $clean_base_parameters . $sort . $field . '+desc' }}">Z-A</a>
+                        @else
+                            <a href="{{ $base_search . $clean_base_parameters . $sort . $field . '+desc' }}">newest</a> |
+                            <a href="{{ $base_search . $clean_base_parameters . $sort . $field . '+asc' }}">oldest</a>
+                        @endif
                     @endif
                 @endforeach
             </span>
@@ -82,90 +70,157 @@
         <ul class="listing">
             @foreach($docs as $index => $doc)
                 @php
-                    $fieldMappings = config('skylight.field_mappings', []);
-                    $titleField = str_replace('.', '', $fieldMappings['Title'] ?? 'dctitleen');
-                    $authorField = str_replace('.', '', $fieldMappings['Author'] ?? '');
-                    $dateField = str_replace('.', '', $fieldMappings['Date'] ?? '');
-                    $abstractField = str_replace('.', '', $fieldMappings['Abstract'] ?? '');
-                    $imageUriField = str_replace('.', '', $fieldMappings['ImageUri'] ?? '');
+                    $type = 'Unknown';
+                    if($type_field !== '' && isset($doc[$type_field])) {
+                        $rawType = is_array($doc[$type_field]) ? ($doc[$type_field][0] ?? 'Unknown') : $doc[$type_field];
+                        $type = 'media-' . strtolower(str_replace(' ', '-', $rawType));
+                    }
 
-                    $title = $doc[$titleField][0] ?? 'Untitled';
+                    $liClass = '';
+                    if($index === 0) {
+                        $liClass = 'first';
+                    } elseif($index === count($docs) - 1) {
+                        $liClass = 'last';
+                    }
+
                     $docId = $doc['id'] ?? '';
-                    if (is_array($docId)) { $docId = $docId[0] ?? ''; }
+                    if (is_array($docId)) {
+                        $docId = $docId[0] ?? '';
+                    }
+
+                    $title = $doc[$title_field][0] ?? 'Untitled';
+                    $bitstream_array = [];
+                    $min_seq = null;
+                    $thumbnailLink = '';
                 @endphp
-                <li @class(['first' => $index === 0, 'last' => $index === count($docs) - 1])>
+
+                <li @if($liClass) class="{{ $liClass }}" @endif>
                     <div class="item-div">
                         <div class="iteminfo">
-                            @if(isset($doc[$authorField]) && !empty($doc[$authorField]))
-                                @php $authors = is_array($doc[$authorField]) ? $doc[$authorField] : [$doc[$authorField]]; @endphp
-                                @foreach($authors as $author)
-                                    @php
-                                        $origFilter = urlencode($author);
-                                        $lowerFilter = urlencode(strtolower($author));
-                                    @endphp
-                                    <a class="artist" href="{{ url('/art/search/*:*/Artist:%22' . $lowerFilter . '%7C%7C%7C' . $origFilter . '%22') }}" title="{{ $author }}">{{ $author }}</a>
-                                @endforeach
-                            @endif
-
-                            <h3 class="record-title">
-                                <a href="{{ url('/art/record/' . $docId) }}?highlight={{ urlencode($query) }}">{{ $title }}@if(isset($doc[$dateField])) ({{ $doc[$dateField][0] }})@endif</a>
+                            <h3>
+                                <a href="./record/{{ $docId }}?highlight={{ urlencode($query) }}">
+                                    {{ $title }}
+                                </a>
                             </h3>
 
                             <div class="tags">
-                                @if(isset($doc[$abstractField]) && !empty($doc[$abstractField]))
-                                    @php
-                                        $abstract = is_array($doc[$abstractField]) ? $doc[$abstractField][0] : $doc[$abstractField];
-                                        $words = explode(' ', $abstract);
-                                        $max = min(40, count($words));
-                                        $suffix = count($words) > 40 ? '...' : '';
-                                        $shortened = implode(' ', array_slice($words, 0, $max));
-                                    @endphp
-                                    <p>{{ $shortened }}{{ $suffix }}</p>
+                                @if($collection_field !== '' && array_key_exists($collection_field, $doc))
+                                    @foreach($doc[$collection_field] as $collection)
+                                        @php
+                                            $orig_filter = urlencode($collection);
+                                            $lower_orig_filter = urlencode(strtolower($collection));
+                                        @endphp
+                                        <a href="./search/*:*/Collection:%22{{ $lower_orig_filter }}+%7C%7C%7C+{{ $orig_filter }}%22">
+                                            {{ $collection }}
+                                        </a>
+                                    @endforeach
+                                @endif
+
+                                @if($date_field !== '' && array_key_exists($date_field, $doc))
+                                    @foreach($doc[$date_field] as $date)
+                                        @php
+                                            $orig_filter = urlencode($date);
+                                            $lower_orig_filter = urlencode(strtolower($date));
+                                        @endphp
+                                        <a href="./search/*:*/Year:%22{{ $lower_orig_filter }}+%7C%7C%7C+{{ $orig_filter }}%22">
+                                            {{ $date }}
+                                        </a>
+                                    @endforeach
                                 @endif
                             </div>
                         </div>
 
-                        <div class="thumbnail-image-search">
-                            @if(isset($doc[$imageUriField]) && !empty($doc[$imageUriField]))
-                                @php
-                                    $imageUris = is_array($doc[$imageUriField]) ? $doc[$imageUriField] : [$doc[$imageUriField]];
-                                    $imageUri = null;
-                                    foreach ($imageUris as $uri) {
-                                        $uri = str_replace('http://', 'https://', $uri);
-                                        if (str_contains($uri, 'luna')) {
-                                            $imageUri = $uri;
-                                            break;
+                        <div class="thumbnail-image">
+                            @if($bitstream_field !== '' && isset($doc[$bitstream_field]))
+                                @foreach($doc[$bitstream_field] as $bitstream)
+                                    @php
+                                        $b_segments = explode('##', $bitstream);
+                                        $b_filename = $b_segments[1] ?? '';
+                                        $b_seq = $b_segments[4] ?? null;
+
+                                        if (
+                                            $b_seq !== null &&
+                                            (str_contains($b_filename, '.jpg') || str_contains($b_filename, '.JPG'))
+                                        ) {
+                                            $bitstream_array[$b_seq] = $bitstream;
+
+                                            if ($min_seq === null || $b_seq < $min_seq) {
+                                                $min_seq = $b_seq;
+                                            }
                                         }
-                                    }
-                                    $iiifUrlSmall = $imageUri ? str_replace('/full/0/', '/!250,250/0/', $imageUri) : null;
-                                @endphp
-                                @if($imageUri)
-                                    <a title="{{ $title }}" class="fancybox" rel="group" href="{{ $imageUri }}">
-                                        <img src="{{ $iiifUrlSmall }}" class="record-thumbnail-search" alt="{{ $title }}" loading="lazy" />
-                                    </a>
+                                    @endphp
+                                @endforeach
+
+                                @if($min_seq !== null && count($bitstream_array) > 0)
+                                    @php
+                                        $selectedBitstream = $bitstream_array[$min_seq];
+                                        $b_segments = explode('##', $selectedBitstream);
+                                        $b_filename = $b_segments[1] ?? '';
+                                        $b_handle = $b_segments[3] ?? '';
+                                        $b_seq = $b_segments[4] ?? '';
+                                        $b_handle_id = preg_replace('/^.*\//', '', $b_handle);
+                                        $b_uri = './record/' . $b_handle_id . '/' . $b_seq . '/' . $b_filename;
+                                    @endphp
+
+                                    @if($thumbnail_field !== '' && isset($doc[$thumbnail_field]))
+                                        @foreach($doc[$thumbnail_field] as $thumbnail)
+                                            @php
+                                                $t_segments = explode('##', $thumbnail);
+                                                $t_filename = $t_segments[1] ?? '';
+                                            @endphp
+
+                                            @if($t_filename === $b_filename . '.jpg')
+                                                @php
+                                                    $t_seq = $t_segments[4] ?? '';
+                                                    $t_uri = './record/' . $b_handle_id . '/' . $t_seq . '/' . $t_filename;
+                                                    $thumbnailLink =
+                                                        '<a title="' . e($title) . '" class="fancybox" rel="group' . $loop->parent->index . '" href="' . $b_uri . '">' .
+                                                        '<img src="' . $t_uri . '" class="search-thumbnail" title="' . e($title) . '" />' .
+                                                        '</a>';
+                                                @endphp
+                                            @endif
+                                        @endforeach
+
+                                        @if($thumbnailLink === '')
+                                            @php
+                                                $thumbnailLink =
+                                                    '<a title="' . e($title) . '" class="fancybox" rel="group' . $index . '" href="' . $b_uri . '">' .
+                                                    '<img src="' . $b_uri . '" class="search-thumbnail" title="' . e($title) . '" />' .
+                                                    '</a>';
+                                            @endphp
+                                        @endif
+                                    @else
+                                        @php
+                                            $thumbnailLink =
+                                                '<a title="' . e($title) . '" class="fancybox" rel="group' . $index . '" href="' . $b_uri . '">' .
+                                                '<img src="' . $b_uri . '" class="search-thumbnail" title="' . e($title) . '" />' .
+                                                '</a>';
+                                        @endphp
+                                    @endif
+
+                                    {!! $thumbnailLink !!}
                                 @endif
                             @endif
                         </div>
+
                         <div class="clearfix"></div>
                     </div>
                 </li>
             @endforeach
         </ul>
 
-        <div class="pagination search">
+        <div class="pagination">
             <span class="no-results">
-                <strong>{{ $startRow }}-{{ $endRow }}</strong> of
-                <strong>{{ $total }}</strong> results
+                <strong>{{ $startrow }}-{{ $endrow }}</strong> of
+                <strong>{{ $rows }}</strong> results
             </span>
-            <div class="page-links">{!! $paginationLinks !!}</div>
+            {!! $pagelinks !!}
         </div>
 
-        <br/>
-        <br/>
-        @endif
-    </div>
-    <div class="col-lg-3 search facets">
-        @include('art.search.partials.facets')
-    </div>
+    @endif
+</div>
+
+<div class="col-sidebar">
+    @include('alumni.search.partials.facets')
 </div>
 @endsection

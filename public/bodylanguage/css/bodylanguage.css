@@ -1,0 +1,375 @@
+/***
+* @author    - Ben Parkes, Digital Libray
+* @copyright - The University of Edinburgh
+***/
+
+/************************************************************/
+/********************** GLOBAL STYLES ***********************/
+
+html {
+    scroll-behavior: smooth;
+}
+ul {
+    list-style: none;
+}
+strong {
+    color: rgb(29,98,184);
+}
+.site-tag {
+    text-align: center;
+    font-weight: 100;
+}
+
+.para-link, .quick-link, 
+.list-link, .footer-link,
+.people-link, .results-link {
+    position: relative;
+    text-decoration: none;
+}
+.para-link:visited, .quick-link:visited, 
+.list-link:visited, .footer-link:visited,
+.people-link:visited, .results-link:visited {
+    text-decoration: none;
+}
+.para-link:hover, .quick-link:hover, 
+.list-link:hover, .footer-link:hover,
+.people-link:hover, .results-link:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+.para-link::before, .quick-link::before, 
+.list-link::before,
+.people-link::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    bottom: -4px;
+    left: 0;
+    background-color: rgb(29,98,184);
+    visibility: hidden;
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transition: all 0.5s ease-in-out 0s;
+    transition: all 0.5s ease-in-out 0s;
+}
+.results-link::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: 0px;
+    left: 0;
+    background-color: rgb(29,98,184);
+    visibility: hidden;
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transition: all 0.3s ease-in-out 0s;
+    transition: all 0.3s ease-in-out 0s;
+}
+.footer-link::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: rgb(29,98,184);
+    visibility: hidden;
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transition: all 0.3s ease-in-out 0s;
+    transition: all 0.3s ease-in-out 0s;
+}
+.para-link:hover::before, .quick-link:hover::before, 
+.list-link:hover::before, .footer-link:hover::before,
+.people-link:hover::before, .results-link:hover::before {
+    visibility: visible;
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+}
+
+/* NAVIGATION BAR */
+.menu-links li {
+    width: 12.5%;
+}
+
+/* HEADER */
+.quick-links {
+    margin-top: 20px;
+}
+.quick-links ul {
+    display: flex;
+    list-style: none;
+    margin-left: 45px;
+}
+.quick-links ul li {
+    padding: 0px 1em 0px 0px;
+    white-space: nowrap;
+}
+.quick-links ul li a {
+    padding: 0px 10px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* SEARCH BAR */
+#collection-search {
+    padding-left: 0;
+}
+.search input[type=text] {
+    width: 75%;
+    -webkit-box-shadow: none;
+}
+.search input.btn {
+    float: right;
+}
+.index-search {
+    padding-top: 16px;
+}
+.other-search {
+    padding-top: 6px;
+}
+
+/* SIDEBAR & RELATED ITEMS */
+.col-sidebar {
+    margin-top: 1.6%;
+}
+.sidebar-overlay ul a:hover {
+    text-decoration: none;
+    color: rgb(29,98,184);
+}
+.sidebar-overlay {
+    position: relative;
+    margin-top: 1px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(29,98,184);
+    overflow: hidden;
+    width: 0%;
+    height: 1px;
+    transition: .5s ease;
+}
+.col-sidebar ul li:hover .sidebar-overlay {
+    width: 100%;
+}
+a.related-record {
+    display: inline;
+    position: relative;
+    overflow: hidden;
+}
+a.related-record::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -4px;
+    left: 0;
+    background-color: rgb(29,98,184);
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+a.related-record:hover::before {
+    visibility: visible;
+    width: 100%;
+}
+
+
+/* FOOTER */
+.site-links {
+    display: flex;
+    margin-left: 24%;
+}
+.footer-disclaimer {
+    display: flex;
+}
+.footer-copyright {
+    margin-top: 6px;
+}
+.site-links a, .site-links a:hover, 
+.footer-disclaimer a, .footer-disclaimer a:hover {
+    text-decoration: none;
+    color: rgb(29,98,184);
+    margin: 0px 2px;
+    padding: 0px 10px;
+    margin-left: -8px;
+}
+
+.uoe-logo {
+    width: 50px;
+    height: 50px;
+    background: url(../images/UoELogo.gif);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* SITEWIDE BODY */
+#main {
+    padding-top: 19%;
+}
+.col-main {
+    text-align: center;
+}
+.col-main h1, h2, h3, h4, h5 {
+    color: rgb(29,98,184);
+    margin-bottom: 24px;
+}
+.col-main q {
+    color: rgb(29,98,184);
+    margin-bottom: 5px;
+}
+
+
+/************************************************************/
+/******************* PAGE SPECIFIC STYLES *******************/
+
+/* INDEX PAGE */
+#dancer-image { 
+    width: 325px; 
+    height: 238px; 
+    background: url(../images/Lenglen-and-MM-2.jpg) no-repeat center; 
+    background-size: 125%; float: left;
+    margin-bottom: 24px;
+}
+#cricket-image { 
+    width: 325px; 
+    height: 238px; 
+    background: url(../images/Cricket-and-dance-pose.jpg) no-repeat center; 
+    background-size: 110%; 
+    float: left;
+    margin-bottom: 24px;
+}
+/* INDEX PAGE QUOTE */
+.quote {
+    font-size: 17px;
+    text-align: center;
+    margin-bottom: 0;
+}
+.quote-p {
+    font-size: 15px;
+    text-align: center;
+}
+/* CATALOGUE LIST */
+.cataglogue-list-index {
+    margin-bottom: 60px;
+}
+.catelogue-list {
+    list-style: none;
+    display: initial;
+    text-align: center;
+}
+.catelogue-list li {
+    margin-bottom: 20px;
+}
+.catelogue-list a {
+    font-weight: bold;
+    color: rgb(29,98,184);
+    text-decoration: none;
+}
+
+/* ABOUT PAGE */
+#project-anchor, #collection-anchor {
+    position: relative;
+}
+.about-list li {
+    margin-bottom: 10px;
+}
+
+/* CATELOGUE PAGE */
+#morris-anchor, #dunfermline-anchor, #sctgymnastics-anchor {
+    position: relative;
+}
+.catelogue-title {
+    margin-top: 40px;
+}
+
+/* PEOPLE PAGE */
+.people-overlay {
+    background-color: rgb(29,98,184);
+    overflow: hidden;
+    width: 150px;
+    height: 0%;
+    transition: .5s ease;
+}
+#tile-block a:hover .people-overlay {
+    height: 150px;
+}
+.people-tile {
+    margin-bottom: 100px;
+}
+.people-name {
+    margin-top: 130px;
+}
+.people-title {
+    color: #555;
+    font-size: 12px;
+    margin-top: -15px;
+}
+#tile-16 {
+    position: relative;
+    left: 36%;
+}
+
+
+/* SEARCH RESULTS */
+.listing-filter {
+    margin-top: 13px;
+    margin-bottom: 5px;
+}
+/* RESULTS LIST */
+a.resultlist-link, .full-metadata a {
+    display: inline;
+    position: relative;
+    overflow: hidden;
+}
+a.resultlist-link::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: rgb(29,98,184);
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+a.resultlist-link:hover::before, .full-metadata a:hover::before {
+    visibility: visible;
+    width: 100%;
+}
+
+/* ITEM / RECORD */
+.full-record-link {
+    margin-bottom: 20px;
+}
+.divider {
+    height: 45px;
+}
+.smol-divider {
+    height: 15px;
+}
+.big-divider {
+    height: 120px;
+}
+.full-metadata a {
+    text-decoration: none;
+}
+.full-metadata a::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -4px;
+    left: 0;
+    background-color: rgb(29,98,184);
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+
+/* CONTACT PAGE */
+.contact-details {
+    line-height: 24px;
+}

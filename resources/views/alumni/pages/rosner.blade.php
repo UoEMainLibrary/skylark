@@ -6,7 +6,7 @@
 <div class="content">
     <div class="content byEditor about">
         <h1>Students of Medicine, 1762-1826</h1>
-        <h2><a href='alumni/search/*:*/Collection:"students+of+medicine%2C+1762-1826%7C%7C%7CStudents+of+Medicine%2C+1762-1826"'><i class="fa fa-search fa-lg">&nbsp;</i>View all items</a></h2>
+        <h2><a href='search/*:*/Collection:"students+of+medicine%2C+1762-1826%7C%7C%7CStudents+of+Medicine%2C+1762-1826"'><i class="fa fa-search fa-lg">&nbsp;</i>View all items</a></h2>
         <p>The foundation of this database lies in an earlier database compiled by Dr. Lisa M. Rosner, It was was compiled from the following:</p>
         <ul>
             <li>University of Edinburgh: Matriculation Albums: 1762-1786, 1786-1805, 1804-1816 (3 vols.). [Edinburgh University Library Special Collections: EUA IN1/ADS/STA/2]</li>
