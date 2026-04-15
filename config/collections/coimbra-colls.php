@@ -63,6 +63,19 @@ return array_merge($dspaceDefaults, [
         'Items created (date)',
     ],
 
+    'descriptiondisplay' => [
+        'Dimensions',
+        'Material/Medium',
+        'Category',
+        'Physical Location',
+        'Featured image',
+        'Image License',
+        'Image Rights Holder',
+        'Photographic Credits',
+        'Metadata Rights',
+        'Contact email',
+    ],
+
     'searchresult_display' => [
         'Title',
         'Instrument',

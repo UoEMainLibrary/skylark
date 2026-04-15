@@ -35,7 +35,7 @@
             <a class="col-xs-6 col-md-2" href='/coimbra-colls/search/*:*/Category:%22politics+and+government+%7C%7C%7C+Politics+and+government%22'><div class="border-top"></div>Politics</a>
             <a class="col-xs-6 col-md-2" href='/coimbra-colls/search/*:*/Category:%22social+history+%7C%7C%7C+Social+History%22'><div class="border-top"></div>Social History</a>
             <a class="col-xs-6 col-md-2" href='/coimbra-colls/search/*:*/Category:%22science+%7C%7C%7C+Science%22'><div class="border-top"></div>Science</a>
-            <a class="col-xs-12 col-md-12 border-b" href='./search/*:*/Category:%22technology+%7C%7C%7C+Technology%22'><div class="border-top"></div>Technology</a>
+            <a class="col-xs-12 col-md-12 border-b" href='/coimbra-colls/search/*:*/Category:%22technology+%7C%7C%7C+Technology%22'><div class="border-top"></div>Technology</a>
         </div>
     </div>
 @endsection

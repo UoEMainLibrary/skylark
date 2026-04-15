@@ -1,31 +1,29 @@
-@extends('layouts.coimbra-colls')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title', 'Accessibility - University of Edinburgh Art Collection')
+<!-- Search for the double curly bracket chars to navigate to areas to change in this template e.g. Ctrl+F "" -->
 
-@section('content')
-
-<!--<html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<title>Accessibility Statement</title>
     <style type="text/css">
-	 @page { size: 21cm 29.7cm; margin: 2.54cm }
-	 body, p { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5; text-align: left; margin-bottom: 0.25cm; direction: ltr; background: transparent }
-	 h1, h2, h3 { color: #2f5496; text-align: left; margin-bottom: 0.5cm; direction: ltr; background: transparent; page-break-after: avoid }
-	 h1 { font-size: 24pt; }
-	 h2 { font-size: 20pt; }
-	 h3 { font-size: 16pt; }
-	 a:link, a:visited { color: #0563c1; text-decoration: underline }
-
-     body > *:not(div:nth-child(3)) {display: none}
-     body > div:nth-child(3) { width: 80%; }
-     body  { justify-items: center; padding-bottom: 50px !important; }
+		@page { size: 21cm 29.7cm; margin: 2.54cm }
+		body, p { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5; text-align: left; margin-bottom: 0.25cm; direction: ltr; background: transparent }
+		h1, h2, h3 { color: rgb(0,120,0); text-align: left; margin-bottom: 0.5cm; direction: ltr; background: transparent; page-break-after: avoid }
+		h1 { font-size: 24pt; }
+		h2 { font-size: 20pt; }
+		h3 { font-size: 16pt; }
+		a:link, a:visited { color: rgb(0,120,0); text-decoration: underline }
+		.footer > div > ul > li > a { color: #ccf5b2; text-decoration: underline }
+		body > div:nth-child(3) { margin: 0 5%;}
 	</style>
 
 </head>
-<body lang="en-GB" link="#0563c1" vlink="#954f72" dir="ltr">-->
+<body lang="en-GB" link="rgb(0,120,0)" vlink="#954f72" dir="ltr">
+
+
 <h1>Accessibility
-Statement for the <a href="https://collections.ed.ac.uk/coimbra-colls/">Coimbra Group Collections website</a></h1>
+Statement for the <a href="https://collections.ed.ac.uk/coimbra">Coimbra Exhibition website</a></h1>
 </p>
 <p>
 
@@ -35,7 +33,7 @@ Statement for the <a href="https://collections.ed.ac.uk/coimbra-colls/">Coimbra 
 
 </p>
 <p>This accessibility statement applies to:</p>
-<p><a href="https://collections.ed.ac.uk/coimbra-colls/">https://collections.ed.ac.uk/coimbra-colls/</a>
+<p><a href="https://collections.ed.ac.uk/coimbra">https://collections.ed.ac.uk/coimbra</a>
 </p>
 
 <p>
@@ -44,7 +42,7 @@ Statement for the <a href="https://collections.ed.ac.uk/coimbra-colls/">Coimbra 
 <!-- The site may not be in full control. If it isn't, the below is likely incorrect and will need to be edited -->
 
 <p>This website is run by the Library and University Collections Directorate, Information Services Group at the University of Edinburgh. We want as many people as possible to be
-able to use this website. For example, that means you should be
+able to use this application. For example, that means you should be
 able to:</p>
 <p>
 
@@ -95,7 +93,7 @@ you are a member of University staff or a student, you can use the free SensusAc
 <p>
 
 </p>
-<p><a href="https://www.ed.ac.uk/student-disability-service/staff/supporting-students/accessible-technology">Information
+<p><a href="https://disability-learning-support-service.ed.ac.uk/staff/accessible-design-and-inclusive-learning-resources">Information
 on SensusAccess</a></p>
 <p>
 
@@ -112,19 +110,16 @@ on SensusAccess</a></p>
 <!-- This section varies according to the site. Edit as appropriate -->
 
 <ul>
-<li>Many images have little or no alternative text</li>
-<li>Some text is presented as an image</li>
-<li>Pages do not display reliably in landscape view on Android devices</li>
-<li>Zooming at 200% or above causes overlap</li>
-<li>Pages do not reflow past 400%</li>
-<li>Tool‑tips appear only on mouse‑hover, not on keyboard focus or with assistive technology</li>
-<li>The home‑page carousel and animated arrow cannot be paused or stopped</li>
-<li>Several links are shown as naked URLs with no meaningful link text</li>
-<li>JAWS does not read out all information or items correctly, for example the search logo</li>
-<li>Keyboard focus outline is hard to see in Firefox and only appears partially on some images
-<li>Headings are not always coded as headings and some heading levels are missed Tooltips are not always accessible by keyboard or by assistive software</li>
-<li>Certain links open a new window, and pop-ups appear, without warning</li>
-<li>Some buttons do not have discernible text</li>
+<li>Certain images and logos lack meaningful alternative text</li>
+<li>Some information is conveyed only by colour e.g. links</li>
+<li>Some colour combinations do not provide enough contrast, which can make text hard to read</li>
+<li>The text and layout do not always adapt correctly when zoomed in or resized, and content may overlap beyond certain magnification levels. Magnification is not enabled to 200% and resize is not enabled to 400%</li>
+<li>Some tooltips and interactive elements cannot be accessed using only a keyboard or assistive technology</li>
+<li>The carousel on the homepage cannot be paused or stopped by users</li>
+<li>The focus indicator is not always clearly visible when navigating by keyboard, especially in some browsers</li>
+<li>Not all links have meaningful hypertext</li>
+<li>Certain overlays and pop-ups obscure other content when magnified</li>
+<li>The site is not fully compatible with assistive software such as screen readers or voice recognition software</li>
 </ul>
 <p>
 
@@ -138,7 +133,7 @@ you need information on this website in a different format, including
 accessible portable document format (PDF), large print, audio recording or braille:
 </p>
 
-<!--You may need to change the contact details if the site is not within the control of L&UC -->
+<!-- You may need to change the contact details if the site is not within the control of L&UC -->
 
 
 <ul>
@@ -146,7 +141,7 @@ accessible portable document format (PDF), large print, audio recording or brail
 	<li>Telephone: +44 (0)131 651 5151</li>
 	<li>Use the <a href="https://www.ishelpline.ed.ac.uk/forms/">IS Helpline online contact form</a></li>
 	<li>British Sign Language (BSL) users can contact us via <a href="https://contactscotland-bsl.org/">Contact
-Scotland BSL</a>, the on-line BSL interpreting service
+Scotland BSL</a>, the on-line BSL interpreting service.
 </ul>
 
 <p>We’ll consider your request and get back to you in 5 working days.</p>
@@ -171,7 +166,7 @@ meeting accessibility requirements, please contact:&nbsp;
 	<li>British Sign Language (BSL) users can contact us via <a href="https://contactscotland-bsl.org/">Contact
 Scotland BSL</a>, the on-line BSL interpreting service.
 </ul>
-<p>We'll consider your request and get back to you in 5 working days.</p>
+<p>We’ll consider your request and get back to you in 5 working days.</p>
 <p>
 
 </p>
@@ -254,7 +249,7 @@ content listed below is non-accessible for the following reasons.</p>
 
 </h3>
 <p>The
-following items to not comply with the WCAG 2.2 AA success criteria:</p>
+following items do not comply with the WCAG 2.2 AA success criteria:</p>
 <p>
 
 </p>
@@ -267,46 +262,56 @@ following items to not comply with the WCAG 2.2 AA success criteria:</p>
 <!-- Maintain the formatting of the items, as shown below in the examples below -->
 
 
-<ul><li>Not all non-text items have appropriate alternative text</li></ul>
+<ul><li>Not all images and logos possess meaningful or descriptive alternative text</li></ul>
 <p><a href="https://www.w3.org/TR/WCAG22/#non-text-content">1.1.1 – Non-text Content</a></p>
-<ul><li>Site cannot be viewed reliably in both portrait and landscape orientation</li></ul>
-<p><a href="https://www.w3.org/TR/WCAG22/#orientation">1.3.4 – Orientation</a></p>
-<ul><li>Some content is cut off, such as the search bar, at magnification levels above 175%</li></ul>
+
+<ul><li>Some information is conveyed by colour only e.g. links</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#use-of-color">1.4.1 – Use of Colour</a></p>
+
+<ul><li>Not all colour contrasts meet minimum accessibility standards</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#contrast-minimum">1.4.3 – Contrast (Minimum)</a></p>
+
+<ul><li>The website cannot be viewed reliably beyond 150% magnification without overlapping content and loss of functionality</li></ul>
 <p><a href="https://www.w3.org/TR/WCAG22/#resize-text">1.4.4 – Resize Text</a></p>
-<ul><li>There are instances of text as images</li></ul>
-<p><a href="https://www.w3.org/TR/WCAG22/#images-of-text">1.4.5 – Images of Text</a></p>
-<ul><li>Reflow is not fully operational beyond 175% magnification</li></ul>
+
+<ul><li>Site is not fully compatible with browser customisation meaning that users do not have full control and functionality when customising the site</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#visual-presentation">1.4.8 – Visual Presentation (AAA)</a></p>
+
+<ul><li>Content overlaps beyond 200% and the page does not reflow up to 400% without horizontal scrolling</li></ul>
 <p><a href="https://www.w3.org/TR/WCAG22/#reflow">1.4.10 – Reflow</a></p>
-<ul><li>Tool‑tips that appear on mouse hover are not available on keyboard focus or to assistive technologies</li></ul>
+
+<ul><li>Some tooltips are not accessible via keyboard or assistive technologies</li></ul>
 <p><a href="https://www.w3.org/TR/WCAG22/#content-on-hover-or-focus">1.4.13 – Content on Hover or Focus</a></p>
-<ul><li>A moving image carousel and animated pointer cannot be paused, stopped or hidden by the user</li></ul>
+
+<ul><li>The moving carousel on the homepage cannot be paused or stopped by the user</li></ul>
 <p><a href="https://www.w3.org/TR/WCAG22/#pause-stop-hide">2.2.2 – Pause, Stop, Hide</a></p>
-<ul><li>Some links are provided only as naked URLs and therefore lack meaningful hypertext about their destination</li></ul>
+
+<ul><li>Several naked URLs are present, and not all links are formatted appropriately with meaningful hypertext</li></ul>
 <p><a href="https://www.w3.org/TR/WCAG22/#link-purpose-in-context">2.4.4 – Link Purpose (In Context)</a></p>
-<ul><li>Some text that looks like headings is not marked up with heading tags, making navigation harder for screen‑reader users and some heading levels are missed</li></ul>
-<p><a href="https://www.w3.org/TR/WCAG22/#info-and-relationships">1.3.1 – Info and Relationships</a></p>
-<p><a href="https://www.w3.org/TR/WCAG22/#headings-and-labels">2.4.6 – Headings and Labels</a></p>
-<ul><li>Inadequate focus indicator visibility hinders ease of keyboard operability</li></ul>
+
+<ul><li>Keyboard focus visibility is insufficient in some browsers (particularly Firefox), making it difficult to determine where the user has navigated to</li></ul>
 <p><a href="https://www.w3.org/TR/WCAG22/#focus-visible">2.4.7 – Focus Visible</a></p>
-<ul><li>Some actions do not alert the user before opening a new tab / window or when displaying a pop-up</li></ul>
-<p><a href="https://www.w3.org/TR/WCAG22/#on-input">3.2.2 – On Input</a></p>
-<ul><li>Content is not robust enough that it can be interpreted by a wide variety of user agents, including assistive technologies e.g., buttons do not all have discernible text</li></ul>
+
+<ul><li>Some site elements and overlays obscure other content at higher magnification levels, particularly above 150%</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#focus-not-obscured-minimum">2.4.11 – Focus Not Obscured (Minimum)</a></p>
+
+<ul><li>Error messages could be more descriptive and informative</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#error-identification">3.3.1 – Error Identification</a></p>
+
+<ul><li>There are missing labels present in the website that fail to describe the purpose of the input form</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#labels-or-instructions">3.3.2 – Labels or Instructions</a></p>
+
+<ul><li>Content is not robust enough that it can be interpreted by a wide variety of user agents, including assistive technologies e.g. some interactive elements, including buttons, do not have discernible text or programmatic labels</li></ul>
 <p><a href="https://www.w3.org/TR/WCAG22/#name-role-value">4.1.2 – Name, Role, Value</a></p>
 
 
-<p>We
-aim to improve our websites accessibility on a regular and continuous
-basis. See the section below ('What we're doing to improve
-accessibility') on how we are improving our site accessibility.
-</p>
+
 <p>
 
 <!-- The site may not be in full control. If it isn't, the below is likely incorrect -->
 <!-- Add DATE_FOR_IMPROVEMENTS = Date Statement was approved + 11 months -->
 </p>
-<p>We
-are working towards solving these problems and expect significant
-improvements by May 2026. The site is fully within our control.</p>
+<p>At this time, we believe all items are within our control. Unless specified otherwise, a complete solution, or significant improvement, will be in place for those items within our control by November 2026. </p>
 <p>
 
 <!-- The statement may make claims of disproportionate burden, double-check that it matches below -->
@@ -326,9 +331,23 @@ disproportionate burden to fix.</p>
 <p>
 
 </p>
-<p>At
-this time we believe no content is outwith the scope of the accessibility regulations.</p>
-<p>
+<h4>Interactive maps</h4>
+
+<p>This website hosts a mapping service. Currently, online mapping and mapping services sit outwith the 2018 accessibility regulations.</p>
+
+<div style="padding-left:2rem;">
+
+<p>“These Regulations do not apply to the following content of a website or mobile application of a public sector body—</p>
+
+<p>(d) online maps and mapping services, as long as essential information is provided in an accessible digital manner for maps intended for navigational use;” (The Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018)</p>
+
+</div>
+
+<p>The mapping service is not fully accessible, as it is not possible to interact with individual map features using assistive technologies. Although maps are currently not within the scope of the regulations, we will continue to strive to make the site as accessible as possible.</p>
+
+<p>There is additional information available in different formats, including maps, to download and information in the AccessAble - UoE app available for iOS and Android:</p>
+
+<p><a href="https://www.accessable.co.uk">AccessAble Information</a></p>
 
 </p>
 <h2>What we’re doing to improve accessibility</h2>
@@ -342,7 +361,7 @@ this time we believe no content is outwith the scope of the accessibility regula
 <p>We
 will continue to address and make significant improvements to the
 accessibility issues highlighted. Unless specified otherwise, a
-complete solution or significant improvement will be in place by May 2026.
+complete solution or significant improvement will be in place by November 2026. At this time we believe the site is fully under our control.
 <p>
 
 </p>
@@ -363,9 +382,9 @@ accessibility and retest the accessibility of this website.</p>
 
 </p>
 <h2>Preparation of this accessibility statement</h2>
-<p><b>This statement was prepared on 15th September 2021. It was last reviewed on 6th May 2025.</b></p>
+<p><b>This statement was prepared on 7th August 2020. It was last reviewed on 27th October 2025.</b></p>
 
-<p><b>The website was last tested in January 2025. The
+<p><b>The website was last tested on 2nd October 2025. The
 testing was carried out by Library
 and University Collections, Information Services Group at the University of Edinburgh</b> using
 both automated and manual methods. The site was tested on a PC,
@@ -382,7 +401,7 @@ browser for screen readers:</p>
 <p>
 
 </p>
-<p><a href="https://webaim.org/projects/screenreadersurvey9/">WebAIM:
+<p><a href="https://webaim.org/projects/screenreadersurvey10/">WebAIM:
 Screen Reader User Survey</a></p>
 <p>
 
@@ -417,7 +436,6 @@ then manual testing that included:</p>
 	conveyed in the colour or sound only;</li>
 	<li>Flashing,
 	moving or scrolling text;</li>
-	<li>Operability if JavaScript is disabled;</li>
 	<li>Use
 	with screen reading software (for example JAWS);</li>
 	<li>Assistive
@@ -442,18 +460,26 @@ then manual testing that included:</p>
 <!-- Delete the entire Change Log section if this is the first manual test - i.e. no fixes have been implemented -->
 <!-- The fixes should be grouped by date.  They should contain a description of the fix and the WCAG element referred to - see example below. Entries should follow the same format as below -->
 
-<h2>Change Log</h2>
+<h2>Change Log</h2
 <p>
-Since our initial report, we have undertaken more extensive manual testing with assistive software to get a better understanding of the accessibility issues on this website. This section will receive updates as and when accessibility improvements are made to the website.</p>
-<p> In 2024, the following improvements were made: </p>
+Since the previous test, the following fixes were implemented in August 2024 based on the manual testing done. This section will receive updates as and when accessibility improvements are made to the website.</p>
+<h3>Date of fix(es)</h3>
 <p>
 </p>
-<ul>
-    <li>Links are now underlined by default so no information is conveyed by colour only - <a href="https://www.w3.org/TR/WCAG22/#use-of-color">1.4.1 Use of Colour</a></li>
-    <li>All colour contrasts were adjusted to meet the WCAG standards - <a href="https://www.w3.org/TR/WCAG22/#contrast-minimum">1.4.3 Contrast Minimum</a></li>
-    <li>A skip to main content option was added to pages - <a href="https://www.w3.org/TR/WCAG22/#bypass-blocks">2.4.1 Bypass Blocks</a></li>
-    <li>Where justified text was used, it was changed to left align</li>
-</ul>
-<!--</body>
-</html>-->
-@endsection
+<ul><li>Changed the text alignment from justified to left aligned (06/08/2024)</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#visual-presentation">1.4.8 – Visual Presentation</a></p>
+
+<ul><li>Removed the loading screen with a moving image (06/08/2024) – other movement errors remain so this criteria is still present on the carousel</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#pause-stop-hide">2.2.2 – Pause, Stop, Hide</a></p>
+
+<ul><li>Added a skip to main content button on each page (06/08/2024)</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#bypass-blocks">2.4.1 – Bypass Blocks</a></p>
+
+<ul><li>Ensure users are alerted that a new tab is about to be opened after clicking on a link (06/08/2024)</li></ul>
+<p><a href="https://www.w3.org/TR/WCAG22/#on-input">3.2.2 – On Input</a></p>
+
+<ul><li>Increased font size to at least 12pt (06/08/2024)</li></ul>
+<p>
+</p>
+</body>
+</html>

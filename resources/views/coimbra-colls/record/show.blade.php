@@ -133,6 +133,34 @@
                     @endphp
                 @endif
             </div><!--logo-->
+
+             @foreach($descriptionDisplay as $key)
+                @php $element = str_replace('.', '', $fieldMappings[$key] ?? '');
+                    $n = 0;
+                @endphp
+
+                @if (isset($record[$element]))
+                    <div class="row"><span class="field">{{ $key }}</span>
+                    @foreach ($record[$element] as $index => $metadatavalue)
+                        @if (in_array($key, $filters))
+                            @php
+                                $orig_filter = urlencode($metadatavalue);
+                                $lower_orig_filter = strtolower($metadatavalue);
+                                $lower_orig_filter = urlencode($lower_orig_filter);
+                            @endphp
+                            <a href="coimbra/search/*:*/ {{ $key }}:%22 {{ $lower_orig_filter }} +%7C%7C%7C+ {{ $orig_filter }}%22" title="{{ $metadatavalue }}">{{ $metadatavalue }}</a>
+
+                        @else
+                            @if (stripos($element, "uri") !== FALSE)
+                               <a href="{{ $record[$element][0] }}" title="URL Links for item" target="_blank">{{ $record[$element][0] }}  (Opens in a new tab)</a>
+                            @else
+                               {{ $record[$element][0] }}
+                            @endif
+                        @endif
+                    @endforeach
+                    </div>
+               @endif
+             @endforeach
         </div><!--description-->
     </div><!--record-info-->
 </div><!--content-->
