@@ -1,49 +1,55 @@
-@extends('layouts.coimbra-colls')
+@extends('layouts.coimbra')
 
-@section('title', 'About - Coimbra Collections')
+@section('title', 'About - Coimbra Virtual Exhibition')
 
 @section('content')
 <div class="content" id="content">
     <div class="about-container">
 
         <div class="information-container col-xs-12 col-md-8 col-md-offset-2">
-            <b class="big-title">About the Collections Platform</b>
+            <b class="big-title">About the Exhibition</b>
             <div class="content">
-                The idea for the Coimbra Group Collections Platform developed out of the virtual exhibition platform, which was created for the Coimbra Group conference
-                hosted by the University of Edinburgh in June 2017.
-                This unique collaboration brought together items from across the Coimbra Group institutions.
+                This online exhibition celebrates shared cultural heritage across the Coimbra Group of
+                European universities. To coincide with the June 2017 Coimbra Conference, hosted at the
+                University of Edinburgh, this is the first time that Collections from across 35 member
+                institutions have been brought together in this unique collaboration.
+                <br/><br/>
+                Over 70 objects have been selected that straddle thousands of miles of the continent and millions of years of its history.
+                From the stunning Augsburg Art Cabinet to a petrified mammoth tooth, these objects highlight
+                the rich cultural diversity and uniqueness of University collections around Europe.
+                Neil Lebeter, Coimbra Exhibition Curator, Library and University Collections, The University of Edinburgh
             </div>
         </div>
 
         <div class="information-container col-xs-12 col-sm-6 col-md-4 col-md-offset-2">
-            <b class="big-title">Functions</b>
+            <b class="big-title">The Coimbra Group Annual Conference and General Assembly - 7-9 June 2017</b>
             <div class="content">
-                The Platform is designed to fulfil three main functions:
-                <br>
-                <ol>
-                	<li>Increase awareness of the rich heritage collections held by the Coimbra Group institutions and to make them more discoverable.</li>
-					<li>Highlight our shared European heritage and joint stories.</li>
-					<li>Provide a platform for future joint projects and grant applications.</li>
-               <!-- <li>To Increase awareness of the rich and diverse material held by the Coimbra Group universities across Europe</li>
-                <li>To provide an easy route to find out more about the individual collections held by the Coimbra Group institutions</li>
-                <li>To support greater collaboration between Coimbra Group Institutions in particular relating to development of new projects and grant proposals.</li>-->
-                </ol>
+                The theme of the conference is Universities and the Future of Cultural Heritage, inspired
+                by the Scottish Year of 2017, History, Heritage and Archaeology.
+                <br/><br/>
+                <b><a href="https://www.ed.ac.uk/global/coimbra-2017">Conference Details</a></b>
             </div>
         </div>
 
         <div class="information-container col-xs-12 col-sm-6 col-md-4">
-            <b class="big-title">Hosting</b>
+            <b class="big-title">About the Coimbra Group</b>
             <div class="content">
-                <p>The Platform is currently being hosted by the University of Edinburgh and is being developed with the support of the Coimbra Group Heritage Working Group.  If you have any comments or questions about the platform
-                please contact Jeremy Upton, Director of Library & University Collections at the University of Edinburgh (jeremy.upton@ed.ac.uk)</p>
-                <p><a target="_blank" href="https://www.coimbra-group.eu">Link to the heritage Website (Opens in a new tab)</a></p>
-
-        </div>
-        <div>
-
+                Founded in 1985 and formally constituted by Charter in 1987, the Coimbra Group is an association
+                of long-established European multidisciplinary universities of high international standard.
+                <br/><br/>
+                The Coimbra Group is committed to creating special academic and cultural ties in order to promote,
+                for the benefit of its members, internationalisation, academic collaboration, excellence in learning
+                and research, and service to society.
+                <br/><br/>
+                It is also the purpose of the Group to influence European educational policy and to develop best
+                practice through mutual exchange of experience.
+                <br/><br/>
+                <b><a target="_blank" href="https://www.coimbra-group.eu/">More information on the Coimbra Group Website (Opens in a new tab)</a></b>
+            </div>
         </div>
     </div>
 </div>
+<div>
 
 
 @endsection

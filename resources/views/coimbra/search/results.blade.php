@@ -1,10 +1,10 @@
-@extends('layouts.coimbra-colls')
+@extends('layouts.coimbra')
 
 @section('title')
     @if($query !== '*' && $query !== '*:*')
-        Search Results for "{{ urldecode($query) }}" - Coimbra Collections
+        Search Results for "{{ urldecode($query) }}" - Coimbra Virtual Exhibition
     @else
-        Search Results -Coimbra Collections
+        Search Results -Coimbra Virtual Exhibition
     @endif
 @endsection
 
@@ -24,16 +24,12 @@
                 @php
                     $fieldMappings = config('skylight.field_mappings', []);
                     $titleField = str_replace('.', '', $fieldMappings['Title'] ?? 'dctitleen');
-                    $authorField = str_replace('.', '', $fieldMappings['Author'] ?? '');
-                    $dateField = str_replace('.', '', $fieldMappings['Date'] ?? '');
-                    $abstractField = str_replace('.', '', $fieldMappings['Abstract'] ?? '');
-                    $imageUriField = str_replace('.', '', $fieldMappings['ImageUri'] ?? '');
                     $coverImageName = str_replace('.', '', $fieldMappings['Image File Name'] ?? '');
-                    $institution_field = str_replace('.', '', $fieldMappings['Institution']?? '');
                     $location = str_replace('.', '', $fieldMappings['Institutional Map Reference']?? '');
                     $title = isset($doc[$titleField][0]) ? $doc[$titleField][0] : "Untitled";
-                    $institution = isset($doc[$institution_field][0]) ? $doc[$institution_field][0] : "No institution";
                     $imageServer = config('skylight.image_server');
+                    $id_field = str_replace('.', '', $fieldMappings['ID'] ?? '');
+                    $image = str_replace('.', '', $fieldMappings['Image URL'] ?? '');
 
                     if (isset($doc[$coverImageName][0]))
                     {
@@ -72,10 +68,10 @@
                     </script>
                 @endif
 
-                <a href="{{ url('/coimbra-colls/record/' . $doc['id']) }}" class="{{ $doc['id'] }} row record visible">
+                <a href="{{ url('/coimbra/record/' . $doc['id']) }}" class="{{ $doc['id'] }} row record visible">
                     <!--                    Title-->
                     <h4 class="result-info record-title">
-                        {{ $title }}  ({{$institution}})
+                        {{ $title }}
                     </h4>
                     <!--                    Thumbnail-->
                     {!! $thumbnailLink !!}

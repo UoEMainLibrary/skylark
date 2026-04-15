@@ -34,6 +34,7 @@ return [
         'coimbra-colls',
         'guardbook',
         'coimbra',
+        'alumni',
     ],
 
     /*
@@ -65,6 +66,7 @@ return [
         'coimbra-colls' => 'coimbra-colls',
         'guardbook' => 'guardbook',
         'coimbra' => 'coimbra',
+        'alumni' => 'alumni',
     ],
 
     /*

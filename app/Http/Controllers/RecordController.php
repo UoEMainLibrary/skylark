@@ -46,6 +46,7 @@ class RecordController extends Controller
 
         // Get configuration
         $recordDisplay = config('skylight.recorddisplay', []);
+        $descriptionDisplay = config('skylight.descriptiondisplay', []);
         $fieldMappings = config('skylight.field_mappings', []);
         $filters = array_keys(config('skylight.filters', []));
         $relatedFieldMappings = config('skylight.related_fields', []);
@@ -82,6 +83,7 @@ class RecordController extends Controller
             'record' => $record,
             'recordTitle' => $recordTitle,
             'recordDisplay' => $recordDisplay,
+            'descriptionDisplay' => $descriptionDisplay,
             'fieldMappings' => $fieldMappings,
             'filters' => $filters,
             'bitstreamField' => $bitstreamField,

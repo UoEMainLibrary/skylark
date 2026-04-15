@@ -1,13 +1,13 @@
-@extends('layouts.coimbra-colls')
+@extends('layouts.coimbra')
 
-@section('title', 'Feedback - Coimbra Collections')
+@section('title', 'Feedback - Coimbra Virtual Exhibition')
 
 @section('content')
 <div class="information-container col-xs-12 col-md-8 col-md-offset-2">
     <b class="big-title">Feedback</b>
-    <div class="content" id="content">
+    <div class="content">
 
-        <p>Please contact us with your suggestions or questions at info@coimbra-group.eu</p>
+    <p>Please contact us with your suggestions or questions at info@coimbra-group.eu</p>
 
     </div>
 </div>
@@ -30,7 +30,7 @@
         <p>
             If you have any questions, please contact: <a href="mailto:info@coimbra-group.eu">info@coimbra-group.eu</a>
         </p>
-        <p><a target="_blank" href="https://www.ed.ac.uk/about/website/privacy">University of Edinburgh privacy statement (Opens in a new tab)</a></p>
+        <p><a target="_blank" href="https://www.ed.ac.uk/records-management/notice">University of Edinburgh privacy statement (Opens in a new tab)</a></p>
     </div>
 
 </div>
