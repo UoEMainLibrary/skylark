@@ -1,0 +1,24 @@
+:8080 {
+  reverse_proxy https://digitalpreservation.is.ed.ac.uk {
+    header_up Host digitalpreservation.is.ed.ac.uk
+
+    # Force an upstream UA that the service accepts
+    header_up User-Agent "Wget/1.19.5 (linux-gnu)"
+
+    # Optional: strip browser-only headers (often used in bot/WAF rules)
+    header_up -sec-ch-ua
+    header_up -sec-ch-ua-mobile
+    header_up -sec-ch-ua-platform
+    header_up -Sec-Fetch-Site
+    header_up -Sec-Fetch-Mode
+    header_up -Sec-Fetch-Dest
+    header_up -Sec-Fetch-User
+    header_up -Upgrade-Insecure-Requests
+
+    transport http {
+      tls
+      tls_server_name digitalpreservation.is.ed.ac.uk
+      versions 1.1
+    }
+  }
+}

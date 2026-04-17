@@ -1,0 +1,8 @@
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy-proxy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
