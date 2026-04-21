@@ -7,6 +7,7 @@ return array_merge($dspaceDefaults, [
     'fullname' => 'Coimbra Collections',
     'theme' => 'coimbra-colls',
     'url_prefix' => 'coimbra-colls',
+    'image_server' => 'https://cantaloupe.is.ed.ac.uk',
 
     'adminemail' => 'lddt@mlist.is.ed.ac.uk',
 
@@ -60,6 +61,19 @@ return array_merge($dspaceDefaults, [
         'Tags',
         'Items accumulated (date)',
         'Items created (date)',
+    ],
+
+    'descriptiondisplay' => [
+        'Dimensions',
+        'Material/Medium',
+        'Category',
+        'Physical Location',
+        'Featured image',
+        'Image License',
+        'Image Rights Holder',
+        'Photographic Credits',
+        'Metadata Rights',
+        'Contact email',
     ],
 
     'searchresult_display' => [

@@ -1,0 +1,186 @@
+body{
+	margin: 0;
+	padding: 0;
+}
+
+.viewer {
+	margin: 0;
+	padding: 0;
+	position: relative;
+  	background: #595959;
+	display: flex;
+	flex-direction: column;
+  	height: 100vh;
+  	width: 100vw;
+}
+
+.canvasdiv {
+	position: relative;
+	overflow: auto;
+	display: flex;
+    flex-grow: 1;
+	
+}
+
+#pdfCanvas {
+	position: absolute;
+	padding: 15px;
+}
+
+.textLayer {
+	position: absolute;
+	margin: 15px;
+	transform-origin: center;
+	inset: auto;
+}
+
+.centerh {
+	align-items: center;
+}
+
+.centerw {
+	justify-content: center;
+}
+
+.NavButtons {
+  height: 30px;
+  background: #111111;
+  display: flex;
+  align-items: center;
+}
+
+
+
+.NavButtons button {
+  	border: none;
+	font-size: 25px;
+  	height: 30px;
+  	line-height: 30px;
+  	margin: 0;
+  	padding: 0px 15px;
+  	background-color: transparent;
+  	color: #fff;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	transition: background-color 0.3s ease; 
+}
+
+
+#prev {
+  border-right: 1px solid white;
+}
+
+#next {
+  border-left: 1px solid white;
+}
+
+.NavButtons button:hover {
+  background-color: #333333;
+  cursor: pointer;
+} 
+
+#page_num{
+	width: 30px;
+	height: 20px;
+	background-color: #595959;
+	border: solid 1px #FFFFFF;
+	color: #ffffff;
+	padding: 1px;
+	border-radius: 5px;
+}
+
+.pageNav{
+  	color: #fff;
+  	margin: 0;  
+  	padding: 0;
+  	text-align: left;
+  	flex: 1;
+	display: flex;
+}
+
+.pageDisplayText {
+	padding: 0 20px;
+	align-items: center;
+	white-space:pre;
+	display: flex;
+}
+
+.zoomEdit{
+  	color: #fff;
+  	margin: 0;  
+  	padding: 0;
+  	text-align: right;
+  	flex: 0;
+	display: flex;
+}
+
+.zoomEditingWindow {
+	padding: 0 15px;
+	align-items: center;
+	white-space: pre;
+	display: flex;
+}
+
+#zoomOut {
+  border-right: 1px solid white;
+}
+
+#zoomIn {
+  border-left: 1px solid white;
+}
+
+#zoom{
+	background: #595959;
+	color: #fff;
+	border-radius: 5px;
+	padding: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  top: auto;
+  overflow: hidden;
+}
+
+.canvasdiv ::selection { color: transparent;}
+
+.loader {
+  border: 7px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 7px solid #111111;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  display: block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading_box {
+  display: flex;
+  flex-direction: column;
+  text-align:center;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  width: 700px;
+  top: 49%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}
+
+#loadingText {
+  text-align:center;
+  display: block;
+  color: #fff;
+  font-size: large;
+  margin: 10px 0;
+  padding: 10px 0;
+}

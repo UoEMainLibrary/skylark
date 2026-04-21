@@ -31,6 +31,17 @@ class PageController extends Controller
     /**
      * Display the About page
      */
+
+    public function about()
+    {
+        $collection = config('app.current_collection', 'clds');
+        $collectionView = "{$collection}.pages.about";
+
+        return view()->exists($collectionView)
+            ? view($collectionView)
+            : view('pages.about');
+    }
+    /*
     public function about()
     {
         $collection = config('app.current_collection', 'clds');
@@ -51,12 +62,43 @@ class PageController extends Controller
             return view('art.pages.about');
         }
 
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.about');
+        }
+
+        if ($collection === 'coimbra-colls') {
+            return view('coimbra-colls.pages.about');
+        }
+
+        if ($collection === 'coimbra') {
+            return view('coimbra.pages.about');
+        }
+
+        if ($collection === 'lhsacasenotes') {
+            return view('lhsacasenotes.pages.about');
+        }
+
         return view('pages.about');
+    }
+    */
+
+    /**
+    * Display the Feedback page
+    */
+    public function feedback()
+    {
+        $collection = config('app.current_collection', 'clds');
+        $collectionView = "{$collection}.pages.feedback";
+
+        return view()->exists($collectionView)
+            ? view($collectionView)
+            : view('pages.feedback');
     }
 
     /**
      * Display the Feedback page
      */
+     /*
     public function feedback()
     {
         $collection = config('app.current_collection', 'clds');
@@ -69,8 +111,21 @@ class PageController extends Controller
             return view('openbooks.pages.feedback');
         }
 
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.feedback');
+        }
+
+        if ($collection === 'coimbra-colls') {
+            return view('coimbra-colls.pages.feedback');
+        }
+
+        if ($collection === 'coimbra') {
+            return view('coimbra.pages.feedback');
+        }
+
         return view('pages.feedback');
     }
+    */
 
     /**
      * Display the Mahabharata Scroll page
@@ -115,6 +170,18 @@ class PageController extends Controller
     /**
      * Display the Licensing page
      */
+     public function licensing()
+    {
+        $collection = config('app.current_collection', 'clds');
+        $collectionView = "{$collection}.pages.licensing";
+
+        return view()->exists($collectionView)
+            ? view($collectionView)
+            : view('pages.licensing');
+    }
+
+
+    /*
     public function licensing()
     {
         $collection = config('app.current_collection', 'clds');
@@ -131,8 +198,20 @@ class PageController extends Controller
             return view('art.pages.licensing');
         }
 
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.licensing');
+        }
+
+        if ($collection === 'coimbra') {
+            return view('coimbra.pages.licensing');
+        }
+
+        if ($collection === 'lhsacasenotes') {
+            return view('coimbra.pages.licensing');
+        }
         return view('pages.licensing');
     }
+    */
 
     /**
      * Display the Participate page
@@ -145,6 +224,20 @@ class PageController extends Controller
     /**
      * Display the Takedown Policy page
      */
+
+        /**
+     * Display the Licensing page
+     */
+     public function takedown()
+    {
+        $collection = config('app.current_collection', 'clds');
+        $collectionView = "{$collection}.pages.takedown";
+
+        return view()->exists($collectionView)
+            ? view($collectionView)
+            : view('pages.takedown');
+    }
+    /*
     public function takedown()
     {
         $collection = config('app.current_collection', 'clds');
@@ -161,8 +254,22 @@ class PageController extends Controller
             return view('art.pages.takedown');
         }
 
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.takedown');
+        }
+
+        if ($collection === 'coimbra') {
+            return view('coimbra.pages.takedown');
+        }
+
+        if ($collection === 'lhsacasenotes') {
+            return view('lhsacasenotes.pages.takedown');
+        }
+
+
         return view('pages.takedown');
     }
+        */
 
     /**
      * Display the MIMEd homepage with browse facets
@@ -191,8 +298,8 @@ class PageController extends Controller
     }
 
     /**
-     * Display the MIMEd IIIF page
-     */
+    * Display the MIMEd IIIF page
+    */
     public function mimedIiif()
     {
         return view('mimed.pages.iiif');
@@ -299,9 +406,57 @@ class PageController extends Controller
         return view('coimbra-colls.home');
     }
 
+
     /**
-     * Display the Coimbra Colls Accessiblity page
-     */
+    * Display the Alumni homepage
+    */
+    public function alumniHome()
+    {
+        /*
+        dd([
+            'container_id' => config('skylight.container_id'),
+            'container_field' => config('skylight.container_field'),
+        ]);
+        */
+
+
+        $repository = $this->repositoryFactory->current();
+        $facets = [];
+        $baseSearch = CollectionUrl::url('search/*:*');
+        $configFilters = config('skylight.filters', []);
+
+        try {
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
+            //dd($repository);
+            //dd($results);
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            dd($e->getMessage(), $e);
+        }
+
+        return view('alumni.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+        ]);
+    }
+
+    /**
+    * Display the Coimbra Collection homepage
+    */
+    public function coimbraHome()
+    {
+        return view('coimbra.home');
+    }
+
+    /**
+    * Display the Coimbra Collection intro page
+    */
+    public function coimbraIntro()
+    {
+        return view('coimbra.pages.intro');
+    }
 
     /**
      * Display the Coimbra Colls Virtual Exhibition page
@@ -311,20 +466,59 @@ class PageController extends Controller
         return view('coimbra-colls.pages.virtual-exhibition');
     }
 
+
     /**
-     * Display the Coimbra Colls Virtual Exhibition page
-     */
-    public function coimbraCollsAbout()
+    * Display the Guardbook homepage
+    */
+    public function guardbookHome()
     {
-        return view('coimbra-colls.pages.about');
+
+        $repository = $this->repositoryFactory->current();
+        $facets = [];
+        $baseSearch = CollectionUrl::url('search/*:*');
+        $configFilters = config('skylight.filters', []);
+
+        try {
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
+            //dd($results);
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            dd($e->getMessage(), $e);
+        }
+
+        return view('guardbook.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+        ]);
     }
 
     /**
-     * Display the Coimbra Colls Virtual Exhibition page
-     */
-    public function coimbraCollsFeedback()
+    * Display the LHSA Case Notes homepage
+    */
+    public function lhsacasenotesHome()
     {
-        return view('coimbra-colls.pages.feedback');
+
+        $repository = $this->repositoryFactory->current();
+        $facets = [];
+        $baseSearch = CollectionUrl::url('search/*:*');
+        $configFilters = config('skylight.filters', []);
+
+        try {
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
+            //dd($results);
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            dd($e->getMessage(), $e);
+        }
+
+        return view('lhsacasenotes.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+        ]);
     }
 
     /**
@@ -367,9 +561,67 @@ class PageController extends Controller
         return view('art.pages.loans');
     }
 
+    /** - ALUMNI Static Pages
+     * Display the Art Loans page
+     */
+    public function alumniExtraAc()
+    {
+        return view('alumni.pages.extraac');
+    }
+    public function alumniEarlyVet()
+    {
+        return view('alumni.pages.earlyvet');
+    }
+    public function alumniFemaleGrad()
+    {
+        return view('alumni.pages.femalegrad');
+    }
+    public function alumniFirstMat()
+    {
+        return view('alumni.pages.firstmat');
+    }
+    public function alumniMedSample()
+    {
+        return view('alumni.pages.medsample');
+    }
+    public function alumniNewColl()
+    {
+        return view('alumni.pages.newcoll');
+    }
+    public function alumniRoll()
+    {
+        return view('alumni.pages.roll');
+    }
+    public function alumniRosner()
+    {
+        return view('alumni.pages.rosner');
+    }
+    public function alumniVetGrad()
+    {
+        return view('alumni.pages.vetgrad');
+    }
+    public function alumniWomen()
+    {
+        return view('alumni.pages.women');
+    }
+    public function alumniWW1Roll()
+    {
+        return view('alumni.pages.ww1roll');
+    }
+
     /**
      * Display the Accessibility Statement page
      */
+    public function accessibility()
+    {
+        $collection = config('app.current_collection', 'clds');
+        $collectionView = "{$collection}.pages.accessibility";
+
+        return view()->exists($collectionView)
+            ? view($collectionView)
+            : view('pages.accessibility');
+    }
+    /*
     public function accessibility()
     {
         $collection = config('app.current_collection', 'clds');
@@ -394,8 +646,21 @@ class PageController extends Controller
             return view('coimbra-colls.pages.accessibility');
         }
 
+        if ($collection === 'coimbra') {
+            return view('coimbra.pages.accessibility');
+        }
+
+        if ($collection === 'guardbook') {
+            return view('guardbook.pages.accessibility');
+        }
+
+        if ($collection === 'lhsacasenotes') {
+            return view('guardbook.pages.accessibility');
+        }
+
         return view('pages.accessibility');
     }
+        */
 
     /**
      * Display the EERC Overview/Browse Collections page

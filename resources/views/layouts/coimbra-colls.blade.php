@@ -22,7 +22,7 @@
     <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 
     <link rel="shortcut icon" href="{{ asset('collections/coimbra-colls/images/favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{ asset('collections/coimbra-colls/images/apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('collections/coimbra-colls/images/apple-touch-icon.png') }}">
 
     <!-- CSS: implied media="all" -->
     <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css')}}" type="text/css" media="screen" />
@@ -32,9 +32,10 @@
     <link rel="stylesheet" href="{{ asset('collections/coimbra-colls//css/animate.css')}}">
 
     <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF95rAHOZQlQ7atjmr9HC2e4M2cS-u1Gs&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdOCOirKCDbjhn5AcE4Zi6HuCjFvaEQww" async defer></script>
     <script src="{{ asset('assets/modernizr/modernizr-1.7.min.js')}}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jquery-1.11.0.min.js')}}"></script>
+    <script src="{{ asset('collections/coimbra-colls/js/google_map.js')}}"></script>
     <script src="{{ asset('assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js')}}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js')}}"></script>
     <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
@@ -95,7 +96,7 @@
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li class="active dropdown"><a href="#">Home</a></li>
+                    <li class="active dropdown"><a href={{ url('/coimbra-colls/') }}>Home</a></li>
                     <li><a href="{{ url('/coimbra-colls/feedback') }}">Feedback</a></li>
                     <li><a href="{{ url('/coimbra-colls/about') }}">About</a></li>
                     <li><a href="{{ url('/coimbra-colls/virtual-exhibition') }}">Virtual Exhibition</a></li>
@@ -104,9 +105,10 @@
                     <li><a href="./search">All records</a></li>
                     <li class="search">
                         <form role="search" action="{{ url('/coimbra-colls/redirect') }}" method="post">
+                            @csrf
                             <input id="uoe-search" type="text"
                                    placeholder="Search..." name="q"
-                                   value="<?php if (isset($searchbox_query)) echo urldecode($searchbox_query); ?>"/>
+                                   value="{{ isset($searchbox_query) ? urldecode($searchbox_query) : '' }}"/>
                             <button type="submit" name="submit_search" value="Search">
                                 <i class="fa fa-search" aria-hidden="true"></i>
                             </button>
@@ -175,7 +177,7 @@
 </script>
 
 <script src="{{ asset('collections/coimbra-colls/js/script.js')}}"></script>
-<script src="{{ asset('collections/coimbra-colls/js/google_map.js')}}"></script>
+
 <script src="{{ asset('collections/coimbra-colls/js/disable_map_scroll.js')}}"></script>
 <script src="{{ asset('collections/coimbra-colls/js/home_page_slideshow.js')}}"></script>
 <script src="{{ asset('collections/coimbra-colls/js/map_view.js')}}"></script>

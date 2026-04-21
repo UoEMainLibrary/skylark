@@ -12,19 +12,19 @@
 <div class="container">
     <!-- Collection type header (if applicable) -->
     @include('clds.search.partials.collection_header')
-    
+
     <div class="row">
         <!-- Main results column -->
         <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12" id="search-results">
             @if($total === 0)
                 <!-- Zero results -->
-                @include('search.partials.no_results')
+                @include('clds.search.partials.no_results')
             @else
                 <!-- Results grid -->
                 <div class="container-fluid">
                     <div class="row">
                         @foreach($docs as $doc)
-                            @include('search.partials.result_item', ['doc' => $doc])
+                            @include('clds.search.partials.result_item', ['doc' => $doc])
                         @endforeach
                     </div>
 
@@ -51,7 +51,7 @@
 
         <!-- Facets sidebar -->
         <div class="col-lg-3 col-md-3 hidden-sm hidden-xs" id="side_facet">
-            @include('search.partials.facets')
+            @include('clds.search.partials.facets')
         </div>
     </div>
 </div>

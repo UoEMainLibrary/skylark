@@ -65,6 +65,27 @@ Route::get('/record/{id}', [RecordController::class, 'show'])
     ->name('record.show');
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'alumni',
+    'route_name' => 'alumni',
+    'home' => [PageController::class, 'alumniHome'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/earlyvet', [PageController::class, 'alumniEarlyVet'])->name('earlyvet');
+        Route::get('/extraac', [PageController::class, 'alumniExtraAc'])->name('extraac');
+        Route::get('/femalegrad', [PageController::class, 'alumniFemaleGrad'])->name('femalegrad');
+        Route::get('/firstmat', [PageController::class, 'alumniFirstMat'])->name('firstmat');
+        Route::get('/medsample', [PageController::class, 'alumniMedSample'])->name('medsample');
+        Route::get('/newcoll', [PageController::class, 'alumniNewColl'])->name('newcoll');
+        Route::get('/roll', [PageController::class, 'alumniRoll'])->name('roll');
+        Route::get('/rosner', [PageController::class, 'alumniRosner'])->name('rosner');      
+        Route::get('/vetgrad', [PageController::class, 'alumniVetGrad'])->name('vetgrad');
+        Route::get('/women', [PageController::class, 'alumniWomen'])->name('women');
+        Route::get('/ww1roll', [PageController::class, 'alumniWW1Roll'])->name('ww1roll');
+   },
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'coimbra-colls',
     'route_name' => 'coimbra-colls',
     'home' => [PageController::class, 'coimbraCollsHome'],
@@ -72,15 +93,33 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'feedback' => true,
     'extra_routes' => function () {
         Route::get('/virtual-exhibition', [PageController::class, 'coimbraCollsVirtualExhibition'])->name('virtual-exhibition');
-        Route::get('/about', [PageController::class, 'coimbraCollsAbout'])->name('about');
-        Route::get('/feedback', [PageController::class, 'coimbraCollsFeedback'])->name('feedback');
-    },
+   },
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'coimbra',
+    'route_name' => 'coimbra',
+    'home' => [PageController::class, 'coimbraHome'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/intro', [PageController::class, 'coimbraIntro'])->name('intro');
+   },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'mimed',
     'route_name' => 'mimed',
     'home' => [PageController::class, 'mimedHome'],
+    'mirador_view' => 'mimed.mirador',
+    'iiif' => [PageController::class, 'mimedIiif'],
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'guardbook',
+    'route_name' => 'guardbook',
+    'home' => [PageController::class, 'guardbookHome'],
     'mirador_view' => 'mimed.mirador',
     'iiif' => [PageController::class, 'mimedIiif'],
     'feedback' => true,

@@ -857,12 +857,20 @@ nav #overflow li a:hover {
   .record-info .itemtitle .backbtn:hover {
     color: #e69817;
   }
-  .record-info .description {
+  /*.record-info .description {
     height: calc(100% - 47px);
     width: calc(100% + 18px);
     padding: 10px 30px 50px 10px;
     overflow-y: scroll;
-  }
+  }*/
+
+  .record-info .description {
+      height: calc(100% - 80px);
+      width: 100%;
+      padding:10px 20px 50px 10px;
+      overflow-y: auto;
+      box-sizing: border-box;
+   }
   .record-info #map{
     height: 400px;
     width: calc(100% + 18px);
@@ -1145,7 +1153,7 @@ nav #overflow li a:hover {
   line-height: normal;
   clip-path: circle(100%);
   padding: 8px;
-} 
+}
 
 /* ---------------------
 
