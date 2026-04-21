@@ -19,7 +19,8 @@ it('renders the eerc v2 home intro from the database when seeded', function (): 
     ])->render();
 
     expect($html)->toContain('RESP Archive Project')
-        ->and($html)->toContain('Exhibition gallery');
+        ->and($html)->toContain('Exhibition gallery')
+        ->and($html)->toContain('created by the RESP, the project');
 });
 
 it('renders stored html from resp home content', function (): void {

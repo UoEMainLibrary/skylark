@@ -129,8 +129,8 @@
                             <div class="mt-2 flex flex-wrap gap-1.5">
                                 @php $subjects = is_array($doc['Subject']) ? $doc['Subject'] : [$doc['Subject']]; @endphp
                                 @foreach($subjects as $subject)
-                                    @php $encodedSubject = str_replace(' ', '+', urlencode($subject)); @endphp
-                                    <a href="{{ url('/eerc/search/*:*/Subject:\"' . $encodedSubject . '\"') }}"
+                                    @php $subjectForUrl = str_replace(' ', '+', $subject); @endphp
+                                    <a href="{{ url('/eerc/search/*:*/Subject:"' . $subjectForUrl . '"') }}"
                                        class="inline-flex items-center rounded-full bg-resp-teal-50 px-2.5 py-0.5 text-xs font-medium text-resp-teal-700 hover:bg-resp-teal-100">
                                         {{ $subject }}
                                     </a>

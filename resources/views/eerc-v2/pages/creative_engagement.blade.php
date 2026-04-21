@@ -9,7 +9,7 @@
 
         <div class="mt-6 prose prose-lg max-w-none [&_ul]:marker:text-gray-500">
 
-            <p>The RESP archive contains over 1,000 recordings which touch on every aspect of our shared cultural lives and which can inform and enrich our understanding of life across time and place, from the Victorian era to the present day. The RESP collection can be used in many ways, across both individual and group endeavours, in the community, or to provide research data for academic study. Below we&rsquo;ve provided a few ideas to give you inspiration:</p>
+            <p>The RESP archive contains over 1,000 recordings which touch on every aspect of our shared cultural lives and which can inform and enrich our understanding of life across time and place, from the Victorian era to the present day. The RESP collection can be used in many ways, across both individual and group endeavours, in the community, or to provide research data for academic study. Below we&rsquo;ve provided a few ideas to give you inspiration.</p>
 
             <h2>Suggestions for research, PhD or dissertation topics</h2>
 
@@ -34,18 +34,19 @@
                         <li>The experience of War</li>
                     </ul>
                 </div>
-                <div class="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-                    <div class="flex h-[300px] items-center justify-center">
-                        <img src="{{ asset('collections/eerc/images/v2/creative/image1.jpeg') }}" alt="Historical photograph of a woman carrying a basket" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
+                {{-- CSS Grid (not columns-*): grid + gap are reliably included in the built CSS; multi-column gap behaves differently and columns-* can be omitted if unparsed from Blade. --}}
+                <div class="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+                    <div class="overflow-hidden rounded-lg bg-gray-50/80 p-2 shadow-sm ring-1 ring-gray-100">
+                        <img src="{{ asset('collections/eerc/images/v2/creative/image1.jpeg') }}" alt="Historical photograph of a woman carrying a basket" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="flex h-[300px] items-center justify-center">
-                        <img src="{{ asset('collections/eerc/images/v2/creative/image2.jpeg') }}" alt="Historical photograph of a group of working men" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
+                    <div class="overflow-hidden rounded-lg bg-gray-50/80 p-2 shadow-sm ring-1 ring-gray-100">
+                        <img src="{{ asset('collections/eerc/images/v2/creative/image2.jpeg') }}" alt="Historical photograph of a group of working men" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="flex h-[300px] items-center justify-center">
-                        <img src="{{ asset('collections/eerc/images/v2/creative/EL6-3-4-7.jpg') }}" alt="Photograph from the RESP archive collection" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
+                    <div class="overflow-hidden rounded-lg bg-gray-50/80 p-2 shadow-sm ring-1 ring-gray-100">
+                        <img src="{{ asset('collections/eerc/images/v2/creative/EL6-3-4-7.jpg') }}" alt="Photograph from the RESP archive collection" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="flex h-[300px] items-center justify-center">
-                        <img src="{{ asset('collections/eerc/images/v2/creative/EL39-7-4-4.jpg') }}" alt="Photograph from the RESP archive collection" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
+                    <div class="overflow-hidden rounded-lg bg-gray-50/80 p-2 shadow-sm ring-1 ring-gray-100">
+                        <img src="{{ asset('collections/eerc/images/v2/creative/EL39-7-4-4.jpg') }}" alt="Photograph from the RESP archive collection" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
                 </div>
             </div>
@@ -56,8 +57,8 @@
 
             <ul>
                 <li>Write or commission a poem or piece of music or art inspired by RESP interviews and stories.</li>
-                <li>Host a Storytelling session with stories and wider conversation inspired by the collections.</li>
-                <li>Create a Soundscape. Collaborate with music or sound students to create audio pieces inspired by the descriptions taken from within our recordings.</li>
+                <li>Host a storytelling session with stories and wider conversation inspired by the collections.</li>
+                <li>Create a soundscape. Collaborate with music or sound students to create audio pieces inspired by the descriptions taken from within our recordings.</li>
                 <li>Create a mini exhibition highlighting some of the lives and stories documented from within our collections.</li>
             </ul>
 

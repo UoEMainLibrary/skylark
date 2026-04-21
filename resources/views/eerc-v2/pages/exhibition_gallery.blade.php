@@ -35,7 +35,7 @@
             </a>
             <a href="#days-work" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
-                    <img src="{{ asset('collections/eerc/images/v2/am-cover.jpg') }}" alt="All in a Day's Work cover" class="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                    <img src="{{ asset('collections/eerc/images/v2/all-in-a-days-work-film-poster.jpeg') }}" alt="All in a Day&rsquo;s Work film" class="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
                 </div>
                 <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">All in A Day&rsquo;s Work</p>
             </a>
@@ -113,7 +113,7 @@
             </div>
         </article>
 
-        {{-- All in a Day's Work (new) --}}
+        {{-- All in a Day's Work (publication + film) --}}
         <article id="days-work" class="scroll-mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 <span class="inline-flex items-center rounded-full bg-resp-teal-100 px-3 py-0.5 text-xs font-medium text-resp-teal-800">New</span>
@@ -123,6 +123,17 @@
                 <div class="mt-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-500">
                     PDF download will be available when the digital copy is provided.
                 </div>
+
+                <h3 class="mt-8 text-lg font-semibold text-gray-900">&lsquo;All in a Day&rsquo;s Work&rsquo; &mdash; short film</h3>
+                <p class="mt-1 text-sm text-gray-500">Film &middot; RESP Student Intern Ailsa Dixon</p>
+                <figure class="mt-4 overflow-hidden rounded-md bg-black shadow-sm ring-1 ring-gray-200">
+                    <img src="{{ asset('collections/eerc/images/v2/all-in-a-days-work-film-poster.jpeg') }}" alt="Still from the film All in a Day&rsquo;s Work" class="w-full object-cover" loading="lazy">
+                </figure>
+                <blockquote class="mt-4 border-l-4 border-resp-teal-400 pl-4 text-gray-700 italic">
+                    <p>&lsquo;All in a Day&rsquo;s Work&rsquo; Reflections on work and play from the Haddington Active and Sporting memories groups. A short film created by RESP Student Intern Ailsa Dixon.</p>
+                    <p class="mt-3 not-italic text-gray-600">Music written and performed by Katie Shepherd and Ailsa Dixon.</p>
+                </blockquote>
+                <p class="mt-3 text-sm text-gray-500">The moving image file will be embedded here once it is available on the University digital preservation service; until then, this still and credits introduce the film on the site.</p>
             </div>
         </article>
 

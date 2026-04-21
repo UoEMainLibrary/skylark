@@ -13,7 +13,7 @@
                 <img src="{{ asset('collections/eerc/images/v2/project-history-scotland-map.png') }}" alt="Interactive map of Scotland showing interview locations" class="w-full rounded-lg shadow-sm">
             </div>
 
-            <p>The Regional Ethnology of Scotland Archive Project grew out of an earlier initiative, The Regional Ethnology of Scotland Project (RESP), which had been active since 2011. And the RESP, in turn, was a progression of the work of the EERC (European Ethnological Research Centre, established 1989), which was established and funded by the Scotland Inheritance Fund and had been producing books with a focus on ethnological research.</p>
+            <p>The Regional Ethnology of Scotland Archive Project grew out of an earlier initiative, The Regional Ethnology of Scotland Project (RESP), which had been active since 2011. The RESP trained over 250 local volunteer fieldworkers who then went on to make recordings in their own area and with whoever they chose. And the RESP, in turn, was a progression of the work of the EERC (European Ethnological Research Centre, established 1989), which was established and funded by the Scotland Inheritance Fund and had been producing books with a focus on ethnological research.</p>
 
             <p>Ethnology, in its widest definition the study of culture, is centred on the assertion that personal testimony can enlighten and enrich our understanding of a particular time and place and lead us to a better understanding of our shared cultural lives. And people are at the heart of this discipline, as both practitioners and participants. As the founder of the EERC, Professor Sandy Fenton, asserted:</p>
 
@@ -24,7 +24,7 @@
             <p>This quote is at the very heart of the work of the RESP where local partnerships and volunteers have been central to the success of our work: both in terms of how much the Project has been able to achieve, and in the authenticity and relevance of the resulting archive of material.</p>
 
             <div class="not-prose float-right ml-6 mb-4 hidden w-72 sm:block">
-                <img src="{{ asset('collections/eerc/images/v2/community-grid.jpeg') }}" alt="Montage of RESP volunteers and community fieldwork" class="w-full rounded-lg shadow-sm">
+                <img src="{{ asset('collections/eerc/images/v2/alt-montage-crop.jpg') }}" alt="Montage of RESP volunteers and community fieldwork" class="w-full rounded-lg shadow-sm">
             </div>
 
             <p>To date, around 280 volunteer fieldworkers and 585 volunteer interviewees, who range in age from 8 to 102, have contributed over 1,000 recordings (more than 700 hours of spoken word testimony) as well as many hundreds of images and supporting documents.</p>

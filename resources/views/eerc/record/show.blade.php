@@ -51,10 +51,8 @@
                                             $subjects = is_array($record[$displayField]) ? $record[$displayField] : [$record[$displayField]];
                                         @endphp
                                         @foreach($subjects as $index => $subject)
-                                            @php
-                                                $encodedSubject = urlencode($subject);
-                                            @endphp
-                                            <a href="{{ url('/eerc/search/*:*/Subject:%22' . urlencode($encodedSubject) . '%22') }}" title="Search for items with the subject: {{ $subject }}">{{ $subject }}</a>{{ $index < count($subjects) - 1 ? ', ' : '' }}
+                                            @php $subjectForUrl = str_replace(' ', '+', $subject); @endphp
+                                            <a href="{{ url('/eerc/search/*:*/Subject:"' . $subjectForUrl . '"') }}" title="Search for items with the subject: {{ $subject }}">{{ $subject }}</a>{{ $index < count($subjects) - 1 ? ', ' : '' }}
                                         @endforeach
                                     @elseif($displayField === 'Extent')
                                         @php
@@ -114,7 +112,7 @@
                                                                     
                                                                     if(str_ends_with(strtolower($doFile), '.mp3') || str_ends_with(strtolower($doFile), '.wav')) {
                                                                         $audioFiles[] = ['url' => $doUrl, 'file' => $doFile];
-                                                                    } elseif(str_ends_with(strtolower($doFile), '.jpg') || str_ends_with(strtolower($doFile), '.jpeg')) {
+                                                                    } elseif(str_ends_with(strtolower($doFile), '.jpg') || str_ends_with(strtolower($doFile), '.jpeg') || str_ends_with(strtolower($doFile), '.png') || str_ends_with(strtolower($doFile), '.gif') || str_ends_with(strtolower($doFile), '.webp')) {
                                                                         $doTitleShort = substr($doFile, 0, strrpos($doFile, '.'));
                                                                         $photos[] = ['url' => $doUrl, 'title' => $doTitleShort];
                                                                     } elseif(str_ends_with(strtolower($doFile), '.pdf')) {

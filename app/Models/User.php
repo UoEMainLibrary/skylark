@@ -55,7 +55,13 @@ class User extends Authenticatable implements FilamentUser
         }
 
         $allowed = config('filament.admin_emails', []);
+        if ($allowed === []) {
+            return false;
+        }
 
-        return $allowed !== [] && in_array($this->email, $allowed, true);
+        $needle = strtolower(trim($this->email));
+        $allowedLower = array_map(static fn (string $e): string => strtolower(trim($e)), $allowed);
+
+        return in_array($needle, $allowedLower, true);
     }
 }

@@ -133,6 +133,13 @@ Route::prefix('eerc')->name('eerc.')->group(function () {
         ->where('facet', 'Subject|Person')
         ->name('browse');
 
+    // EERC bitstream proxy (must be before record.show so /record/{id}/{seq}/{file} is not swallowed as {type})
+    Route::get('/record/{id}/{seq}/{filename}', [RecordController::class, 'proxyImage'])
+        ->where('id', '[0-9]+')
+        ->where('seq', '[0-9]+')
+        ->where('filename', '.+')
+        ->name('eerc.record.image');
+
     // EERC Record detail page
     Route::get('/record/{id}/{type?}', [RecordController::class, 'show'])
         ->where('id', '[0-9]+')

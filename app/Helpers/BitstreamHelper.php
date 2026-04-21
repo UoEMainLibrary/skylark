@@ -146,9 +146,13 @@ class BitstreamHelper
      */
     public static function isImage(string $metadataValue): bool
     {
-        $filename = self::getFilename($metadataValue);
+        $filename = strtolower(self::getFilename($metadataValue));
 
-        return str_contains(strtolower($filename), '.jpg') || str_contains(strtolower($filename), '.jpeg');
+        return str_ends_with($filename, '.jpg')
+            || str_ends_with($filename, '.jpeg')
+            || str_ends_with($filename, '.png')
+            || str_ends_with($filename, '.gif')
+            || str_ends_with($filename, '.webp');
     }
 
     /**

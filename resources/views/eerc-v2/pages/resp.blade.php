@@ -10,8 +10,8 @@
         <div class="mt-6 prose prose-lg max-w-none">
 
             {{-- Interviewee portrait floated right beside opening paragraph --}}
-            <div class="not-prose float-right ml-6 mb-4 hidden w-48 sm:block">
-                <img src="{{ asset('collections/eerc/images/v2/DG38-5-4-1.jpg') }}" alt="RESP interviewee at home" class="rounded-lg shadow-sm">
+            <div class="not-prose float-right ml-6 mb-4 hidden w-72 max-w-[min(100%,28rem)] sm:block">
+                <img src="{{ asset('collections/eerc/images/v2/DG38-5-4-1.jpg') }}" alt="RESP interviewee at home" class="w-full rounded-lg shadow-sm">
             </div>
 
             <p>The RESP Archive Project was established in 2018 in collaboration with the Centre for Research Collections at the University of Edinburgh. Originally conceived as a cataloguing project to ensure the ongoing digital security of this collection and improve the discoverability of the audio recordings created by the RESP the remit was soon expanded to include the creation of this website.</p>

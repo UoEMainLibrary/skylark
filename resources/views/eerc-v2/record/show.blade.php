@@ -5,6 +5,25 @@
 @section('content')
 <div class="lg:grid lg:grid-cols-4 lg:gap-8">
     <div class="lg:col-span-3">
+        @if(! empty($bitstreams['main_image']) || ! empty($bitstreams['images']))
+            <div class="mb-6 flex flex-wrap gap-3">
+                @if(! empty($bitstreams['main_image']))
+                    @php
+                        $mainSrc = \App\Helpers\BitstreamHelper::rewriteBitstreamUrl(\App\Support\CollectionUrl::url(ltrim($bitstreams['main_image']['uri'], '/')));
+                    @endphp
+                    <a href="{{ $mainSrc }}" target="_blank" rel="noopener" class="block overflow-hidden rounded-lg shadow-sm ring-1 ring-gray-200">
+                        <img src="{{ $mainSrc }}" alt="{{ $bitstreams['main_image']['description'] ?: 'Image from this record' }}" class="max-h-72 w-auto object-contain">
+                    </a>
+                @endif
+                @foreach($bitstreams['images'] ?? [] as $img)
+                    @php $imgSrc = \App\Helpers\BitstreamHelper::rewriteBitstreamUrl(\App\Support\CollectionUrl::url(ltrim($img['uri'], '/'))); @endphp
+                    <a href="{{ $imgSrc }}" target="_blank" rel="noopener" class="block overflow-hidden rounded-lg shadow-sm ring-1 ring-gray-200">
+                        <img src="{{ $imgSrc }}" alt="{{ $img['description'] ?: 'Image from this record' }}" class="max-h-60 w-auto object-contain">
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
         {{-- Title --}}
         <h1 class="text-2xl font-bold tracking-tight text-gray-900">
             @php
@@ -50,8 +69,8 @@
                                             <div class="flex flex-wrap gap-1.5">
                                             @php $subjects = is_array($record[$displayField]) ? $record[$displayField] : [$record[$displayField]]; @endphp
                                             @foreach($subjects as $index => $subject)
-                                                @php $encodedSubject = urlencode($subject); @endphp
-                                                <a href="{{ url('/eerc/search/*:*/Subject:%22' . urlencode($encodedSubject) . '%22') }}"
+                                                @php $subjectForUrl = str_replace(' ', '+', $subject); @endphp
+                                                <a href="{{ url('/eerc/search/*:*/Subject:"' . $subjectForUrl . '"') }}"
                                                    class="inline-flex items-center rounded-full bg-resp-teal-50 px-2.5 py-0.5 text-xs font-medium text-resp-teal-700 hover:bg-resp-teal-100"
                                                    title="Search for items with the subject: {{ $subject }}">{{ $subject }}</a>
                                             @endforeach
@@ -114,7 +133,7 @@
 
                                                                         if (str_ends_with(strtolower($doFile), '.mp3') || str_ends_with(strtolower($doFile), '.wav')) {
                                                                             $audioFiles[] = ['url' => $doUrl, 'file' => $doFile];
-                                                                        } elseif (str_ends_with(strtolower($doFile), '.jpg') || str_ends_with(strtolower($doFile), '.jpeg')) {
+                                                                        } elseif (str_ends_with(strtolower($doFile), '.jpg') || str_ends_with(strtolower($doFile), '.jpeg') || str_ends_with(strtolower($doFile), '.png') || str_ends_with(strtolower($doFile), '.gif') || str_ends_with(strtolower($doFile), '.webp')) {
                                                                             $doTitleShort = substr($doFile, 0, strrpos($doFile, '.'));
                                                                             $photos[] = ['url' => $doUrl, 'title' => $doTitleShort];
                                                                         } elseif (str_ends_with(strtolower($doFile), '.pdf')) {
@@ -209,8 +228,8 @@
                                                     <a href="{{ $pdf['url'] }}" target="_blank" rel="noopener"
                                                        class="inline-flex items-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50"
                                                        title="Transcript: {{ $pdf['title'] }}">
-                                                        <svg class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zM10 8a.75.75 0 01.75.75v1.5h1.5a.75.75 0 010 1.5h-1.5v1.5a.75.75 0 01-1.5 0v-1.5h-1.5a.75.75 0 010-1.5h1.5v-1.5A.75.75 0 0110 8z" clip-rule="evenodd"/></svg>
-                                                        {{ $pdf['title'] }}
+                                                        <img src="{{ asset('collections/eerc/images/file-pdf-icon.png') }}" alt="" width="20" height="20" class="h-5 w-5 shrink-0" loading="lazy">
+                                                        <span>View PDF</span>
                                                     </a>
                                                 @endforeach
                                             </div>
