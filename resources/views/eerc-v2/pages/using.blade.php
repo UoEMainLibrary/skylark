@@ -9,7 +9,7 @@
 
         <div class="mt-6 space-y-6">
             <div class="flex flex-col gap-6 sm:flex-row sm:items-start">
-                <div class="mx-auto hidden w-64 max-w-full shrink-0 sm:mx-0 sm:block">
+                <div class="mx-auto hidden w-64 max-w-full shrink-0 sm:mx-0 sm:block" style="margin-top: 8px;">
                     <img src="{{ asset('collections/eerc/images/v2/MG-0690-crop2.jpg') }}" alt="Photograph from the RESP archive collection" class="h-auto w-64 max-w-full rounded-lg shadow-sm">
                 </div>
                 <div class="prose prose-lg max-w-none min-w-0 sm:min-w-0 sm:flex-1">

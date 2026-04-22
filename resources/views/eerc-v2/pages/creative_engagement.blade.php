@@ -34,18 +34,18 @@
                         <li>The experience of War</li>
                     </ul>
                 </div>
-                {{-- CSS Grid (not columns-*): grid + gap are reliably included in the built CSS; multi-column gap behaves differently and columns-* can be omitted if unparsed from Blade. --}}
-                <div class="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-                    <div class="overflow-hidden rounded-lg bg-gray-50/80 p-2 shadow-sm ring-1 ring-gray-100">
+                {{-- Single row of equal tiles on md+; wraps to two pairs on smaller screens. Fixed widths keep all four the same size. --}}
+                <div class="not-prose flex flex-wrap justify-center gap-3 sm:gap-4">
+                    <div class="w-36 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-40 md:w-44">
                         <img src="{{ asset('collections/eerc/images/v2/creative/image1.jpeg') }}" alt="Historical photograph of a woman carrying a basket" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="overflow-hidden rounded-lg bg-gray-50/80 p-2 shadow-sm ring-1 ring-gray-100">
+                    <div class="w-36 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-40 md:w-44">
                         <img src="{{ asset('collections/eerc/images/v2/creative/image2.jpeg') }}" alt="Historical photograph of a group of working men" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="overflow-hidden rounded-lg bg-gray-50/80 p-2 shadow-sm ring-1 ring-gray-100">
+                    <div class="w-36 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-40 md:w-44">
                         <img src="{{ asset('collections/eerc/images/v2/creative/EL6-3-4-7.jpg') }}" alt="Photograph from the RESP archive collection" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="overflow-hidden rounded-lg bg-gray-50/80 p-2 shadow-sm ring-1 ring-gray-100">
+                    <div class="w-36 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-40 md:w-44">
                         <img src="{{ asset('collections/eerc/images/v2/creative/EL39-7-4-4.jpg') }}" alt="Photograph from the RESP archive collection" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
                 </div>

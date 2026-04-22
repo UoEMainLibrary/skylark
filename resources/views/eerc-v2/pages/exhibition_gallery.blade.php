@@ -11,7 +11,7 @@
         <div class="mt-6 flex w-full flex-wrap justify-center gap-4">
             <a href="#animal-encounters" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
-                    <img src="{{ asset('collections/eerc/images/animal_encounters_resp.png') }}" alt="Animal Encounters" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
+                    <img src="{{ asset('collections/eerc/images/v2/creative/image4.png') }}" alt="Animal Encounters" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
                 </div>
                 <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">Animal Encounters</p>
             </a>
@@ -35,7 +35,7 @@
             </a>
             <a href="#days-work" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
-                    <img src="{{ asset('collections/eerc/images/v2/all-in-a-days-work-film-poster.jpeg') }}" alt="All in a Day&rsquo;s Work film" class="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
+                    <img src="{{ asset('collections/eerc/images/v2/am-cover.jpg') }}" alt="All in a Day&rsquo;s Work cover" class="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
                 </div>
                 <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">All in A Day&rsquo;s Work</p>
             </a>
@@ -47,7 +47,7 @@
                 <h2 class="text-xl font-bold text-gray-900">&ldquo;Animal Encounters in the RESP Archive&rdquo;</h2>
                 <p class="mt-1 text-sm text-gray-500">Exploring animal-human relationships across the Regional Ethnology of Scotland Project</p>
                 <div class="mt-4">
-                    <img src="{{ asset('collections/eerc/images/animal_encounters_resp.png') }}" alt="Animal Encounters exhibition" class="w-full rounded-md">
+                    <img src="{{ asset('collections/eerc/images/v2/creative/image4.png') }}" alt="Animal Encounters exhibition" class="w-full rounded-md">
                 </div>
                 <p class="mt-4 text-gray-700">To explore RESP's online exhibition <em>Animal Encounters in the RESP Archive</em> please click on the link below. The exhibition, curated and illustrated by Rebekah Day, reveals the varied and complex relationships that can exist between people and animals. Through carefully selected audio recordings, images, and videos the exhibition highlights how connections between humans and animals have shifted in recent decades: reflecting wider culture and environmental concerns present in Scottish society today.</p>
                 <a href="https://exhibitions.ed.ac.uk/exhibitions/animal-encounters" target="_blank" rel="noopener" class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-resp-teal-600 hover:underline">
