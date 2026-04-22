@@ -182,13 +182,6 @@ class RecordController extends Controller
      */
     public function proxyImage(string $id, string $seq, string $filename)
     {
-        /*
-        dd([
-            'id' => $id,
-            'seq' => $seq,
-            'filename' => $filename,
-        ]);
-        */
         // URL encode special characters in filename (matching CodeIgniter logic)
         $filename = str_replace(' ', '%20', $filename);
         $filename = str_replace('(', '%28', $filename);
@@ -197,29 +190,6 @@ class RecordController extends Controller
         $filename = str_replace(',', '%2C', $filename);
 
         $url = $this->dSpaceBitstreamUrl($id, $seq, $filename);
-            /*
-            $response = Http::withOptions([
-                'verify' => false,
-                'timeout' => 30,
-            ])->get($url);
-
-            dd([
-                'upstream_url' => $url,
-                'status' => $response->status(),
-                'content_type' => $response->header('Content-Type'),
-                'content_disposition' => $response->header('Content-Disposition'),
-                'body_start' => substr($response->body(), 0, 500),
-            ]);
-            */
-        /*
-        dd([
-            'id' => $id,
-            'seq' => $seq,
-            'filename' => $filename,
-            'bitstream_base' => config('services.dspace.bitstream_url'),
-            'upstream_url' => $url,
-        ]);
-        */
         $requestLooksLikePdf = str_ends_with(strtolower(rawurldecode($filename)), '.pdf');
 
         try {
