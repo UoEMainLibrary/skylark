@@ -10,7 +10,7 @@ return array_merge($dspaceDefaults, [
 
     'adminemail' => 'lddt@mlist.is.ed.ac.uk',
 
-    'container_id' => env('ART_CONTAINER_ID', 'dbf9e7d0-e031-4ed1-bfe5-30d5b450903f'),
+    'container_id' => env('COCKBURN_CONTAINER_ID', 'dbf9e7d0-e031-4ed1-bfe5-30d5b450903f'),
 
     'field_mappings' => [
         'Title' => 'dc.title.en',

@@ -86,6 +86,15 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'cockburn',
+    'route_name' => 'cockburn',
+    'home' => [PageController::class, 'cockburnHome'],
+    'mirador_view' => 'cockburn.mirador',
+    'iiif' => [PageController::class, 'mimedIiif'],
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'coimbra-colls',
     'route_name' => 'coimbra-colls',
     'home' => [PageController::class, 'coimbraCollsHome'],

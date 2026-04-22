@@ -226,9 +226,9 @@ class PageController extends Controller
      */
 
         /**
-     * Display the Licensing page
+     * Display the Takedown page
      */
-     public function takedown()
+    public function takedown()
     {
         $collection = config('app.current_collection', 'clds');
         $collectionView = "{$collection}.pages.takedown";
@@ -270,6 +270,48 @@ class PageController extends Controller
         return view('pages.takedown');
     }
         */
+
+    /**
+     * Display the Cockburn homepage with browse facets
+     */
+    public function cockburnHome()
+    {
+        $repository = $this->repositoryFactory->current();
+
+        $facets = [];
+        $baseSearch = CollectionUrl::url('search/*:*');
+        $configFilters = config('skylight.filters', []);
+
+        try {
+            //$results = $repository->search('*:*', [], 0, '', 0);
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
+            //$results = $repository->searchWithFacets('*:*');
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
+
+        try {
+            $recentResults = $repository->searchWithHighlighting('*:*', [], 0, 'system_create_dt desc', 5);
+            $docs = $recentResults['docs'] ?? [];
+            //dd($docs);
+        } catch (\Exception $e) {
+            // Solr unreachable — render without recent docs
+        }
+    
+
+
+        //dd($results);
+
+        return view('cockburn.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+            'docs' => $docs,
+            'query' => '',
+        ]);
+    }
 
     /**
      * Display the MIMEd homepage with browse facets

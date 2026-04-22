@@ -107,6 +107,8 @@
                     </div>-->
                 </form>
             <!--</section>-->
+            </div>
+        </header>
 
         <div id="main" role="main" class="clearfix">
 
