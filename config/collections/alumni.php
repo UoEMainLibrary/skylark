@@ -11,6 +11,8 @@ return array_merge($dspaceDefaults, [
     'adminemail' => 'HeritageCollections@ed.ac.uk',
 
     'container_id' => env('ALUMNI_CONTAINER_ID', '8f5e9ab3-98cb-4665-b911-4507a72bb788'),
+    // Alumni indexes by community, not collection (matches legacy CI site).
+    'container_field' => 'location.comm',
 
     'field_mappings' => [
         'Name' => 'dc.contributor.author.en',

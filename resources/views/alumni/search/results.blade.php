@@ -25,12 +25,12 @@
     $sort = $clean_base_parameters === '' ? '?sort_by=' : '&sort_by=';
 @endphp
 
-<div class="col-content">
+<div class="col-main">
     @if(isset($message))
         <div class="message">{!! $message !!}</div>
     @endif
 
-    @if(empty($docs) || $rows == 0)
+    @if(empty($docs) || $total == 0)
         <div class="content">
             <h1>No results found</h1>
             <p>Your search for <strong>{{ urldecode($query) }}</strong> did not return any results.</p>
@@ -40,8 +40,8 @@
 
         <div class="listing-filter">
             <span class="no-results">
-                <strong>{{ $startrow }}-{{ $endrow }}</strong> of
-                <strong>{{ $rows }}</strong> results
+                <strong>{{ $startRow }}-{{ $endRow }}</strong> of
+                <strong>{{ $total }}</strong> results
             </span>
 
             <span class="sort">
@@ -98,7 +98,7 @@
                     <div class="item-div">
                         <div class="iteminfo">
                             <h3>
-                                <a href="./record/{{ $docId }}?highlight={{ urlencode($query) }}">
+                                <a href="{{ \App\Support\CollectionUrl::url('record/'.$docId) }}?highlight={{ urlencode($query) }}">
                                     {{ $title }}
                                 </a>
                             </h3>
@@ -110,7 +110,7 @@
                                             $orig_filter = urlencode($collection);
                                             $lower_orig_filter = urlencode(strtolower($collection));
                                         @endphp
-                                        <a href="./search/*:*/Collection:%22{{ $lower_orig_filter }}+%7C%7C%7C+{{ $orig_filter }}%22">
+                                        <a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:%22{{ $lower_orig_filter }}+%7C%7C%7C+{{ $orig_filter }}%22">
                                             {{ $collection }}
                                         </a>
                                     @endforeach
@@ -122,7 +122,7 @@
                                             $orig_filter = urlencode($date);
                                             $lower_orig_filter = urlencode(strtolower($date));
                                         @endphp
-                                        <a href="./search/*:*/Year:%22{{ $lower_orig_filter }}+%7C%7C%7C+{{ $orig_filter }}%22">
+                                        <a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Year:%22{{ $lower_orig_filter }}+%7C%7C%7C+{{ $orig_filter }}%22">
                                             {{ $date }}
                                         </a>
                                     @endforeach
@@ -159,7 +159,9 @@
                                         $b_handle = $b_segments[3] ?? '';
                                         $b_seq = $b_segments[4] ?? '';
                                         $b_handle_id = preg_replace('/^.*\//', '', $b_handle);
-                                        $b_uri = './record/' . $b_handle_id . '/' . $b_seq . '/' . $b_filename;
+                                        // Absolute URL via the record.image (proxyImage) route so it
+                                        // resolves correctly regardless of the current URL depth.
+                                        $b_uri = \App\Support\CollectionUrl::url('record/'.$b_handle_id.'/'.$b_seq.'/'.rawurlencode($b_filename));
                                     @endphp
 
                                     @if($thumbnail_field !== '' && isset($doc[$thumbnail_field]))
@@ -172,7 +174,7 @@
                                             @if($t_filename === $b_filename . '.jpg')
                                                 @php
                                                     $t_seq = $t_segments[4] ?? '';
-                                                    $t_uri = './record/' . $b_handle_id . '/' . $t_seq . '/' . $t_filename;
+                                                    $t_uri = \App\Support\CollectionUrl::url('record/'.$b_handle_id.'/'.$t_seq.'/'.rawurlencode($t_filename));
                                                     $thumbnailLink =
                                                         '<a title="' . e($title) . '" class="fancybox" rel="group' . $loop->parent->index . '" href="' . $b_uri . '">' .
                                                         '<img src="' . $t_uri . '" class="search-thumbnail" title="' . e($title) . '" />' .
@@ -211,10 +213,10 @@
 
         <div class="pagination">
             <span class="no-results">
-                <strong>{{ $startrow }}-{{ $endrow }}</strong> of
-                <strong>{{ $rows }}</strong> results
+                <strong>{{ $startRow }}-{{ $endRow }}</strong> of
+                <strong>{{ $total }}</strong> results
             </span>
-            {!! $pagelinks !!}
+            {!! $paginationLinks !!}
         </div>
 
     @endif

@@ -355,7 +355,14 @@ class SearchController extends Controller
     }
 
     /**
-     * Build base search URL for facets
+     * Build base search URL for facets.
+     *
+     * Uses urlencode (space → "+") and then restores the literal ":" between the
+     * facet name and value to match the legacy CodeIgniter URL style
+     * (e.g. /Collection:%22students+of+medicine%22). Keeping this format
+     * consistent with what the facet Blade partials generate is what allows
+     * the "Remove" links (which run a preg_replace against $base_search) to
+     * actually strip the matching segment.
      */
     protected function buildBaseSearchUrl(string $query, array $filters): string
     {
@@ -363,7 +370,11 @@ class SearchController extends Controller
         $url = url("{$prefix}/search/{$query}");
 
         foreach ($filters as $filter) {
-            $url .= '/'.rawurlencode($filter);
+            $encoded = urlencode($filter);
+            // Keep ":" literal so Facet:"value" segments are recognisable and
+            // match the patterns produced by the facet partials.
+            $encoded = str_replace('%3A', ':', $encoded);
+            $url .= '/'.$encoded;
         }
 
         return $url;

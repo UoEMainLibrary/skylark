@@ -86,8 +86,8 @@
         <header>
             <div id="collection-title">
                 <a href="https://www.ed.ac.uk" class="uoelogo" title="The University of Edinburgh Home" target="_blank"><span class="visually-hidden"> (opens in a new tab)</span></a>
-                <a href="{{ url('/alumni/home') }}" class="logo" title="University of Edinburgh Historical Alumni Home"></a>
-                <a href="{{ url('/alumni/home') }}" class="menulogo" title="University of Edinburgh Historical Alumni  Home"></a>
+                <a href="{{ url('/alumni') }}" class="logo" title="University of Edinburgh Historical Alumni Home"></a>
+                <a href="{{ url('/alumni') }}" class="menulogo" title="University of Edinburgh Historical Alumni  Home"></a>
             </div>
             <div id="collection-search">
             <!--<section class="search">-->
@@ -116,7 +116,7 @@
         <footer>
             <div class="footer-links">
                 <div class="site-links">
-                    <a href="{{ url('/alumni/home') }}">University of Edinburgh Historical Alumni</a>
+                    <a href="{{ url('/alumni') }}">University of Edinburgh Historical Alumni</a>
                     <a href="{{ url('/alumni/about') }}">About</a>
                     <a href="{{ url('/alumni/feedback') }}" class="last">Contact Us</a>
                 </div>

@@ -535,8 +535,10 @@ class DSpaceService implements RepositoryInterface
                     $normalizedTermName = str_replace(["\r\n", "\n", "\r"], ' ', $termName);
 
                     foreach ($activeFilters as $activeFilter) {
-                        // Normalize the active filter the same way (decode + to space)
-                        $normalizedFilter = str_replace('+', ' ', $activeFilter);
+                        // Normalize the active filter the same way: decode + to space AND
+                        // collapse newlines (from %0A in URLs) to space so the comparison
+                        // matches against $normalizedTermName, which is also space-collapsed.
+                        $normalizedFilter = str_replace(['+', "\r\n", "\n", "\r"], ' ', $activeFilter);
                         if (str_contains($normalizedFilter, $normalizedTermName)) {
                             $isActive = true;
                             break;
