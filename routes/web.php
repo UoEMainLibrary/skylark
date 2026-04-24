@@ -71,6 +71,9 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     'extra_routes' => function () {
+        Route::get('/browse/{facet}', [PageController::class, 'alumniBrowse'])
+            ->where('facet', '[A-Za-z]+')
+            ->name('browse');
         Route::get('/earlyvet', [PageController::class, 'alumniEarlyVet'])->name('earlyvet');
         Route::get('/extraac', [PageController::class, 'alumniExtraAc'])->name('extraac');
         Route::get('/femalegrad', [PageController::class, 'alumniFemaleGrad'])->name('femalegrad');

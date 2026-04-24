@@ -3,6 +3,7 @@
 @section('title', 'University of Edinburgh Historical Alumni')
 
 @section('content')
+<div class="col-main">
  <div class="record">
     <div class="content byEditor">
         <h1>University of Edinburgh: Historical Alumni Collection</h1>
@@ -77,6 +78,7 @@
         <div class="clearfix"></div>
 
     </div>
+</div>
 </div>
 
 <div class="col-sidebar">
