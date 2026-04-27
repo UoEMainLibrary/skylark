@@ -39,13 +39,13 @@
                     <div class="w-40 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
                         <img src="{{ asset('collections/eerc/images/v2/creative/EL35-3-4-2-crop.jpg') }}" alt="Historical photograph of a woman carrying a basket on her back" class="h-40 w-full rounded-md object-contain sm:h-44 md:h-48">
                     </div>
-                    <div class="w-40 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
+                    <div class="flex w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
                         <img src="{{ asset('collections/eerc/images/v2/creative/image2.jpeg') }}" alt="Historical photograph of a group of working men" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="w-40 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
+                    <div class="flex w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
                         <img src="{{ asset('collections/eerc/images/v2/creative/EL6-3-4-7.jpg') }}" alt="Photograph from the RESP archive collection" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="w-40 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
+                    <div class="flex w-40 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
                         <img src="{{ asset('collections/eerc/images/v2/creative/EL39-7-4-4.jpg') }}" alt="Photograph from the RESP archive collection" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
                 </div>

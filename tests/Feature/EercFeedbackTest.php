@@ -22,7 +22,8 @@ it('renders the replacement creative engagement crop without tightly cropping th
     expect($html)->toContain('collections/eerc/images/v2/creative/EL35-3-4-2-crop.jpg')
         ->and($html)->toContain('woman carrying a basket on her back')
         ->and($html)->toContain('object-contain')
-        ->and($html)->toContain('md:w-48');
+        ->and($html)->toContain('md:w-48')
+        ->and(substr_count($html, 'flex w-40 shrink-0 items-center justify-center'))->toBe(3);
 });
 
 it('does not include Shetland or high northern pins in the generated EERC map data', function (): void {
