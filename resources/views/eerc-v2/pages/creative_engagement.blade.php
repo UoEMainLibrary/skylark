@@ -34,18 +34,18 @@
                         <li>The experience of War</li>
                     </ul>
                 </div>
-                {{-- Single row of equal tiles on md+; wraps to two pairs on smaller screens. Fixed widths keep all four the same size. --}}
-                <div class="not-prose flex flex-wrap justify-center gap-3 sm:gap-4">
-                    <div class="w-36 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-40 md:w-44">
-                        <img src="{{ asset('collections/eerc/images/v2/creative/image1.jpeg') }}" alt="Historical photograph of a woman carrying a basket" class="aspect-[4/3] w-full rounded-md object-cover">
+                {{-- Fixed widths keep the four reference images even while allowing the portrait crop to remain legible. --}}
+                <div class="not-prose flex flex-wrap justify-center gap-4 sm:gap-5">
+                    <div class="w-40 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
+                        <img src="{{ asset('collections/eerc/images/v2/creative/EL35-3-4-2-crop.jpg') }}" alt="Historical photograph of a woman carrying a basket on her back" class="h-40 w-full rounded-md object-contain sm:h-44 md:h-48">
                     </div>
-                    <div class="w-36 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-40 md:w-44">
+                    <div class="w-40 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
                         <img src="{{ asset('collections/eerc/images/v2/creative/image2.jpeg') }}" alt="Historical photograph of a group of working men" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="w-36 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-40 md:w-44">
+                    <div class="w-40 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
                         <img src="{{ asset('collections/eerc/images/v2/creative/EL6-3-4-7.jpg') }}" alt="Photograph from the RESP archive collection" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
-                    <div class="w-36 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-40 md:w-44">
+                    <div class="w-40 shrink-0 overflow-hidden rounded-lg bg-gray-50/80 p-1.5 shadow-sm ring-1 ring-gray-100 sm:w-44 md:w-48">
                         <img src="{{ asset('collections/eerc/images/v2/creative/EL39-7-4-4.jpg') }}" alt="Photograph from the RESP archive collection" class="aspect-[4/3] w-full rounded-md object-cover">
                     </div>
                 </div>
