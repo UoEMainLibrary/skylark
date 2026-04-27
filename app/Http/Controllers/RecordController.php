@@ -7,6 +7,7 @@ use App\Services\RepositoryFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class RecordController extends Controller
 {
@@ -22,6 +23,12 @@ class RecordController extends Controller
 
         if ($collection === 'eerc') {
             return PageController::eercViewName($collectionView);
+        }
+
+        if ($collection === 'public-art') {
+            $resolved = PageController::publicArtViewName($collectionView);
+
+            return view()->exists($resolved) ? $resolved : $view;
         }
 
         return view()->exists($collectionView) ? $collectionView : $view;
@@ -220,7 +227,7 @@ class RecordController extends Controller
                 ->header('Content-Length', $contentLength)
                 ->header('Cache-Control', 'public, max-age=31536000') // Cache for 1 year
                 ->header('Expires', gmdate('D, d M Y H:i:s', time() + 31536000).' GMT');
-        } catch (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e) {
+        } catch (HttpExceptionInterface $e) {
             throw $e;
         } catch (\Exception $e) {
             abort(404, 'Image not found');

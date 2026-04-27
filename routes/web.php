@@ -4,6 +4,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
 use App\Routing\CollectionRouteRegistrar;
+use App\Services\RepositoryFactory;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -81,11 +82,11 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/medsample', [PageController::class, 'alumniMedSample'])->name('medsample');
         Route::get('/newcoll', [PageController::class, 'alumniNewColl'])->name('newcoll');
         Route::get('/roll', [PageController::class, 'alumniRoll'])->name('roll');
-        Route::get('/rosner', [PageController::class, 'alumniRosner'])->name('rosner');      
+        Route::get('/rosner', [PageController::class, 'alumniRosner'])->name('rosner');
         Route::get('/vetgrad', [PageController::class, 'alumniVetGrad'])->name('vetgrad');
         Route::get('/women', [PageController::class, 'alumniWomen'])->name('women');
         Route::get('/ww1roll', [PageController::class, 'alumniWW1Roll'])->name('ww1roll');
-   },
+    },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
@@ -105,7 +106,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'feedback' => true,
     'extra_routes' => function () {
         Route::get('/virtual-exhibition', [PageController::class, 'coimbraCollsVirtualExhibition'])->name('virtual-exhibition');
-   },
+    },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
@@ -116,7 +117,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'feedback' => true,
     'extra_routes' => function () {
         Route::get('/intro', [PageController::class, 'coimbraIntro'])->name('intro');
-   },
+    },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
@@ -151,11 +152,23 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     },
 ]);
 
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'public-art',
+    'route_name' => 'public-art',
+    'home' => [PageController::class, 'publicArtHome'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/paolozzi', [PageController::class, 'publicArtPaolozzi'])->name('paolozzi');
+        Route::get('/artcollection', [PageController::class, 'publicArtArtCollection'])->name('artcollection');
+    },
+]);
+
 // EERC Sub-Collection Routes
 Route::prefix('eerc')->name('eerc.')->group(function () {
     // EERC Homepage
     Route::get('/', function () {
-        $repositoryFactory = app(\App\Services\RepositoryFactory::class);
+        $repositoryFactory = app(RepositoryFactory::class);
         $repository = $repositoryFactory->current();
 
         $subjectFacet = [];
