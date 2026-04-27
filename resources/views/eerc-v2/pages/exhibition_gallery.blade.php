@@ -7,7 +7,7 @@
     <div class="lg:col-span-3 space-y-10">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Exhibition Gallery</h1>
 
-        {{-- Thumbnail navigation: flex + wrap + justify-center → row1 [X][X][X], row2 centred [X][X] with same tile width (gap-4 = 1rem) --}}
+        {{-- Thumbnail navigation: flex + wrap + justify-center keeps rows centred at consistent tile widths. --}}
         <div class="mt-6 flex w-full flex-wrap justify-center gap-4">
             <a href="#animal-encounters" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
                 <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
@@ -37,7 +37,13 @@
                 <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
                     <img src="{{ asset('collections/eerc/images/v2/am-cover.jpg') }}" alt="All in a Day&rsquo;s Work cover" class="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105">
                 </div>
-                <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">All in A Day&rsquo;s Work</p>
+                <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">All in A Day&rsquo;s Work publication</p>
+            </a>
+            <a href="#days-work-film" class="group mx-auto block w-full min-w-0 max-w-md overflow-hidden rounded-lg shadow-sm sm:mx-0 sm:w-[calc((100%-2rem)/3)] sm:max-w-none">
+                <div class="aspect-[4/3] w-full overflow-hidden bg-gray-100">
+                    <img src="{{ asset('collections/eerc/images/v2/all-in-a-days-work-film-poster.jpeg') }}" alt="Still from the film All in a Day&rsquo;s Work" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105">
+                </div>
+                <p class="px-3 py-2 text-sm font-medium text-gray-700 group-hover:text-resp-teal-600">All in A Day&rsquo;s Work film</p>
             </a>
         </div>
 
@@ -124,7 +130,7 @@
                     PDF download will be available when the digital copy is provided.
                 </div>
 
-                <h3 class="mt-8 text-lg font-semibold text-gray-900">&lsquo;All in a Day&rsquo;s Work&rsquo; &mdash; short film</h3>
+                <h3 id="days-work-film" class="mt-8 scroll-mt-4 text-lg font-semibold text-gray-900">&lsquo;All in a Day&rsquo;s Work&rsquo; &mdash; short film</h3>
                 <p class="mt-1 text-sm text-gray-500">Film &middot; RESP Student Intern Ailsa Dixon</p>
                 <figure class="mt-4 overflow-hidden rounded-md bg-black shadow-sm ring-1 ring-gray-200">
                     <img src="{{ asset('collections/eerc/images/v2/all-in-a-days-work-film-poster.jpeg') }}" alt="Still from the film All in a Day&rsquo;s Work" class="w-full object-cover" loading="lazy">
