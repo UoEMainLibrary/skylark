@@ -29,13 +29,29 @@ class PageController extends Controller
     }
 
     /**
+     * Resolve a Public Art view name based on the active skin version.
+     * e.g. 'public-art.home' becomes 'public-art-v2.home' when skin version is 2.
+     */
+    public static function publicArtViewName(string $view): string
+    {
+        if ((int) config('skylight.public_art_skin_version') === 2) {
+            return preg_replace('/^public-art\./', 'public-art-v2.', $view);
+        }
+
+        return $view;
+    }
+
+    /**
      * Display the About page
      */
-
     public function about()
     {
         $collection = config('app.current_collection', 'clds');
         $collectionView = "{$collection}.pages.about";
+
+        if ($collection === 'public-art') {
+            $collectionView = static::publicArtViewName($collectionView);
+        }
 
         return view()->exists($collectionView)
             ? view($collectionView)
@@ -83,12 +99,16 @@ class PageController extends Controller
     */
 
     /**
-    * Display the Feedback page
-    */
+     * Display the Feedback page
+     */
     public function feedback()
     {
         $collection = config('app.current_collection', 'clds');
         $collectionView = "{$collection}.pages.feedback";
+
+        if ($collection === 'public-art') {
+            $collectionView = static::publicArtViewName($collectionView);
+        }
 
         return view()->exists($collectionView)
             ? view($collectionView)
@@ -98,32 +118,32 @@ class PageController extends Controller
     /**
      * Display the Feedback page
      */
-     /*
+    /*
     public function feedback()
     {
-        $collection = config('app.current_collection', 'clds');
+       $collection = config('app.current_collection', 'clds');
 
-        if ($collection === 'mimed') {
-            return view('mimed.pages.feedback');
-        }
+       if ($collection === 'mimed') {
+           return view('mimed.pages.feedback');
+       }
 
-        if ($collection === 'openbooks') {
-            return view('openbooks.pages.feedback');
-        }
+       if ($collection === 'openbooks') {
+           return view('openbooks.pages.feedback');
+       }
 
-        if ($collection === 'guardbook') {
-            return view('guardbook.pages.feedback');
-        }
+       if ($collection === 'guardbook') {
+           return view('guardbook.pages.feedback');
+       }
 
-        if ($collection === 'coimbra-colls') {
-            return view('coimbra-colls.pages.feedback');
-        }
+       if ($collection === 'coimbra-colls') {
+           return view('coimbra-colls.pages.feedback');
+       }
 
-        if ($collection === 'coimbra') {
-            return view('coimbra.pages.feedback');
-        }
+       if ($collection === 'coimbra') {
+           return view('coimbra.pages.feedback');
+       }
 
-        return view('pages.feedback');
+       return view('pages.feedback');
     }
     */
 
@@ -170,16 +190,19 @@ class PageController extends Controller
     /**
      * Display the Licensing page
      */
-     public function licensing()
+    public function licensing()
     {
         $collection = config('app.current_collection', 'clds');
         $collectionView = "{$collection}.pages.licensing";
+
+        if ($collection === 'public-art') {
+            $collectionView = static::publicArtViewName($collectionView);
+        }
 
         return view()->exists($collectionView)
             ? view($collectionView)
             : view('pages.licensing');
     }
-
 
     /*
     public function licensing()
@@ -225,13 +248,17 @@ class PageController extends Controller
      * Display the Takedown Policy page
      */
 
-        /**
+    /**
      * Display the Takedown page
      */
     public function takedown()
     {
         $collection = config('app.current_collection', 'clds');
         $collectionView = "{$collection}.pages.takedown";
+
+        if ($collection === 'public-art') {
+            $collectionView = static::publicArtViewName($collectionView);
+        }
 
         return view()->exists($collectionView)
             ? view($collectionView)
@@ -283,9 +310,9 @@ class PageController extends Controller
         $configFilters = config('skylight.filters', []);
 
         try {
-            //$results = $repository->search('*:*', [], 0, '', 0);
+            // $results = $repository->search('*:*', [], 0, '', 0);
             $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
-            //$results = $repository->searchWithFacets('*:*');
+            // $results = $repository->searchWithFacets('*:*');
             $facets = $results['facets'] ?? [];
         } catch (\Exception $e) {
             dd($e->getMessage());
@@ -294,14 +321,12 @@ class PageController extends Controller
         try {
             $recentResults = $repository->searchWithHighlighting('*:*', [], 0, 'system_create_dt desc', 5);
             $docs = $recentResults['docs'] ?? [];
-            //dd($docs);
+            // dd($docs);
         } catch (\Exception $e) {
             // Solr unreachable — render without recent docs
         }
-    
 
-
-        //dd($results);
+        // dd($results);
 
         return view('cockburn.home', [
             'facets' => $facets,
@@ -340,8 +365,8 @@ class PageController extends Controller
     }
 
     /**
-    * Display the MIMEd IIIF page
-    */
+     * Display the MIMEd IIIF page
+     */
     public function mimedIiif()
     {
         return view('mimed.pages.iiif');
@@ -448,10 +473,9 @@ class PageController extends Controller
         return view('coimbra-colls.home');
     }
 
-
     /**
-    * Display the Alumni homepage
-    */
+     * Display the Alumni homepage
+     */
     public function alumniHome()
     {
         /*
@@ -461,7 +485,6 @@ class PageController extends Controller
         ]);
         */
 
-
         $repository = $this->repositoryFactory->current();
         $facets = [];
         $baseSearch = CollectionUrl::url('search/*:*');
@@ -469,8 +492,8 @@ class PageController extends Controller
 
         try {
             $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
-            //dd($repository);
-            //dd($results);
+            // dd($repository);
+            // dd($results);
             $facets = $results['facets'] ?? [];
         } catch (\Exception $e) {
             dd($e->getMessage(), $e);
@@ -549,16 +572,16 @@ class PageController extends Controller
     }
 
     /**
-    * Display the Coimbra Collection homepage
-    */
+     * Display the Coimbra Collection homepage
+     */
     public function coimbraHome()
     {
         return view('coimbra.home');
     }
 
     /**
-    * Display the Coimbra Collection intro page
-    */
+     * Display the Coimbra Collection intro page
+     */
     public function coimbraIntro()
     {
         return view('coimbra.pages.intro');
@@ -572,10 +595,9 @@ class PageController extends Controller
         return view('coimbra-colls.pages.virtual-exhibition');
     }
 
-
     /**
-    * Display the Guardbook homepage
-    */
+     * Display the Guardbook homepage
+     */
     public function guardbookHome()
     {
 
@@ -586,7 +608,7 @@ class PageController extends Controller
 
         try {
             $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
-            //dd($results);
+            // dd($results);
             $facets = $results['facets'] ?? [];
         } catch (\Exception $e) {
             dd($e->getMessage(), $e);
@@ -601,8 +623,8 @@ class PageController extends Controller
     }
 
     /**
-    * Display the LHSA Case Notes homepage
-    */
+     * Display the LHSA Case Notes homepage
+     */
     public function lhsacasenotesHome()
     {
 
@@ -613,7 +635,7 @@ class PageController extends Controller
 
         try {
             $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
-            //dd($results);
+            // dd($results);
             $facets = $results['facets'] ?? [];
         } catch (\Exception $e) {
             dd($e->getMessage(), $e);
@@ -633,6 +655,30 @@ class PageController extends Controller
     public function artHome()
     {
         return view('art.home');
+    }
+
+    /**
+     * Display the Public Art homepage
+     */
+    public function publicArtHome()
+    {
+        return view(static::publicArtViewName('public-art.home'));
+    }
+
+    /**
+     * Display the Public Art Paolozzi Mosaic Project page
+     */
+    public function publicArtPaolozzi()
+    {
+        return view(static::publicArtViewName('public-art.pages.paolozzi'));
+    }
+
+    /**
+     * Display the Public Art "About the University Art Collections" page
+     */
+    public function publicArtArtCollection()
+    {
+        return view(static::publicArtViewName('public-art.pages.artcollection'));
     }
 
     /**
@@ -674,42 +720,52 @@ class PageController extends Controller
     {
         return view('alumni.pages.extraac');
     }
+
     public function alumniEarlyVet()
     {
         return view('alumni.pages.earlyvet');
     }
+
     public function alumniFemaleGrad()
     {
         return view('alumni.pages.femalegrad');
     }
+
     public function alumniFirstMat()
     {
         return view('alumni.pages.firstmat');
     }
+
     public function alumniMedSample()
     {
         return view('alumni.pages.medsample');
     }
+
     public function alumniNewColl()
     {
         return view('alumni.pages.newcoll');
     }
+
     public function alumniRoll()
     {
         return view('alumni.pages.roll');
     }
+
     public function alumniRosner()
     {
         return view('alumni.pages.rosner');
     }
+
     public function alumniVetGrad()
     {
         return view('alumni.pages.vetgrad');
     }
+
     public function alumniWomen()
     {
         return view('alumni.pages.women');
     }
+
     public function alumniWW1Roll()
     {
         return view('alumni.pages.ww1roll');
@@ -722,6 +778,10 @@ class PageController extends Controller
     {
         $collection = config('app.current_collection', 'clds');
         $collectionView = "{$collection}.pages.accessibility";
+
+        if ($collection === 'public-art') {
+            $collectionView = static::publicArtViewName($collectionView);
+        }
 
         return view()->exists($collectionView)
             ? view($collectionView)
