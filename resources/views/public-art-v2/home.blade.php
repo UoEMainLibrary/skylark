@@ -9,24 +9,21 @@
 <section class="border-b border-pa-ink-100 pb-12">
     <div class="grid gap-10 lg:grid-cols-12 lg:gap-12">
         <div class="lg:col-span-8">
-            <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-400">University of Edinburgh Art Collection</p>
-            <h1 class="mt-3 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">
-                Art on Campus
-            </h1>
+            <h1 class="sr-only">Art on Campus</h1>
+            <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-accent">Welcome</p>
+            <p class="mt-3 text-2xl font-light leading-snug text-pa-ink-900 sm:text-3xl">
+                Artworks from the University of Edinburgh&rsquo;s Art Collection,
+                visible across the University&rsquo;s campuses.
+            </p>
             <div class="mt-6 max-w-3xl space-y-4 text-lg leading-relaxed text-pa-ink-700">
                 <p>
-                    Artworks from the University&rsquo;s Art Collection are visible and on display throughout the University campus,
-                    including a number of externally sited sculptures and installations.
-                </p>
-                <p>
-                    Commissioned for a variety of reasons over the years, these artworks reflect and respond to the history and
-                    physical environment of the University. There are a wide range of examples &ndash; from historic memorials to
-                    contemporary creative interventions. In many cases, these are site-specific responses, where the location
-                    forms a direct part of the narrative or shape of the work.
+                    These include externally sited sculptures and installations commissioned over the years for a variety of
+                    reasons. They reflect and respond to the history and physical environment of the University &ndash; ranging
+                    from historic memorials to contemporary creative interventions, often site-specific in nature.
                 </p>
                 <p>
                     The University Art Collection manages both permanent and temporary art commissions and campus displays for
-                    University buildings and as part of research. More information about this activity is available on the
+                    University buildings and as part of research. More information is available on the
                     <a href="https://collections.ed.ac.uk/art" class="text-pa-accent underline-offset-4 hover:underline">Commission and Loans pages</a>.
                 </p>
             </div>

@@ -32,10 +32,11 @@ it('uses the v2 layout when PUBLIC_ART_SKIN_VERSION=2', function () {
 
     $this->get('/public-art')
         ->assertSuccessful()
-        ->assertSee('Coll.ed', false)
         ->assertSee('Art on Campus')
+        ->assertSee('University of Edinburgh Art Collection')
         ->assertSee('Spotlight')
-        ->assertDontSee('cb-slideshow');
+        ->assertDontSee('cb-slideshow')
+        ->assertDontSee('Coll.ed', false);
 });
 
 it('renders the v2 paolozzi page with updated content', function () {

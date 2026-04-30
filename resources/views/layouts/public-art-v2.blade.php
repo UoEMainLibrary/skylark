@@ -12,10 +12,6 @@
     <link rel="shortcut icon" href="{{ asset('collections/public-art/images/favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('collections/public-art/images/apple-touch-icon.png') }}">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
@@ -49,13 +45,11 @@
     {{-- Header --}}
     <header class="border-b border-pa-ink-100 bg-white">
         <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-            {{-- Wordmark --}}
-            <a href="{{ url('/public-art') }}" class="group inline-flex items-baseline gap-3" aria-label="Art on Campus home">
-                <span class="font-serif text-3xl font-light tracking-tight text-pa-ink-800 sm:text-4xl"
-                      style="font-family: 'Source Sans 3', serif; letter-spacing: -0.02em;">
-                    <span class="text-pa-ink-400">Coll.ed</span><span class="text-pa-ink-300">/</span><span class="font-medium text-pa-ink-800">art</span>
+            <a href="{{ url('/public-art') }}" class="group inline-block" aria-label="Art on Campus home">
+                <span class="block text-4xl font-semibold tracking-tight text-pa-ink-900 transition-colors group-hover:text-pa-accent sm:text-5xl">
+                    Art on Campus
                 </span>
-                <span class="hidden text-sm uppercase tracking-[0.25em] text-pa-ink-400 group-hover:text-pa-ink-600 sm:inline">Art on Campus</span>
+                <span class="mt-1 block text-xs uppercase tracking-[0.25em] text-pa-ink-500">University of Edinburgh Art Collection</span>
             </a>
 
             {{-- Primary nav --}}
