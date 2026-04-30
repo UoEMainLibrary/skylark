@@ -32,4 +32,18 @@
 
     --color-resp-plum: #4b2f42;
     --color-resp-navy: #163772;
+
+    --color-pa-ink-50: #f6f6f5;
+    --color-pa-ink-100: #ebebe9;
+    --color-pa-ink-200: #d6d6d2;
+    --color-pa-ink-300: #b8b8b1;
+    --color-pa-ink-400: #8a8a82;
+    --color-pa-ink-500: #5a5a52;
+    --color-pa-ink-600: #3a3a34;
+    --color-pa-ink-700: #2a2a25;
+    --color-pa-ink-800: #1a1a17;
+    --color-pa-ink-900: #0e0e0c;
+
+    --color-pa-accent: #d50032;
+    --color-pa-accent-dark: #a30024;
 }

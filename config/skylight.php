@@ -16,6 +16,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Public Art Skin Version
+    |--------------------------------------------------------------------------
+    |
+    | Controls which front-end skin is used for the Public Art / "Art on
+    | Campus" collection.
+    | Version 1: Original Bootstrap 3 / OpenSeadragon skin (Skylight migration)
+    | Version 2: Modern, accessible "Art on Campus" reskin
+    |
+    */
+
+    'public_art_skin_version' => (int) env('PUBLIC_ART_SKIN_VERSION', 1),
+
+    /*
+    |--------------------------------------------------------------------------
     | Search Results Configuration
     |--------------------------------------------------------------------------
     |

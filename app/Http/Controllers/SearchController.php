@@ -24,6 +24,12 @@ class SearchController extends Controller
             return PageController::eercViewName($collectionView);
         }
 
+        if ($collection === 'public-art') {
+            $resolved = PageController::publicArtViewName($collectionView);
+
+            return view()->exists($resolved) ? $resolved : $view;
+        }
+
         return view()->exists($collectionView) ? $collectionView : $view;
     }
 
