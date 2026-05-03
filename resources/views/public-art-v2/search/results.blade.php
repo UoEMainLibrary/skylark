@@ -64,10 +64,10 @@
 
 <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
     <div>
-        <p class="text-sm font-medium uppercase tracking-[0.2em] text-pa-ink-400">University Art Collection</p>
+        <p class="text-sm font-medium uppercase tracking-[0.2em] text-pa-ink-600">University Art Collection</p>
         <h1 class="mt-1 text-3xl font-semibold tracking-tight text-pa-ink-900 sm:text-4xl">Art on Campus</h1>
         @if($total > 0)
-            <p class="mt-2 text-sm text-pa-ink-500">{{ number_format($total) }} {{ \Illuminate\Support\Str::plural('artwork', $total) }} found.</p>
+            <p class="mt-2 text-sm text-pa-ink-700">{{ number_format($total) }} {{ \Illuminate\Support\Str::plural('artwork', $total) }} found.</p>
         @endif
     </div>
 
@@ -99,9 +99,9 @@
 @if($total === 0)
     <div class="mt-10 rounded border border-pa-ink-100 bg-white p-10 text-center">
         <h2 class="text-lg font-medium text-pa-ink-900">No artworks found</h2>
-        <p class="mt-2 text-pa-ink-500">Your search for &ldquo;{{ urldecode($query) }}&rdquo; returned no results.</p>
+        <p class="mt-2 text-pa-ink-700">Your search for &ldquo;{{ urldecode($query) }}&rdquo; returned no results.</p>
         <p class="mt-4">
-            <a href="{{ url('/public-art/search/*:*') }}" class="text-pa-accent underline-offset-4 hover:underline">Browse all artworks</a>
+            <a href="{{ url('/public-art/search/*:*') }}" class="text-pa-accent underline underline-offset-4">Browse all artworks</a>
         </p>
     </div>
 @elseif($type === 'images')
@@ -111,7 +111,7 @@
             @php
                 $title = $doc[$titleField][0] ?? 'Untitled';
                 $rawImg = $doc[$imageField][0] ?? ($doc[$altImageField][0] ?? '');
-                $imgUrl = str_replace('/full/full/', '/full/,400/', $rawImg);
+                $imgUrl = str_replace('/full/full/', '/full/!400,400/', $rawImg);
                 $artist = $doc[$artistField][0] ?? '';
                 $docId = is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? '');
             @endphp
@@ -134,7 +134,7 @@
                     <div class="mt-3">
                         <h3 class="text-sm font-medium leading-snug text-pa-ink-900 group-hover:text-pa-accent">{{ $title }}</h3>
                         @if($artist)
-                            <p class="mt-0.5 text-xs text-pa-ink-500">{{ $artist }}</p>
+                            <p class="mt-0.5 text-xs text-pa-ink-700">{{ $artist }}</p>
                         @endif
                     </div>
                 </a>
@@ -147,28 +147,73 @@
     </nav>
 @else
     {{-- Map view --}}
+    @php
+        // Build the textual location list once, in PHP, so we can use it as
+        // both the screen-reader / keyboard alternative and the JS marker source.
+        $mappedLocations = [];
+        foreach ($docs as $doc) {
+            $locStr = $doc[$locationField][0] ?? '';
+            if ($locStr === '') {
+                continue;
+            }
+            $parts = explode(',', $locStr);
+            if (count($parts) !== 2) {
+                continue;
+            }
+            $mappedLocations[] = [
+                'title' => $doc[$titleField][0] ?? 'Untitled',
+                'lat' => trim($parts[0]),
+                'lon' => trim($parts[1]),
+                'id' => is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? ''),
+                'thumb' => str_replace('/full/full/', '/full/80,/', $doc[$imageField][0] ?? ''),
+            ];
+        }
+    @endphp
+
+    {{-- Skip-map link for keyboard users (the OpenLayers map traps arrow keys) --}}
+    <a href="#map-textual-list"
+       class="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-pa-ink-800 focus:px-3 focus:py-1.5 focus:text-sm focus:text-white focus:outline-none">
+        Skip interactive map
+    </a>
+
     <div class="mt-8 overflow-hidden rounded border border-pa-ink-100 bg-white">
-        <div id="map" class="h-[70vh] min-h-[500px] w-full bg-pa-ink-50"></div>
+        <div id="map"
+             role="region"
+             aria-label="Interactive map of artworks across the University of Edinburgh campuses. A textual list of the same artworks follows below."
+             class="h-[70vh] min-h-[500px] w-full bg-pa-ink-50"></div>
     </div>
-    <p class="mt-3 text-xs text-pa-ink-500">Click a marker to view the artwork. Map data &copy; OpenStreetMap contributors.</p>
+    <p class="mt-3 text-xs text-pa-ink-700">Select a marker to view the artwork. Map data &copy; OpenStreetMap contributors.</p>
+
+    {{-- Text alternative to the map (WCAG 1.1.1 / 2.1.1 / 2.4.1) --}}
+    <section id="map-textual-list" class="mt-10" aria-labelledby="map-textual-list-heading">
+        <h2 id="map-textual-list-heading" class="text-sm font-semibold uppercase tracking-[0.2em] text-pa-ink-700">
+            Artworks on the map ({{ count($mappedLocations) }})
+        </h2>
+        <p class="mt-2 text-sm text-pa-ink-700">
+            This list mirrors every marker on the map above for keyboard and screen-reader users.
+        </p>
+        @if(count($mappedLocations) === 0)
+            <p class="mt-4 text-sm text-pa-ink-700">No artworks have mapped locations.</p>
+        @else
+            <ul role="list" class="mt-4 grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3 text-sm">
+                @foreach($mappedLocations as $loc)
+                    <li>
+                        <a href="{{ url('/public-art/record/'.$loc['id']) }}"
+                           class="text-pa-ink-800 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">
+                            {{ $loc['title'] }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+    </section>
 
     <script>
-        var locationsArray = [];
-        @foreach($docs as $doc)
-            @php
-                $title = addslashes($doc[$titleField][0] ?? 'Untitled');
-                $locStr = $doc[$locationField][0] ?? '';
-                $rawImg = $doc[$imageField][0] ?? '';
-                $thumb = str_replace('/full/full/', '/full/80,/', $rawImg);
-                $docId = is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? '');
-            @endphp
-            @if($locStr !== '')
-                @php $parts = explode(',', $locStr); @endphp
-                @if(count($parts) === 2)
-                    locationsArray.push([{{ trim($parts[1]) }}, {{ trim($parts[0]) }}, '{{ url('/public-art/record/' . $docId) }}', '{{ $title }}', '{{ $thumb }}']);
-                @endif
-            @endif
-        @endforeach
+        var locationsArray = [
+            @foreach($mappedLocations as $loc)
+                [{{ $loc['lon'] }}, {{ $loc['lat'] }}, '{{ url('/public-art/record/'.$loc['id']) }}', '{{ addslashes($loc['title']) }}', '{{ $loc['thumb'] }}'],
+            @endforeach
+        ];
     </script>
     <link rel="stylesheet" href="https://openlayers.org/en/latest/css/ol.css" type="text/css">
     <script src="{{ asset('collections/public-art/locations/bundle.js') }}"></script>

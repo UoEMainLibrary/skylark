@@ -4,7 +4,7 @@
 
 @section('content')
 <article class="mx-auto max-w-3xl">
-    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-400">University Art Collection</p>
+    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-600">University Art Collection</p>
     <h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Takedown Policy</h1>
 
     <div class="prose prose-lg mt-8 max-w-none text-pa-ink-700">
@@ -22,8 +22,11 @@
         <h2>How to make a takedown request</h2>
         <p>
             Please follow the
-            <a href="https://www.ed.ac.uk/information-services/library-museum-gallery/heritage-collections/using-the-collections/digitisation/image-licensing/takedown-policy" target="_blank" rel="noopener">University&rsquo;s
-            Takedown Policy</a> when making a request.
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://www.ed.ac.uk/information-services/library-museum-gallery/heritage-collections/using-the-collections/digitisation/image-licensing/takedown-policy',
+                'label' => 'University’s Takedown Policy',
+            ])
+            when making a request.
         </p>
         <p>
             Or contact us directly:

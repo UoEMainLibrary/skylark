@@ -4,7 +4,7 @@
 
 @section('content')
 <article class="mx-auto max-w-3xl">
-    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-400">University Art Collection</p>
+    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-600">University Art Collection</p>
     <h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Contact</h1>
 
     <div class="prose prose-lg mt-8 max-w-none text-pa-ink-700">
@@ -34,8 +34,10 @@
         <h2>Privacy</h2>
         <p>
             Any personal information you share with us will be handled in accordance with the
-            <a href="https://www.ed.ac.uk/about/website/privacy" target="_blank" rel="noopener">University&rsquo;s privacy
-            statement</a>.
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://www.ed.ac.uk/about/website/privacy',
+                'label' => 'University’s privacy statement',
+            ]).
         </p>
     </div>
 </article>

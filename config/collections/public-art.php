@@ -128,5 +128,5 @@ return array_merge($dspaceDefaults, [
     'homepage_randomitems' => false,
     'homepage_fullwidth' => true,
 
-    'ga_code' => env('PUBLIC_ART_GA_CODE', 'G-L20JS09H7H'),
+    'ga_code' => env('PUBLIC_ART_GA_CODE', 'G-GYJPCFG6QY'),
 ]);

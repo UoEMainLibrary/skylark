@@ -6,18 +6,27 @@
 
 @section('content')
 <article class="mx-auto max-w-3xl">
-    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-400">University Art Collection</p>
+    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-600">University Art Collection</p>
     <h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Paolozzi Mosaic Project</h1>
 
     {{-- Optional informational video block (no "Information video" heading per client) --}}
     <div class="mt-8 aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-        <iframe src="https://player.vimeo.com/video/258663625?title=0&amp;byline=0&amp;portrait=0"
-                title="Video about the Paolozzi Mosaic Project"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowfullscreen
+        <iframe src="https://player.vimeo.com/video/258663625?title=0&amp;byline=0&amp;portrait=0&amp;texttrack=en"
+                title="Video about the Paolozzi Mosaic Project (Vimeo)"
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                loading="lazy"
                 frameborder="0"
                 class="h-full w-full"></iframe>
     </div>
+    <p class="mt-2 text-sm text-pa-ink-700">
+        Captions are available within the video player. Use the
+        @include('public-art-v2.partials.external-link', [
+            'href' => 'https://vimeo.com/258663625',
+            'label' => 'full-page version on Vimeo',
+            'class' => 'text-pa-accent',
+        ])
+        to access player controls and any available transcript.
+    </p>
 
     <div class="prose prose-lg mt-10 max-w-none text-pa-ink-700">
         <h2>Background</h2>

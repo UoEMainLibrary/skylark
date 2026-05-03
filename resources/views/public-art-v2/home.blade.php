@@ -24,7 +24,11 @@
                 <p>
                     The University Art Collection manages both permanent and temporary art commissions and campus displays for
                     University buildings and as part of research. More information is available on the
-                    <a href="https://collections.ed.ac.uk/art" class="text-pa-accent underline-offset-4 hover:underline">Commission and Loans pages</a>.
+                    @include('public-art-v2.partials.external-link', [
+                        'href' => 'https://collections.ed.ac.uk/art',
+                        'label' => 'Commission and Loans pages',
+                        'class' => 'text-pa-accent',
+                    ]).
                 </p>
             </div>
         </div>
@@ -37,28 +41,28 @@
                     <li>
                         <a href="{{ url('/public-art/search/*:*') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
                             <span class="flex items-center gap-3">
-                                <svg class="h-5 w-5 shrink-0 text-pa-ink-400 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" /></svg>
+                                <svg class="h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" /></svg>
                                 <span>Browse all artworks</span>
                             </span>
-                            <svg class="h-4 w-4 text-pa-ink-300 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                            <svg class="h-4 w-4 text-pa-ink-500 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url('/public-art/search/*:*/?map=true') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
                             <span class="flex items-center gap-3">
-                                <svg class="h-5 w-5 shrink-0 text-pa-ink-400 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m-.75-9.75-3.75-2.25-4.5 2.25-4.5-1.5v15.75l4.5 1.5 4.5-2.25 4.5 2.25 4.5-1.5V5.25l-4.5 1.5Z" /></svg>
+                                <svg class="h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m-.75-9.75-3.75-2.25-4.5 2.25-4.5-1.5v15.75l4.5 1.5 4.5-2.25 4.5 2.25 4.5-1.5V5.25l-4.5 1.5Z" /></svg>
                                 <span>View by map</span>
                             </span>
-                            <svg class="h-4 w-4 text-pa-ink-300 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                            <svg class="h-4 w-4 text-pa-ink-500 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url('/public-art/paolozzi') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
                             <span class="flex items-center gap-3">
-                                <svg class="h-5 w-5 shrink-0 text-pa-ink-400 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A.75.75 0 0 1 4.5 6h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75ZM3.75 12a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75ZM3.75 17.25a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75Z" /></svg>
+                                <svg class="h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A.75.75 0 0 1 4.5 6h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75ZM3.75 12a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75ZM3.75 17.25a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75Z" /></svg>
                                 <span>Paolozzi Mosaic Project</span>
                             </span>
-                            <svg class="h-4 w-4 text-pa-ink-300 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                            <svg class="h-4 w-4 text-pa-ink-500 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                         </a>
                     </li>
                 </ul>
@@ -77,12 +81,21 @@
     <div class="mt-8 grid gap-10 lg:grid-cols-2 lg:items-start">
         <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
             <iframe src="https://media.ed.ac.uk/embed/secure/iframe/entryId/1_lh3jbplo/showInfo/false/showTitle/false/embedPlaceholder/true"
-                    title="Video about Ideas by Katie Paterson at the King's Buildings"
+                    title="Video about Ideas by Katie Paterson at the King's Buildings (Media Hopper)"
                     allow="autoplay *; fullscreen *; encrypted-media *"
-                    allowfullscreen
+                    loading="lazy"
                     frameborder="0"
                     class="h-full w-full"></iframe>
         </div>
+        <p class="mt-2 text-sm text-pa-ink-700">
+            Captions are available within the video player. A
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://media.ed.ac.uk/media/1_lh3jbplo',
+                'label' => 'transcript and full-page version of this video',
+                'class' => 'text-pa-accent',
+            ])
+            are available on Media Hopper.
+        </p>
 
         <div class="prose prose-lg max-w-none text-pa-ink-700">
             <p>
@@ -92,11 +105,15 @@
             </p>
             <p>
                 Find out more and explore the artwork using the accompanying digital website and map at
-                <a href="https://ideas.is.ed.ac.uk/" class="text-pa-accent" target="_blank" rel="noopener">ideas.is.ed.ac.uk</a>.
+                @include('public-art-v2.partials.external-link', [
+                    'href' => 'https://ideas.is.ed.ac.uk/',
+                    'label' => 'ideas.is.ed.ac.uk',
+                    'class' => 'text-pa-accent',
+                ]).
             </p>
             <p class="not-prose mt-4">
                 <a href="{{ url('/public-art/search/*:*') }}?q=Ideas"
-                   class="inline-flex items-center gap-2 rounded border border-pa-ink-300 px-4 py-2 text-sm font-medium text-pa-ink-700 transition-colors hover:border-pa-ink-800 hover:text-pa-ink-900">
+                   class="inline-flex items-center gap-2 rounded border border-pa-ink-400 px-4 py-2 text-sm font-medium text-pa-ink-800 transition-colors hover:border-pa-ink-800 hover:text-pa-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-pa-ink-800 focus-visible:ring-offset-2">
                     Find Ideas in the collection
                     <svg class="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                 </a>
@@ -116,26 +133,26 @@
     <div class="mt-6 grid gap-4 sm:grid-cols-2">
         <a href="https://media.ed.ac.uk/playlist/dedicated/229339282/1_4n2k0ev6/1_lh3jbplo"
            target="_blank" rel="noopener"
-           class="group flex items-start justify-between gap-4 rounded border border-pa-ink-100 bg-white p-5 transition-shadow hover:border-pa-ink-300 hover:shadow-sm">
+           class="group flex items-start justify-between gap-4 rounded border border-pa-ink-100 bg-white p-5 transition-shadow hover:border-pa-ink-400 hover:shadow-sm">
             <span class="block">
-                <span class="block text-base font-medium text-pa-ink-900 group-hover:text-pa-accent">Public Art Shorts</span>
-                <span class="mt-1 block text-sm text-pa-ink-500">Short videos on Mediahopper</span>
+                <span class="block text-base font-medium text-pa-ink-900 group-hover:text-pa-accent">Public Art Shorts<span class="sr-only"> (opens in a new tab)</span></span>
+                <span class="mt-1 block text-sm text-pa-ink-700">Short videos on Media Hopper (opens in a new tab)</span>
             </span>
-            <svg class="mt-1 h-5 w-5 shrink-0 text-pa-ink-300 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+            <svg class="mt-1 h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
         </a>
 
         <a href="https://heritage-blog.is.ed.ac.uk/category/the-collection-public-art-podcast/"
            target="_blank" rel="noopener"
-           class="group flex items-start justify-between gap-4 rounded border border-pa-ink-100 bg-white p-5 transition-shadow hover:border-pa-ink-300 hover:shadow-sm">
+           class="group flex items-start justify-between gap-4 rounded border border-pa-ink-100 bg-white p-5 transition-shadow hover:border-pa-ink-400 hover:shadow-sm">
             <span class="block">
-                <span class="block text-base font-medium text-pa-ink-900 group-hover:text-pa-accent">The Collection: Public Art Podcast</span>
-                <span class="mt-1 block text-sm text-pa-ink-500">Heritage Collections intern series</span>
+                <span class="block text-base font-medium text-pa-ink-900 group-hover:text-pa-accent">The Collection: Public Art Podcast<span class="sr-only"> (opens in a new tab)</span></span>
+                <span class="mt-1 block text-sm text-pa-ink-700">Heritage Collections intern series (opens in a new tab)</span>
             </span>
-            <svg class="mt-1 h-5 w-5 shrink-0 text-pa-ink-300 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+            <svg class="mt-1 h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
         </a>
     </div>
 
-    <p class="mt-8 text-xs text-pa-ink-400">
+    <p class="mt-8 text-xs text-pa-ink-700">
         This site was created by a student intern and the Digital Library team in 2018/9 as part of an ISG Innovation Grant.
     </p>
 </section>
