@@ -36,9 +36,17 @@
 
     {{-- Top utility bar --}}
     <div class="border-b border-pa-ink-100 bg-white">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 text-xs text-pa-ink-500 sm:px-6 lg:px-8">
-            <a href="https://www.ed.ac.uk" class="hover:text-pa-ink-800">The University of Edinburgh</a>
-            <a href="https://collections.ed.ac.uk" class="hover:text-pa-ink-800">All Collections</a>
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 text-xs text-pa-ink-600 sm:px-6 lg:px-8">
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://www.ed.ac.uk',
+                'label' => 'The University of Edinburgh',
+                'class' => 'hover:text-pa-ink-900',
+            ])
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://collections.ed.ac.uk',
+                'label' => 'All Collections',
+                'class' => 'hover:text-pa-ink-900',
+            ])
         </div>
     </div>
 
@@ -49,7 +57,7 @@
                 <span class="block text-4xl font-semibold tracking-tight text-pa-ink-900 transition-colors group-hover:text-pa-accent sm:text-5xl">
                     Art on Campus
                 </span>
-                <span class="mt-1 block text-xs uppercase tracking-[0.25em] text-pa-ink-500">University of Edinburgh Art Collection</span>
+                <span class="mt-1 block text-xs uppercase tracking-[0.25em] text-pa-ink-600">University of Edinburgh Art Collection</span>
             </a>
 
             {{-- Primary nav --}}
@@ -85,7 +93,7 @@
                            name="q"
                            value="{{ isset($searchbox_query) ? urldecode($searchbox_query) : '' }}"
                            placeholder="Search artworks, artists, locations…"
-                           class="w-full rounded border border-pa-ink-200 bg-white px-4 py-2 text-base text-pa-ink-800 placeholder-pa-ink-400 focus:border-pa-ink-600 focus:outline-none focus:ring-2 focus:ring-pa-ink-400">
+                           class="w-full rounded border border-pa-ink-400 bg-white px-4 py-2 text-base text-pa-ink-800 placeholder-pa-ink-500 focus:border-pa-ink-700 focus:outline-none focus:ring-2 focus:ring-pa-ink-700">
                     <button type="submit"
                             class="inline-flex items-center gap-2 rounded bg-pa-ink-800 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-pa-ink-700 focus:outline-none focus:ring-2 focus:ring-pa-ink-400 focus:ring-offset-2">
                         <svg class="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
@@ -107,7 +115,7 @@
             <div class="grid gap-8 md:grid-cols-3">
                 <div>
                     <h2 class="text-sm font-semibold uppercase tracking-wider text-pa-ink-700">About</h2>
-                    <p class="mt-3 text-sm leading-relaxed text-pa-ink-600">
+                    <p class="mt-3 text-sm leading-relaxed text-pa-ink-700">
                         Art on Campus is part of the University of Edinburgh Art Collection.
                         It documents artworks visible across the University&rsquo;s campuses.
                     </p>
@@ -116,34 +124,52 @@
                 <div>
                     <h2 class="text-sm font-semibold uppercase tracking-wider text-pa-ink-700">Explore</h2>
                     <ul class="mt-3 space-y-2 text-sm">
-                        <li><a href="{{ url('/public-art/search/*:*') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">Browse artworks</a></li>
-                        <li><a href="{{ url('/public-art/search/*:*/?map=true') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">View map</a></li>
-                        <li><a href="{{ url('/public-art/paolozzi') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">Paolozzi Mosaic Project</a></li>
-                        <li><a href="{{ url('/public-art/artcollection') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">University Art Collection</a></li>
+                        <li><a href="{{ url('/public-art/search/*:*') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Browse artworks</a></li>
+                        <li><a href="{{ url('/public-art/search/*:*/?map=true') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">View map</a></li>
+                        <li><a href="{{ url('/public-art/paolozzi') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Paolozzi Mosaic Project</a></li>
+                        <li><a href="{{ url('/public-art/artcollection') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">University Art Collection</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <h2 class="text-sm font-semibold uppercase tracking-wider text-pa-ink-700">Information</h2>
                     <ul class="mt-3 space-y-2 text-sm">
-                        <li><a href="{{ url('/public-art/about') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">About this site</a></li>
-                        <li><a href="{{ url('/public-art/feedback') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">Contact</a></li>
-                        <li><a href="{{ url('/public-art/licensing') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">Licensing &amp; copyright</a></li>
-                        <li><a href="{{ url('/public-art/takedown') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">Takedown policy</a></li>
-                        <li><a href="{{ url('/public-art/accessibility') }}" class="text-pa-ink-600 hover:text-pa-accent hover:underline">Accessibility</a></li>
+                        <li><a href="{{ url('/public-art/about') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">About this site</a></li>
+                        <li><a href="{{ url('/public-art/feedback') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Contact</a></li>
+                        <li><a href="{{ url('/public-art/licensing') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Licensing &amp; copyright</a></li>
+                        <li><a href="{{ url('/public-art/takedown') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Takedown policy</a></li>
+                        <li><a href="{{ url('/public-art/accessibility') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Accessibility</a></li>
                     </ul>
                 </div>
             </div>
 
-            <div class="mt-10 flex flex-col gap-4 border-t border-pa-ink-100 pt-6 text-xs text-pa-ink-500 md:flex-row md:items-center md:justify-between">
+            <div class="mt-10 flex flex-col gap-4 border-t border-pa-ink-100 pt-6 text-xs text-pa-ink-700 md:flex-row md:items-center md:justify-between">
                 <p>
                     Unless explicitly stated otherwise, all material is copyright &copy; {{ date('Y') }}
-                    <a href="https://www.ed.ac.uk" class="hover:text-pa-ink-800 hover:underline">The University of Edinburgh</a>.
+                    @include('public-art-v2.partials.external-link', [
+                        'href' => 'https://www.ed.ac.uk',
+                        'label' => 'The University of Edinburgh',
+                    ]).
                 </p>
                 <ul class="flex flex-wrap gap-x-4 gap-y-2">
-                    <li><a href="https://www.ed.ac.uk/about/website/website-terms-conditions" class="hover:text-pa-ink-800 hover:underline">Terms &amp; conditions</a></li>
-                    <li><a href="https://www.ed.ac.uk/about/website/privacy" class="hover:text-pa-ink-800 hover:underline">Privacy &amp; cookies</a></li>
-                    <li><a href="https://www.ed.ac.uk/about/website/freedom-information" class="hover:text-pa-ink-800 hover:underline">FOI Publication Scheme</a></li>
+                    <li>
+                        @include('public-art-v2.partials.external-link', [
+                            'href' => 'https://www.ed.ac.uk/about/website/website-terms-conditions',
+                            'label' => 'Terms & conditions',
+                        ])
+                    </li>
+                    <li>
+                        @include('public-art-v2.partials.external-link', [
+                            'href' => 'https://www.ed.ac.uk/about/website/privacy',
+                            'label' => 'Privacy & cookies',
+                        ])
+                    </li>
+                    <li>
+                        @include('public-art-v2.partials.external-link', [
+                            'href' => 'https://www.ed.ac.uk/about/website/freedom-information',
+                            'label' => 'FOI Publication Scheme',
+                        ])
+                    </li>
                 </ul>
             </div>
         </div>

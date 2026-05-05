@@ -4,7 +4,7 @@
 
 @section('content')
 <article class="mx-auto max-w-3xl">
-    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-400">University of Edinburgh</p>
+    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-600">University of Edinburgh</p>
     <h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">The University Art Collection</h1>
 
     <div class="prose prose-lg mt-8 max-w-none text-pa-ink-700">
@@ -26,7 +26,10 @@
         <p>
             The University Art Collection manages both permanent and temporary art commissions and campus displays for
             University buildings and as part of research. More information is available on the
-            <a href="https://collections.ed.ac.uk/art" target="_blank" rel="noopener">Commission and Loans pages</a>.
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://collections.ed.ac.uk/art',
+                'label' => 'Commission and Loans pages',
+            ]).
         </p>
 
         <h2>Contact</h2>

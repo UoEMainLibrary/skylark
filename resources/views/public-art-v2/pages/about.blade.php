@@ -4,7 +4,7 @@
 
 @section('content')
 <article class="mx-auto max-w-3xl">
-    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-400">University Art Collection</p>
+    <p class="text-sm font-medium uppercase tracking-[0.25em] text-pa-ink-600">University Art Collection</p>
     <h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">About Art on Campus</h1>
 
     <div class="prose prose-lg mt-8 max-w-none text-pa-ink-700">
@@ -23,8 +23,11 @@
         <p>
             The University Art Collection manages both permanent and temporary art commissions, and campus displays for
             University buildings and as part of research. More information about this activity is available on the
-            <a href="https://collections.ed.ac.uk/art" target="_blank" rel="noopener">Commission and Loans pages</a> at
-            collections.ed.ac.uk.
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://collections.ed.ac.uk/art',
+                'label' => 'Commission and Loans pages',
+            ])
+            at collections.ed.ac.uk.
         </p>
 
         <h2>About this site</h2>
@@ -36,7 +39,10 @@
         <h2>Centre for Research Collections</h2>
         <p>
             Further information about the
-            <a href="https://www.ed.ac.uk/visit/museums-galleries/heritage-collections" target="_blank" rel="noopener">Centre for Research Collections</a>.
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://www.ed.ac.uk/visit/museums-galleries/heritage-collections',
+                'label' => 'Centre for Research Collections',
+            ]).
         </p>
 
         <h2>Contact</h2>

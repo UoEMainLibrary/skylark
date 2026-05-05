@@ -37,7 +37,7 @@
                         @php
                             $title = $doc[$titleField][0] ?? 'Untitled';
                             $rawImg = $doc[$imageField][0] ?? ($doc[$altImageField][0] ?? '');
-                            $imgUrl = str_replace('/full/full/', '/full/,450/', $rawImg);
+                            $imgUrl = str_replace('/full/full/', '/full/!450,450/', $rawImg);
                             $docId = is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? '');
                         @endphp
                         <div class="row record">
