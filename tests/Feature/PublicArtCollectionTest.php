@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Support\PublicArtOverrides;
 
 it('serves the public-art home page at /public-art', function () {
     $this->get('/public-art')->assertSuccessful();
@@ -307,6 +308,199 @@ it('emits a skip-map link and labelled map region on V2 record pages', function 
         ->toContain('id="location-after-map"')
         ->toContain('aria-label="Interactive map showing the location of Mapped Artwork"')
         ->toContain('Approximate coordinates');
+});
+
+/**
+ * Site-wide V2 presentation overrides (label rename + browse-by-date order).
+ * Per-artwork content is managed upstream in DSpace, not in skylark.
+ */
+it('normalises browse-order lookup keys (case, whitespace, tags)', function () {
+    expect(PublicArtOverrides::lookupKey('  Rhino   head '))->toBe('rhino head')
+        ->and(PublicArtOverrides::lookupKey('<em>Ideas</em>'))->toBe('ideas')
+        ->and(PublicArtOverrides::lookupKey('The Protégé'))->toBe('the protégé');
+});
+
+it('returns curated browse-order positions, with unknown titles last', function () {
+    expect(PublicArtOverrides::browseSortKey('Ideas'))->toBe(0)
+        ->and(PublicArtOverrides::browseSortKey('Startled Horse Rising'))->toBe(25)
+        ->and(PublicArtOverrides::browseSortKey('Some Unmapped Work'))->toBe(PHP_INT_MAX)
+        ->and(PublicArtOverrides::browseSortKey(null))->toBe(PHP_INT_MAX);
+});
+
+it('relabels Format and Format Extent for the V2 metadata table', function () {
+    expect(PublicArtOverrides::labels())
+        ->toMatchArray([
+            'Format' => 'Media',
+            'Format Extent' => 'Dimensions',
+        ]);
+});
+
+it('sorts browse docs newest-first, preserving upstream order for unmapped titles', function () {
+    $docs = [
+        ['dctitleen' => ['Startled Horse Rising']],   // sort 25
+        ['dctitleen' => ['Ideas']],                    // sort 0
+        ['dctitleen' => ['Mystery Work']],             // sort PHP_INT_MAX (1st unknown)
+        ['dctitleen' => ['Canter']],                   // sort 2
+        ['dctitleen' => ['Another Mystery']],          // sort PHP_INT_MAX (2nd unknown)
+    ];
+
+    $sorted = PublicArtOverrides::sortBrowse($docs, 'dctitleen');
+    $titles = array_map(fn (array $d) => $d['dctitleen'][0], $sorted);
+
+    expect($titles)->toBe([
+        'Ideas',
+        'Canter',
+        'Startled Horse Rising',
+        'Mystery Work',
+        'Another Mystery',
+    ]);
+});
+
+it('does not rewrite per-artwork Solr field values when rendering V2', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+            'Description' => 'dc.description.en',
+        ],
+    ]);
+
+    $html = view('public-art-v2.record.show', [
+        'record' => [
+            'dctitleen' => ['Rhino head'],
+            'dccontributorauthorfullen' => ['Upstream DSpace Author'],
+            'dcdescriptionen' => ['Upstream DSpace description, rendered untouched.'],
+        ],
+        'recordTitle' => 'Rhino head',
+        'recordDisplay' => ['Title', 'Artist', 'Description'],
+    ])->render();
+
+    expect($html)
+        ->toContain('Upstream DSpace Author')
+        ->toContain('Upstream DSpace description, rendered untouched.');
+});
+
+it('applies the Format → Media and Format Extent → Dimensions rename', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Format' => 'dc.format',
+            'Format Extent' => 'dc.format.extent',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+        ],
+    ]);
+
+    $html = view('public-art-v2.record.show', [
+        'record' => [
+            'dctitleen' => ['Some Work'],
+            'dcformat' => ['bronze (metal)'],
+            'dcformatextent' => ['100cm x 100cm'],
+        ],
+        'recordTitle' => 'Some Work',
+        'recordDisplay' => ['Title', 'Format', 'Format Extent'],
+    ])->render();
+
+    expect($html)
+        ->toContain('>Media<')
+        ->toContain('>Dimensions<')
+        ->not->toContain('>Format<')
+        ->not->toContain('>Format Extent<');
+});
+
+it('appends the work year next to the title and reorders browse results', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Alt Image' => 'dc.image.primary.en',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+            'Dates' => 'dc.coverage.temporal.en',
+        ],
+    ]);
+
+    $docs = [
+        ['id' => '1', 'dctitleen' => ['Startled Horse Rising'], 'dcidentifierimageUri' => [''], 'dccoveragetemporalen' => ['1833']],
+        ['id' => '2', 'dctitleen' => ['Ideas'], 'dcidentifierimageUri' => [''], 'dccoveragetemporalen' => ['2021']],
+    ];
+
+    $html = view('public-art-v2.search.results', [
+        'docs' => $docs,
+        'total' => 2,
+        'query' => '*:*',
+        'searchbox_query' => '',
+        'base_search' => '/public-art/search/*:*',
+        'base_parameters' => '',
+        'facets' => [],
+        'highlights' => [],
+        'suggestions' => [],
+        'startRow' => 1,
+        'endRow' => 2,
+        'offset' => 0,
+        'rows' => 30,
+        'sort_by' => '',
+        'sort_options' => [],
+        'paginationLinks' => '',
+        'active_filters' => [],
+        'delimiter' => '|',
+    ])->render();
+
+    expect($html)
+        ->toContain('Ideas')
+        ->toContain('>2021<')
+        ->toContain('Startled Horse Rising')
+        ->toContain('>1833<');
+
+    // Curated order: Ideas (2021) appears before Startled Horse Rising (1833)
+    expect(strpos($html, 'Ideas'))->toBeLessThan(strpos($html, 'Startled Horse Rising'));
+});
+
+it('renders the client-revised home-page welcome copy', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $this->get('/public-art')
+        ->assertSuccessful()
+        ->assertSee('Artworks from the University of Edinburgh', false)
+        ->assertSee('visible across campus', false)
+        ->assertSee('Ranging from historic memorials to contemporary creative interventions')
+        ->assertSee('overseeing the movement and presentation of works from the')
+        ->assertSee('manages both permanent and temporary commissions')
+        ->assertSee('Commission and Loans pages');
+});
+
+it('uses the client-revised wording on the V2 paolozzi page', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $response = $this->get('/public-art/paolozzi')->assertSuccessful();
+
+    $response
+        ->assertSee('Scottish artist Eduardo Paolozzi', false)
+        ->assertSee('Nonetheless, the arches were removed')
+        ->assertSee('two critical points emerged')
+        ->assertSee('the mosaics remain a regular feature in teaching')
+        ->assertDontSee('Unfortunately, the arches were removed')
+        ->assertDontSee('two points of consensus were reached')
+        ->assertDontSee('John Bryden')
+        ->assertDontSee('The future', false);
+});
+
+it('configures the public-art-overrides config file with labels and 26 browse entries', function () {
+    $config = require config_path('public-art-overrides.php');
+
+    expect($config['labels'])->toBe(['Format' => 'Media', 'Format Extent' => 'Dimensions'])
+        ->and($config['browse_order'])->toHaveCount(26)
+        ->and($config['browse_order'][0])->toBe('Ideas')
+        ->and(end($config['browse_order']))->toBe('Startled Horse Rising')
+        ->and($config)->not->toHaveKey('records');
 });
 
 it('renders the V2 record blade end-to-end with a multi-image record', function () {

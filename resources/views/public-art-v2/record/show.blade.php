@@ -21,6 +21,11 @@
     $locationNameField = str_replace('.', '', $fieldMappings['Location'] ?? '');
     $artistField = str_replace('.', '', $fieldMappings['Artist'] ?? '');
 
+    // Site-wide V2 label rename (Format -> Media, Format Extent -> Dimensions).
+    // Per-artwork content (artist, dates, description, etc.) is managed upstream
+    // in DSpace and is rendered straight from the Solr record.
+    $labelMap = \App\Support\PublicArtOverrides::labels();
+
     $imageUris = $record[$imageUriField] ?? [];
     if (! is_array($imageUris)) {
         $imageUris = [$imageUris];
@@ -196,10 +201,23 @@
                         $value = $record[$field][0] ?? null;
                     @endphp
                     @if($value !== null && $value !== '' && $key !== 'Title')
+                        @php
+                            // Override descriptions arrive as plain text with \n\n between
+                            // paragraphs; upstream Solr values are single-line strings that
+                            // may contain inline HTML, so we only rebuild paragraphs when
+                            // the value actually contains a paragraph break.
+                            $paragraphs = preg_split('/\R\R+/', trim((string) $value)) ?: [];
+                        @endphp
                         <div class="grid grid-cols-1 gap-2 py-4 sm:grid-cols-4 sm:gap-6">
-                            <dt class="text-sm font-medium uppercase tracking-wider text-pa-ink-700">{{ $key }}</dt>
+                            <dt class="text-sm font-medium uppercase tracking-wider text-pa-ink-700">{{ $labelMap[$key] ?? $key }}</dt>
                             <dd class="prose prose-sm max-w-none text-pa-ink-800 sm:col-span-3">
-                                {!! $value !!}
+                                @if(count($paragraphs) > 1)
+                                    @foreach($paragraphs as $para)
+                                        <p>{!! nl2br(e($para)) !!}</p>
+                                    @endforeach
+                                @else
+                                    {!! $value !!}
+                                @endif
                             </dd>
                         </div>
                     @endif

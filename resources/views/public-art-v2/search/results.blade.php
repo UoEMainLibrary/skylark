@@ -58,8 +58,15 @@
     $altImageField = str_replace('.', '', $fieldMappings['Alt Image'] ?? 'dcimageprimaryen');
     $locationField = str_replace('.', '', $fieldMappings['Map Reference'] ?? 'dccoveragespatialcoorden');
     $artistField = str_replace('.', '', $fieldMappings['Artist'] ?? 'dccontributorauthorfullen');
+    $datesField = str_replace('.', '', $fieldMappings['Dates'] ?? 'dccoveragetemporalen');
 
     $type = request()->boolean('map') ? 'map' : 'images';
+
+    // For the "Browse all artworks" view (*:* / *), reorder docs newest-first
+    // using the curated browse_order list. Other queries keep Solr's order.
+    if (in_array($query, ['*:*', '*'], true)) {
+        $docs = \App\Support\PublicArtOverrides::sortBrowse($docs, $titleField);
+    }
 @endphp
 
 <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -113,12 +120,13 @@
                 $rawImg = $doc[$imageField][0] ?? ($doc[$altImageField][0] ?? '');
                 $imgUrl = str_replace('/full/full/', '/full/!400,400/', $rawImg);
                 $artist = $doc[$artistField][0] ?? '';
+                $year = $doc[$datesField][0] ?? null;
                 $docId = is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? '');
             @endphp
             <li>
                 <a href="{{ url('/public-art/record/' . $docId) }}"
                    class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-pa-ink-800 focus-visible:ring-offset-2"
-                   title="{{ $title }}">
+                   title="{{ $title }}{{ $year ? ' ' . $year : '' }}">
                     <div class="aspect-square w-full overflow-hidden bg-pa-ink-50">
                         @if($imgUrl)
                             <img src="{{ $imgUrl }}"
@@ -132,7 +140,9 @@
                         @endif
                     </div>
                     <div class="mt-3">
-                        <h3 class="text-sm font-medium leading-snug text-pa-ink-900 group-hover:text-pa-accent">{{ $title }}</h3>
+                        <h3 class="text-sm font-medium leading-snug text-pa-ink-900 group-hover:text-pa-accent">
+                            {{ $title }}@if($year) <span class="font-normal text-pa-ink-700">{{ $year }}</span>@endif
+                        </h3>
                         @if($artist)
                             <p class="mt-0.5 text-xs text-pa-ink-700">{{ $artist }}</p>
                         @endif

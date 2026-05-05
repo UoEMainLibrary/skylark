@@ -31,10 +31,10 @@
     <div class="prose prose-lg mt-10 max-w-none text-pa-ink-700">
         <h2>Background</h2>
         <p>
-            In 1979 Eduardo Paolozzi was commissioned by London Regional Transport to create a public artwork for
-            Tottenham Court Road Tube Station (TCR). Covering over 950 square metres in mosaics, Paolozzi designed an
-            artwork in images of everyday life, references to visual culture, and the locality and nearby attractions
-            like the British Museum.
+            In 1979 Scottish artist Eduardo Paolozzi (1924&ndash;2005) was commissioned by London Regional Transport to
+            create a public artwork for Tottenham Court Road Tube Station (TCR). Covering over 950 square metres in
+            mosaics, Paolozzi designed an artwork in images of everyday life, references to visual culture, and the
+            locality and nearby attractions like the British Museum.
         </p>
         <p>
             This commission included archways over the escalators going down and back up from the main entrance hall.
@@ -52,21 +52,21 @@
         </p>
         <p>
             Agreeing with contractors and structural engineers that the arches could not be retained in the new station,
-            the Paolozzi Foundation accepted that they were to be dismantled and removed. Despite this decision, led by
-            the heritage organisation 20th Century Society, the public and media protested against the removal of the
-            arches and campaigned for them to be saved. Unfortunately, the arches were removed from the station in
+            the Paolozzi Foundation accepted that they were to be dismantled and removed. Despite this decision the
+            public and media protested against the removal of the arches and, led by the heritage organisation 20th
+            Century Society, campaigned for them to be saved. Nonetheless, the arches were removed from the station in
             January 2015.
         </p>
         <p>
             With pressure from the public and 20th Century Society, TfL agreed to make plans to store fragments that
-            were deemed saveable and find them a new home.
+            were deemed saveable and to find them a new home.
         </p>
 
         <h2>Mosaic fragments</h2>
         <p>
             In February 2015 TfL made contact with the University of Edinburgh to see whether the fragments could form
-            part of the University&rsquo;s Art Collection. Following discussions, in June 2015 the University was
-            officially announced as the institution that would be gifted the remainder of mosaic fragments.
+            part of the University&rsquo;s Art Collection, and in June were officially announced as the institution
+            that would be gifted the remainder of the mosaic fragments.
         </p>
         <p>
             The University&rsquo;s Art Collection is an appropriate home. Paolozzi was from Leith and his professional
@@ -85,14 +85,13 @@
         <p>
             Although it was highly likely that not all the material had survived the removal, it was not clear how much
             was actually lost. This uncertainty determined the University&rsquo;s next steps for management of the
-            fragments. Over the next three months each fragment was photographed by John Bryden.
+            fragments, and over the next three months each fragment was photographed.
         </p>
         <p>
-            As well as providing a digital record of each fragment, this work allowed for collaborations with the School
-            of Informatics. Led by the Chair in Computer Vision, Professor Bob Fisher, and PhD student Alex Davis, this
-            collaboration set out to digitally map each fragment against the original designs using the MATLAB
-            programme. Each photograph was scanned into the image-recognition software and a matched location was
-            generated.
+            As well as providing a digital record, this work allowed for collaborations with the School of Informatics.
+            Led by the Chair in Computer Vision, Professor Bob Fisher, and PhD student Alex Davis, this collaboration
+            set out to digitally map each fragment against the original designs using the MATLAB programme. Each
+            photograph was scanned into the image-recognition software and a matched location was generated.
         </p>
         <p>
             This provided vital knowledge regarding fragment location but also complicated plans for their redisplay
@@ -108,10 +107,10 @@
             redisplay them?
         </p>
         <p>
-            Deciding what to do with the material is an exciting, challenging project for the art collection team, the
+            Deciding what to do with the material was an exciting, challenging project for the art collection team, the
             wider University and the city. In August 2016 a Public Art Officer was hired to oversee the future of the
-            project. Over ten months the Public Art Officer carried out research, ran events, developed and managed a
-            series of consultations to determine the most appropriate use for the mosaics.
+            project. Over ten months they carried out research, ran events, developed and managed a series of
+            consultations to determine the potential use(s) for the mosaics.
         </p>
         <p>
             Consultations included a number of handling sessions and a dedicated symposium in February 2017 organised by
@@ -121,18 +120,15 @@
         </p>
         <p>
             As well as forming part of the external, public consultancy around the project, this also enabled a sense of
-            ownership in the wider community for a public artwork that had come from London. Integration in teaching
-            played a key part in the University being gifted the arches; since their arrival in Edinburgh students have
-            been involved at every stage of the project. Specifically, the mosaics have been integrated into the
-            Edinburgh Collections undergraduate course.
+            ownership in the wider community for a public artwork that had come from London.
         </p>
 
         <h2>Next stages</h2>
         <p>
-            Following ten months of research, consultation and reflection, two points of consensus were reached. It was
-            agreed that, firstly, the mosaics should be redisplayed as a public artwork and, secondly, they should not
-            be remade in their entirety. Their original context in the public realm and the story of what had happened
-            to them were a key part of their identity.
+            Following this period of research, consultation and reflection, two critical points emerged. Firstly, the
+            suggestion that the mosaics should be redisplayed as a public artwork and, secondly, they should not be
+            remade in their entirety. Their original context in the public realm and the story of what had happened to
+            them were a key part of their identity.
         </p>
         <p>
             Two options were identified for their future form and use. Firstly, the fragments could be redisplayed in
@@ -158,20 +154,16 @@
             artwork &mdash; only focusing on the story of its removal from the London tube station and subsequent loss.
         </p>
         <p>
-            In order to both celebrate Paolozzi, his work and tell the arches&rsquo; story, the fragments could be
-            recreated into something new. A competition process would be organised to obtain artists&rsquo; proposals
-            for a new work, which could then be displayed on campus as part of the art collection. This second option
-            allowed for a contemporary yet loyal solution given the level of damage, the loss of original context and
-            relocation to Edinburgh.
+            In order to both celebrate Paolozzi, his work and tell the arches&rsquo; story, a secondary suggestion was
+            that the fragments could be recreated into something new. A competition process could be organised to
+            obtain artists&rsquo; proposals for a new work, which could then be displayed on campus as part of the art
+            collection. This could allow for a contemporary yet loyal solution given the level of damage, the loss of
+            original context and relocation to Edinburgh.
         </p>
-
-        <h2>The future</h2>
         <p>
-            Agreeing that the material and contextual loss were too great, the art collection team favoured the idea of
-            using the material for the creation of something new. Following this decision, the team met with the
-            Paolozzi Foundation in October 2017 to update the trustees and seek their support. At this meeting, plans
-            for a new chapter of the mosaics&rsquo; history were fully agreed upon and a competition for artists&rsquo;
-            proposals is currently being developed.
+            Though neither the &lsquo;Ghost Arch&rsquo; nor the repurposing of the fragments into a new work have been
+            realised, the mosaics remain a regular feature in teaching across the University, enabling speculative
+            conversations about ethics, copyright, artists&rsquo; rights, and art in the public realm.
         </p>
     </div>
 </article>
