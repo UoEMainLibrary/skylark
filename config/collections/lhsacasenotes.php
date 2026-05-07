@@ -35,21 +35,36 @@ return [
     'solr_base' => env('ARCHIVESSPACE_SOLR_URL', 'http://lac-archivesspace-live5.is.ed.ac.uk:8983/'),
     'link_url' => env('ARCHIVESSPACE_LINK_URL', 'https://archivesspace.collections.ed.ac.uk'),
 
-   /*
+    /*
     |--------------------------------------------------------------------------
     | Container Configuration
     |--------------------------------------------------------------------------
+    |
+    | Container IDs are wrapped in literal double-quotes because
+    | ArchivesSpaceService injects them directly into Solr `fq` clauses
+    | (e.g. `fq=resource:"/repositories/13/resources/86795"`). Without the
+    | quotes the slashes break Solr's lexer.
+    |
+    | Mirrors the legacy CodeIgniter config at
+    | skylight-local/config/lhsacasenotes.php.
     */
     'handle_prefix' => '/repositories/13/',
     'container_id' => [
-        '/repositories/15/resources/86795',
-        '/repositories/13/resources/86679',
-        '/repositories/9/resources/86697',
-
+        '"/repositories/13/resources/86795"',
+        '"/repositories/13/resources/86679"',
+        '"/repositories/9/resources/86697"',
     ],
     'container_field' => 'resource',
 
-    //deal with this $config['skylight_query_restriction'] = array('publish' => 'true');
+    /*
+    |--------------------------------------------------------------------------
+    | Query Restriction
+    |--------------------------------------------------------------------------
+    |
+    | Mirrors the legacy `skylight_query_restriction = ['publish' => 'true']`
+    | so unpublished ArchivesSpace records never leak through browse/search.
+    */
+    'query_restriction' => ['publish' => 'true'],
 
     /*
     |--------------------------------------------------------------------------
@@ -74,9 +89,9 @@ return [
         'Physical' => 'phystech',
         'Access' => 'accessrestrict',
         'Rights' => 'rights_statements',
-        'Dates' =>'dates',
+        'Dates' => 'dates',
         'Extent' => 'extents',
-        'Identifier' =>'component_id',
+        'Identifier' => 'component_id',
         'Parent' => 'parent',
         'Parent_Id' => 'parent_id',
         'Parent_Type' => 'parent_type',
@@ -242,6 +257,10 @@ return [
     |--------------------------------------------------------------------------
     | Google Analytics
     |--------------------------------------------------------------------------
+    |
+    | Defaults to the legacy production GA tag (G-L20JS09H7H) so the migrated
+    | site keeps its existing analytics property. Override with
+    | LHSACASENOTES_GA_CODE in `.env`.
     */
-    'ga_code' => env('EERC_GA_CODE', 'G-974QNLBL9Q'),
+    'ga_code' => env('LHSACASENOTES_GA_CODE', 'G-L20JS09H7H'),
 ];

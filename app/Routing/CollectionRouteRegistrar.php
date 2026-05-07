@@ -108,4 +108,76 @@ class CollectionRouteRegistrar
             ($definition['extra_routes'])();
         }
     }
+
+    /**
+     * Register standard ArchivesSpace collection routes under a URL prefix.
+     *
+     * Mirrors {@see registerDspacePrefixedCollection()} but emits only the
+     * routes that ArchivesSpace-backed collections actually use. Notable
+     * differences:
+     *
+     *  - Record route accepts an optional `{type}` segment so URIs like
+     *    `/lhsacasenotes/record/165250/archival_object` resolve to
+     *    {@see RecordController::show()} (which forwards to
+     *    `getRecordWithType()`).
+     *  - DSpace-only routes (`/mirador`, `/iiif`, `/advanced/*`) are NOT
+     *    registered.
+     *  - Bitstream proxy and image routes are gated behind `images => true`
+     *    (lhsacasenotes does not need them).
+     *
+     * @param  array{
+     *     prefix: string,
+     *     route_name: string,
+     *     home: array{0: class-string, 1: string}|Closure,
+     *     images?: bool,
+     *     feedback?: bool,
+     *     extra_routes?: Closure
+     * }  $definition
+     */
+    public static function registerArchiveSpacePrefixedCollection(array $definition): void
+    {
+        $prefix = $definition['prefix'];
+        $routeName = $definition['route_name'];
+
+        RouteFacade::prefix($prefix)->name($routeName.'.')->group(function () use ($definition): void {
+            self::registerArchiveSpaceRoutes($definition);
+        });
+    }
+
+    private static function registerArchiveSpaceRoutes(array $definition): void
+    {
+        RouteFacade::get('/', $definition['home'])->name('home');
+
+        RouteFacade::post('/redirect', [SearchController::class, 'redirect'])->name('search.redirect');
+
+        RouteFacade::get('/search/{query}/{filters?}', [SearchController::class, 'index'])
+            ->where('query', '[^/]+')
+            ->where('filters', '.*')
+            ->name('search.index');
+
+        if ($definition['images'] ?? false) {
+            RouteFacade::get('/record/{id}/{seq}/{filename}', [RecordController::class, 'proxyImage'])
+                ->where('id', '[0-9]+')
+                ->where('seq', '[0-9]+')
+                ->where('filename', '.+')
+                ->name('record.image');
+        }
+
+        RouteFacade::get('/record/{id}/{type?}', [RecordController::class, 'show'])
+            ->where('id', '[0-9]+')
+            ->name('record.show');
+
+        RouteFacade::get('/about', [PageController::class, 'about'])->name('about');
+        RouteFacade::get('/licensing', [PageController::class, 'licensing'])->name('licensing');
+        RouteFacade::get('/takedown', [PageController::class, 'takedown'])->name('takedown');
+        RouteFacade::get('/accessibility', [PageController::class, 'accessibility'])->name('accessibility');
+
+        if ($definition['feedback'] ?? false) {
+            RouteFacade::get('/feedback', [PageController::class, 'feedback'])->name('feedback');
+        }
+
+        if (isset($definition['extra_routes']) && $definition['extra_routes'] instanceof Closure) {
+            ($definition['extra_routes'])();
+        }
+    }
 }

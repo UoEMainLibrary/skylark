@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\SolrService;
 use App\View\Composers\EercNavComposer;
+use App\View\Composers\LhsacasenotesSidebarComposer;
 use App\View\Composers\OpenBooksLayoutComposer;
 use App\View\Composers\RespHomeComposer;
 use Illuminate\Support\Facades\View;
@@ -29,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.eerc-v2', EercNavComposer::class);
         View::composer('eerc-v2.home', RespHomeComposer::class);
         View::composer('layouts.openbooks', OpenBooksLayoutComposer::class);
+        View::composer('lhsacasenotes.partials.sidebar', LhsacasenotesSidebarComposer::class);
     }
 }

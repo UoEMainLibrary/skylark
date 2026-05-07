@@ -164,6 +164,20 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     },
 ]);
 
+CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
+    'prefix' => 'lhsacasenotes',
+    'route_name' => 'lhsacasenotes',
+    'home' => [PageController::class, 'lhsacasenotesHome'],
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/history', [PageController::class, 'lhsacasenotesHistory'])->name('history');
+        Route::get('/people', [PageController::class, 'lhsacasenotesPeople'])->name('people');
+        Route::get('/tuberculosis', [PageController::class, 'lhsacasenotesTuberculosis'])->name('tuberculosis');
+        Route::get('/achievements', [PageController::class, 'lhsacasenotesAchievements'])->name('achievements');
+        Route::get('/catalogues', [PageController::class, 'lhsacasenotesCatalogues'])->name('catalogues');
+    },
+]);
+
 // EERC Sub-Collection Routes
 Route::prefix('eerc')->name('eerc.')->group(function () {
     // EERC Homepage

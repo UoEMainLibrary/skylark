@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\DSpaceService;
 use App\Services\RepositoryFactory;
 use App\Support\CollectionUrl;
+use App\View\Composers\LhsacasenotesSidebarComposer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -623,30 +624,41 @@ class PageController extends Controller
     }
 
     /**
-     * Display the LHSA Case Notes homepage
+     * Display the LHSA Case Notes homepage.
+     *
+     * Sidebar facets (Subject + Person) are injected by
+     * {@see LhsacasenotesSidebarComposer} on
+     * `layouts.lhsacasenotes`, so this action only needs to provide
+     * the page-specific data.
      */
     public function lhsacasenotesHome()
     {
+        return view('lhsacasenotes.home');
+    }
 
-        $repository = $this->repositoryFactory->current();
-        $facets = [];
-        $baseSearch = CollectionUrl::url('search/*:*');
-        $configFilters = config('skylight.filters', []);
+    public function lhsacasenotesHistory()
+    {
+        return view('lhsacasenotes.pages.history');
+    }
 
-        try {
-            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
-            // dd($results);
-            $facets = $results['facets'] ?? [];
-        } catch (\Exception $e) {
-            dd($e->getMessage(), $e);
-        }
+    public function lhsacasenotesPeople()
+    {
+        return view('lhsacasenotes.pages.people');
+    }
 
-        return view('lhsacasenotes.home', [
-            'facets' => $facets,
-            'base_search' => $baseSearch,
-            'base_parameters' => '',
-            'delimiter' => config('skylight.filter_delimiter'),
-        ]);
+    public function lhsacasenotesTuberculosis()
+    {
+        return view('lhsacasenotes.pages.tuberculosis');
+    }
+
+    public function lhsacasenotesAchievements()
+    {
+        return view('lhsacasenotes.pages.achievements');
+    }
+
+    public function lhsacasenotesCatalogues()
+    {
+        return view('lhsacasenotes.pages.catalogues');
     }
 
     /**
