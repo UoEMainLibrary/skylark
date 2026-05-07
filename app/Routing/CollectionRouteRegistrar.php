@@ -24,6 +24,7 @@ class CollectionRouteRegistrar
      *     mirador_view: string,
      *     iiif?: array{0: class-string, 1: string},
      *     feedback?: bool,
+     *     about?: array{0: class-string, 1: string}|Closure,
      *     extra_routes?: Closure
      * }  $definition
      */
@@ -90,7 +91,8 @@ class CollectionRouteRegistrar
         $named(RouteFacade::get('/advanced/search/{filters?}', [SearchController::class, 'advancedSearch'])
             ->where('filters', '.*'), 'advanced.search');
 
-        $named(RouteFacade::get('/about', [PageController::class, 'about']), 'about');
+        $aboutAction = $definition['about'] ?? [PageController::class, 'about'];
+        $named(RouteFacade::get('/about', $aboutAction), 'about');
 
         if (isset($definition['iiif'])) {
             $named(RouteFacade::get('/iiif', $definition['iiif']), 'iiif');

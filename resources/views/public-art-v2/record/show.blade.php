@@ -84,9 +84,9 @@
 {{-- Breadcrumb / back nav --}}
 <nav class="mb-6 text-sm" aria-label="Breadcrumb">
     <ol class="flex flex-wrap items-center gap-2 text-pa-ink-700">
-        <li><a href="{{ url('/public-art') }}" class="underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-ink-900 hover:decoration-pa-accent">Art on Campus</a></li>
+        <li><a href="{{ url('/art-on-campus') }}" class="underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-ink-900 hover:decoration-pa-accent">Art on Campus</a></li>
         <li aria-hidden="true">&rsaquo;</li>
-        <li><a href="{{ url('/public-art/search/*:*') }}" class="underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-ink-900 hover:decoration-pa-accent">Browse</a></li>
+        <li><a href="{{ url('/art-on-campus/search/*:*') }}" class="underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-ink-900 hover:decoration-pa-accent">Browse</a></li>
         <li aria-hidden="true">&rsaquo;</li>
         <li class="text-pa-ink-900" aria-current="page">{{ $recordTitle }}</li>
     </ol>
@@ -226,12 +226,12 @@
         </section>
 
         <div class="mt-10 flex flex-wrap gap-3">
-            <a href="{{ url('/public-art/search/*:*') }}"
+            <a href="{{ url('/art-on-campus/search/*:*') }}"
                class="inline-flex items-center gap-2 rounded border border-pa-ink-400 px-4 py-2 text-sm font-medium text-pa-ink-800 transition-colors hover:border-pa-ink-800 hover:text-pa-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-pa-ink-800 focus-visible:ring-offset-2">
                 <svg class="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
                 Back to all artworks
             </a>
-            <a href="{{ url('/public-art/search/*:*/?map=true') }}"
+            <a href="{{ url('/art-on-campus/search/*:*/?map=true') }}"
                class="inline-flex items-center gap-2 rounded border border-pa-ink-400 px-4 py-2 text-sm font-medium text-pa-ink-800 transition-colors hover:border-pa-ink-800 hover:text-pa-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-pa-ink-800 focus-visible:ring-offset-2">
                 <svg class="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m-.75-9.75-3.75-2.25-4.5 2.25-4.5-1.5v15.75l4.5 1.5 4.5-2.25 4.5 2.25 4.5-1.5V5.25l-4.5 1.5Z" /></svg>
                 View map of all artworks

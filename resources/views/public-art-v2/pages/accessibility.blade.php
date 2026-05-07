@@ -10,7 +10,7 @@
     <div class="prose prose-lg mt-8 max-w-none text-pa-ink-700">
         <p>
             This accessibility statement applies to the <em>Art on Campus</em> website at
-            <a href="{{ url('/public-art') }}">{{ rtrim(url('/'), '/') }}/public-art</a>.
+            <a href="{{ url('/art-on-campus') }}">{{ rtrim(url('/'), '/') }}/art-on-campus</a>.
         </p>
         <p>
             This website is run by the Library and University Collections Directorate,
