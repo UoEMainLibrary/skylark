@@ -43,13 +43,21 @@ it('uses the v2 layout when PUBLIC_ART_SKIN_VERSION=2', function () {
 it('renders the v2 paolozzi page with updated content', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
+    // Note: the V2 navigation still links to "Paolozzi Mosaic Project" because
+    // that label is sourced from DSpace and is being updated separately. The
+    // assertion below intentionally only covers the page H1, browser title and
+    // meta description, all of which are owned by this Blade view.
     $this->get('/public-art/paolozzi')
         ->assertSuccessful()
-        ->assertSee('Paolozzi Mosaic Project')
+        ->assertSee('<h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Paolozzi Mosaics</h1>', false)
+        ->assertSee('<title>Paolozzi Mosaics | Art on Campus</title>', false)
         ->assertSee('Tottenham Court Road')
         ->assertDontSee('Information video')
         ->assertSee('player.vimeo.com/video/170003917', false)
-        ->assertSee('vimeo.com/170003917', false);
+        ->assertSee('vimeo.com/170003917', false)
+        // Mosaic fragment images displayed at the top of the page.
+        ->assertSee('paolozzi/tcr-fragment-4.jpg', false)
+        ->assertSee('paolozzi/0069748c.jpg', false);
 });
 
 it('switches to v2 views when public_art_skin_version is 2', function () {
@@ -485,14 +493,45 @@ it('uses the client-revised wording on the V2 paolozzi page', function () {
     $response = $this->get('/public-art/paolozzi')->assertSuccessful();
 
     $response
+        // Renamed section headings.
+        ->assertSee('Renovation plans')
+        ->assertSee('Coming to Edinburgh')
+        ->assertSee('A Rich Case Study and Future Steps')
+        ->assertSee('The Future')
+        ->assertDontSee('Restoration plans')
+        ->assertDontSee('Mosaic fragments')
+        ->assertDontSee('Next stages')
+        // Background paragraph: trimmed to the new short version.
+        ->assertSee('Across two structures, there were six archways in total')
+        ->assertDontSee('watch straps')
+        ->assertDontSee('Egyptian panel')
+        // Renovation plans: consolidated wording.
+        ->assertSee('deemed unretainable by contractors and structural', false)
+        ->assertSee('public and media opposed the removal of the arches')
+        ->assertDontSee('Agreeing with contractors and structural engineers')
+        ->assertDontSee('the public and media protested')
+        // Coming to Edinburgh: rewritten opener, no February 2015 date.
+        ->assertSee('TfL made contact with the University of Edinburgh')
+        ->assertSee('Following discussions, in June 2015')
+        ->assertSee('hundreds of fragments arrived in Edinburgh')
+        ->assertDontSee('In February 2015 TfL')
+        ->assertDontSee('over 600 fragments')
+        ->assertDontSee('in the north at Edinburgh College of Art')
+        // Conundrum: typo fix on "compiled" and unchanged %.
+        ->assertSee('compiled data and images')
+        ->assertDontSee('complied data and images')
+        // Future Steps: reverted wording from previous round.
+        ->assertSee('two points of consensus were reached')
+        ->assertDontSee('two critical points emerged')
+        // The Future section: brand new closing paragraph replaces the old one.
+        ->assertSee('met with the Paolozzi Foundation in October 2017')
+        ->assertSee('a competition for artists', false)
+        ->assertDontSee('the mosaics remain a regular feature in teaching')
+        // Sanity carry-overs from the previous edit.
         ->assertSee('Scottish artist Eduardo Paolozzi', false)
         ->assertSee('Nonetheless, the arches were removed')
-        ->assertSee('two critical points emerged')
-        ->assertSee('the mosaics remain a regular feature in teaching')
         ->assertDontSee('Unfortunately, the arches were removed')
-        ->assertDontSee('two points of consensus were reached')
-        ->assertDontSee('John Bryden')
-        ->assertDontSee('The future', false);
+        ->assertDontSee('John Bryden');
 });
 
 it('configures the public-art-overrides config file with labels and 26 browse entries', function () {
