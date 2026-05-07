@@ -86,7 +86,11 @@ return [
         'alumni' => 'alumni',
         'cockburn' => 'cockburn',
         'stcecilias' => 'stcecilias',
-        'public-art' => 'public-art',
+        // Routes for the Public Art collection live under /art-on-campus (P004,
+        // 2026 client edits) but the per-collection config still ships as
+        // config/collections/public-art.php; map the new URL segment back to
+        // that config key so middleware keeps loading the right settings.
+        'art-on-campus' => 'public-art',
         'lhsacasenotes' => 'lhsacasenotes',
         'towardsdolly' => 'towardsdolly',
         'speccoll' => 'speccoll',

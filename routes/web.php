@@ -153,11 +153,16 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
-    'prefix' => 'public-art',
+    'prefix' => 'art-on-campus',
     'route_name' => 'public-art',
     'home' => [PageController::class, 'publicArtHome'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
+    // The About page content has been folded into the home page (see P002/P005
+    // of the 2026 client edits), so /art-on-campus/about now 301-redirects to
+    // the home page. Old bookmarks keep working, the named `public-art.about`
+    // route still resolves, and the standalone About blade has been deleted.
+    'about' => fn () => redirect('/art-on-campus', 301),
     'extra_routes' => function () {
         Route::get('/paolozzi', [PageController::class, 'publicArtPaolozzi'])->name('paolozzi');
         Route::get('/artcollection', [PageController::class, 'publicArtArtCollection'])->name('artcollection');

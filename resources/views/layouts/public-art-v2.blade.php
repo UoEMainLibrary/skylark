@@ -53,7 +53,7 @@
     {{-- Header --}}
     <header class="border-b border-pa-ink-100 bg-white">
         <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-            <a href="{{ url('/public-art') }}" class="group inline-block" aria-label="Art on Campus home">
+            <a href="{{ url('/art-on-campus') }}" class="group inline-block" aria-label="Art on Campus home">
                 <span class="block text-4xl font-semibold tracking-tight text-pa-ink-900 transition-colors group-hover:text-pa-accent sm:text-5xl">
                     Art on Campus
                 </span>
@@ -63,12 +63,15 @@
             {{-- Primary nav --}}
             <nav aria-label="Primary navigation" class="flex flex-wrap items-center gap-1 text-sm">
                 @php
+                    // The "About" tab has been folded into the home page (P002/P005); the
+                    // wider University Art Collection now sits in the primary nav and links
+                    // out to the broader catalogue at /art.
                     $navItems = [
-                        ['url' => url('/public-art'), 'label' => 'Home'],
-                        ['url' => url('/public-art/search/*:*'), 'label' => 'Browse artworks'],
-                        ['url' => url('/public-art/search/*:*/?map=true'), 'label' => 'Map'],
-                        ['url' => url('/public-art/paolozzi'), 'label' => 'Paolozzi Project'],
-                        ['url' => url('/public-art/about'), 'label' => 'About'],
+                        ['url' => url('/art-on-campus'), 'label' => 'Home'],
+                        ['url' => url('/art-on-campus/search/*:*'), 'label' => 'Browse artworks'],
+                        ['url' => url('/art-on-campus/search/*:*/?map=true'), 'label' => 'Map'],
+                        ['url' => url('/art-on-campus/paolozzi'), 'label' => 'Paolozzi Mosaics'],
+                        ['url' => url('/art'), 'label' => 'University Art Collection'],
                     ];
                 @endphp
                 @foreach($navItems as $item)
@@ -85,7 +88,7 @@
         {{-- Search --}}
         <div class="border-t border-pa-ink-100 bg-pa-ink-50">
             <div class="mx-auto max-w-6xl px-4 py-3 sm:px-6 lg:px-8">
-                <form action="{{ url('/public-art/redirect') }}" method="post" role="search" class="flex items-center gap-2">
+                <form action="{{ url('/art-on-campus/redirect') }}" method="post" role="search" class="flex items-center gap-2">
                     @csrf
                     <label for="site-search" class="sr-only">Search the Art on Campus collection</label>
                     <input type="text"
@@ -124,21 +127,20 @@
                 <div>
                     <h2 class="text-sm font-semibold uppercase tracking-wider text-pa-ink-700">Explore</h2>
                     <ul class="mt-3 space-y-2 text-sm">
-                        <li><a href="{{ url('/public-art/search/*:*') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Browse artworks</a></li>
-                        <li><a href="{{ url('/public-art/search/*:*/?map=true') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">View map</a></li>
-                        <li><a href="{{ url('/public-art/paolozzi') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Paolozzi Mosaic Project</a></li>
-                        <li><a href="{{ url('/public-art/artcollection') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">University Art Collection</a></li>
+                        <li><a href="{{ url('/art-on-campus/search/*:*') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Browse artworks</a></li>
+                        <li><a href="{{ url('/art-on-campus/search/*:*/?map=true') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">View map</a></li>
+                        <li><a href="{{ url('/art-on-campus/paolozzi') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Paolozzi Mosaics</a></li>
+                        <li><a href="{{ url('/art') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">University Art Collection</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <h2 class="text-sm font-semibold uppercase tracking-wider text-pa-ink-700">Information</h2>
                     <ul class="mt-3 space-y-2 text-sm">
-                        <li><a href="{{ url('/public-art/about') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">About this site</a></li>
-                        <li><a href="{{ url('/public-art/feedback') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Contact</a></li>
-                        <li><a href="{{ url('/public-art/licensing') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Licensing &amp; copyright</a></li>
-                        <li><a href="{{ url('/public-art/takedown') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Takedown policy</a></li>
-                        <li><a href="{{ url('/public-art/accessibility') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Accessibility</a></li>
+                        <li><a href="{{ url('/art-on-campus/feedback') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Contact</a></li>
+                        <li><a href="{{ url('/art-on-campus/licensing') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Licensing &amp; copyright</a></li>
+                        <li><a href="{{ url('/art-on-campus/takedown') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Takedown policy</a></li>
+                        <li><a href="{{ url('/art-on-campus/accessibility') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Accessibility</a></li>
                     </ul>
                 </div>
             </div>

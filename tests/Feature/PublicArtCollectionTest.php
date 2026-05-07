@@ -3,14 +3,13 @@
 use App\Http\Controllers\PageController;
 use App\Support\PublicArtOverrides;
 
-it('serves the public-art home page at /public-art', function () {
-    $this->get('/public-art')->assertSuccessful();
+it('serves the Art on Campus home page at /art-on-campus', function () {
+    $this->get('/art-on-campus')->assertSuccessful();
 });
 
-it('serves public-art static pages', function (string $path) {
-    $this->get("/public-art/{$path}")->assertSuccessful();
+it('serves Art on Campus static pages', function (string $path) {
+    $this->get("/art-on-campus/{$path}")->assertSuccessful();
 })->with([
-    'about',
     'licensing',
     'accessibility',
     'takedown',
@@ -19,10 +18,21 @@ it('serves public-art static pages', function (string $path) {
     'feedback',
 ]);
 
+it('returns 404 for the legacy /public-art prefix', function () {
+    $this->get('/public-art')->assertNotFound();
+});
+
+it('redirects /art-on-campus/about to the home page', function () {
+    $response = $this->get('/art-on-campus/about');
+
+    $response->assertStatus(301);
+    $response->assertRedirect('/art-on-campus');
+});
+
 it('uses the v1 layout by default', function () {
     config(['skylight.public_art_skin_version' => 1]);
 
-    $this->get('/public-art')
+    $this->get('/art-on-campus')
         ->assertSuccessful()
         ->assertSee('cb-slideshow', false)
         ->assertSee('Search art on campus');
@@ -31,7 +41,7 @@ it('uses the v1 layout by default', function () {
 it('uses the v2 layout when PUBLIC_ART_SKIN_VERSION=2', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
-    $this->get('/public-art')
+    $this->get('/art-on-campus')
         ->assertSuccessful()
         ->assertSee('Art on Campus')
         ->assertSee('University of Edinburgh Art Collection')
@@ -47,7 +57,7 @@ it('renders the v2 paolozzi page with updated content', function () {
     // that label is sourced from DSpace and is being updated separately. The
     // assertion below intentionally only covers the page H1, browser title and
     // meta description, all of which are owned by this Blade view.
-    $this->get('/public-art/paolozzi')
+    $this->get('/art-on-campus/paolozzi')
         ->assertSuccessful()
         ->assertSee('<h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Paolozzi Mosaics</h1>', false)
         ->assertSee('<title>Paolozzi Mosaics | Art on Campus</title>', false)
@@ -80,7 +90,7 @@ it('renders the Public Art Google Analytics tag on both skin versions', function
         'skylight.ga_code' => 'G-GYJPCFG6QY',
     ]);
 
-    $this->get('/public-art')
+    $this->get('/art-on-campus')
         ->assertSuccessful()
         ->assertSee('G-GYJPCFG6QY')
         ->assertSee('https://www.googletagmanager.com/gtag/js', false);
@@ -140,7 +150,6 @@ it('discloses every public-art-v2 external link as opening in a new tab', functi
     'layouts/public-art-v2.blade.php',
     'public-art-v2/home.blade.php',
     'public-art-v2/record/show.blade.php',
-    'public-art-v2/pages/about.blade.php',
     'public-art-v2/pages/accessibility.blade.php',
     'public-art-v2/pages/artcollection.blade.php',
     'public-art-v2/pages/feedback.blade.php',
@@ -260,7 +269,7 @@ it('keeps the V2 ink/accent palette WCAG-compliant against white and ink-50', fu
 it('aligns the V2 accessibility statement with the official policy contacts and structure', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
-    $response = $this->get('/public-art/accessibility')->assertSuccessful();
+    $response = $this->get('/art-on-campus/accessibility')->assertSuccessful();
 
     $response
         ->assertSee('Accessibility statement for Art on Campus')
@@ -448,7 +457,7 @@ it('appends the work year next to the title and reorders browse results', functi
         'total' => 2,
         'query' => '*:*',
         'searchbox_query' => '',
-        'base_search' => '/public-art/search/*:*',
+        'base_search' => '/art-on-campus/search/*:*',
         'base_parameters' => '',
         'facets' => [],
         'highlights' => [],
@@ -477,7 +486,7 @@ it('appends the work year next to the title and reorders browse results', functi
 it('renders the client-revised home-page welcome copy', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
-    $this->get('/public-art')
+    $this->get('/art-on-campus')
         ->assertSuccessful()
         ->assertSee('Artworks from the University of Edinburgh', false)
         ->assertSee('visible across campus', false)
@@ -490,7 +499,7 @@ it('renders the client-revised home-page welcome copy', function () {
 it('uses the client-revised wording on the V2 paolozzi page', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
-    $response = $this->get('/public-art/paolozzi')->assertSuccessful();
+    $response = $this->get('/art-on-campus/paolozzi')->assertSuccessful();
 
     $response
         // Renamed section headings.
@@ -542,6 +551,80 @@ it('configures the public-art-overrides config file with labels and 26 browse en
         ->and($config['browse_order'][0])->toBe('Ideas')
         ->and(end($config['browse_order']))->toBe('Startled Horse Rising')
         ->and($config)->not->toHaveKey('records');
+});
+
+it('shows the Ideas spotlight image and credit line on the V2 home page', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $this->get('/art-on-campus')
+        ->assertSuccessful()
+        ->assertSee('collections/public-art/images/spotlight/ideas-2021-john-mckenzie.jpg', false)
+        ->assertSee('Photography by John McKenzie')
+        ->assertSee('Micro water-jet cut stainless steel');
+});
+
+it('shows the Edinburgh Runestone block in the More Information section on the V2 home page', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $this->get('/art-on-campus')
+        ->assertSuccessful()
+        ->assertSee('Edinburgh Runestone')
+        ->assertSee('on loan from National Museum of Scotland')
+        ->assertSee('https://www.ssns.org.uk/news/update-on-the-edinburgh-runestone/', false)
+        ->assertSee('https://www.socantscot.org/wp-content/uploads/2018/04/Runestone-0703-FINAL-web.pdf', false);
+});
+
+it('shows the Heritage Collections / CRC block and contact address on the V2 home page', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $this->get('/art-on-campus')
+        ->assertSuccessful()
+        ->assertSee('Heritage Collections and Centre for Research Collections')
+        ->assertSee('https://www.ed.ac.uk/visit/museums-galleries/heritage-collections', false)
+        ->assertSee('Centre for Research Collections')
+        ->assertSee('EH8 9LJ')
+        ->assertSee('+44 (0)131 650 8379')
+        ->assertSee('HeritageCollections@ed.ac.uk', false);
+});
+
+it('no longer renders the student-intern footnote on the V2 home page', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $this->get('/art-on-campus')
+        ->assertSuccessful()
+        ->assertDontSee('created by a student intern')
+        ->assertDontSee('ISG Innovation Grant');
+});
+
+it('shows the renamed Paolozzi nav label and the new University Art Collection link in the V2 layout', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $response = $this->get('/art-on-campus')->assertSuccessful();
+
+    $response
+        ->assertSee('Paolozzi Mosaics')
+        ->assertSee('University Art Collection')
+        ->assertSee('href="'.url('/art').'"', false)
+        ->assertDontSee('Paolozzi Project')
+        ->assertDontSee('Paolozzi Mosaic Project');
+});
+
+it('drops the standalone About entry from the V2 primary nav', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $response = $this->get('/art-on-campus')->assertSuccessful();
+
+    expect($response->getContent())
+        ->not->toContain('href="'.url('/art-on-campus/about').'"');
+});
+
+it('renders the All Collections utility bar on the /art page header', function () {
+    $response = $this->get('/art')->assertSuccessful();
+
+    $response
+        ->assertSee('All Collections')
+        ->assertSee('https://collections.ed.ac.uk', false)
+        ->assertSee('https://www.ed.ac.uk', false);
 });
 
 it('renders the V2 record blade end-to-end with a multi-image record', function () {

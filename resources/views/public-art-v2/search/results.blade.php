@@ -108,7 +108,7 @@
         <h2 class="text-lg font-medium text-pa-ink-900">No artworks found</h2>
         <p class="mt-2 text-pa-ink-700">Your search for &ldquo;{{ urldecode($query) }}&rdquo; returned no results.</p>
         <p class="mt-4">
-            <a href="{{ url('/public-art/search/*:*') }}" class="text-pa-accent underline underline-offset-4">Browse all artworks</a>
+            <a href="{{ url('/art-on-campus/search/*:*') }}" class="text-pa-accent underline underline-offset-4">Browse all artworks</a>
         </p>
     </div>
 @elseif($type === 'images')
@@ -124,7 +124,7 @@
                 $docId = is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? '');
             @endphp
             <li>
-                <a href="{{ url('/public-art/record/' . $docId) }}"
+                <a href="{{ url('/art-on-campus/record/' . $docId) }}"
                    class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-pa-ink-800 focus-visible:ring-offset-2"
                    title="{{ $title }}{{ $year ? ' ' . $year : '' }}">
                     <div class="aspect-square w-full overflow-hidden bg-pa-ink-50">
@@ -208,7 +208,7 @@
             <ul role="list" class="mt-4 grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3 text-sm">
                 @foreach($mappedLocations as $loc)
                     <li>
-                        <a href="{{ url('/public-art/record/'.$loc['id']) }}"
+                        <a href="{{ url('/art-on-campus/record/'.$loc['id']) }}"
                            class="text-pa-ink-800 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">
                             {{ $loc['title'] }}
                         </a>
@@ -221,7 +221,7 @@
     <script>
         var locationsArray = [
             @foreach($mappedLocations as $loc)
-                [{{ $loc['lon'] }}, {{ $loc['lat'] }}, '{{ url('/public-art/record/'.$loc['id']) }}', '{{ addslashes($loc['title']) }}', '{{ $loc['thumb'] }}'],
+                [{{ $loc['lon'] }}, {{ $loc['lat'] }}, '{{ url('/art-on-campus/record/'.$loc['id']) }}', '{{ addslashes($loc['title']) }}', '{{ $loc['thumb'] }}'],
             @endforeach
         ];
     </script>

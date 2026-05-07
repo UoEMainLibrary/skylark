@@ -40,7 +40,7 @@
                 <h2 class="text-sm font-semibold uppercase tracking-[0.2em] text-pa-ink-700">Explore</h2>
                 <ul class="mt-4 divide-y divide-pa-ink-100 text-base">
                     <li>
-                        <a href="{{ url('/public-art/search/*:*') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
+                        <a href="{{ url('/art-on-campus/search/*:*') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
                             <span class="flex items-center gap-3">
                                 <svg class="h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" /></svg>
                                 <span>Browse all artworks</span>
@@ -49,7 +49,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/public-art/search/*:*/?map=true') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
+                        <a href="{{ url('/art-on-campus/search/*:*/?map=true') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
                             <span class="flex items-center gap-3">
                                 <svg class="h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m-.75-9.75-3.75-2.25-4.5 2.25-4.5-1.5v15.75l4.5 1.5 4.5-2.25 4.5 2.25 4.5-1.5V5.25l-4.5 1.5Z" /></svg>
                                 <span>View by map</span>
@@ -58,10 +58,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/public-art/paolozzi') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
+                        <a href="{{ url('/art-on-campus/paolozzi') }}" class="group flex items-center justify-between py-3 text-pa-ink-800 hover:text-pa-accent">
                             <span class="flex items-center gap-3">
                                 <svg class="h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A.75.75 0 0 1 4.5 6h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75ZM3.75 12a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75ZM3.75 17.25a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75Z" /></svg>
-                                <span>Paolozzi Mosaic Project</span>
+                                <span>Paolozzi Mosaics</span>
                             </span>
                             <svg class="h-4 w-4 text-pa-ink-500 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                         </a>
@@ -80,23 +80,37 @@
     </h2>
 
     <div class="mt-8 grid gap-10 lg:grid-cols-2 lg:items-start">
-        <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-            <iframe src="https://media.ed.ac.uk/embed/secure/iframe/entryId/1_lh3jbplo/showInfo/false/showTitle/false/embedPlaceholder/true"
-                    title="Video about Ideas by Katie Paterson at the King's Buildings (Media Hopper)"
-                    allow="autoplay *; fullscreen *; encrypted-media *"
-                    loading="lazy"
-                    frameborder="0"
-                    class="h-full w-full"></iframe>
+        <div class="space-y-4">
+            {{-- Installation photograph supplied by the client (P003 / 2026 edits). --}}
+            <figure class="overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
+                <img src="{{ asset('collections/public-art/images/spotlight/ideas-2021-john-mckenzie.jpg') }}"
+                     alt="Installation view of an Idea by Katie Paterson at the King's Buildings: three short lines of metal text reading 'A fountain drawing water from each ocean's deepest point' fixed to a stone wall, framed by leaves."
+                     loading="lazy"
+                     class="h-auto w-full" />
+                <figcaption class="px-3 py-2 text-xs text-pa-ink-700">
+                    Installation shot, <em>Ideas</em> (2021) by Katie Paterson at The King&rsquo;s Buildings campus.
+                    Micro water-jet cut stainless steel. Photography by John McKenzie.
+                </figcaption>
+            </figure>
+
+            <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
+                <iframe src="https://media.ed.ac.uk/embed/secure/iframe/entryId/1_lh3jbplo/showInfo/false/showTitle/false/embedPlaceholder/true"
+                        title="Video about Ideas by Katie Paterson at the King's Buildings (Media Hopper)"
+                        allow="autoplay *; fullscreen *; encrypted-media *"
+                        loading="lazy"
+                        frameborder="0"
+                        class="h-full w-full"></iframe>
+            </div>
+            <p class="text-sm text-pa-ink-700">
+                Captions are available within the video player. A
+                @include('public-art-v2.partials.external-link', [
+                    'href' => 'https://media.ed.ac.uk/media/1_lh3jbplo',
+                    'label' => 'transcript and full-page version of this video',
+                    'class' => 'text-pa-accent',
+                ])
+                are available on Media Hopper.
+            </p>
         </div>
-        <p class="mt-2 text-sm text-pa-ink-700">
-            Captions are available within the video player. A
-            @include('public-art-v2.partials.external-link', [
-                'href' => 'https://media.ed.ac.uk/media/1_lh3jbplo',
-                'label' => 'transcript and full-page version of this video',
-                'class' => 'text-pa-accent',
-            ])
-            are available on Media Hopper.
-        </p>
 
         <div class="prose prose-lg max-w-none text-pa-ink-700">
             <p>
@@ -113,7 +127,7 @@
                 ]).
             </p>
             <p class="not-prose mt-4">
-                <a href="{{ url('/public-art/search/*:*') }}?q=Ideas"
+                <a href="{{ url('/art-on-campus/search/*:*') }}?q=Ideas"
                    class="inline-flex items-center gap-2 rounded border border-pa-ink-400 px-4 py-2 text-sm font-medium text-pa-ink-800 transition-colors hover:border-pa-ink-800 hover:text-pa-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-pa-ink-800 focus-visible:ring-offset-2">
                     Find Ideas in the collection
                     <svg class="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
@@ -153,8 +167,50 @@
         </a>
     </div>
 
-    <p class="mt-8 text-xs text-pa-ink-700">
-        This site was created by a student intern and the Digital Library team in 2018/9 as part of an ISG Innovation Grant.
+    {{-- Edinburgh Runestone, on loan from National Museum of Scotland (P007 / 2026 edits). --}}
+    <div class="mt-8 max-w-3xl">
+        <h3 class="text-lg font-semibold text-pa-ink-900">Edinburgh Runestone</h3>
+        <p class="mt-2 text-pa-ink-700">
+            Explore the Edinburgh Runestone, on loan from National Museum of Scotland, on campus. More information is
+            available at the
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://www.ssns.org.uk/news/update-on-the-edinburgh-runestone/',
+                'label' => 'SSNS update',
+                'class' => 'text-pa-accent',
+            ])
+            and the
+            @include('public-art-v2.partials.external-link', [
+                'href' => 'https://www.socantscot.org/wp-content/uploads/2018/04/Runestone-0703-FINAL-web.pdf',
+                'label' => 'Society of Antiquaries report (PDF)',
+                'class' => 'text-pa-accent',
+            ]).
+        </p>
+    </div>
+</section>
+
+{{-- Heritage Collections + Contact, folded in from the old About page (P002 / P020-P022). --}}
+<section class="border-t border-pa-ink-100 py-14" aria-labelledby="crc-heading">
+    <h2 id="crc-heading" class="text-2xl font-semibold tracking-tight text-pa-ink-900">
+        Heritage Collections and Centre for Research Collections
+    </h2>
+    <p class="mt-3 max-w-3xl text-pa-ink-700">
+        Further information about
+        @include('public-art-v2.partials.external-link', [
+            'href' => 'https://www.ed.ac.uk/visit/museums-galleries/heritage-collections',
+            'label' => 'Heritage Collections and the Centre for Research Collections',
+            'class' => 'text-pa-accent',
+        ]).
     </p>
+
+    <h2 class="mt-10 text-2xl font-semibold tracking-tight text-pa-ink-900">Contact</h2>
+    <address class="mt-3 not-italic text-pa-ink-700">
+        Centre for Research Collections<br>
+        Edinburgh University Library<br>
+        George Square<br>
+        Edinburgh<br>
+        EH8 9LJ<br>
+        Tel: <a href="tel:+441316508379" class="text-pa-accent underline underline-offset-2 hover:decoration-2">+44 (0)131 650 8379</a><br>
+        <a href="mailto:HeritageCollections@ed.ac.uk" class="text-pa-accent underline underline-offset-2 hover:decoration-2">HeritageCollections@ed.ac.uk</a>
+    </address>
 </section>
 @endsection

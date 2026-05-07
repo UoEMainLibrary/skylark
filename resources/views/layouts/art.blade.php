@@ -65,6 +65,17 @@
         <a class="screen-reader-text" href="{{ url()->current() }}#main">Skip to content</a>
     </div>
     <div id="container">
+        {{-- Utility bar mirroring the Art on Campus header (P012 / 2026 edits). --}}
+        <div class="container-fluid d-flex justify-content-between py-2 small border-bottom" style="background:#fff;">
+            <a href="https://www.ed.ac.uk" target="_blank" rel="noopener" class="text-secondary">
+                The University of Edinburgh
+                <span class="sr-only">(opens in a new tab)</span>
+            </a>
+            <a href="https://collections.ed.ac.uk" target="_blank" rel="noopener" class="text-secondary">
+                All Collections
+                <span class="sr-only">(opens in a new tab)</span>
+            </a>
+        </div>
         <header>
             <div class="container-fluid header">
                 <div class="header-logo">
