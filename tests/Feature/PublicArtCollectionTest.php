@@ -18,8 +18,25 @@ it('serves Art on Campus static pages', function (string $path) {
     'feedback',
 ]);
 
-it('returns 404 for the legacy /public-art prefix', function () {
-    $this->get('/public-art')->assertNotFound();
+it('301-redirects the legacy /public-art prefix to /art-on-campus', function (string $from, string $to) {
+    $response = $this->get($from);
+
+    $response->assertStatus(301);
+    $response->assertRedirect($to);
+})->with([
+    'home' => ['/public-art', '/art-on-campus'],
+    'paolozzi' => ['/public-art/paolozzi', '/art-on-campus/paolozzi'],
+    'browse' => ['/public-art/search/*:*', '/art-on-campus/search/*:*'],
+    'map' => ['/public-art/search/*:*/?map=true', '/art-on-campus/search/*:*/?map=true'],
+    'record' => ['/public-art/record/12345', '/art-on-campus/record/12345'],
+    'about (chains to home)' => ['/public-art/about', '/art-on-campus/about'],
+]);
+
+it('preserves the query string when redirecting from /public-art to /art-on-campus', function () {
+    $response = $this->get('/public-art/search/*:*?q=Ideas&sort=date');
+
+    $response->assertStatus(301);
+    $response->assertRedirect('/art-on-campus/search/*:*?q=Ideas&sort=date');
 });
 
 it('redirects /art-on-campus/about to the home page', function () {
