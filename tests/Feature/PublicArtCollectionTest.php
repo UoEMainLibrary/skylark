@@ -47,7 +47,9 @@ it('renders the v2 paolozzi page with updated content', function () {
         ->assertSuccessful()
         ->assertSee('Paolozzi Mosaic Project')
         ->assertSee('Tottenham Court Road')
-        ->assertDontSee('Information video');
+        ->assertDontSee('Information video')
+        ->assertSee('player.vimeo.com/video/170003917', false)
+        ->assertSee('vimeo.com/170003917', false);
 });
 
 it('switches to v2 views when public_art_skin_version is 2', function () {

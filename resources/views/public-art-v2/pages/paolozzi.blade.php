@@ -11,7 +11,7 @@
 
     {{-- Optional informational video block (no "Information video" heading per client) --}}
     <div class="mt-8 aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-        <iframe src="https://player.vimeo.com/video/258663625?title=0&amp;byline=0&amp;portrait=0&amp;texttrack=en"
+        <iframe src="https://player.vimeo.com/video/170003917?title=0&amp;byline=0&amp;portrait=0&amp;texttrack=en"
                 title="Video about the Paolozzi Mosaic Project (Vimeo)"
                 allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                 loading="lazy"
@@ -21,7 +21,7 @@
     <p class="mt-2 text-sm text-pa-ink-700">
         Captions are available within the video player. Use the
         @include('public-art-v2.partials.external-link', [
-            'href' => 'https://vimeo.com/258663625',
+            'href' => 'https://vimeo.com/170003917',
             'label' => 'full-page version on Vimeo',
             'class' => 'text-pa-accent',
         ])
