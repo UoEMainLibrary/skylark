@@ -44,11 +44,14 @@ class ArchivesSpaceService implements RepositoryInterface
         $containerIds = config('skylight.container_id', []);
 
         if ($containerField && ! empty($containerIds)) {
-            $filterQueries = [];
+            // Single fq joined with `+` so Solr ORs the container IDs.
+            // Multiple `fq` params would AND them, returning zero rows when a
+            // collection has more than one container id.
+            $containerParts = [];
             foreach ($containerIds as $containerId) {
-                $filterQueries[] = "{$containerField}:{$containerId}";
+                $containerParts[] = "{$containerField}:{$containerId}";
             }
-            $params['fq'] = $filterQueries;
+            $params['fq'] = [implode('+', $containerParts)];
         }
 
         // Add additional filters
@@ -436,6 +439,22 @@ class ArchivesSpaceService implements RepositoryInterface
                 continue;
             }
 
+            // Parent metadata is buried inside the ArchivesSpace JSON blob
+            // (not surfaced as a direct Solr field) — pull it out so the
+            // record view can render the "Hierarchy → Parent Record" link
+            // and so getRelatedItems() can find siblings.
+            if (in_array($solrField, ['parent', 'parent_id', 'parent_type'], true)) {
+                if (! isset($record['_lhsa_parent'])) {
+                    $record['_lhsa_parent'] = $this->extractParent($record);
+                }
+
+                if (! empty($record['_lhsa_parent'][$solrField])) {
+                    $transformed[$displayName] = $record['_lhsa_parent'][$solrField];
+                }
+
+                continue;
+            }
+
             // Standard top-level Solr fields
             if (isset($record[$solrField])) {
                 $transformed[$displayName] = $record[$solrField];
@@ -447,10 +466,60 @@ class ArchivesSpaceService implements RepositoryInterface
             $transformed['Id'] = $record['id'];
         }
 
+        // Surface parent fields on _raw too so the record blade's
+        // `$record['_raw']['parent_id']` fallback also works.
+        if (isset($record['_lhsa_parent'])) {
+            foreach ($record['_lhsa_parent'] as $k => $v) {
+                $record[$k] = $v;
+            }
+            unset($record['_lhsa_parent']);
+        }
+
         // Keep raw record for reference
         $transformed['_raw'] = $record;
 
         return $transformed;
+    }
+
+    /**
+     * Pull parent ref/id/type out of the ArchivesSpace JSON blob.
+     *
+     * The Solr index doesn't expose these as top-level fields, but the
+     * record's JSON-LD payload always includes `parent.ref` for archival
+     * objects (e.g. `/repositories/13/archival_objects/151389`). Mirrors
+     * the legacy CodeIgniter solr_client_archivesspace_1::getRecord()
+     * behaviour.
+     *
+     * @return array{parent: string, parent_id: string, parent_type: string}|array{}
+     */
+    protected function extractParent(array $record): array
+    {
+        if (! isset($record['json'])) {
+            return [];
+        }
+
+        $jsonData = is_string($record['json']) ? json_decode($record['json'], true) : $record['json'];
+
+        if (! $jsonData || empty($jsonData['parent']['ref'])) {
+            return [];
+        }
+
+        $ref = $jsonData['parent']['ref'];
+        $parts = explode('/', $ref);
+
+        if (count($parts) < 5) {
+            return [];
+        }
+
+        return [
+            'parent' => $ref,
+            'parent_id' => $parts[4],
+            // 4th segment is the plural ArchivesSpace type
+            // (`archival_objects` or `resources`); strip the trailing
+            // `s` so the URL matches our `/record/{id}/{type?}` route
+            // which expects the singular form.
+            'parent_type' => rtrim($parts[3], 's'),
+        ];
     }
 
     /**
@@ -677,9 +746,17 @@ class ArchivesSpaceService implements RepositoryInterface
         $url .= '&fq=types:"archival_object"+types:"resource"';
 
         if ($containerField && ! empty($containerIds)) {
+            // Combine all container IDs into a single fq with `+` so Solr ORs
+            // them within one filter. Emitting one `&fq=` per id would AND
+            // them, which is impossible to satisfy when there is more than one
+            // container (the bug that broke search for multi-container
+            // collections like lhsacasenotes). Mirrors the legacy CodeIgniter
+            // archivesspace solr client and `browseTerms()` below.
+            $containerParts = [];
             foreach ($containerIds as $containerId) {
-                $url .= '&fq='.urlencode("{$containerField}:{$containerId}");
+                $containerParts[] = "{$containerField}:{$containerId}";
             }
+            $url .= '&fq='.implode('+', $containerParts);
         }
 
         // Exclude specific records (and their descendants) from search results
