@@ -5,6 +5,7 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
 use App\Routing\CollectionRouteRegistrar;
 use App\Services\RepositoryFactory;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -168,6 +169,22 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/artcollection', [PageController::class, 'publicArtArtCollection'])->name('artcollection');
     },
 ]);
+
+/*
+ * Legacy /public-art* URL → /art-on-campus* 301 redirects. The collection moved
+ * URL prefix in the 2026 edits round; this catch-all forwards bookmarks, search
+ * engine results and external links from the old prefix to the new one while
+ * preserving deep paths and query strings.
+ */
+Route::get('/public-art{path}', function (Request $request, string $path = '') {
+    $target = '/art-on-campus'.$path;
+    $query = $request->getQueryString();
+    if ($query !== null && $query !== '') {
+        $target .= '?'.$query;
+    }
+
+    return redirect($target, 301);
+})->where('path', '(/.*)?');
 
 CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
     'prefix' => 'lhsacasenotes',
