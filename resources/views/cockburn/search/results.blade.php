@@ -31,14 +31,14 @@
             <div class="message">{!! $message !!}</div>
         @endif
 
-        @if($rows == 0)
+        @if($total === 0)
             <h1>No results found</h1>
             <p>Your search for <strong>{{ urldecode($query) }}</strong> did not return any results.</p>
         @else
             <div class="listing-filter">
                 <span class="no-results">
                     <strong>{{ $startRow }}-{{ $endRow }}</strong> of
-                    <strong>{{ $rows }}</strong> results
+                    <strong>{{ number_format($total) }}</strong> results
                 </span>
 
                 <span class="sort">
@@ -230,9 +230,9 @@
             <div class="pagination">
                 <span class="no-results">
                     <strong>{{ $startRow }}-{{ $endRow }}</strong> of
-                    <strong>{{ $rows }}</strong> results
+                    <strong>{{ number_format($total) }}</strong> results
                 </span>
-                {!! $paginationLinks !!}
+               {{-- {!! $paginationLinks !!} --}}
             </div>
         @endif
     </div>
