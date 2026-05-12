@@ -662,6 +662,28 @@ class PageController extends Controller
     }
 
     /**
+     * St Cecilia's Hall — collection home page (instrument-grouping grid).
+     *
+     * Shared static-page actions ({@see about()}, {@see licensing()},
+     * {@see takedown()}, {@see accessibility()}, {@see feedback()}) auto-
+     * resolve to `stcecilias.pages.<name>` via the per-collection view
+     * convention; the IIIF info page is custom and rendered by
+     * {@see stceciliasIiif()} below.
+     */
+    public function stceciliasHome()
+    {
+        return view('stcecilias.home');
+    }
+
+    /**
+     * St Cecilia's Hall — IIIF / Mirador info page.
+     */
+    public function stceciliasIiif()
+    {
+        return view('stcecilias.pages.iiif');
+    }
+
+    /**
      * Display the Art Collection homepage
      */
     public function artHome()

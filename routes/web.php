@@ -186,6 +186,20 @@ Route::get('/public-art{path}', function (Request $request, string $path = '') {
     return redirect($target, 301);
 })->where('path', '(/.*)?');
 
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'stcecilias',
+    'route_name' => 'stcecilias',
+    'home' => [PageController::class, 'stceciliasHome'],
+    // Mirror viewer used for IIIF deep-zoom; the Mirador route is registered
+    // by the registrar even though the legacy site renders its own
+    // OpenSeadragon viewer inline on the record page.
+    'mirador_view' => 'stcecilias.mirador',
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/iiif', [PageController::class, 'stceciliasIiif'])->name('iiif');
+    },
+]);
+
 CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
     'prefix' => 'lhsacasenotes',
     'route_name' => 'lhsacasenotes',
