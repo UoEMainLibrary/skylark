@@ -133,45 +133,13 @@
 
         <h2>A Rich Case Study and Future Steps</h2>
         <p>
-            Following ten months of research, consultation and reflection, two points of consensus were reached.
-            It was agreed that, firstly, the mosaics should be redisplayed as a public artwork and secondly they
-            should not be remade in their entirety. Their original context in the public realm and the story of
-            what had happened to them was a key part of their identity.
-        </p>
-        <p>
-            As well as these conclusions, two options were identified for their future form and use. Firstly, the
-            fragments could be redisplayed in the form of the archway or as part of an entrance. In this way, the
-            link to the functional, historical intention of the original artwork would be retained. Consistently
-            the suggestion of achieving this by creating &lsquo;a ghost arch&rsquo; was suggested. The arches
-            would be redrawn and the fragments would be placed in their location. Areas of loss would be visible
-            and outlined with the redrawn design to allow reference to the complete artwork. This would allow for
-            a sympathetic and conservation based approach to the fragments redisplay.
-        </p>
-
-        <h2>A Ghost Arch?</h2>
-        <p>
-            However, as well as losing more than half of the arches, there were other losses to consider. Many who
-            knew and worked with Paolozzi closely felt that creating a ghost arch would be inappropriate and would
-            overlook the spirit of his work. At its core his artworks explored what he referred to as &lsquo;the
-            metamorphosis of rubbish&rsquo; and played with ideas of recycling, reconfiguration, accumulation, and
-            collage of material. The opportunity to engage with these ideas seemed ripe with the mosaic fragments.
-            Moreover, it also was important to remember that the artwork had never been located in Edinburgh. The
-            recreation of a work that had never existed in the city could risk becoming a tragic monument that
-            failed to celebrate the artist or the artwork but only focused on the story of the artwork&rsquo;s
-            removal from the London tube station and subsequent loss. In order to both celebrate Paolozzi, his work
-            and tell the arches&rsquo; story the fragments could be recreated into something new. A competition
-            process would be organised to obtain artists&rsquo; proposals for a new work. This new work could then
-            be displayed on campus as part of the art collection. This second option allowed for a contemporary yet
-            loyal solution given the level of damage, the loss of original context and relocation to Edinburgh.
-        </p>
-
-        <h2>The Future</h2>
-        <p>
-            Agreeing that the material and contextual loss were too great, the art collection team favoured the
-            idea of using the material for the creation of something new. Following this decision, the art
-            collection team met with the Paolozzi Foundation in October 2017 to update the trustees and seek their
-            support. At this meeting plans for a new chapter of the mosaics&rsquo; history were fully agreed upon
-            and a competition for artists&rsquo; proposals is currently being developed.
+            The mosaics have continued to inspire artists and teaching across the University. Since their arrival
+            in Edinburgh, they have provided a rich case study for research and education, with hundreds of
+            students from a wide range of disciplines engaging with the material and prompting discussions around
+            ethics, copyright, artists&rsquo; rights, and art in the public realm. They also formed the basis of
+            an exhibition at the University in 2017 and in 2024, selected fragments were displayed in the
+            <em>Paolozzi at 100</em> exhibition at the National Galleries of Scotland. The Art Collection remains
+            open to discussions about the future of the material.
         </p>
     </div>
 </article>
