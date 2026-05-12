@@ -523,7 +523,6 @@ it('uses the client-revised wording on the V2 paolozzi page', function () {
         ->assertSee('Renovation plans')
         ->assertSee('Coming to Edinburgh')
         ->assertSee('A Rich Case Study and Future Steps')
-        ->assertSee('The Future')
         ->assertDontSee('Restoration plans')
         ->assertDontSee('Mosaic fragments')
         ->assertDontSee('Next stages')
@@ -546,13 +545,21 @@ it('uses the client-revised wording on the V2 paolozzi page', function () {
         // Conundrum: typo fix on "compiled" and unchanged %.
         ->assertSee('compiled data and images')
         ->assertDontSee('complied data and images')
-        // Future Steps: reverted wording from previous round.
-        ->assertSee('two points of consensus were reached')
-        ->assertDontSee('two critical points emerged')
-        // The Future section: brand new closing paragraph replaces the old one.
-        ->assertSee('met with the Paolozzi Foundation in October 2017')
-        ->assertSee('a competition for artists', false)
-        ->assertDontSee('the mosaics remain a regular feature in teaching')
+        // Rev-2 amend: the entire body under "A Rich Case Study and Future
+        // Steps" has been replaced with a single new paragraph from Olivia
+        // Laumenech. The old "A Ghost Arch?" and "The Future" sub-sections
+        // and the "two points of consensus" wording are gone.
+        ->assertSee('rich case study for research and education')
+        ->assertSee('Paolozzi at 100')
+        ->assertSee('National Galleries of Scotland')
+        ->assertSee('open to discussions about the future of the material')
+        ->assertDontSee('two points of consensus were reached')
+        ->assertDontSee('two options were identified for their future form')
+        ->assertDontSee('A Ghost Arch?')
+        ->assertDontSee('ghost arch would be inappropriate')
+        ->assertDontSee('<h2>The Future</h2>', false)
+        ->assertDontSee('met with the Paolozzi Foundation in October 2017')
+        ->assertDontSee('a competition for artists')
         // Sanity carry-overs from the previous edit.
         ->assertSee('Scottish artist Eduardo Paolozzi', false)
         ->assertSee('Nonetheless, the arches were removed')
