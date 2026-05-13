@@ -64,6 +64,7 @@ it('registers every expected stcecilias named route', function (string $name): v
     'stcecilias.advanced.form',
     'stcecilias.advanced.post',
     'stcecilias.advanced.search',
+    'stcecilias.browse',
 ]);
 
 it('wires the stcecilias home route to PageController@stceciliasHome', function (): void {
@@ -80,6 +81,14 @@ it('wires the stcecilias /iiif extra_route to PageController@stceciliasIiif', fu
     expect($route->getControllerClass())->toBe(PageController::class)
         ->and($route->getActionMethod())->toBe('stceciliasIiif')
         ->and($route->getName())->toBe('stcecilias.iiif');
+});
+
+it('wires the stcecilias /browse/{facet} extra_route to PageController@stceciliasBrowse', function (): void {
+    $route = Route::getRoutes()->match(Request::create('/stcecilias/browse/Instrument', 'GET'));
+
+    expect($route->getControllerClass())->toBe(PageController::class)
+        ->and($route->getActionMethod())->toBe('stceciliasBrowse')
+        ->and($route->getName())->toBe('stcecilias.browse');
 });
 
 it('routes /stcecilias/search/{query} via SearchController@index', function (): void {
@@ -157,17 +166,36 @@ it('renders the legacy header (search box + visit link) on every stcecilias page
     'iiif',
 ]);
 
-it('does NOT render facet sidebar markup (show_facets is false)', function (): void {
-    fakeStceciliasSolr();
+it('renders the legacy "Refine Results" facet sidebar on the search page', function (): void {
+    // Mirror the shape SolrService returns for facet_fields so the controller
+    // populates the sidebar with at least one term per filter.
+    Http::fake([
+        '*' => Http::response([
+            'response' => ['numFound' => 1, 'docs' => [['id' => 'abc', 'dctitleen' => ['Test']]]],
+            'facet_counts' => [
+                'facet_fields' => [
+                    'type_filter' => ['keyboard ||| Keyboard', 7],
+                    'author_filter' => ['john broadwood ||| John Broadwood', 3],
+                    'place_filter' => ['edinburgh ||| Edinburgh', 2],
+                    'gallery_filter' => ['binks gallery ||| Binks Gallery', 5],
+                ],
+            ],
+            'highlighting' => [],
+        ], 200),
+    ]);
 
-    // Regression guard: the legacy site deliberately disables the facet
-    // sidebar on stcecilias. The browse experience is driven by the
-    // home-page instrument grouping grid instead.
     $response = $this->get('/stcecilias/search/*:*')->assertSuccessful();
 
     expect($response->getContent())
-        ->not->toContain('search-facets')
-        ->not->toContain('list-group-item active');
+        ->toContain('id="side_facet"')
+        ->toContain('Refine Results')
+        ->toContain('panel panel-facets')
+        ->toContain('Instrument')
+        ->toContain('Maker')
+        ->toContain('Place Made')
+        ->toContain('Gallery')
+        ->toContain('inst-results')
+        ->toContain('col-lg-9');
 });
 
 it('serves a search results page even when Solr is empty', function (): void {
@@ -224,8 +252,8 @@ it('uses DSpace as its repository type', function (): void {
     expect(stceciliasConfig()['repository_type'])->toBe('dspace');
 });
 
-it('disables the facet sidebar in config', function (): void {
-    expect(stceciliasConfig()['show_facets'])->toBeFalse();
+it('enables the facet sidebar in config (matches legacy Refine Results)', function (): void {
+    expect(stceciliasConfig()['show_facets'])->toBeTrue();
 });
 
 it('points the GA code at STCECILIAS_GA_CODE rather than another collection', function (): void {

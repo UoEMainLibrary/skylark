@@ -197,6 +197,11 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'feedback' => true,
     'extra_routes' => function () {
         Route::get('/iiif', [PageController::class, 'stceciliasIiif'])->name('iiif');
+
+        // Legacy "More …" link from the search-results facet sidebar.
+        Route::get('/browse/{facet}', [PageController::class, 'stceciliasBrowse'])
+            ->where('facet', '[^/]+')
+            ->name('browse');
     },
 ]);
 

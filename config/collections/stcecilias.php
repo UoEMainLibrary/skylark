@@ -163,10 +163,7 @@ return array_merge($dspaceDefaults, [
     'highlight_fields' => 'dc.title.en,dc.contributor.author,dc.subject.en,lido.country.en,dc.description.en,dc.relation.ispartof.en',
 
     'results_per_page' => 20,
-    // The legacy site deliberately disables the facet sidebar (the wider
-    // browse experience is driven by the home-page instrument-grouping grid
-    // instead).
-    'show_facets' => false,
+    'show_facets' => true,
     'share_buttons' => false,
 
     'homepage_recentitems' => false,

@@ -20,9 +20,7 @@
         $imageUriField = str_replace('.', '', $fieldMappings['ImageURI'] ?? '');
     @endphp
 
-    {{-- St Cecilia's deliberately disables the facet sidebar (show_facets => false),
-         so the search results occupy the full content area. --}}
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 inst-results">
+    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 inst-results">
         <div class="container-fluid">
             <div class="searchFoundRow">
                 <span class="searchFound" title="Number of instruments found related to your search">
@@ -96,6 +94,8 @@
             @endif
         </div>
     </div>
+
+    @include('stcecilias.search.partials.facets')
 
     @push('scripts')
         <script>
