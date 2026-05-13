@@ -204,9 +204,20 @@
 
         {{-- ============================================================
              stc-section2 : main image (OpenSeadragon viewers + thumbs)
+
+             Note: this section deliberately does NOT close until the
+             end of the page. The legacy stcecilia/views/record.php
+             never closes #stc-section2 (or its .itemscope child); the
+             browser auto-closes them at body boundary. The result is
+             that .json-link, #stc-section3, #stc-section4 and
+             .full-metadata > #stc-section5 are all rendered as
+             children of .itemscope, and #stc-section6 (related items)
+             is a sibling of .itemscope inside #stc-section2. We mirror
+             that nesting one-for-one so the rendered DOM matches
+             Skylight exactly.
              ============================================================ --}}
-        @if(! empty($imageUris))
-            <div id="stc-section2" class="container-fluid">
+        <div id="stc-section2" class="container-fluid">
+            @if(! empty($imageUris))
                 <div class="col-lg-12 main-image">
                     @foreach($tileSources as $i => $tile)
                         <div id="openseadragon{{ $i }}" class="image-toggle" style="display: {{ $i === 0 ? 'block' : 'none' }};">
@@ -225,22 +236,20 @@
                         </div>
                     @endforeach
                 </div>
+            @endif
 
-                <div class="itemscope" itemscope itemtype="http://schema.org/CreativeWork">
-                    <div class="thumb-strip">
-                        @if($imageCounter > 1)
-                            @foreach($imageUris as $i => $uri)
-                                @php $linkURI = str_replace('http://', 'https://', $uri); @endphp
-                                <label class="image-toggler" data-image-id="#openseadragon{{ $i }}">
-                                    <input type="radio" name="options" id="option{{ $i }}">
-                                    <img src="{{ $linkURI }}" class="record-thumb-strip" title="{{ $title }}" alt="{{ $title }} thumbnail {{ $i + 1 }}">
-                                </label>
-                            @endforeach
-                        @endif
-                    </div>
+            <div class="itemscope" itemscope itemtype="http://schema.org/CreativeWork">
+                <div class="thumb-strip">
+                    @if($imageCounter > 1)
+                        @foreach($imageUris as $i => $uri)
+                            @php $linkURI = str_replace('http://', 'https://', $uri); @endphp
+                            <label class="image-toggler" data-image-id="#openseadragon{{ $i }}">
+                                <input type="radio" name="options" id="option{{ $i }}">
+                                <img src="{{ $linkURI }}" class="record-thumb-strip" title="{{ $title }}" alt="{{ $title }} thumbnail {{ $i + 1 }}">
+                            </label>
+                        @endforeach
+                    @endif
                 </div>
-            </div>
-        @endif
 
         {{-- IIIF / Mirador / LUNA / UV / CC-BY link badges --}}
         <div class="json-link">
@@ -487,10 +496,17 @@
             </div>
         </div>
 
-        {{-- ============================================================
-             stc-section6 : related items (mirrors related_items.php)
-             ============================================================ --}}
-        <div class="col-sidebar">
+            </div> {{-- closes .itemscope (mirrors the implicit close emitted
+                       by div_sidebar_end.php's stray </div> in legacy) --}}
+
+            {{-- ============================================================
+                 stc-section6 : related items (mirrors related_items.php).
+                 In the legacy theme `div_sidebar.php` is overridden empty
+                 and `div_sidebar_end.php` falls through to the global
+                 single-</div> file, so #stc-section6 ends up as a sibling
+                 of .itemscope inside #stc-section2 — no .col-sidebar
+                 wrapper. We reproduce that here.
+                 ============================================================ --}}
             @if($numRel > 0)
                 <div id="stc-section6" class="col-xs-12 related inactive container-fluid">
                     <h2 class="itemtitle hidden-sm hidden-xs">Related Instruments</h2>
@@ -532,7 +548,7 @@
                     </div>
                 </div>
             @endif
-        </div>
+        </div> {{-- closes #stc-section2 --}}
 
-    </div>
+    </div> {{-- closes .container-fluid.content --}}
 @endsection

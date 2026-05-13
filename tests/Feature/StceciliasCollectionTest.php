@@ -298,6 +298,109 @@ it('renders the legacy record page structure verbatim', function (): void {
         ->toContain('class="ccbylogo"');
 });
 
+it("nests #stc-section3..5 inside #stc-section2's .itemscope (matches Skylight DOM)", function (): void {
+    // The legacy stcecilia/views/record.php never closes #stc-section2 or
+    // .itemscope — every section that follows (json-link, #stc-section3,
+    // #stc-section4, .full-metadata + #stc-section5) ends up nested inside
+    // .itemscope, and #stc-section6 is a sibling of .itemscope inside
+    // #stc-section2. Skylark must reproduce that exact nesting; otherwise
+    // the legacy CSS targets things at the wrong depth and the layout
+    // visibly diverges from Skylight.
+    Http::fake([
+        '*' => Http::response([
+            'response' => [
+                'numFound' => 1,
+                'docs' => [[
+                    'id' => '96077',
+                    'dctitleen' => ['Single-manual harpsichord'],
+                    'dccontributorauthoren' => ['John Broadwood'],
+                    'dctypeen' => ['Harpsichord'],
+                    'dcformatoriginalen' => [
+                        'application/json##manifest.json##5438##10683/96077##1##abc##',
+                    ],
+                    'dcidentifierimageUri' => [
+                        'http://images.is.ed.ac.uk/luna/servlet/iiif/x/full/full/0/default.jpg',
+                    ],
+                ]],
+            ],
+            'facet_counts' => ['facet_fields' => []],
+            'highlighting' => [],
+        ], 200),
+    ]);
+
+    $body = $this->get('/stcecilias/record/96077')->assertSuccessful()->getContent();
+
+    // Strip HTML comments and <script>...</script> blocks so they don't
+    // confuse the depth tracker.
+    $stripped = preg_replace('/<!--.*?-->/s', '', $body);
+    $stripped = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $stripped);
+
+    // Walk every <div> / </div>, recording the source order in which
+    // each "interesting" id/class opens.
+    preg_match_all('/<\/?div\b([^>]*)>/i', $stripped, $matches, PREG_SET_ORDER);
+    $stack = [];
+    $opened = []; // [label => depthAtOpen]
+    foreach ($matches as $m) {
+        $tag = $m[0];
+        $attrs = $m[1] ?? '';
+        if (str_starts_with($tag, '</')) {
+            array_pop($stack);
+
+            continue;
+        }
+        $stack[] = $attrs;
+
+        // Record the first open at this depth for each interesting label.
+        // We check id and EVERY class token (legacy uses e.g.
+        // class="col-lg-12 main-image", so .main-image is the second class).
+        $labels = [];
+        if (preg_match('/\bid\s*=\s*"([^"]+)"/', $attrs, $idMatch)) {
+            $labels[] = '#'.$idMatch[1];
+        }
+        if (preg_match('/\bclass\s*=\s*"([^"]+)"/', $attrs, $clsMatch)) {
+            foreach (preg_split('/\s+/', trim($clsMatch[1])) as $cls) {
+                if ($cls !== '') {
+                    $labels[] = '.'.$cls;
+                }
+            }
+        }
+        foreach ($labels as $label) {
+            if (! isset($opened[$label])
+                && in_array($label, [
+                    '#stc-section1', '#stc-section2', '#stc-section3',
+                    '#stc-section4', '#stc-section5', '#stc-section6',
+                    '.main-image', '.itemscope', '.thumb-strip', '.json-link',
+                    '.full-metadata',
+                ], true)
+            ) {
+                $opened[$label] = count($stack);
+            }
+        }
+    }
+
+    expect($opened)
+        // #stc-section1 (title, anchor nav) is at depth 2 — child of
+        // .container-fluid.content
+        ->toHaveKey('#stc-section1')
+        ->and($opened['#stc-section1'])->toBe(2)
+        // #stc-section2 also at depth 2
+        ->and($opened['#stc-section2'])->toBe(2)
+        // .main-image and .itemscope are siblings inside #stc-section2
+        ->and($opened['.main-image'])->toBe(3)
+        ->and($opened['.itemscope'])->toBe(3)
+        // .thumb-strip, .json-link, #stc-section3, #stc-section4 and
+        // .full-metadata all live inside .itemscope
+        ->and($opened['.thumb-strip'])->toBe(4)
+        ->and($opened['.json-link'])->toBe(4)
+        ->and($opened['#stc-section3'])->toBe(4)
+        ->and($opened['.full-metadata'])->toBe(4)
+        // #stc-section5 is inside .full-metadata
+        ->and($opened['#stc-section5'])->toBe(5)
+        // #stc-section6 is a sibling of .itemscope (NOT inside it),
+        // back at the #stc-section2 child depth.
+        ->and($opened['#stc-section6'])->toBe(3);
+});
+
 it('renders the search.error view (not a 500) when Solr fails', function (): void {
     // Real-world trigger: dev machine drops off VPN and Solr returns 403.
     // Previously this was caught but the controller then tried to render a
