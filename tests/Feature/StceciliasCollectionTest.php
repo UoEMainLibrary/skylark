@@ -211,6 +211,29 @@ it('serves a search results page even when Solr is empty', function (): void {
         ->assertSee('No results found');
 });
 
+it('forwards facet filter URL segments to Solr as fq parameters', function (): void {
+    // Skylark used to silently drop the entire filter portion of the URL when
+    // the {query} segment contained legacy-style "+" spaces (e.g. links built
+    // by the facet sidebar), because extractFilterSegments() tried to match
+    // rawurlencode($query) — which uses "%20" — against the raw URI. The
+    // result was that clicking "Harpsichord (17)" still showed the unfiltered
+    // 36-instrument count. This test pins that regression.
+    fakeStceciliasSolr();
+
+    $this->get('/stcecilias/search/%22Keyboard+grouping%22/Instrument:%22harpsichord+%7C%7C%7C+Harpsichord%22')
+        ->assertSuccessful();
+
+    Http::assertSent(function (Illuminate\Http\Client\Request $request): bool {
+        $url = (string) $request->url();
+
+        // Filter on type_filter must reach Solr (URL-encoded form). The exact
+        // separator between "harpsichord" and "Harpsichord" is `\n|||\n`
+        // (encoded as "%0A%7C%7C%7C%0A") because Solr indexes the value with
+        // newlines around the ||| delimiter.
+        return str_contains($url, 'fq=type_filter%3A%22harpsichord%0A%7C%7C%7C%0AHarpsichord%22');
+    });
+});
+
 it('renders search result tiles for a populated Solr response', function (): void {
     fakeStceciliasSolr([
         [
