@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-thumbs.css') }}?v=1.0.7" type="text/css" media="screen" />
     <link rel="stylesheet" href="{{ asset('assets/flowplayer-7.0.4/skin/skin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('collections/stcecilia/css/style.css') }}?v=2">
+    <link rel="stylesheet" href="{{ asset('collections/stcecilia/css/style.css') }}?v=3">
     <link href="https://fonts.googleapis.com/css?family=Hind" rel="stylesheet">
 
     @stack('styles')

@@ -5,6 +5,17 @@
 i{
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif!important;
 }
+/* Re-assert FontAwesome for icon <i> elements. The blanket "i { font-family
+   !important }" above accidentally stripped the FA font from every fa-*
+   icon (e.g. fa-close on the facet sidebar), making them render as tofu /
+   missing-glyph squares. The legacy theme has the same bug; this fix
+   restores the icons site-wide for the migrated stcecilia skin. */
+i.fa,
+.fa,
+i.fas,
+.fas {
+    font-family: FontAwesome !important;
+}
 
 body
 {

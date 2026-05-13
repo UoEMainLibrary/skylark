@@ -54,7 +54,7 @@
                                     $removeUrl = rtrim($removeUrl, '/');
                                 @endphp
                                 {{ $term['display_name'] }}
-                                <a class="deselect" href="{{ $removeUrl }}"><i class="fa fa-close"></i>&nbsp; <span>{{ $term['count'] }}</span></a><br><br>
+                                <a class="deselect" href="{{ $removeUrl }}" title="Remove {{ $term['display_name'] }} filter"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; <span>{{ $term['count'] }}</span></a><br><br>
                             @endforeach
 
                             @foreach($inactiveTerms as $term)
