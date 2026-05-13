@@ -211,6 +211,93 @@ it('serves a search results page even when Solr is empty', function (): void {
         ->assertSee('No results found');
 });
 
+it('renders the legacy record page structure verbatim', function (): void {
+    // Mirror a realistic St Cecilia's DSpace record. The legacy theme's
+    // record.php emits a fixed scaffold of stc-section1..6 divs with
+    // .center-nav, .main-image, .stc-tags, .full-metadata, .info-box,
+    // .child-meta-container etc. Skylark's record/show.blade.php must
+    // emit the same scaffold so the legacy CSS / JS just works.
+    Http::fake([
+        '*' => Http::response([
+            'response' => [
+                'numFound' => 1,
+                'docs' => [[
+                    'id' => '96077',
+                    'dctitleen' => ['Single-manual harpsichord'],
+                    'dccontributorauthoren' => ['John Broadwood'],
+                    'dccontributorauthorfullen' => ['John Broadwood'],
+                    'dccoveragetemporalen' => ['1793'],
+                    'dccoveragetemporalperioden' => ['18th century', '1790s'],
+                    'dcidentifieren' => ['4319'],
+                    'dcrelationispartofen' => ['MIMEd', 'Raymond Russell Collection'],
+                    'dccoveragespatialen' => ['London', 'Europe', 'England', 'United Kingdom'],
+                    'dccoveragespatialcityen' => ['London'],
+                    'dccoveragespatialcountryen' => ['England'],
+                    'dctypeen' => ['Harpsichord/Harpsichords/Keyboard/Musical Instrument', 'Harpsichord'],
+                    'dctypefamilyen' => ['Keyboard'],
+                    'dcsubjectclassificationen' => ['314.122-6-8', 'musical instrument'],
+                    'dcdescriptionen' => ['Technical description: Single-manual English harpsichord.'],
+                    'dcprovenanceen' => ['Bought by Raymond Russell from the Dolmetsch workshop in 1955.'],
+                    'dcformatoriginalen' => [
+                        'application/json##manifest.json##5438##10683/96077##1##abc##',
+                        'audio/mp3##0035517s.mp3##485284##10683/96077##2##def##',
+                    ],
+                    'dcidentifierimageUri' => [
+                        'http://images.is.ed.ac.uk/luna/servlet/iiif/UoEart~2~2~61382~104991/full/full/0/default.jpg',
+                    ],
+                ]],
+            ],
+            'facet_counts' => ['facet_fields' => []],
+            'highlighting' => [],
+        ], 200),
+    ]);
+
+    $response = $this->get('/stcecilias/record/96077')->assertSuccessful();
+
+    expect($response->getContent())
+        // Section anchors mirroring the legacy record.php scaffold
+        ->toContain('id="stc-section1"')
+        ->toContain('id="stc-section2"')
+        ->toContain('id="stc-section3"')
+        ->toContain('id="stc-section4"')
+        ->toContain('id="stc-section5"')
+        ->toContain('class="center-nav"')
+        ->toContain('class="cnav-link"')
+        ->toContain('class="col-lg-12 main-image"')
+        ->toContain('class="thumb-strip"')
+        ->toContain('class="json-link"')
+        // The record-page layout sits inside .container-fluid.content so the
+        // legacy CSS gives the body a white background (not the dark-red
+        // footer bleeding through).
+        ->toContain('container-fluid content')
+        // Section 5 — Instrument Data panel
+        ->toContain('class="full-metadata"')
+        ->toContain('class="panel panel-default container-fluid"')
+        ->toContain('class="panel-heading straight-borders"')
+        ->toContain('id="collapse1"')
+        ->toContain('class="info-box"')
+        ->toContain('class="meta-container"')
+        ->toContain('class="child-meta-container"')
+        ->toContain('class="child-meta-container-wide"')
+        ->toContain('class="meta-spacing"')
+        // Sub-headings
+        ->toContain('Instrument Information')
+        ->toContain('Date Information')
+        ->toContain('Gallery Information')
+        ->toContain('Maker Information')
+        ->toContain('Made In')
+        ->toContain('Description')
+        ->toContain('Classification')
+        // Header text combining Title | Maker | Date Made
+        ->toContain('Single-manual harpsichord | John Broadwood | 1793')
+        // IIIF / UV / Mirador / LUNA / CC-BY badge row
+        ->toContain('class="uvlogo"')
+        ->toContain('class="miradorlogo"')
+        ->toContain('class="lunalogo"')
+        ->toContain('class="iiiflogo"')
+        ->toContain('class="ccbylogo"');
+});
+
 it('renders the search.error view (not a 500) when Solr fails', function (): void {
     // Real-world trigger: dev machine drops off VPN and Solr returns 403.
     // Previously this was caught but the controller then tried to render a

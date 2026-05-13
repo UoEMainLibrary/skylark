@@ -106,6 +106,92 @@ return array_merge($dspaceDefaults, [
         'Instrument Type History',
     ],
 
+    // Schema.org itemprop mappings used on record pages.
+    'schema_links' => [
+        'Title' => 'name',
+        'Alternative Title' => 'alternateName',
+        'Author' => 'creator',
+        'Subject' => 'about',
+        'Instrument' => 'name',
+        'Date' => 'dateCreated',
+        'Thumbnail' => 'thumbnailUrl',
+        'Place Made' => 'locationCreated',
+        'Date Made' => 'dateCreated',
+        'Period' => 'temporalCoverage',
+        'Accession Number' => 'identifier',
+        'Technical Description' => 'description',
+        'Collection' => 'isPartOf',
+        'Notes' => 'musicalKey',
+        'Rights Holder' => 'copyrightHolder',
+        'Instrument Family' => 'category',
+        'Genus' => 'category',
+        'Link' => 'url',
+        'Associated Musician Name' => 'creator',
+        'Associated Musician' => 'creator',
+        'Description' => 'description',
+        'Instrument Type' => 'Category',
+        'ImageURI' => 'image',
+        'Rights Statement' => 'copyrightHolder',
+        'Case' => 'location',
+        'Gallery' => 'location',
+        'Maker Name' => 'creator',
+        'Hornbostel Sachs Classification' => 'identifier',
+    ],
+
+    // Display groupings that drive the record's "Instrument Data" panel
+    // (sections 5 in record.php).
+    'identificationdisplay' => [
+        'Title',
+        'Alternative Title',
+        'Accession Number',
+        'Collection',
+        'Inscription',
+        'Rights Statement',
+    ],
+    'locationdisplay' => [
+        'Gallery',
+        'Case',
+    ],
+    'descriptiondisplay' => [
+        'Short Description',
+        'Description',
+    ],
+    'descriptiondatadisplay' => [
+        'Decorations',
+        'Other Information',
+        'Technical Description',
+        'Provenance',
+    ],
+    'measurementdisplay' => [
+        'Measurements',
+    ],
+    'placedisplay' => [
+        'City',
+        'Country',
+    ],
+    'creatordisplay' => [
+        'Maker Name',
+        'Maker Biography',
+    ],
+    'typedisplay' => [
+        'Instrument',
+        'Genus',
+        'Instrument Family',
+        'Grouping',
+        'Hornbostel Sachs Classification',
+        'Specific Type',
+    ],
+    'datedisplay' => [
+        'Date Made',
+        'Period',
+        'Signature Date',
+    ],
+    'associationdisplay' => [
+        'Associated Musician Full',
+        'Associated Musician',
+        'Associated Musician Biography',
+    ],
+
     'searchresult_display' => [
         'Title',
         'Instrument',
