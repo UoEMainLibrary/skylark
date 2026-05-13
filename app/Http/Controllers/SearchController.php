@@ -82,7 +82,21 @@ class SearchController extends Controller
                 $parsedFilters['url_filters']
             );
         } catch (\Exception $e) {
-            return view($this->collectionView('search.error'), [
+            report($e);
+
+            // Per-collection error view if one exists; otherwise a minimal
+            // plain response so a transient Solr outage never cascades to a
+            // fatal 500 in collections that haven't shipped a search.error
+            // template.
+            $errorView = $this->collectionView('search.error');
+            if (! view()->exists($errorView)) {
+                return response(
+                    'There was a problem performing your search. Please try again later.',
+                    500
+                );
+            }
+
+            return view($errorView, [
                 'error' => $e->getMessage(),
                 'query' => $query,
             ]);

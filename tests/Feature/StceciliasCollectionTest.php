@@ -211,6 +211,21 @@ it('serves a search results page even when Solr is empty', function (): void {
         ->assertSee('No results found');
 });
 
+it('renders the search.error view (not a 500) when Solr fails', function (): void {
+    // Real-world trigger: dev machine drops off VPN and Solr returns 403.
+    // Previously this was caught but the controller then tried to render a
+    // non-existent search.error view, cascading to "View [search.error] not
+    // found." and a fatal 500.
+    Http::fake([
+        '*' => Http::response('forbidden', 403),
+    ]);
+
+    $this->get('/stcecilias/search/*:*')
+        ->assertSuccessful()
+        ->assertSee('Search Error')
+        ->assertSee('There was a problem performing your search', false);
+});
+
 it('forwards facet filter URL segments to Solr as fq parameters', function (): void {
     // Skylark used to silently drop the entire filter portion of the URL when
     // the {query} segment contained legacy-style "+" spaces (e.g. links built
