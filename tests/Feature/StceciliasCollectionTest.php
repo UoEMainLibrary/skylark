@@ -195,7 +195,12 @@ it('renders the legacy "Refine Results" facet sidebar on the search page', funct
         ->toContain('Place Made')
         ->toContain('Gallery')
         ->toContain('inst-results')
-        ->toContain('col-lg-9');
+        ->toContain('col-lg-9')
+        // The legacy theme wraps the search column + facet sidebar in
+        // .container-fluid.content, which provides the white #fff page
+        // background. Without it the (otherwise empty) body collapses
+        // and the dark-red footer bleeds up behind the columns.
+        ->toContain('container-fluid content');
 });
 
 it('serves a search results page even when Solr is empty', function (): void {

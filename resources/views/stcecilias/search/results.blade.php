@@ -8,8 +8,6 @@
     @endif
 @endsection
 
-@section('body_class', 'search')
-
 @section('content')
     @php
         $fieldMappings = config('skylight.field_mappings', []);
@@ -20,6 +18,11 @@
         $imageUriField = str_replace('.', '', $fieldMappings['ImageURI'] ?? '');
     @endphp
 
+    {{-- Mirror the legacy stcecilia layout: the entire results column +
+         facet sidebar live inside .container-fluid.content, which provides
+         the white #fff page background that distinguishes search/static
+         pages from the home tile grid. --}}
+    <div class="container-fluid content">
     <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 inst-results">
         <div class="container-fluid">
             <div class="searchFoundRow">
@@ -46,9 +49,11 @@
                                     foreach ($candidates as $uri) {
                                         $uri = str_replace('http://', 'https://', $uri);
                                         if (str_contains($uri, 'luna')) {
-                                            // Match the legacy IIIF size hint so thumbnails come back
-                                            // sensibly sized rather than full resolution.
-                                            $thumbnailUri = str_replace('full/full', 'full/,220', $uri);
+                                            // The legacy theme picks /180, for landscapes and /,220 for
+                                            // portraits after sniffing each thumbnail's aspect ratio
+                                            // (one extra HTTP per row). IIIF's "!w,h" size constraint
+                                            // gives the same visual cap in a single request.
+                                            $thumbnailUri = str_replace('full/full', 'full/!180,220', $uri);
                                             break;
                                         }
                                     }
@@ -96,6 +101,7 @@
     </div>
 
     @include('stcecilias.search.partials.facets')
+    </div>{{-- end of .container-fluid.content --}}
 
     @push('scripts')
         <script>
