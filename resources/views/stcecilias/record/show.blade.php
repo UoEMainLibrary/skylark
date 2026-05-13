@@ -529,12 +529,41 @@
                                             }
                                         }
                                     }
+
+                                    // Mirror legacy related_items.php: getimagesize() per
+                                    // image to choose .record-thumbnail-portrait vs
+                                    // .record-thumbnail-landscape (height: 200px / width:
+                                    // 200px). Cache for 24h so we don't hit the IIIF
+                                    // server on every page render. Default to portrait if
+                                    // we can't read the image — Skylight does the same
+                                    // (its $portrait flag starts true and only flips when
+                                    // width > height is observed).
+                                    $relThumbClass = 'record-thumbnail-portrait';
+                                    if ($relImageUri) {
+                                        $cacheKey = 'stcecilias.thumb.orientation.'.md5($relImageUri);
+                                        $relThumbClass = \Illuminate\Support\Facades\Cache::remember(
+                                            $cacheKey,
+                                            now()->addDay(),
+                                            function () use ($relImageUri): string {
+                                                try {
+                                                    $size = @getimagesize($relImageUri);
+                                                    if (is_array($size) && $size[0] > $size[1]) {
+                                                        return 'record-thumbnail-landscape';
+                                                    }
+                                                } catch (\Throwable $e) {
+                                                    // Network blip / VPN drop → fall through.
+                                                }
+
+                                                return 'record-thumbnail-portrait';
+                                            }
+                                        );
+                                    }
                                 @endphp
                                 <div class="column related-col">
                                     <div class="thumbnail-cont">
                                         @if($relImageUri)
                                             <a href="{{ url('/stcecilias/record/' . $relId) }}" title="Read more about the {{ $relTitle }}">
-                                                <img src="{{ $relImageUri }}" class="record-thumbnail-landscape related-img" title="Read more about the {{ $relTitle }}" alt="{{ $relTitle }}">
+                                                <img src="{{ $relImageUri }}" class="{{ $relThumbClass }} related-img" title="Read more about the {{ $relTitle }}" alt="{{ $relTitle }}">
                                             </a>
                                         @else
                                             <a href="{{ url('/stcecilias/record/' . $relId) }}" title="Read more about the {{ $relTitle }}">No Image for this</a>
