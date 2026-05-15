@@ -70,24 +70,25 @@ Route::get('/record/{id}', [RecordController::class, 'show'])
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'alumni',
     'route_name' => 'alumni',
-    'home' => [PageController::class, 'alumniHome'],
+    'home' => [App\Http\Controllers\Collections\Alumni\PageController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/browse/{facet}', [PageController::class, 'alumniBrowse'])
+        $controller = App\Http\Controllers\Collections\Alumni\PageController::class;
+        Route::get('/browse/{facet}', [$controller, 'browse'])
             ->where('facet', '[A-Za-z]+')
             ->name('browse');
-        Route::get('/earlyvet', [PageController::class, 'alumniEarlyVet'])->name('earlyvet');
-        Route::get('/extraac', [PageController::class, 'alumniExtraAc'])->name('extraac');
-        Route::get('/femalegrad', [PageController::class, 'alumniFemaleGrad'])->name('femalegrad');
-        Route::get('/firstmat', [PageController::class, 'alumniFirstMat'])->name('firstmat');
-        Route::get('/medsample', [PageController::class, 'alumniMedSample'])->name('medsample');
-        Route::get('/newcoll', [PageController::class, 'alumniNewColl'])->name('newcoll');
-        Route::get('/roll', [PageController::class, 'alumniRoll'])->name('roll');
-        Route::get('/rosner', [PageController::class, 'alumniRosner'])->name('rosner');
-        Route::get('/vetgrad', [PageController::class, 'alumniVetGrad'])->name('vetgrad');
-        Route::get('/women', [PageController::class, 'alumniWomen'])->name('women');
-        Route::get('/ww1roll', [PageController::class, 'alumniWW1Roll'])->name('ww1roll');
+        Route::get('/earlyvet', [$controller, 'earlyVet'])->name('earlyvet');
+        Route::get('/extraac', [$controller, 'extraAc'])->name('extraac');
+        Route::get('/femalegrad', [$controller, 'femaleGrad'])->name('femalegrad');
+        Route::get('/firstmat', [$controller, 'firstMat'])->name('firstmat');
+        Route::get('/medsample', [$controller, 'medSample'])->name('medsample');
+        Route::get('/newcoll', [$controller, 'newColl'])->name('newcoll');
+        Route::get('/roll', [$controller, 'roll'])->name('roll');
+        Route::get('/rosner', [$controller, 'rosner'])->name('rosner');
+        Route::get('/vetgrad', [$controller, 'vetGrad'])->name('vetgrad');
+        Route::get('/women', [$controller, 'women'])->name('women');
+        Route::get('/ww1roll', [$controller, 'ww1Roll'])->name('ww1roll');
     },
 ]);
 
