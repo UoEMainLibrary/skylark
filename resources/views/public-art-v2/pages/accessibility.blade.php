@@ -8,6 +8,9 @@
     <h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Accessibility statement for Art on Campus</h1>
 
     <div class="prose prose-lg mt-8 max-w-none text-pa-ink-700">
+        @if($cmsEnabled && $cms)
+            {!! $cms->body !!}
+        @else
         <p>
             This accessibility statement applies to the <em>Art on Campus</em> website at
             <a href="{{ url('/art-on-campus') }}">{{ rtrim(url('/'), '/') }}/art-on-campus</a>.
@@ -252,6 +255,7 @@
                 following manual testing of the legacy site in October 2025.
             </li>
         </ul>
+        @endif
     </div>
 </article>
 @endsection
