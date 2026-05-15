@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\Collections\Stcecilias\PageController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
@@ -67,27 +67,27 @@ it('registers every expected stcecilias named route', function (string $name): v
     'stcecilias.browse',
 ]);
 
-it('wires the stcecilias home route to PageController@stceciliasHome', function (): void {
+it('wires the stcecilias home route to Collections\Stcecilias\PageController@home', function (): void {
     $route = Route::getRoutes()->match(Request::create('/stcecilias', 'GET'));
 
     expect($route->getControllerClass())->toBe(PageController::class)
-        ->and($route->getActionMethod())->toBe('stceciliasHome')
+        ->and($route->getActionMethod())->toBe('home')
         ->and($route->getName())->toBe('stcecilias.home');
 });
 
-it('wires the stcecilias /iiif extra_route to PageController@stceciliasIiif', function (): void {
+it('wires the stcecilias /iiif extra_route to Collections\Stcecilias\PageController@iiif', function (): void {
     $route = Route::getRoutes()->match(Request::create('/stcecilias/iiif', 'GET'));
 
     expect($route->getControllerClass())->toBe(PageController::class)
-        ->and($route->getActionMethod())->toBe('stceciliasIiif')
+        ->and($route->getActionMethod())->toBe('iiif')
         ->and($route->getName())->toBe('stcecilias.iiif');
 });
 
-it('wires the stcecilias /browse/{facet} extra_route to PageController@stceciliasBrowse', function (): void {
+it('wires the stcecilias /browse/{facet} extra_route to Collections\Stcecilias\PageController@browse', function (): void {
     $route = Route::getRoutes()->match(Request::create('/stcecilias/browse/Instrument', 'GET'));
 
     expect($route->getControllerClass())->toBe(PageController::class)
-        ->and($route->getActionMethod())->toBe('stceciliasBrowse')
+        ->and($route->getActionMethod())->toBe('browse')
         ->and($route->getName())->toBe('stcecilias.browse');
 });
 

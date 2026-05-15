@@ -1,10 +1,21 @@
 <?php
 
+use App\Http\Controllers\Collections\Alumni\PageController as AlumniController;
+use App\Http\Controllers\Collections\Art\PageController as ArtController;
+use App\Http\Controllers\Collections\Cockburn\PageController as CockburnController;
+use App\Http\Controllers\Collections\Coimbra\PageController as CoimbraController;
+use App\Http\Controllers\Collections\CoimbraColls\PageController as CoimbraCollsController;
+use App\Http\Controllers\Collections\Eerc\PageController as EercController;
+use App\Http\Controllers\Collections\Guardbook\PageController as GuardbookController;
+use App\Http\Controllers\Collections\Lhsacasenotes\PageController as LhsacasenotesController;
+use App\Http\Controllers\Collections\Mimed\PageController as MimedController;
+use App\Http\Controllers\Collections\Openbooks\PageController as OpenbooksController;
+use App\Http\Controllers\Collections\PublicArt\PageController as PublicArtController;
+use App\Http\Controllers\Collections\Stcecilias\PageController as StceciliasController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
 use App\Routing\CollectionRouteRegistrar;
-use App\Services\RepositoryFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,12 +30,12 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         config('collections.domains', []),
         static fn (string $collection): bool => $collection === 'openbooks',
     )),
-    'home' => [PageController::class, 'openbooksHome'],
+    'home' => [OpenbooksController::class, 'home'],
     'mirador_view' => 'openbooks.mirador',
-    'iiif' => [PageController::class, 'openbooksIiif'],
+    'iiif' => [OpenbooksController::class, 'iiif'],
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/browse/{facet}', [PageController::class, 'openbooksBrowse'])
+        Route::get('/browse/{facet}', [OpenbooksController::class, 'browse'])
             ->where('facet', '[A-Za-z]+');
     },
 ]);
@@ -69,94 +80,94 @@ Route::get('/record/{id}', [RecordController::class, 'show'])
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'alumni',
     'route_name' => 'alumni',
-    'home' => [PageController::class, 'alumniHome'],
+    'home' => [AlumniController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/browse/{facet}', [PageController::class, 'alumniBrowse'])
+        Route::get('/browse/{facet}', [AlumniController::class, 'browse'])
             ->where('facet', '[A-Za-z]+')
             ->name('browse');
-        Route::get('/earlyvet', [PageController::class, 'alumniEarlyVet'])->name('earlyvet');
-        Route::get('/extraac', [PageController::class, 'alumniExtraAc'])->name('extraac');
-        Route::get('/femalegrad', [PageController::class, 'alumniFemaleGrad'])->name('femalegrad');
-        Route::get('/firstmat', [PageController::class, 'alumniFirstMat'])->name('firstmat');
-        Route::get('/medsample', [PageController::class, 'alumniMedSample'])->name('medsample');
-        Route::get('/newcoll', [PageController::class, 'alumniNewColl'])->name('newcoll');
-        Route::get('/roll', [PageController::class, 'alumniRoll'])->name('roll');
-        Route::get('/rosner', [PageController::class, 'alumniRosner'])->name('rosner');
-        Route::get('/vetgrad', [PageController::class, 'alumniVetGrad'])->name('vetgrad');
-        Route::get('/women', [PageController::class, 'alumniWomen'])->name('women');
-        Route::get('/ww1roll', [PageController::class, 'alumniWW1Roll'])->name('ww1roll');
+        Route::get('/earlyvet', [AlumniController::class, 'earlyVet'])->name('earlyvet');
+        Route::get('/extraac', [AlumniController::class, 'extraAc'])->name('extraac');
+        Route::get('/femalegrad', [AlumniController::class, 'femaleGrad'])->name('femalegrad');
+        Route::get('/firstmat', [AlumniController::class, 'firstMat'])->name('firstmat');
+        Route::get('/medsample', [AlumniController::class, 'medSample'])->name('medsample');
+        Route::get('/newcoll', [AlumniController::class, 'newColl'])->name('newcoll');
+        Route::get('/roll', [AlumniController::class, 'roll'])->name('roll');
+        Route::get('/rosner', [AlumniController::class, 'rosner'])->name('rosner');
+        Route::get('/vetgrad', [AlumniController::class, 'vetGrad'])->name('vetgrad');
+        Route::get('/women', [AlumniController::class, 'women'])->name('women');
+        Route::get('/ww1roll', [AlumniController::class, 'ww1Roll'])->name('ww1roll');
     },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'cockburn',
     'route_name' => 'cockburn',
-    'home' => [PageController::class, 'cockburnHome'],
+    'home' => [CockburnController::class, 'home'],
     'mirador_view' => 'cockburn.mirador',
-    'iiif' => [PageController::class, 'mimedIiif'],
+    'iiif' => [MimedController::class, 'iiif'],
     'feedback' => true,
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'coimbra-colls',
     'route_name' => 'coimbra-colls',
-    'home' => [PageController::class, 'coimbraCollsHome'],
+    'home' => [CoimbraCollsController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/virtual-exhibition', [PageController::class, 'coimbraCollsVirtualExhibition'])->name('virtual-exhibition');
+        Route::get('/virtual-exhibition', [CoimbraCollsController::class, 'virtualExhibition'])->name('virtual-exhibition');
     },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'coimbra',
     'route_name' => 'coimbra',
-    'home' => [PageController::class, 'coimbraHome'],
+    'home' => [CoimbraController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/intro', [PageController::class, 'coimbraIntro'])->name('intro');
+        Route::get('/intro', [CoimbraController::class, 'intro'])->name('intro');
     },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'mimed',
     'route_name' => 'mimed',
-    'home' => [PageController::class, 'mimedHome'],
+    'home' => [MimedController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
-    'iiif' => [PageController::class, 'mimedIiif'],
+    'iiif' => [MimedController::class, 'iiif'],
     'feedback' => true,
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'guardbook',
     'route_name' => 'guardbook',
-    'home' => [PageController::class, 'guardbookHome'],
+    'home' => [GuardbookController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
-    'iiif' => [PageController::class, 'mimedIiif'],
+    'iiif' => [MimedController::class, 'iiif'],
     'feedback' => true,
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'art',
     'route_name' => 'art',
-    'home' => [PageController::class, 'artHome'],
+    'home' => [ArtController::class, 'home'],
     'mirador_view' => 'art.mirador',
-    'iiif' => [PageController::class, 'artIiif'],
+    'iiif' => [ArtController::class, 'iiif'],
     'feedback' => false,
     'extra_routes' => function () {
-        Route::get('/focus', [PageController::class, 'artFocus'])->name('focus');
-        Route::get('/comissioning', [PageController::class, 'artComissioning'])->name('comissioning');
-        Route::get('/loans', [PageController::class, 'artLoans'])->name('loans');
+        Route::get('/focus', [ArtController::class, 'focus'])->name('focus');
+        Route::get('/comissioning', [ArtController::class, 'comissioning'])->name('comissioning');
+        Route::get('/loans', [ArtController::class, 'loans'])->name('loans');
     },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'art-on-campus',
     'route_name' => 'public-art',
-    'home' => [PageController::class, 'publicArtHome'],
+    'home' => [PublicArtController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     // The About page content has been folded into the home page (see P002/P005
@@ -165,8 +176,8 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     // route still resolves, and the standalone About blade has been deleted.
     'about' => fn () => redirect('/art-on-campus', 301),
     'extra_routes' => function () {
-        Route::get('/paolozzi', [PageController::class, 'publicArtPaolozzi'])->name('paolozzi');
-        Route::get('/artcollection', [PageController::class, 'publicArtArtCollection'])->name('artcollection');
+        Route::get('/paolozzi', [PublicArtController::class, 'paolozzi'])->name('paolozzi');
+        Route::get('/artcollection', [PublicArtController::class, 'artCollection'])->name('artcollection');
     },
 ]);
 
@@ -189,17 +200,17 @@ Route::get('/public-art{path}', function (Request $request, string $path = '') {
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'stcecilias',
     'route_name' => 'stcecilias',
-    'home' => [PageController::class, 'stceciliasHome'],
+    'home' => [StceciliasController::class, 'home'],
     // Mirror viewer used for IIIF deep-zoom; the Mirador route is registered
     // by the registrar even though the legacy site renders its own
     // OpenSeadragon viewer inline on the record page.
     'mirador_view' => 'stcecilias.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/iiif', [PageController::class, 'stceciliasIiif'])->name('iiif');
+        Route::get('/iiif', [StceciliasController::class, 'iiif'])->name('iiif');
 
         // Legacy "More …" link from the search-results facet sidebar.
-        Route::get('/browse/{facet}', [PageController::class, 'stceciliasBrowse'])
+        Route::get('/browse/{facet}', [StceciliasController::class, 'browse'])
             ->where('facet', '[^/]+')
             ->name('browse');
     },
@@ -208,39 +219,25 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
     'prefix' => 'lhsacasenotes',
     'route_name' => 'lhsacasenotes',
-    'home' => [PageController::class, 'lhsacasenotesHome'],
+    'home' => [LhsacasenotesController::class, 'home'],
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/history', [PageController::class, 'lhsacasenotesHistory'])->name('history');
-        Route::get('/people', [PageController::class, 'lhsacasenotesPeople'])->name('people');
-        Route::get('/tuberculosis', [PageController::class, 'lhsacasenotesTuberculosis'])->name('tuberculosis');
-        Route::get('/achievements', [PageController::class, 'lhsacasenotesAchievements'])->name('achievements');
-        Route::get('/catalogues', [PageController::class, 'lhsacasenotesCatalogues'])->name('catalogues');
+        Route::get('/history', [LhsacasenotesController::class, 'history'])->name('history');
+        Route::get('/people', [LhsacasenotesController::class, 'people'])->name('people');
+        Route::get('/tuberculosis', [LhsacasenotesController::class, 'tuberculosis'])->name('tuberculosis');
+        Route::get('/achievements', [LhsacasenotesController::class, 'achievements'])->name('achievements');
+        Route::get('/catalogues', [LhsacasenotesController::class, 'catalogues'])->name('catalogues');
     },
 ]);
 
-// EERC Sub-Collection Routes
+// EERC Sub-Collection Routes — hand-rolled because the legacy site has its
+// own browse-by-facet endpoint, sidebar facets on every static page, and a
+// bitstream proxy that needs to sit ahead of record.show. Converting it to
+// CollectionRouteRegistrar is part of the wider routes-per-collection
+// follow-up.
 Route::prefix('eerc')->name('eerc.')->group(function () {
-    // EERC Homepage
-    Route::get('/', function () {
-        $repositoryFactory = app(RepositoryFactory::class);
-        $repository = $repositoryFactory->current();
+    Route::get('/', [EercController::class, 'home'])->name('home');
 
-        $subjectFacet = [];
-        $personFacet = [];
-
-        if (method_exists($repository, 'browseTerms')) {
-            $subjectFacet = $repository->browseTerms('Subject', 10);
-            $personFacet = $repository->browseTerms('Person', 10);
-        }
-
-        return view(PageController::eercViewName('eerc.home'), [
-            'subjectFacet' => $subjectFacet,
-            'personFacet' => $personFacet,
-        ]);
-    })->name('home');
-
-    // EERC Search routes
     Route::post('/redirect', [SearchController::class, 'redirect'])->name('search.redirect');
 
     Route::get('/search/{query}/{filters?}', [SearchController::class, 'index'])
@@ -248,34 +245,33 @@ Route::prefix('eerc')->name('eerc.')->group(function () {
         ->where('filters', '.*')
         ->name('search.index');
 
-    Route::get('/browse/{facet}', [PageController::class, 'eercBrowse'])
+    Route::get('/browse/{facet}', [EercController::class, 'browse'])
         ->where('facet', 'Subject|Person')
         ->name('browse');
 
-    // EERC bitstream proxy (must be before record.show so /record/{id}/{seq}/{file} is not swallowed as {type})
+    // Bitstream proxy must be registered before record.show so
+    // /record/{id}/{seq}/{file} is not swallowed as {type}.
     Route::get('/record/{id}/{seq}/{filename}', [RecordController::class, 'proxyImage'])
         ->where('id', '[0-9]+')
         ->where('seq', '[0-9]+')
         ->where('filename', '.+')
         ->name('eerc.record.image');
 
-    // EERC Record detail page
     Route::get('/record/{id}/{type?}', [RecordController::class, 'show'])
         ->where('id', '[0-9]+')
         ->name('record.show');
 
-    // EERC Static pages
-    Route::get('/resp', [PageController::class, 'resp'])->name('resp');
-    Route::get('/about', [PageController::class, 'about'])->name('about');
-    Route::get('/people', [PageController::class, 'people'])->name('people');
-    Route::get('/using', [PageController::class, 'using'])->name('using');
-    Route::get('/overview', [PageController::class, 'overview'])->name('overview');
-    Route::get('/exhibition_gallery', [PageController::class, 'exhibitionGallery'])->name('exhibition_gallery');
-    Route::get('/kids_only', [PageController::class, 'kidsOnly'])->name('kids_only');
-    Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-    Route::get('/accessibility', [PageController::class, 'accessibility'])->name('accessibility');
-    Route::get('/map', [PageController::class, 'map'])->name('map');
-    Route::get('/project-history', [PageController::class, 'projectHistory'])->name('project_history');
-    Route::get('/creative-engagement', [PageController::class, 'creativeEngagement'])->name('creative_engagement');
-    Route::get('/bsl', [PageController::class, 'bsl'])->name('bsl');
+    Route::get('/resp', [EercController::class, 'resp'])->name('resp');
+    Route::get('/about', [EercController::class, 'about'])->name('about');
+    Route::get('/people', [EercController::class, 'people'])->name('people');
+    Route::get('/using', [EercController::class, 'using'])->name('using');
+    Route::get('/overview', [EercController::class, 'overview'])->name('overview');
+    Route::get('/exhibition_gallery', [EercController::class, 'exhibitionGallery'])->name('exhibition_gallery');
+    Route::get('/kids_only', [EercController::class, 'kidsOnly'])->name('kids_only');
+    Route::get('/contact', [EercController::class, 'contact'])->name('contact');
+    Route::get('/accessibility', [EercController::class, 'accessibility'])->name('accessibility');
+    Route::get('/map', [EercController::class, 'map'])->name('map');
+    Route::get('/project-history', [EercController::class, 'projectHistory'])->name('project_history');
+    Route::get('/creative-engagement', [EercController::class, 'creativeEngagement'])->name('creative_engagement');
+    Route::get('/bsl', [EercController::class, 'bsl'])->name('bsl');
 });

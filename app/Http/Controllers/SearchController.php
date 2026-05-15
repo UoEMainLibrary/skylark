@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\RepositoryFactory;
 use App\Support\CollectionUrl;
+use App\Support\CollectionViewResolver;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -21,11 +22,11 @@ class SearchController extends Controller
         $collectionView = "{$collection}.{$view}";
 
         if ($collection === 'eerc') {
-            return PageController::eercViewName($collectionView);
+            return CollectionViewResolver::eerc($collectionView);
         }
 
         if ($collection === 'public-art') {
-            $resolved = PageController::publicArtViewName($collectionView);
+            $resolved = CollectionViewResolver::publicArt($collectionView);
 
             return view()->exists($resolved) ? $resolved : $view;
         }

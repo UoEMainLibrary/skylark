@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PageController;
+use App\Support\CollectionViewResolver;
 use App\Support\PublicArtOverrides;
 
 it('serves the Art on Campus home page at /art-on-campus', function () {
@@ -90,14 +90,14 @@ it('renders the v2 paolozzi page with updated content', function () {
 it('switches to v2 views when public_art_skin_version is 2', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
-    expect(PageController::publicArtViewName('public-art.home'))
+    expect(CollectionViewResolver::publicArt('public-art.home'))
         ->toBe('public-art-v2.home');
 });
 
 it('keeps v1 view name when skin version is 1', function () {
     config(['skylight.public_art_skin_version' => 1]);
 
-    expect(PageController::publicArtViewName('public-art.home'))
+    expect(CollectionViewResolver::publicArt('public-art.home'))
         ->toBe('public-art.home');
 });
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\BitstreamHelper;
 use App\Services\RepositoryFactory;
+use App\Support\CollectionViewResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -22,11 +23,11 @@ class RecordController extends Controller
         $collectionView = "{$collection}.{$view}";
 
         if ($collection === 'eerc') {
-            return PageController::eercViewName($collectionView);
+            return CollectionViewResolver::eerc($collectionView);
         }
 
         if ($collection === 'public-art') {
-            $resolved = PageController::publicArtViewName($collectionView);
+            $resolved = CollectionViewResolver::publicArt($collectionView);
 
             return view()->exists($resolved) ? $resolved : $view;
         }
