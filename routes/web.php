@@ -5,6 +5,7 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
 use App\Routing\CollectionRouteRegistrar;
 use App\Services\RepositoryFactory;
+use App\Support\CollectionViewResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -234,7 +235,7 @@ Route::prefix('eerc')->name('eerc.')->group(function () {
             $personFacet = $repository->browseTerms('Person', 10);
         }
 
-        return view(PageController::eercViewName('eerc.home'), [
+        return view(CollectionViewResolver::eerc('eerc.home'), [
             'subjectFacet' => $subjectFacet,
             'personFacet' => $personFacet,
         ]);

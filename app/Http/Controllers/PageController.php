@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\DSpaceService;
 use App\Services\RepositoryFactory;
 use App\Support\CollectionUrl;
+use App\Support\CollectionViewResolver;
 use App\View\Composers\LhsacasenotesSidebarComposer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -22,11 +23,7 @@ class PageController extends Controller
      */
     public static function eercViewName(string $view): string
     {
-        if (config('skylight.resp_skin_version') === 2) {
-            return preg_replace('/^eerc\./', 'eerc-v2.', $view);
-        }
-
-        return $view;
+        return CollectionViewResolver::eerc($view);
     }
 
     /**
@@ -35,11 +32,7 @@ class PageController extends Controller
      */
     public static function publicArtViewName(string $view): string
     {
-        if ((int) config('skylight.public_art_skin_version') === 2) {
-            return preg_replace('/^public-art\./', 'public-art-v2.', $view);
-        }
-
-        return $view;
+        return CollectionViewResolver::publicArt($view);
     }
 
     /**
