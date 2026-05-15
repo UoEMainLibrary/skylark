@@ -93,8 +93,14 @@
                 </figcaption>
             </figure>
 
+            {{-- Embed the Ideas film via Kaltura's CDN (the URL the client supplied)
+                 rather than the Media Hopper proxy at media.ed.ac.uk/embed/secure/iframe/...
+                 The Media Hopper URL was being gated for some visitors; the Kaltura URL
+                 includes the public widget id (wid=1_65sjprmo) and plays for everyone.
+                 The underlying video entry is still 1_lh3jbplo — same asset, different
+                 access path. --}}
             <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-                <iframe src="https://media.ed.ac.uk/embed/secure/iframe/entryId/1_lh3jbplo/showInfo/false/showTitle/false/embedPlaceholder/true"
+                <iframe src="https://cdnapisec.kaltura.com/p/2010292/sp/201029200/embedIframeJs/uiconf_id/32599141/partner_id/2010292?iframeembed=true&playerId=kaltura_player&entry_id=1_lh3jbplo&flashvars[streamerType]=auto&flashvars[localizationCode]=en&flashvars[sideBarContainer.plugin]=true&flashvars[sideBarContainer.position]=left&flashvars[sideBarContainer.clickToClose]=true&flashvars[chapters.plugin]=true&flashvars[chapters.layout]=vertical&flashvars[chapters.thumbnailRotator]=false&flashvars[streamSelector.plugin]=true&flashvars[EmbedPlayer.SpinnerTarget]=videoHolder&flashvars[dualScreen.plugin]=true&flashvars[Kaltura.addCrossoriginToIframe]=true&wid=1_65sjprmo"
                         title="Video about Ideas by Katie Paterson at the King's Buildings (Media Hopper)"
                         allow="autoplay *; fullscreen *; encrypted-media *"
                         loading="lazy"
@@ -171,7 +177,7 @@
     <div class="mt-8 max-w-3xl">
         <h3 class="text-lg font-semibold text-pa-ink-900">Edinburgh Runestone</h3>
         <p class="mt-2 text-pa-ink-700">
-            Explore the Edinburgh Runestone, on loan from National Museum of Scotland, on campus. More information is
+            Explore the Edinburgh Runestone, on loan courtesy of National Museums Scotland, on campus. More information is
             available at the
             @include('public-art-v2.partials.external-link', [
                 'href' => 'https://www.ssns.org.uk/news/update-on-the-edinburgh-runestone/',

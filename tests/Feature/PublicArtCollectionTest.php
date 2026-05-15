@@ -206,8 +206,13 @@ it('configures every public-art-v2 video iframe with a host-platform name and la
     foreach ($iframes[0] as $iframe) {
         expect(str_contains($iframe, 'title='))->toBeTrue("iframe in {$blade} is missing a title attribute");
         expect(str_contains($iframe, 'loading="lazy"'))->toBeTrue("iframe in {$blade} should be lazy-loaded");
-        $usesKnownHost = str_contains($iframe, 'media.ed.ac.uk') || str_contains($iframe, 'player.vimeo.com');
+        $usesKnownHost = str_contains($iframe, 'media.ed.ac.uk')
+            || str_contains($iframe, 'cdnapisec.kaltura.com')
+            || str_contains($iframe, 'player.vimeo.com');
         if ($usesKnownHost) {
+            // cdnapisec.kaltura.com is the underlying CDN that powers Media
+            // Hopper, so a "Media Hopper" title is the right user-facing label
+            // for both hosts.
             $titleNamesHost = preg_match('/title="[^"]*\b(Media Hopper|Vimeo)\b/i', $iframe) === 1;
             expect($titleNamesHost)->toBeTrue("iframe in {$blade} should name its host platform in title");
         }
@@ -593,7 +598,8 @@ it('shows the Edinburgh Runestone block in the More Information section on the V
     $this->get('/art-on-campus')
         ->assertSuccessful()
         ->assertSee('Edinburgh Runestone')
-        ->assertSee('on loan from National Museum of Scotland')
+        ->assertSee('on loan courtesy of National Museums Scotland')
+        ->assertDontSee('on loan from National Museum of Scotland')
         ->assertSee('https://www.ssns.org.uk/news/update-on-the-edinburgh-runestone/', false)
         ->assertSee('https://www.socantscot.org/wp-content/uploads/2018/04/Runestone-0703-FINAL-web.pdf', false);
 });
