@@ -72,11 +72,10 @@
     $locationName = $record[$locationNameField][0] ?? null;
     $artistName = $record[$artistField][0] ?? null;
 
-    // Optional Mediahopper embed lookup by artwork title (case-insensitive).
-    // Currently only Ideas (Katie Paterson) has a confirmed embed.
-    $videoEmbeds = config('skylight.public_art_videos', [
-        'ideas' => '1_lh3jbplo',
-    ]);
+    // Optional Media Hopper / Kaltura embed lookup by artwork title
+    // (case-insensitive). The map lives in config/collections/public-art.php
+    // under the public_art_videos key.
+    $videoEmbeds = config('skylight.public_art_videos', []);
     $videoKey = strtolower(trim(strip_tags($recordTitle)));
     $videoId = $videoEmbeds[$videoKey] ?? null;
 @endphp

@@ -206,8 +206,13 @@ it('configures every public-art-v2 video iframe with a host-platform name and la
     foreach ($iframes[0] as $iframe) {
         expect(str_contains($iframe, 'title='))->toBeTrue("iframe in {$blade} is missing a title attribute");
         expect(str_contains($iframe, 'loading="lazy"'))->toBeTrue("iframe in {$blade} should be lazy-loaded");
-        $usesKnownHost = str_contains($iframe, 'media.ed.ac.uk') || str_contains($iframe, 'player.vimeo.com');
+        $usesKnownHost = str_contains($iframe, 'media.ed.ac.uk')
+            || str_contains($iframe, 'cdnapisec.kaltura.com')
+            || str_contains($iframe, 'player.vimeo.com');
         if ($usesKnownHost) {
+            // cdnapisec.kaltura.com is the underlying CDN that powers Media
+            // Hopper, so a "Media Hopper" title is the right user-facing label
+            // for both hosts.
             $titleNamesHost = preg_match('/title="[^"]*\b(Media Hopper|Vimeo)\b/i', $iframe) === 1;
             expect($titleNamesHost)->toBeTrue("iframe in {$blade} should name its host platform in title");
         }
@@ -577,6 +582,28 @@ it('configures the public-art-overrides config file with labels and 26 browse en
         ->and($config)->not->toHaveKey('records');
 });
 
+it('maps Public Art record videos by lower-cased artwork title in collection config', function () {
+    $config = require config_path('collections/public-art.php');
+
+    expect($config)->toHaveKey('public_art_videos');
+
+    expect($config['public_art_videos'])->toBe([
+        'ideas' => '1_lh3jbplo',
+        'the next big thing...is a series of little things' => '1_rs2vb5l9',
+        'the basic material is not the word but the letter' => '0_tmmkjuz4',
+        'untitled (rhino head)' => '1_gzno6iwu',
+        'bite / haynes nano stage' => '1_1elsd561',
+    ]);
+
+    // Keys are normalised the same way the record blade normalises lookup
+    // keys: strtolower(trim(strip_tags($recordTitle))). Guard against a
+    // contributor accidentally re-introducing mixed case or stray whitespace
+    // here, which would silently break the lookup.
+    foreach (array_keys($config['public_art_videos']) as $key) {
+        expect($key)->toBe(strtolower(trim(strip_tags($key))));
+    }
+});
+
 it('shows the Ideas spotlight image and credit line on the V2 home page', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
@@ -593,9 +620,25 @@ it('shows the Edinburgh Runestone block in the More Information section on the V
     $this->get('/art-on-campus')
         ->assertSuccessful()
         ->assertSee('Edinburgh Runestone')
-        ->assertSee('on loan from National Museum of Scotland')
+        ->assertSee('on loan courtesy of National Museums Scotland')
+        ->assertDontSee('on loan from National Museum of Scotland')
         ->assertSee('https://www.ssns.org.uk/news/update-on-the-edinburgh-runestone/', false)
         ->assertSee('https://www.socantscot.org/wp-content/uploads/2018/04/Runestone-0703-FINAL-web.pdf', false);
+});
+
+it('does not link to the speculative Public Art Shorts / Podcast cards on the V2 home page', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    // These two links were added speculatively during the V2 reskin
+    // (commit 299d32a) — neither URL was supplied by the client, neither
+    // resolved to live content, and they were removed once flagged. Keep
+    // them out unless the client supplies replacement URLs.
+    $this->get('/art-on-campus')
+        ->assertSuccessful()
+        ->assertDontSee('media.ed.ac.uk/playlist/dedicated', false)
+        ->assertDontSee('heritage-blog.is.ed.ac.uk/category/the-collection-public-art-podcast', false)
+        ->assertDontSee('Public Art Shorts')
+        ->assertDontSee('The Collection: Public Art Podcast');
 });
 
 it('shows the Heritage Collections / CRC block and contact address on the V2 home page', function () {

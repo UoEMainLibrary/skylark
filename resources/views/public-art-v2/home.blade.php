@@ -93,8 +93,14 @@
                 </figcaption>
             </figure>
 
+            {{-- Embed the Ideas film via Kaltura's CDN (the URL the client supplied)
+                 rather than the Media Hopper proxy at media.ed.ac.uk/embed/secure/iframe/...
+                 The Media Hopper URL was being gated for some visitors; the Kaltura URL
+                 includes the public widget id (wid=1_65sjprmo) and plays for everyone.
+                 The underlying video entry is still 1_lh3jbplo — same asset, different
+                 access path. --}}
             <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-                <iframe src="https://media.ed.ac.uk/embed/secure/iframe/entryId/1_lh3jbplo/showInfo/false/showTitle/false/embedPlaceholder/true"
+                <iframe src="https://cdnapisec.kaltura.com/p/2010292/sp/201029200/embedIframeJs/uiconf_id/32599141/partner_id/2010292?iframeembed=true&playerId=kaltura_player&entry_id=1_lh3jbplo&flashvars[streamerType]=auto&flashvars[localizationCode]=en&flashvars[sideBarContainer.plugin]=true&flashvars[sideBarContainer.position]=left&flashvars[sideBarContainer.clickToClose]=true&flashvars[chapters.plugin]=true&flashvars[chapters.layout]=vertical&flashvars[chapters.thumbnailRotator]=false&flashvars[streamSelector.plugin]=true&flashvars[EmbedPlayer.SpinnerTarget]=videoHolder&flashvars[dualScreen.plugin]=true&flashvars[Kaltura.addCrossoriginToIframe]=true&wid=1_65sjprmo"
                         title="Video about Ideas by Katie Paterson at the King's Buildings (Media Hopper)"
                         allow="autoplay *; fullscreen *; encrypted-media *"
                         loading="lazy"
@@ -138,40 +144,20 @@
 </section>
 
 {{-- More information --}}
+{{-- The "Public Art Shorts" Media Hopper playlist and "The Collection:
+     Public Art Podcast" heritage-blog cards used to live here, but neither
+     URL was supplied by the client and neither resolved to live content.
+     They were speculative additions during the Phase 2 V2 reskin
+     (commit 299d32a) and have been removed. If working URLs become
+     available we can reinstate the card grid above the Runestone block. --}}
 <section class="py-14" aria-labelledby="more-info-heading">
     <h2 id="more-info-heading" class="text-2xl font-semibold tracking-tight text-pa-ink-900">More information</h2>
-    <p class="mt-3 max-w-3xl text-pa-ink-700">
-        Watch a series of short videos by the Art Collection and the Cultural Heritage Digitisation Service about some
-        of these sculptures, or listen to a former Heritage Collections intern&rsquo;s podcast series.
-    </p>
 
-    <div class="mt-6 grid gap-4 sm:grid-cols-2">
-        <a href="https://media.ed.ac.uk/playlist/dedicated/229339282/1_4n2k0ev6/1_lh3jbplo"
-           target="_blank" rel="noopener"
-           class="group flex items-start justify-between gap-4 rounded border border-pa-ink-100 bg-white p-5 transition-shadow hover:border-pa-ink-400 hover:shadow-sm">
-            <span class="block">
-                <span class="block text-base font-medium text-pa-ink-900 group-hover:text-pa-accent">Public Art Shorts<span class="sr-only"> (opens in a new tab)</span></span>
-                <span class="mt-1 block text-sm text-pa-ink-700">Short videos on Media Hopper (opens in a new tab)</span>
-            </span>
-            <svg class="mt-1 h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-        </a>
-
-        <a href="https://heritage-blog.is.ed.ac.uk/category/the-collection-public-art-podcast/"
-           target="_blank" rel="noopener"
-           class="group flex items-start justify-between gap-4 rounded border border-pa-ink-100 bg-white p-5 transition-shadow hover:border-pa-ink-400 hover:shadow-sm">
-            <span class="block">
-                <span class="block text-base font-medium text-pa-ink-900 group-hover:text-pa-accent">The Collection: Public Art Podcast<span class="sr-only"> (opens in a new tab)</span></span>
-                <span class="mt-1 block text-sm text-pa-ink-700">Heritage Collections intern series (opens in a new tab)</span>
-            </span>
-            <svg class="mt-1 h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-        </a>
-    </div>
-
-    {{-- Edinburgh Runestone, on loan from National Museum of Scotland (P007 / 2026 edits). --}}
-    <div class="mt-8 max-w-3xl">
+    {{-- Edinburgh Runestone, on loan courtesy of National Museums Scotland (P007 / 2026 edits). --}}
+    <div class="mt-6 max-w-3xl">
         <h3 class="text-lg font-semibold text-pa-ink-900">Edinburgh Runestone</h3>
         <p class="mt-2 text-pa-ink-700">
-            Explore the Edinburgh Runestone, on loan from National Museum of Scotland, on campus. More information is
+            Explore the Edinburgh Runestone, on loan courtesy of National Museums Scotland, on campus. More information is
             available at the
             @include('public-art-v2.partials.external-link', [
                 'href' => 'https://www.ssns.org.uk/news/update-on-the-edinburgh-runestone/',

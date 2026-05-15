@@ -129,4 +129,18 @@ return array_merge($dspaceDefaults, [
     'homepage_fullwidth' => true,
 
     'ga_code' => env('PUBLIC_ART_GA_CODE', 'G-GYJPCFG6QY'),
+
+    /*
+     * Per-record video embeds, keyed by the lower-cased, stripped-of-tags,
+     * trimmed artwork title (matching the lookup in
+     * resources/views/public-art-v2/record/show.blade.php). Values are
+     * Media Hopper / Kaltura entry ids.
+     */
+    'public_art_videos' => [
+        'ideas' => '1_lh3jbplo',
+        'the next big thing...is a series of little things' => '1_rs2vb5l9',
+        'the basic material is not the word but the letter' => '0_tmmkjuz4',
+        'untitled (rhino head)' => '1_gzno6iwu',
+        'bite / haynes nano stage' => '1_1elsd561',
+    ],
 ]);
