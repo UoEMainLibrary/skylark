@@ -531,30 +531,6 @@ class PageController extends Controller
     }
 
     /**
-     * Display the Public Art homepage
-     */
-    public function publicArtHome()
-    {
-        return view(static::publicArtViewName('public-art.home'));
-    }
-
-    /**
-     * Display the Public Art Paolozzi Mosaic Project page
-     */
-    public function publicArtPaolozzi()
-    {
-        return view(static::publicArtViewName('public-art.pages.paolozzi'));
-    }
-
-    /**
-     * Display the Public Art "About the University Art Collections" page
-     */
-    public function publicArtArtCollection()
-    {
-        return view(static::publicArtViewName('public-art.pages.artcollection'));
-    }
-
-    /**
      * Display the Art IIIF page
      */
     public function artIiif()

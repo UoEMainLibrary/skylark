@@ -157,7 +157,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'art-on-campus',
     'route_name' => 'public-art',
-    'home' => [PageController::class, 'publicArtHome'],
+    'home' => [App\Http\Controllers\Collections\PublicArt\PageController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     // The About page content has been folded into the home page (see P002/P005
@@ -166,8 +166,8 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     // route still resolves, and the standalone About blade has been deleted.
     'about' => fn () => redirect('/art-on-campus', 301),
     'extra_routes' => function () {
-        Route::get('/paolozzi', [PageController::class, 'publicArtPaolozzi'])->name('paolozzi');
-        Route::get('/artcollection', [PageController::class, 'publicArtArtCollection'])->name('artcollection');
+        Route::get('/paolozzi', [App\Http\Controllers\Collections\PublicArt\PageController::class, 'paolozzi'])->name('paolozzi');
+        Route::get('/artcollection', [App\Http\Controllers\Collections\PublicArt\PageController::class, 'artCollection'])->name('artcollection');
     },
 ]);
 
