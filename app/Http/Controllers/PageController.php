@@ -332,40 +332,6 @@ class PageController extends Controller
     }
 
     /**
-     * Display the MIMEd homepage with browse facets
-     */
-    public function mimedHome()
-    {
-        $repository = $this->repositoryFactory->current();
-
-        $facets = [];
-        $baseSearch = CollectionUrl::url('search/*:*');
-        $configFilters = config('skylight.filters', []);
-
-        try {
-            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
-            $facets = $results['facets'] ?? [];
-        } catch (\Exception $e) {
-            // Solr unreachable — render without facets
-        }
-
-        return view('mimed.home', [
-            'facets' => $facets,
-            'base_search' => $baseSearch,
-            'base_parameters' => '',
-            'delimiter' => config('skylight.filter_delimiter'),
-        ]);
-    }
-
-    /**
-     * Display the MIMEd IIIF page
-     */
-    public function mimedIiif()
-    {
-        return view('mimed.pages.iiif');
-    }
-
-    /**
      * Display the Coimbra Colls Collection homepage
      */
     public function coimbraCollsHome()

@@ -96,7 +96,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'route_name' => 'cockburn',
     'home' => [PageController::class, 'cockburnHome'],
     'mirador_view' => 'cockburn.mirador',
-    'iiif' => [PageController::class, 'mimedIiif'],
+    'iiif' => [App\Http\Controllers\Collections\Mimed\PageController::class, 'iiif'],
     'feedback' => true,
 ]);
 
@@ -125,9 +125,9 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'mimed',
     'route_name' => 'mimed',
-    'home' => [PageController::class, 'mimedHome'],
+    'home' => [App\Http\Controllers\Collections\Mimed\PageController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
-    'iiif' => [PageController::class, 'mimedIiif'],
+    'iiif' => [App\Http\Controllers\Collections\Mimed\PageController::class, 'iiif'],
     'feedback' => true,
 ]);
 
@@ -136,7 +136,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'route_name' => 'guardbook',
     'home' => [PageController::class, 'guardbookHome'],
     'mirador_view' => 'mimed.mirador',
-    'iiif' => [PageController::class, 'mimedIiif'],
+    'iiif' => [App\Http\Controllers\Collections\Mimed\PageController::class, 'iiif'],
     'feedback' => true,
 ]);
 
