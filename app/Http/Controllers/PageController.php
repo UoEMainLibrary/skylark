@@ -522,46 +522,6 @@ class PageController extends Controller
         ]);
     }
 
-    /**
-     * Display the Art Collection homepage
-     */
-    public function artHome()
-    {
-        return view('art.home');
-    }
-
-    /**
-     * Display the Art IIIF page
-     */
-    public function artIiif()
-    {
-        return view('art.pages.iiif');
-    }
-
-    /**
-     * Display the Art Focus page
-     */
-    public function artFocus()
-    {
-        return view('art.pages.focus');
-    }
-
-    /**
-     * Display the Art Commissioning page
-     */
-    public function artComissioning()
-    {
-        return view('art.pages.comissioning');
-    }
-
-    /**
-     * Display the Art Loans page
-     */
-    public function artLoans()
-    {
-        return view('art.pages.loans');
-    }
-
     /** - ALUMNI Static Pages
      * Display the Art Loans page
      */

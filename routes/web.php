@@ -143,14 +143,15 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'art',
     'route_name' => 'art',
-    'home' => [PageController::class, 'artHome'],
+    'home' => [App\Http\Controllers\Collections\Art\PageController::class, 'home'],
     'mirador_view' => 'art.mirador',
-    'iiif' => [PageController::class, 'artIiif'],
+    'iiif' => [App\Http\Controllers\Collections\Art\PageController::class, 'iiif'],
     'feedback' => false,
     'extra_routes' => function () {
-        Route::get('/focus', [PageController::class, 'artFocus'])->name('focus');
-        Route::get('/comissioning', [PageController::class, 'artComissioning'])->name('comissioning');
-        Route::get('/loans', [PageController::class, 'artLoans'])->name('loans');
+        $controller = App\Http\Controllers\Collections\Art\PageController::class;
+        Route::get('/focus', [$controller, 'focus'])->name('focus');
+        Route::get('/comissioning', [$controller, 'comissioning'])->name('comissioning');
+        Route::get('/loans', [$controller, 'loans'])->name('loans');
     },
 ]);
 
