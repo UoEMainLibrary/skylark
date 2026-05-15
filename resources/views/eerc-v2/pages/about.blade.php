@@ -7,7 +7,11 @@
     <div class="lg:col-span-3">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">About</h1>
         <div class="mt-6 prose prose-lg max-w-none">
-            <p>The Regional Ethnology of Scotland Archive Project preserves and shares oral history recordings from communities across Scotland.</p>
+            @if($cmsEnabled && $cms)
+                {!! $cms->body !!}
+            @else
+                <p>The Regional Ethnology of Scotland Archive Project preserves and shares oral history recordings from communities across Scotland.</p>
+            @endif
         </div>
     </div>
 

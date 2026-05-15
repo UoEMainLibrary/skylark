@@ -23,8 +23,11 @@
 
             {{-- Text content (right of photos) --}}
             <div class="relative z-10 min-w-0">
+                {{-- Always-CMS page (the only one): static fallback was
+                     removed when this view was first built. See
+                     config('cms.pages.eerc.home.always_cms'). --}}
                 <div class="prose prose-lg max-w-none">
-                    {!! $respHomeBodyHtml !!}
+                    {!! $cms?->body ?? '' !!}
                 </div>
 
                 <div class="not-prose mt-8 flex justify-center">

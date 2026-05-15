@@ -14,9 +14,15 @@ it('serves Art on Campus static pages', function (string $path) {
     'accessibility',
     'takedown',
     'paolozzi',
-    'artcollection',
     'feedback',
 ]);
+
+it('301-redirects the retired /art-on-campus/artcollection page to /art', function () {
+    $response = $this->get('/art-on-campus/artcollection');
+
+    $response->assertStatus(301);
+    $response->assertRedirect('/art');
+});
 
 it('301-redirects the legacy /public-art prefix to /art-on-campus', function (string $from, string $to) {
     $response = $this->get($from);
@@ -168,7 +174,6 @@ it('discloses every public-art-v2 external link as opening in a new tab', functi
     'public-art-v2/home.blade.php',
     'public-art-v2/record/show.blade.php',
     'public-art-v2/pages/accessibility.blade.php',
-    'public-art-v2/pages/artcollection.blade.php',
     'public-art-v2/pages/feedback.blade.php',
     'public-art-v2/pages/licensing.blade.php',
     'public-art-v2/pages/paolozzi.blade.php',

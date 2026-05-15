@@ -1,12 +1,19 @@
 <?php
 
-namespace App\Filament\Resources\RespHomeContents\Tables;
+namespace App\Filament\Resources\CmsPages\Tables;
 
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class RespHomeContentsTable
+/**
+ * Shared table for both per-collection CMS resources.
+ *
+ * Pages can only ever be edited (not created or deleted) from the admin —
+ * the catalogue of managed pages lives in config/cms.php and the rows
+ * themselves are seeded from CmsPagesSeeder.
+ */
+class CmsPagesTable
 {
     public static function configure(Table $table): Table
     {
@@ -20,6 +27,7 @@ class RespHomeContentsTable
                     ->dateTime()
                     ->sortable(),
             ])
+            ->defaultSort('title')
             ->filters([])
             ->recordActions([
                 EditAction::make(),

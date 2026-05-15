@@ -22,12 +22,4 @@ class PageController extends Controller
     {
         return view(CollectionViewResolver::publicArt('public-art.pages.paolozzi'));
     }
-
-    /**
-     * Display the Public Art "About the University Art Collections" page.
-     */
-    public function artCollection()
-    {
-        return view(CollectionViewResolver::publicArt('public-art.pages.artcollection'));
-    }
 }
