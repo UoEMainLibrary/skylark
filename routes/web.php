@@ -177,7 +177,11 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'about' => fn () => redirect('/art-on-campus', 301),
     'extra_routes' => function () {
         Route::get('/paolozzi', [PublicArtController::class, 'paolozzi'])->name('paolozzi');
-        Route::get('/artcollection', [PublicArtController::class, 'artCollection'])->name('artcollection');
+        // The standalone "University Art Collection" page was retired in
+        // favour of linking the wider catalogue at /art directly from
+        // the primary nav. The named `public-art.artcollection` route
+        // is preserved as a 301 so old bookmarks resolve cleanly.
+        Route::get('/artcollection', fn () => redirect('/art', 301))->name('artcollection');
     },
 ]);
 

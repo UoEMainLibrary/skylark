@@ -31,7 +31,7 @@ it('lists every CMS-managed Public Art page in the registry', function (): void 
     $pages = config('cms.pages.public-art');
 
     expect(array_keys($pages))->toEqualCanonicalizing([
-        'artcollection', 'licensing', 'takedown', 'accessibility', 'feedback',
+        'home', 'licensing', 'takedown', 'accessibility', 'feedback',
     ]);
 });
 
@@ -45,19 +45,19 @@ it('exposes the configured image count per page', function (): void {
     expect(Cms::pageImageCount('eerc', 'resp'))->toBe(1);
     expect(Cms::pageImageCount('eerc', 'project-history'))->toBe(1);
     expect(Cms::pageImageCount('eerc', 'about'))->toBe(0);
-    expect(Cms::pageImageCount('public-art', 'artcollection'))->toBe(0);
+    expect(Cms::pageImageCount('public-art', 'licensing'))->toBe(0);
 });
 
 it('shouldRenderCms is true when the global toggle is on', function (): void {
     config(['cms.enabled' => true]);
 
-    expect(Cms::shouldRenderCms('public-art', 'artcollection'))->toBeTrue();
+    expect(Cms::shouldRenderCms('public-art', 'licensing'))->toBeTrue();
 });
 
 it('shouldRenderCms is false when the global toggle is off and the page is not always_cms', function (): void {
     config(['cms.enabled' => false]);
 
-    expect(Cms::shouldRenderCms('public-art', 'artcollection'))->toBeFalse();
+    expect(Cms::shouldRenderCms('public-art', 'licensing'))->toBeFalse();
 });
 
 it('shouldRenderCms is true for always_cms pages even when the toggle is off', function (): void {
@@ -102,10 +102,10 @@ it('preserves existing rows on reseed (firstOrCreate keyed on collection+slug)',
 it('renders the static fallback when CMS_ENABLED is false', function (): void {
     config(['cms.enabled' => false]);
 
-    $html = view('public-art-v2.pages.artcollection')->render();
+    $html = view('public-art-v2.pages.licensing')->render();
 
-    // String from the static @else branch in artcollection.blade.php.
-    expect($html)->toContain('The University of Edinburgh has been collecting art for over 350 years');
+    // String from the static @else branch in licensing.blade.php.
+    expect($html)->toContain('Unless explicitly stated otherwise, all material on this website is copyright');
 });
 
 it('renders the CMS body when CMS_ENABLED is true and a row exists', function (): void {
@@ -113,23 +113,59 @@ it('renders the CMS body when CMS_ENABLED is true and a row exists', function ()
 
     CmsPage::query()->create([
         'collection' => 'public-art',
-        'slug' => 'artcollection',
-        'title' => 'University Art Collection',
+        'slug' => 'licensing',
+        'title' => 'Licensing & Copyright',
         'body' => '<p>cms-marker beta-77</p>',
     ]);
 
-    $html = view('public-art-v2.pages.artcollection')->render();
+    $html = view('public-art-v2.pages.licensing')->render();
 
     expect($html)->toContain('cms-marker beta-77')
-        ->and($html)->not->toContain('The University of Edinburgh has been collecting art');
+        ->and($html)->not->toContain('Unless explicitly stated otherwise, all material on this website is copyright');
 });
 
 it('falls back to static HTML when the CMS row is missing even with the toggle on', function (): void {
     config(['cms.enabled' => true]);
 
-    $html = view('public-art-v2.pages.artcollection')->render();
+    $html = view('public-art-v2.pages.licensing')->render();
 
-    expect($html)->toContain('The University of Edinburgh has been collecting art');
+    expect($html)->toContain('Unless explicitly stated otherwise, all material on this website is copyright');
+});
+
+it('renders the CMS welcome paragraph on the Public Art home when the toggle is on', function (): void {
+    config(['cms.enabled' => true]);
+
+    CmsPage::query()->create([
+        'collection' => 'public-art',
+        'slug' => 'home',
+        'title' => 'Home',
+        'body' => '<p>cms-marker public-art-home-77</p>',
+    ]);
+
+    $html = view('public-art-v2.home')->render();
+
+    expect($html)->toContain('cms-marker public-art-home-77')
+        ->and($html)->not->toContain('Ranging from historic memorials');
+});
+
+it('keeps the lead sentence and Spotlight block on the Public Art home regardless of the toggle', function (): void {
+    config(['cms.enabled' => true]);
+
+    CmsPage::query()->create([
+        'collection' => 'public-art',
+        'slug' => 'home',
+        'title' => 'Home',
+        'body' => '<p>cms-marker public-art-home-77</p>',
+    ]);
+
+    $html = view('public-art-v2.home')->render();
+
+    // Lead sentence above the editable block stays static. Blade doesn't
+    // decode &rsquo; so the literal HTML entity is what reaches the page.
+    expect($html)->toContain('Artworks from the University of Edinburgh&rsquo;s Art Collection')
+        // Spotlight section below the editable block stays static.
+        ->and($html)->toContain('Spotlight')
+        ->and($html)->toContain('Ideas at the King');
 });
 
 it('always renders the CMS body for the eerc home (always_cms) regardless of the toggle', function (): void {
@@ -208,13 +244,13 @@ it('scopes each Filament resource to its collection', function (): void {
     ]);
     CmsPage::query()->create([
         'collection' => 'public-art',
-        'slug' => 'artcollection',
-        'title' => 'University Art Collection',
+        'slug' => 'licensing',
+        'title' => 'Licensing & Copyright',
         'body' => '<p>public art body</p>',
     ]);
 
     expect(RespCmsPageResource::getEloquentQuery()->pluck('slug')->all())
         ->toBe(['about']);
     expect(PublicArtCmsPageResource::getEloquentQuery()->pluck('slug')->all())
-        ->toBe(['artcollection']);
+        ->toBe(['licensing']);
 });

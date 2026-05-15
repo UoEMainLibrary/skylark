@@ -15,22 +15,30 @@
                 Artworks from the University of Edinburgh&rsquo;s Art Collection,
                 visible across campus.
             </p>
+            {{-- "Welcome" prose: editable via Filament (Public Art > Pages > Home).
+                 The lead sentence above and the Spotlight / Runestone / CRC sections
+                 below stay in the template — see config/cms.php and PR #40 for the
+                 narrow scope of what's exposed to the CMS for this page. --}}
             <div class="mt-6 max-w-3xl space-y-4 text-lg leading-relaxed text-pa-ink-700">
-                <p>
-                    Ranging from historic memorials to contemporary creative interventions, Art on Campus includes externally
-                    sited sculptures and commissioned installations which reflect on, and respond to, the history and physical
-                    environment of the University.
-                </p>
-                <p>
-                    The University Art Collection manages both permanent and temporary commissions connected to campus and
-                    research at the University, as well as overseeing the movement and presentation of works from the
-                    Collection across University buildings. More information is available on the
-                    @include('public-art-v2.partials.external-link', [
-                        'href' => 'https://collections.ed.ac.uk/art',
-                        'label' => 'Commission and Loans pages',
-                        'class' => 'text-pa-accent',
-                    ]).
-                </p>
+                @if($cmsEnabled && $cms)
+                    {!! $cms->body !!}
+                @else
+                    <p>
+                        Ranging from historic memorials to contemporary creative interventions, Art on Campus includes externally
+                        sited sculptures and commissioned installations which reflect on, and respond to, the history and physical
+                        environment of the University.
+                    </p>
+                    <p>
+                        The University Art Collection manages both permanent and temporary commissions connected to campus and
+                        research at the University, as well as overseeing the movement and presentation of works from the
+                        Collection across University buildings. More information is available on the
+                        @include('public-art-v2.partials.external-link', [
+                            'href' => 'https://collections.ed.ac.uk/art',
+                            'label' => 'Commission and Loans pages',
+                            'class' => 'text-pa-accent',
+                        ]).
+                    </p>
+                @endif
             </div>
         </div>
 

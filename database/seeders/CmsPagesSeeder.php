@@ -118,9 +118,9 @@ class CmsPagesSeeder extends Seeder
 
         yield [
             'collection' => 'public-art',
-            'slug' => 'artcollection',
-            'title' => 'University Art Collection',
-            'body' => $this->publicArtArtCollectionBody(),
+            'slug' => 'home',
+            'title' => 'Home (welcome paragraph only)',
+            'body' => $this->publicArtHomeBody(),
         ];
 
         yield [
@@ -233,20 +233,19 @@ HTML;
 HTML;
     }
 
-    protected function publicArtArtCollectionBody(): string
+    protected function publicArtHomeBody(): string
     {
-        $loansLink = $this->extLink('https://collections.ed.ac.uk/art', 'Commission and Loans pages');
+        // Verbatim "Welcome" prose from public-art-v2/home.blade.php (the
+        // two paragraphs below the lead sentence and above the Spotlight
+        // section). The lead sentence and the Spotlight / Runestone /
+        // CRC blocks below stay in the template — they each have
+        // bespoke layout, external embeds or config dependencies that
+        // don't belong in a single rich-text body.
+        $loansLink = $this->extLink('https://collections.ed.ac.uk/art', 'Commission and Loans pages', 'text-pa-accent');
 
         return <<<HTML
-<p>The University of Edinburgh has been collecting art for over 350 years. The Art Collection comprises over 8,500 artworks including paintings, sculptures, prints, drawings, photographs, ceramics, glass and installations.</p>
-<p>Highlights include works by Eduardo Paolozzi, William McTaggart, Sir Henry Raeburn, John Bellany, Joan Eardley, Anne Redpath, Elizabeth Blackadder, and Stephen Conroy, among many others.</p>
-<p>The Collection is used in teaching, research and public engagement, and is displayed across the University&rsquo;s campuses for the benefit of staff, students and visitors.</p>
-
-<h2>Commissions and loans</h2>
-<p>The University Art Collection manages both permanent and temporary art commissions and campus displays for University buildings and as part of research. More information is available on the {$loansLink}.</p>
-
-<h2>Contact</h2>
-<p>For more information please contact <a href="mailto:art.collection@ed.ac.uk">art.collection@ed.ac.uk</a>.</p>
+<p>Ranging from historic memorials to contemporary creative interventions, Art on Campus includes externally sited sculptures and commissioned installations which reflect on, and respond to, the history and physical environment of the University.</p>
+<p>The University Art Collection manages both permanent and temporary commissions connected to campus and research at the University, as well as overseeing the movement and presentation of works from the Collection across University buildings. More information is available on the {$loansLink}.</p>
 HTML;
     }
 

@@ -65,8 +65,8 @@ return [
         ],
 
         'public-art' => [
-            'artcollection' => [
-                'title' => 'University Art Collection',
+            'home' => [
+                'title' => 'Home (welcome paragraph only)',
                 'images' => 0,
             ],
             'licensing' => [

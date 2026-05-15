@@ -53,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
                 'bsl' => 'eerc-v2.pages.bsl',
             ],
             'public-art' => [
-                'artcollection' => 'public-art-v2.pages.artcollection',
+                'home' => 'public-art-v2.home',
                 'licensing' => 'public-art-v2.pages.licensing',
                 'takedown' => 'public-art-v2.pages.takedown',
                 'accessibility' => 'public-art-v2.pages.accessibility',
