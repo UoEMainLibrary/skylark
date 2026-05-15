@@ -4,8 +4,6 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
 use App\Routing\CollectionRouteRegistrar;
-use App\Services\RepositoryFactory;
-use App\Support\CollectionViewResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -223,28 +221,16 @@ CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
     },
 ]);
 
-// EERC Sub-Collection Routes
+// EERC Sub-Collection Routes — hand-rolled because the legacy site has its
+// own browse-by-facet endpoint, sidebar facets on every static page, and a
+// bitstream proxy that needs to sit ahead of record.show. Converting it to
+// CollectionRouteRegistrar is part of the wider routes-per-collection
+// follow-up.
 Route::prefix('eerc')->name('eerc.')->group(function () {
-    // EERC Homepage
-    Route::get('/', function () {
-        $repositoryFactory = app(RepositoryFactory::class);
-        $repository = $repositoryFactory->current();
+    $controller = App\Http\Controllers\Collections\Eerc\PageController::class;
 
-        $subjectFacet = [];
-        $personFacet = [];
+    Route::get('/', [$controller, 'home'])->name('home');
 
-        if (method_exists($repository, 'browseTerms')) {
-            $subjectFacet = $repository->browseTerms('Subject', 10);
-            $personFacet = $repository->browseTerms('Person', 10);
-        }
-
-        return view(CollectionViewResolver::eerc('eerc.home'), [
-            'subjectFacet' => $subjectFacet,
-            'personFacet' => $personFacet,
-        ]);
-    })->name('home');
-
-    // EERC Search routes
     Route::post('/redirect', [SearchController::class, 'redirect'])->name('search.redirect');
 
     Route::get('/search/{query}/{filters?}', [SearchController::class, 'index'])
@@ -252,34 +238,33 @@ Route::prefix('eerc')->name('eerc.')->group(function () {
         ->where('filters', '.*')
         ->name('search.index');
 
-    Route::get('/browse/{facet}', [PageController::class, 'eercBrowse'])
+    Route::get('/browse/{facet}', [$controller, 'browse'])
         ->where('facet', 'Subject|Person')
         ->name('browse');
 
-    // EERC bitstream proxy (must be before record.show so /record/{id}/{seq}/{file} is not swallowed as {type})
+    // Bitstream proxy must be registered before record.show so
+    // /record/{id}/{seq}/{file} is not swallowed as {type}.
     Route::get('/record/{id}/{seq}/{filename}', [RecordController::class, 'proxyImage'])
         ->where('id', '[0-9]+')
         ->where('seq', '[0-9]+')
         ->where('filename', '.+')
         ->name('eerc.record.image');
 
-    // EERC Record detail page
     Route::get('/record/{id}/{type?}', [RecordController::class, 'show'])
         ->where('id', '[0-9]+')
         ->name('record.show');
 
-    // EERC Static pages
-    Route::get('/resp', [PageController::class, 'resp'])->name('resp');
-    Route::get('/about', [PageController::class, 'about'])->name('about');
-    Route::get('/people', [PageController::class, 'people'])->name('people');
-    Route::get('/using', [PageController::class, 'using'])->name('using');
-    Route::get('/overview', [PageController::class, 'overview'])->name('overview');
-    Route::get('/exhibition_gallery', [PageController::class, 'exhibitionGallery'])->name('exhibition_gallery');
-    Route::get('/kids_only', [PageController::class, 'kidsOnly'])->name('kids_only');
-    Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-    Route::get('/accessibility', [PageController::class, 'accessibility'])->name('accessibility');
-    Route::get('/map', [PageController::class, 'map'])->name('map');
-    Route::get('/project-history', [PageController::class, 'projectHistory'])->name('project_history');
-    Route::get('/creative-engagement', [PageController::class, 'creativeEngagement'])->name('creative_engagement');
-    Route::get('/bsl', [PageController::class, 'bsl'])->name('bsl');
+    Route::get('/resp', [$controller, 'resp'])->name('resp');
+    Route::get('/about', [$controller, 'about'])->name('about');
+    Route::get('/people', [$controller, 'people'])->name('people');
+    Route::get('/using', [$controller, 'using'])->name('using');
+    Route::get('/overview', [$controller, 'overview'])->name('overview');
+    Route::get('/exhibition_gallery', [$controller, 'exhibitionGallery'])->name('exhibition_gallery');
+    Route::get('/kids_only', [$controller, 'kidsOnly'])->name('kids_only');
+    Route::get('/contact', [$controller, 'contact'])->name('contact');
+    Route::get('/accessibility', [$controller, 'accessibility'])->name('accessibility');
+    Route::get('/map', [$controller, 'map'])->name('map');
+    Route::get('/project-history', [$controller, 'projectHistory'])->name('project_history');
+    Route::get('/creative-engagement', [$controller, 'creativeEngagement'])->name('creative_engagement');
+    Route::get('/bsl', [$controller, 'bsl'])->name('bsl');
 });
