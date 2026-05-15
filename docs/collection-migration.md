@@ -84,7 +84,7 @@ Under **`resources/views/{collection}/`**:
 | Home | `home.blade.php` |
 | Static pages | `pages/about.blade.php`, etc. |
 
-Controllers resolve views with the pattern **`{collection}.{path}`** when that view exists (see [`SearchController::collectionView()`](../app/Http/Controllers/SearchController.php), [`RecordController::collectionView()`](../app/Http/Controllers/RecordController.php)). **EERC** also maps `eerc.*` → `eerc-v2.*` when `RESP_SKIN_VERSION=2` via [`PageController::eercViewName()`](../app/Http/Controllers/PageController.php).
+Controllers resolve views with the pattern **`{collection}.{path}`** when that view exists (see [`SearchController::collectionView()`](../app/Http/Controllers/SearchController.php), [`RecordController::collectionView()`](../app/Http/Controllers/RecordController.php)). **EERC** also maps `eerc.*` → `eerc-v2.*` when `RESP_SKIN_VERSION=2` via [`CollectionViewResolver::eerc()`](../app/Support/CollectionViewResolver.php).
 
 Use `url('/foo/search/...')` or named routes so links stay prefix-safe.
 

@@ -2,351 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\RepositoryFactory;
 use App\Support\CollectionViewResolver;
 use Illuminate\Support\Facades\Http;
-use Illuminate\View\View;
 
+/**
+ * Root-domain pages and the small set of static pages that every collection
+ * shares (about / feedback / licensing / takedown / accessibility). Those
+ * shared actions auto-resolve to `{collection}.pages.<name>` when the
+ * matching view exists, otherwise fall back to the generic `pages.<name>`
+ * Blade. Per-collection logic lives under
+ * `App\Http\Controllers\Collections\{Name}\PageController`.
+ */
 class PageController extends Controller
 {
-    public function __construct(
-        protected RepositoryFactory $repositoryFactory
-    ) {}
+    /*
+    |--------------------------------------------------------------------------
+    | Shared static pages.
+    |
+    | Each one resolves to `{collection}.pages.<name>` when that view exists,
+    | with `pages.<name>` as the cross-collection fallback. Public Art has
+    | the additional skin-version dance for v1 vs v2 templates.
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * Resolve an EERC view name based on the active skin version.
-     * e.g. 'eerc.home' becomes 'eerc-v2.home' when skin version is 2.
-     */
-    public static function eercViewName(string $view): string
-    {
-        return CollectionViewResolver::eerc($view);
-    }
-
-    /**
-     * Resolve a Public Art view name based on the active skin version.
-     * e.g. 'public-art.home' becomes 'public-art-v2.home' when skin version is 2.
-     */
-    public static function publicArtViewName(string $view): string
-    {
-        return CollectionViewResolver::publicArt($view);
-    }
-
-    /**
-     * Display the About page
-     */
     public function about()
     {
+        return $this->resolveSharedPage('about');
+    }
+
+    public function feedback()
+    {
+        return $this->resolveSharedPage('feedback');
+    }
+
+    public function licensing()
+    {
+        return $this->resolveSharedPage('licensing');
+    }
+
+    public function takedown()
+    {
+        return $this->resolveSharedPage('takedown');
+    }
+
+    public function accessibility()
+    {
+        return $this->resolveSharedPage('accessibility');
+    }
+
+    /**
+     * Resolve a shared static page name (e.g. "about") to a collection-aware
+     * Blade view, falling back to the generic `pages.<name>` template.
+     */
+    protected function resolveSharedPage(string $name)
+    {
         $collection = config('app.current_collection', 'clds');
-        $collectionView = "{$collection}.pages.about";
+        $collectionView = "{$collection}.pages.{$name}";
 
         if ($collection === 'public-art') {
-            $collectionView = static::publicArtViewName($collectionView);
+            $collectionView = CollectionViewResolver::publicArt($collectionView);
         }
 
         return view()->exists($collectionView)
             ? view($collectionView)
-            : view('pages.about');
+            : view("pages.{$name}");
     }
+
     /*
-    public function about()
-    {
-        $collection = config('app.current_collection', 'clds');
-
-        if ($collection === 'eerc') {
-            return $this->eercPageWithSidebar('eerc.pages.about');
-        }
-
-        if ($collection === 'mimed') {
-            return view('mimed.pages.about');
-        }
-
-        if ($collection === 'openbooks') {
-            return view('openbooks.pages.about');
-        }
-
-        if ($collection === 'art') {
-            return view('art.pages.about');
-        }
-
-        if ($collection === 'guardbook') {
-            return view('guardbook.pages.about');
-        }
-
-        if ($collection === 'coimbra-colls') {
-            return view('coimbra-colls.pages.about');
-        }
-
-        if ($collection === 'coimbra') {
-            return view('coimbra.pages.about');
-        }
-
-        if ($collection === 'lhsacasenotes') {
-            return view('lhsacasenotes.pages.about');
-        }
-
-        return view('pages.about');
-    }
+    |--------------------------------------------------------------------------
+    | Root-domain-only pages (collection-agnostic).
+    |--------------------------------------------------------------------------
     */
 
-    /**
-     * Display the Feedback page
-     */
-    public function feedback()
-    {
-        $collection = config('app.current_collection', 'clds');
-        $collectionView = "{$collection}.pages.feedback";
-
-        if ($collection === 'public-art') {
-            $collectionView = static::publicArtViewName($collectionView);
-        }
-
-        return view()->exists($collectionView)
-            ? view($collectionView)
-            : view('pages.feedback');
-    }
-
-    /**
-     * Display the Feedback page
-     */
-    /*
-    public function feedback()
-    {
-       $collection = config('app.current_collection', 'clds');
-
-       if ($collection === 'mimed') {
-           return view('mimed.pages.feedback');
-       }
-
-       if ($collection === 'openbooks') {
-           return view('openbooks.pages.feedback');
-       }
-
-       if ($collection === 'guardbook') {
-           return view('guardbook.pages.feedback');
-       }
-
-       if ($collection === 'coimbra-colls') {
-           return view('coimbra-colls.pages.feedback');
-       }
-
-       if ($collection === 'coimbra') {
-           return view('coimbra.pages.feedback');
-       }
-
-       return view('pages.feedback');
-    }
-    */
-
-    /**
-     * Display the Mahabharata Scroll page
-     */
     public function mahabharata()
     {
         return view('pages.mahabharata');
     }
 
-    /**
-     * Display the Collections as Data page
-     */
     public function collectionsAsData()
     {
         return view('pages.collections-as-data');
     }
 
-    /**
-     * Display the Argyle Meeting Room page
-     */
     public function argyleMeeting()
     {
         return view('pages.argyle-meeting');
     }
 
-    /**
-     * Display the Court of Session Papers page
-     */
     public function csp()
     {
         return view('pages.csp');
     }
 
-    /**
-     * Display the Directory of Collections page
-     */
     public function directory()
     {
         return view('pages.directory');
     }
 
-    /**
-     * Display the Licensing page
-     */
-    public function licensing()
-    {
-        $collection = config('app.current_collection', 'clds');
-        $collectionView = "{$collection}.pages.licensing";
-
-        if ($collection === 'public-art') {
-            $collectionView = static::publicArtViewName($collectionView);
-        }
-
-        return view()->exists($collectionView)
-            ? view($collectionView)
-            : view('pages.licensing');
-    }
-
-    /*
-    public function licensing()
-    {
-        $collection = config('app.current_collection', 'clds');
-
-        if ($collection === 'mimed') {
-            return view('mimed.pages.licensing');
-        }
-
-        if ($collection === 'openbooks') {
-            return view('openbooks.pages.licensing');
-        }
-
-        if ($collection === 'art') {
-            return view('art.pages.licensing');
-        }
-
-        if ($collection === 'guardbook') {
-            return view('guardbook.pages.licensing');
-        }
-
-        if ($collection === 'coimbra') {
-            return view('coimbra.pages.licensing');
-        }
-
-        if ($collection === 'lhsacasenotes') {
-            return view('coimbra.pages.licensing');
-        }
-        return view('pages.licensing');
-    }
-    */
-
-    /**
-     * Display the Participate page
-     */
     public function participate()
     {
         return view('pages.participate');
     }
 
     /**
-     * Display the Takedown Policy page
-     */
-
-    /**
-     * Display the Takedown page
-     */
-    public function takedown()
-    {
-        $collection = config('app.current_collection', 'clds');
-        $collectionView = "{$collection}.pages.takedown";
-
-        if ($collection === 'public-art') {
-            $collectionView = static::publicArtViewName($collectionView);
-        }
-
-        return view()->exists($collectionView)
-            ? view($collectionView)
-            : view('pages.takedown');
-    }
-    /*
-    public function takedown()
-    {
-        $collection = config('app.current_collection', 'clds');
-
-        if ($collection === 'mimed') {
-            return view('mimed.pages.takedown');
-        }
-
-        if ($collection === 'openbooks') {
-            return view('openbooks.pages.takedown');
-        }
-
-        if ($collection === 'art') {
-            return view('art.pages.takedown');
-        }
-
-        if ($collection === 'guardbook') {
-            return view('guardbook.pages.takedown');
-        }
-
-        if ($collection === 'coimbra') {
-            return view('coimbra.pages.takedown');
-        }
-
-        if ($collection === 'lhsacasenotes') {
-            return view('lhsacasenotes.pages.takedown');
-        }
-
-
-        return view('pages.takedown');
-    }
-        */
-
-    /**
-     * Display the Accessibility Statement page
-     */
-    public function accessibility()
-    {
-        $collection = config('app.current_collection', 'clds');
-        $collectionView = "{$collection}.pages.accessibility";
-
-        if ($collection === 'public-art') {
-            $collectionView = static::publicArtViewName($collectionView);
-        }
-
-        return view()->exists($collectionView)
-            ? view($collectionView)
-            : view('pages.accessibility');
-    }
-    /*
-    public function accessibility()
-    {
-        $collection = config('app.current_collection', 'clds');
-
-        if ($collection === 'eerc') {
-            return $this->eercPageWithSidebar('eerc.pages.accessibility');
-        }
-
-        if ($collection === 'mimed') {
-            return view('mimed.pages.accessibility');
-        }
-
-        if ($collection === 'openbooks') {
-            return view('openbooks.pages.accessibility');
-        }
-
-        if ($collection === 'art') {
-            return view('art.pages.accessibility');
-        }
-
-        if ($collection === 'coimbra-colls') {
-            return view('coimbra-colls.pages.accessibility');
-        }
-
-        if ($collection === 'coimbra') {
-            return view('coimbra.pages.accessibility');
-        }
-
-        if ($collection === 'guardbook') {
-            return view('guardbook.pages.accessibility');
-        }
-
-        if ($collection === 'lhsacasenotes') {
-            return view('guardbook.pages.accessibility');
-        }
-
-        return view('pages.accessibility');
-    }
-        */
-
-    /**
-     * Display the Blog page with RSS feed
+     * Display the Blog page, with the latest 10 posts pulled from the
+     * Library Blogs RSS feed.
      */
     public function blog()
     {
@@ -356,7 +116,9 @@ class PageController extends Controller
     }
 
     /**
-     * Fetch and parse RSS feed
+     * Fetch and parse an RSS feed.
+     *
+     * @return array<int, array{title: string, description: string, link: string, date: string}>
      */
     protected function fetchRssFeed(string $feedUrl, int $limit = 10): array
     {
@@ -396,7 +158,8 @@ class PageController extends Controller
     }
 
     /**
-     * Truncate text to a maximum number of characters
+     * Truncate text to a maximum number of characters, ending on a word
+     * boundary and appending the supplied suffix.
      */
     protected function truncateWords(string $text, int $maxChar, string $end = '...'): string
     {
