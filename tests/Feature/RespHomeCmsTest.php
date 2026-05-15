@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\RespHomeContent;
-use Database\Seeders\RespHomeContentSeeder;
+use App\Models\CmsPage;
+use Database\Seeders\CmsPagesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -11,7 +11,7 @@ beforeEach(function (): void {
 });
 
 it('renders the eerc v2 home intro from the database when seeded', function (): void {
-    $this->seed(RespHomeContentSeeder::class);
+    $this->seed(CmsPagesSeeder::class);
 
     $html = view('eerc-v2.home', [
         'subjectFacet' => [],
@@ -23,10 +23,11 @@ it('renders the eerc v2 home intro from the database when seeded', function (): 
         ->and($html)->toContain('created by the RESP, the project');
 });
 
-it('renders stored html from resp home content', function (): void {
-    RespHomeContent::query()->create([
+it('renders stored html from the eerc home cms page', function (): void {
+    CmsPage::query()->create([
+        'collection' => CmsPage::COLLECTION_EERC,
+        'slug' => 'home',
         'title' => 'Home',
-        'slug' => RespHomeContent::SLUG,
         'body' => '<p>CMS marker unique-string-alpha-99</p>',
     ]);
 

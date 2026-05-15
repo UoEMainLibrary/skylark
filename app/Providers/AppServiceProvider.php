@@ -7,7 +7,6 @@ use App\View\Composers\CmsPageComposer;
 use App\View\Composers\EercNavComposer;
 use App\View\Composers\LhsacasenotesSidebarComposer;
 use App\View\Composers\OpenBooksLayoutComposer;
-use App\View\Composers\RespHomeComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,15 +28,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('layouts.eerc-v2', EercNavComposer::class);
-        View::composer('eerc-v2.home', RespHomeComposer::class);
         View::composer('layouts.openbooks', OpenBooksLayoutComposer::class);
         View::composer('lhsacasenotes.partials.sidebar', LhsacasenotesSidebarComposer::class);
 
         // CMS-managed pages — see config/cms.php for the registry. Each
         // composer injects $cms (CmsPage|null) and $cmsEnabled (bool).
-        // RESP V2 home stays on the legacy RespHomeComposer for one more
-        // commit; the seeder/migration step retires it and switches the
-        // home view to use CmsPageComposer too.
         $this->registerCmsPageComposers();
     }
 
@@ -48,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $viewMap = [
             'eerc' => [
+                'home' => 'eerc-v2.home',
                 'about' => 'eerc-v2.pages.about',
                 'resp' => 'eerc-v2.pages.resp',
                 'project-history' => 'eerc-v2.pages.project_history',
