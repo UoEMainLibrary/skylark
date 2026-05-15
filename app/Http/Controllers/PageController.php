@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\RepositoryFactory;
-use App\Support\CollectionUrl;
 use App\Support\CollectionViewResolver;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -288,33 +287,6 @@ class PageController extends Controller
         return view('pages.takedown');
     }
         */
-
-    /**
-     * Display the Guardbook homepage
-     */
-    public function guardbookHome()
-    {
-
-        $repository = $this->repositoryFactory->current();
-        $facets = [];
-        $baseSearch = CollectionUrl::url('search/*:*');
-        $configFilters = config('skylight.filters', []);
-
-        try {
-            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
-            // dd($results);
-            $facets = $results['facets'] ?? [];
-        } catch (\Exception $e) {
-            dd($e->getMessage(), $e);
-        }
-
-        return view('guardbook.home', [
-            'facets' => $facets,
-            'base_search' => $baseSearch,
-            'base_parameters' => '',
-            'delimiter' => config('skylight.filter_delimiter'),
-        ]);
-    }
 
     /**
      * Display the Accessibility Statement page

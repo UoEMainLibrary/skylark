@@ -135,7 +135,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'guardbook',
     'route_name' => 'guardbook',
-    'home' => [PageController::class, 'guardbookHome'],
+    'home' => [App\Http\Controllers\Collections\Guardbook\PageController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'iiif' => [App\Http\Controllers\Collections\Mimed\PageController::class, 'iiif'],
     'feedback' => true,
