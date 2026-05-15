@@ -8,7 +8,11 @@
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Contact</h1>
 
         <div class="mt-6 prose prose-lg max-w-none">
-            <p>Enquiries regarding the RESP Archive should be directed in the first instance to: <a href="mailto:HeritageCollections@ed.ac.uk">HeritageCollections@ed.ac.uk</a>. Please address your enquiry to &lsquo;<em>RESP Archive</em>&rsquo;.</p>
+            @if($cmsEnabled && $cms)
+                {!! $cms->body !!}
+            @else
+                <p>Enquiries regarding the RESP Archive should be directed in the first instance to: <a href="mailto:HeritageCollections@ed.ac.uk">HeritageCollections@ed.ac.uk</a>. Please address your enquiry to &lsquo;<em>RESP Archive</em>&rsquo;.</p>
+            @endif
         </div>
 
         <div class="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">

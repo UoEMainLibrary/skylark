@@ -9,29 +9,40 @@
 
         <div class="mt-6 prose prose-lg max-w-none">
 
-            {{-- Interviewee portrait floated right beside opening paragraph --}}
+            {{-- Interviewee portrait floated right beside opening paragraph;
+                 src is the editable CMS image when one has been uploaded,
+                 otherwise the stock asset. --}}
             <div class="not-prose float-right ml-6 mb-4 hidden w-72 max-w-[min(100%,28rem)] sm:block">
-                <img src="{{ asset('collections/eerc/images/v2/DG38-5-4-1.jpg') }}" alt="RESP interviewee at home" class="w-full rounded-lg shadow-sm">
+                <img src="{{ ($cmsEnabled && $cms?->image_1_path) ? $cms->image1Url() : asset('collections/eerc/images/v2/DG38-5-4-1.jpg') }}"
+                     alt="{{ ($cmsEnabled && $cms?->image_1_path) ? $cms->image_1_alt : 'RESP interviewee at home' }}"
+                     class="w-full rounded-lg shadow-sm">
             </div>
 
-            <p>The RESP Archive Project was established in 2018 in collaboration with the Centre for Research Collections at the University of Edinburgh. Originally conceived as a cataloguing project to ensure the ongoing digital security of this collection and improve the discoverability of the audio recordings created by the RESP the remit was soon expanded to include the creation of this website.</p>
+            @if($cmsEnabled && $cms)
+                {!! $cms->body !!}
+                <div class="clear-both"></div>
+            @else
+                <p>The RESP Archive Project was established in 2018 in collaboration with the Centre for Research Collections at the University of Edinburgh. Originally conceived as a cataloguing project to ensure the ongoing digital security of this collection and improve the discoverability of the audio recordings created by the RESP the remit was soon expanded to include the creation of this website.</p>
 
-            <p>A central ethos of the RESP was to make the recordings fully accessible and freely available, both now and for future generations, whether for research, as a teaching resource or wider community use — particularly within the communities where the recordings were made. This website aims to fulfil this remit by ensuring full access to the audio recordings, photographs, and transcripts for each interviewee, presented on dedicated interviewee pages. Additional pages have been included to enhance engagement and include: an Exhibition Gallery, which showcases creative outputs from the Project; a Kids Only page of resources designed to encourage children to learn more about oral history; and an interactive map to help with place-based research.</p>
+                <p>A central ethos of the RESP was to make the recordings fully accessible and freely available, both now and for future generations, whether for research, as a teaching resource or wider community use — particularly within the communities where the recordings were made. This website aims to fulfil this remit by ensuring full access to the audio recordings, photographs, and transcripts for each interviewee, presented on dedicated interviewee pages. Additional pages have been included to enhance engagement and include: an Exhibition Gallery, which showcases creative outputs from the Project; a Kids Only page of resources designed to encourage children to learn more about oral history; and an interactive map to help with place-based research.</p>
 
-            <div class="clear-both"></div>
+                <div class="clear-both"></div>
 
-            <p>Over the course of the Project, the RESP has gathered fieldwork from Dumfries &amp; Galloway and East Lothian and, to a smaller extent, the Western Isles, Tayside, Edinburgh, the Scottish Borders, Argyll and West Lothian. The Collection covers all aspects of our cultural lives: from birth customs to working practices, foodways to transport, landscape to law &amp; order, shops to gardens and fashion to schooldays. Including the donated recordings, the timespan when the recordings were made covers over 50 years, from the 1970s to the 2020s, and with Interviewees ranging in age from 7 to 102, the first-person accounts shared here take us from the present day back to the Victorian era, in over 1,000 recordings and more than 700 hours of audio.</p>
+                <p>Over the course of the Project, the RESP has gathered fieldwork from Dumfries &amp; Galloway and East Lothian and, to a smaller extent, the Western Isles, Tayside, Edinburgh, the Scottish Borders, Argyll and West Lothian. The Collection covers all aspects of our cultural lives: from birth customs to working practices, foodways to transport, landscape to law &amp; order, shops to gardens and fashion to schooldays. Including the donated recordings, the timespan when the recordings were made covers over 50 years, from the 1970s to the 2020s, and with Interviewees ranging in age from 7 to 102, the first-person accounts shared here take us from the present day back to the Victorian era, in over 1,000 recordings and more than 700 hours of audio.</p>
 
-            <div class="clear-both"></div>
+                <div class="clear-both"></div>
 
-            {{-- Man in garden, floated right --}}
-            <div class="not-prose float-right ml-6 mb-4 hidden w-56 sm:block">
-                <img src="{{ asset('collections/eerc/images/v2/EL39-2-4-1.jpg') }}" alt="RESP interviewee in his garden" class="rounded-lg shadow-sm">
-            </div>
+                {{-- Man in garden, floated right (kept as static layout
+                     element — the CMS only exposes one editable image
+                     for this page, the intro portrait above). --}}
+                <div class="not-prose float-right ml-6 mb-4 hidden w-56 sm:block">
+                    <img src="{{ asset('collections/eerc/images/v2/EL39-2-4-1.jpg') }}" alt="RESP interviewee in his garden" class="rounded-lg shadow-sm">
+                </div>
 
-            <p>The result is a Collection which is broad in timespan, geography and subject matter and offers enormous potential for dedicated and comparative research either within the Collection itself, or in providing comparative material for studies more broadly.</p>
+                <p>The result is a Collection which is broad in timespan, geography and subject matter and offers enormous potential for dedicated and comparative research either within the Collection itself, or in providing comparative material for studies more broadly.</p>
 
-            <div class="clear-both"></div>
+                <div class="clear-both"></div>
+            @endif
         </div>
 
         <div class="mt-8 mx-auto w-[75%] max-w-full">

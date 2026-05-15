@@ -7,7 +7,13 @@
     <div class="lg:col-span-3">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Browse the Collections</h1>
 
-        <p class="mt-4 text-lg text-gray-700">Explore the RESP archive by browsing the collection tree below. Click the + and &minus; buttons to expand or collapse each section.</p>
+        @if($cmsEnabled && $cms)
+            <div class="mt-4 prose prose-lg max-w-none">
+                {!! $cms->body !!}
+            </div>
+        @else
+            <p class="mt-4 text-lg text-gray-700">Explore the RESP archive by browsing the collection tree below. Click the + and &minus; buttons to expand or collapse each section.</p>
+        @endif
 
         {{-- Collection tree --}}
         <div class="mt-6">

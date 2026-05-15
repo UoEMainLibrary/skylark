@@ -7,9 +7,15 @@
     <div class="lg:col-span-3">
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">British Sign Language (BSL)</h1>
 
-        <div class="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-6">
-            <p class="text-sm text-amber-800">BSL content for this page is forthcoming. Please check back soon.</p>
-        </div>
+        @if($cmsEnabled && $cms)
+            <div class="mt-6 prose prose-lg max-w-none">
+                {!! $cms->body !!}
+            </div>
+        @else
+            <div class="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-6">
+                <p class="text-sm text-amber-800">BSL content for this page is forthcoming. Please check back soon.</p>
+            </div>
+        @endif
     </div>
 
     <div class="mt-8 lg:mt-0">
