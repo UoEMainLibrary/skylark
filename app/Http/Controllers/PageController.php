@@ -6,7 +6,6 @@ use App\Services\DSpaceService;
 use App\Services\RepositoryFactory;
 use App\Support\CollectionUrl;
 use App\Support\CollectionViewResolver;
-use App\View\Composers\LhsacasenotesSidebarComposer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -614,44 +613,6 @@ class PageController extends Controller
             'base_parameters' => '',
             'delimiter' => config('skylight.filter_delimiter'),
         ]);
-    }
-
-    /**
-     * Display the LHSA Case Notes homepage.
-     *
-     * Sidebar facets (Subject + Person) are injected by
-     * {@see LhsacasenotesSidebarComposer} on
-     * `layouts.lhsacasenotes`, so this action only needs to provide
-     * the page-specific data.
-     */
-    public function lhsacasenotesHome()
-    {
-        return view('lhsacasenotes.home');
-    }
-
-    public function lhsacasenotesHistory()
-    {
-        return view('lhsacasenotes.pages.history');
-    }
-
-    public function lhsacasenotesPeople()
-    {
-        return view('lhsacasenotes.pages.people');
-    }
-
-    public function lhsacasenotesTuberculosis()
-    {
-        return view('lhsacasenotes.pages.tuberculosis');
-    }
-
-    public function lhsacasenotesAchievements()
-    {
-        return view('lhsacasenotes.pages.achievements');
-    }
-
-    public function lhsacasenotesCatalogues()
-    {
-        return view('lhsacasenotes.pages.catalogues');
     }
 
     /**
