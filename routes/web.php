@@ -20,12 +20,12 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         config('collections.domains', []),
         static fn (string $collection): bool => $collection === 'openbooks',
     )),
-    'home' => [PageController::class, 'openbooksHome'],
+    'home' => [App\Http\Controllers\Collections\Openbooks\PageController::class, 'home'],
     'mirador_view' => 'openbooks.mirador',
-    'iiif' => [PageController::class, 'openbooksIiif'],
+    'iiif' => [App\Http\Controllers\Collections\Openbooks\PageController::class, 'iiif'],
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/browse/{facet}', [PageController::class, 'openbooksBrowse'])
+        Route::get('/browse/{facet}', [App\Http\Controllers\Collections\Openbooks\PageController::class, 'browse'])
             ->where('facet', '[A-Za-z]+');
     },
 ]);
