@@ -626,6 +626,21 @@ it('shows the Edinburgh Runestone block in the More Information section on the V
         ->assertSee('https://www.socantscot.org/wp-content/uploads/2018/04/Runestone-0703-FINAL-web.pdf', false);
 });
 
+it('does not link to the speculative Public Art Shorts / Podcast cards on the V2 home page', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    // These two links were added speculatively during the V2 reskin
+    // (commit 299d32a) — neither URL was supplied by the client, neither
+    // resolved to live content, and they were removed once flagged. Keep
+    // them out unless the client supplies replacement URLs.
+    $this->get('/art-on-campus')
+        ->assertSuccessful()
+        ->assertDontSee('media.ed.ac.uk/playlist/dedicated', false)
+        ->assertDontSee('heritage-blog.is.ed.ac.uk/category/the-collection-public-art-podcast', false)
+        ->assertDontSee('Public Art Shorts')
+        ->assertDontSee('The Collection: Public Art Podcast');
+});
+
 it('shows the Heritage Collections / CRC block and contact address on the V2 home page', function () {
     config(['skylight.public_art_skin_version' => 2]);
 

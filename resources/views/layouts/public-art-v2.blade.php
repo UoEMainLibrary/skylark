@@ -78,7 +78,7 @@
                     @php $active = rtrim(request()->url(), '/') === rtrim($item['url'], '/'); @endphp
                     <a href="{{ $item['url'] }}"
                        @if($active) aria-current="page" @endif
-                       class="rounded px-3 py-2 font-medium uppercase tracking-wider transition-colors hover:text-pa-accent {{ $active ? 'text-pa-accent' : 'text-pa-ink-600' }}">
+                       class="rounded px-2 py-2 font-medium uppercase transition-colors hover:text-pa-accent {{ $active ? 'text-pa-accent' : 'text-pa-ink-600' }}">
                         {{ $item['label'] }}
                     </a>
                 @endforeach
