@@ -190,17 +190,17 @@ Route::get('/public-art{path}', function (Request $request, string $path = '') {
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'stcecilias',
     'route_name' => 'stcecilias',
-    'home' => [PageController::class, 'stceciliasHome'],
+    'home' => [App\Http\Controllers\Collections\Stcecilias\PageController::class, 'home'],
     // Mirror viewer used for IIIF deep-zoom; the Mirador route is registered
     // by the registrar even though the legacy site renders its own
     // OpenSeadragon viewer inline on the record page.
     'mirador_view' => 'stcecilias.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/iiif', [PageController::class, 'stceciliasIiif'])->name('iiif');
+        Route::get('/iiif', [App\Http\Controllers\Collections\Stcecilias\PageController::class, 'iiif'])->name('iiif');
 
         // Legacy "More …" link from the search-results facet sidebar.
-        Route::get('/browse/{facet}', [PageController::class, 'stceciliasBrowse'])
+        Route::get('/browse/{facet}', [App\Http\Controllers\Collections\Stcecilias\PageController::class, 'browse'])
             ->where('facet', '[^/]+')
             ->name('browse');
     },
