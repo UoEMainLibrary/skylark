@@ -290,38 +290,6 @@ class PageController extends Controller
         */
 
     /**
-     * Display the Coimbra Colls Collection homepage
-     */
-    public function coimbraCollsHome()
-    {
-        return view('coimbra-colls.home');
-    }
-
-    /**
-     * Display the Coimbra Collection homepage
-     */
-    public function coimbraHome()
-    {
-        return view('coimbra.home');
-    }
-
-    /**
-     * Display the Coimbra Collection intro page
-     */
-    public function coimbraIntro()
-    {
-        return view('coimbra.pages.intro');
-    }
-
-    /**
-     * Display the Coimbra Colls Virtual Exhibition page
-     */
-    public function coimbraCollsVirtualExhibition()
-    {
-        return view('coimbra-colls.pages.virtual-exhibition');
-    }
-
-    /**
      * Display the Guardbook homepage
      */
     public function guardbookHome()

@@ -104,22 +104,22 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'coimbra-colls',
     'route_name' => 'coimbra-colls',
-    'home' => [PageController::class, 'coimbraCollsHome'],
+    'home' => [App\Http\Controllers\Collections\CoimbraColls\PageController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/virtual-exhibition', [PageController::class, 'coimbraCollsVirtualExhibition'])->name('virtual-exhibition');
+        Route::get('/virtual-exhibition', [App\Http\Controllers\Collections\CoimbraColls\PageController::class, 'virtualExhibition'])->name('virtual-exhibition');
     },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'coimbra',
     'route_name' => 'coimbra',
-    'home' => [PageController::class, 'coimbraHome'],
+    'home' => [App\Http\Controllers\Collections\Coimbra\PageController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/intro', [PageController::class, 'coimbraIntro'])->name('intro');
+        Route::get('/intro', [App\Http\Controllers\Collections\Coimbra\PageController::class, 'intro'])->name('intro');
     },
 ]);
 
