@@ -582,6 +582,28 @@ it('configures the public-art-overrides config file with labels and 26 browse en
         ->and($config)->not->toHaveKey('records');
 });
 
+it('maps Public Art record videos by lower-cased artwork title in collection config', function () {
+    $config = require config_path('collections/public-art.php');
+
+    expect($config)->toHaveKey('public_art_videos');
+
+    expect($config['public_art_videos'])->toBe([
+        'ideas' => '1_lh3jbplo',
+        'the next big thing...is a series of little things' => '1_rs2vb5l9',
+        'the basic material is not the word but the letter' => '0_tmmkjuz4',
+        'untitled (rhino head)' => '1_gzno6iwu',
+        'bite / haynes nano stage' => '1_1elsd561',
+    ]);
+
+    // Keys are normalised the same way the record blade normalises lookup
+    // keys: strtolower(trim(strip_tags($recordTitle))). Guard against a
+    // contributor accidentally re-introducing mixed case or stray whitespace
+    // here, which would silently break the lookup.
+    foreach (array_keys($config['public_art_videos']) as $key) {
+        expect($key)->toBe(strtolower(trim(strip_tags($key))));
+    }
+});
+
 it('shows the Ideas spotlight image and credit line on the V2 home page', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
