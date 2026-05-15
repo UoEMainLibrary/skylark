@@ -290,46 +290,6 @@ class PageController extends Controller
         */
 
     /**
-     * Display the Cockburn homepage with browse facets
-     */
-    public function cockburnHome()
-    {
-        $repository = $this->repositoryFactory->current();
-
-        $facets = [];
-        $baseSearch = CollectionUrl::url('search/*:*');
-        $configFilters = config('skylight.filters', []);
-
-        try {
-            // $results = $repository->search('*:*', [], 0, '', 0);
-            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
-            // $results = $repository->searchWithFacets('*:*');
-            $facets = $results['facets'] ?? [];
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-        }
-
-        try {
-            $recentResults = $repository->searchWithHighlighting('*:*', [], 0, 'system_create_dt desc', 5);
-            $docs = $recentResults['docs'] ?? [];
-            // dd($docs);
-        } catch (\Exception $e) {
-            // Solr unreachable — render without recent docs
-        }
-
-        // dd($results);
-
-        return view('cockburn.home', [
-            'facets' => $facets,
-            'base_search' => $baseSearch,
-            'base_parameters' => '',
-            'delimiter' => config('skylight.filter_delimiter'),
-            'docs' => $docs,
-            'query' => '',
-        ]);
-    }
-
-    /**
      * Display the Coimbra Colls Collection homepage
      */
     public function coimbraCollsHome()

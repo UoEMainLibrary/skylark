@@ -95,7 +95,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'cockburn',
     'route_name' => 'cockburn',
-    'home' => [PageController::class, 'cockburnHome'],
+    'home' => [App\Http\Controllers\Collections\Cockburn\PageController::class, 'home'],
     'mirador_view' => 'cockburn.mirador',
     'iiif' => [App\Http\Controllers\Collections\Mimed\PageController::class, 'iiif'],
     'feedback' => true,
