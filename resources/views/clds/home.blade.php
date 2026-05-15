@@ -560,7 +560,7 @@
                             <h4 class="img-title"><span>Centre</span> for <span>Research Collections</span></h4>
                             <i class="ion-arrow-right-c"></i>
                             <div class="curl"></div>
-                            <a href="https://www.ed.ac.uk/information-services/library-museum-gallery/crc"></a>
+                            <a href="https://library.ed.ac.uk/heritage-collections/"></a>
                         </div>
                     </figure>
                 </div>
@@ -571,7 +571,7 @@
                             <h4 class="img-title"><span>St Cecilia's</span> Hall</h4>
                             <i class="ion-arrow-right-c"></i>
                             <div class="curl"></div>
-                            <a href="http://www.stcecilias.ed.ac.uk"></a>
+                            <a href="https://www.stcecilias.ed.ac.uk/"></a>
                         </div>
                     </figure>
                 </div>
@@ -582,7 +582,7 @@
                             <h4 class="img-title"><span>Talbot Rice</span> Gallery</h4>
                             <i class="ion-arrow-right-c"></i>
                             <div class="curl"></div>
-                            <a href="https://www.ed.ac.uk/talbot-rice/"></a>
+                            <a href="https://www.trg.ed.ac.uk/"></a>
                         </div>
                     </figure>
                 </div>
@@ -593,7 +593,7 @@
                             <h4 class="img-title"><span>Anatomy</span> Museum</h4>
                             <i class="ion-arrow-right-c"></i>
                             <div class="curl"></div>
-                            <a href="https://www.ed.ac.uk/biomedical-sciences/anatomy/visit-anatomical-museum"></a>
+                            <a href="https://biomedical-sciences.ed.ac.uk/anatomy/visit-anatomical-museum"></a>
                         </div>
                     </figure>
                 </div>
@@ -604,7 +604,7 @@
                             <h4 class="img-title"><span>School of Scottish Studies</span> Archives</h4>
                             <i class="ion-arrow-right-c"></i>
                             <div class="curl"></div>
-                            <a href="https://collections.ed.ac.uk/participate"></a>
+                            <a href="https://library.ed.ac.uk/heritage-collections/collections-and-search/archives/school-scottish-studies-archives"></a>
                         </div>
                     </figure>
                 </div>
@@ -615,7 +615,7 @@
                             <h4 class="img-title"><span>New College</span> Library</h4>
                             <i class="ion-arrow-right-c"></i>
                             <div class="curl"></div>
-                            <a href="https://collections.ed.ac.uk/participate"></a>
+                            <a href="https://library.ed.ac.uk/heritage-collections/collections-and-search/archives/new-college-library-archive-collections"></a>
                         </div>
                     </figure>
                 </div>
@@ -626,7 +626,7 @@
                             <h4 class="img-title"><span>Cockburn</span> Geological Museum</h4>
                             <i class="ion-arrow-right-c"></i>
                             <div class="curl"></div>
-                            <a href="https://www.ed.ac.uk/geosciences/about/history/museum"></a>
+                            <a href="https://www.ed.ac.uk/visit/museums-galleries/geology"></a>
                         </div>
                     </figure>
                 </div>
@@ -699,7 +699,7 @@
                             <h2 class="img-title"><span>Volunteering</span><span class="fa-solid fa-up-right-from-square"></span></h2>
                             <i class="ion-arrow-right-c"></i>
                             <div class="curl"></div>
-                            <a href="https://www.ed.ac.uk/information-services/library-museum-gallery/heritage-collections/skills-volunteers-interns-fellowships/volunteers-interns" title="Volunteering" target="_blank">
+                            <a href="https://library.ed.ac.uk/heritage-collections/skills-volunteers-interns-fellowships/volunteers-interns" title="Volunteering" target="_blank">
                                 <span class="sr-only">Volunteering (opens in a new tab)</span>
                             </a>
                         </div>
