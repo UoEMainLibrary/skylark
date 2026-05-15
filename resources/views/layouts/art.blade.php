@@ -111,6 +111,9 @@
                                 <a href="{{ url('/art/loans') }}" class="nav-link text-nowrap m-2 menu-item">Loans</a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{ url('/art-on-campus') }}" class="nav-link text-nowrap m-2 menu-item">Art on Campus</a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="#contact" class="nav-link text-nowrap m-2 menu-item b-right">Contact</a>
                             </li>
                         </ul>
