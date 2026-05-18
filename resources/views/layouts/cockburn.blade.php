@@ -90,8 +90,8 @@
         <header>
             <div id="collection-title">
                 <a href="https://www.ed.ac.uk" class="uoelogo" title="The University of Edinburgh Home" target="_blank"></a>
-                <a href="{{ url('/cockburn/home') }}" class="geologylogo" title="Cockburn Geological Collection Home"></a>
-                <a href="{{ url('/cockburn/home') }}" class="menulogo" title="Cockburn Geological Collection Home"></a>
+                <a href="{{ url('/cockburn') }}" class="geologylogo" title="Cockburn Geological Collection Home"></a>
+                <a href="{{ url('/cockburn') }}" class="menulogo" title="Cockburn Geological Collection Home"></a>
             </div>
             <div id="collection-search">
                 <form action="{{ url('/cockburn/redirect') }}" method="post">
@@ -121,7 +121,7 @@
                 <footer>
                     <div class="footer-links">
                         <div class="site-links">
-                            <a href="{{ url('/cockburn/home') }}">Cockburn Collection</a>
+                            <a href="{{ url('/cockburn') }}">Cockburn Collection</a>
                             <a href="{{ url('/cockburn/about') }}">About this Collection</a>
                             <a href="{{ url('/cockburn/feedback') }}" class="last">Feedback</a>
                         </div>

@@ -126,6 +126,14 @@ it('uses the correct (typo-free) jquery-ui asset path in the cockburn layout', f
         ->and($html)->not->toContain('/ssets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js');
 });
 
+it('points the cockburn header and footer home links at the collection root (not /cockburn/home)', function (): void {
+    $html = view('cockburn.pages.about')->render();
+
+    expect($html)
+        ->not->toContain('href="'.url('/cockburn/home').'"')
+        ->and(substr_count($html, 'href="'.url('/cockburn').'"'))->toBeGreaterThanOrEqual(3);
+});
+
 it('renders a <base href> pointing at the collection root so relative links resolve', function (): void {
     // Without this, ./record/X on /cockburn/record/Y resolves to
     // /cockburn/record/record/X and 404s.
