@@ -13,6 +13,8 @@
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <base href="{{ \App\Support\CollectionUrl::baseHref() }}">
+
     <link rel="shortcut icon" href="{{ asset('collections/cockburn/images/favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('collections/cockburn/images/apple-touch-icon.png') }}">
 
@@ -30,7 +32,7 @@
     <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
     <script src="{{ asset('assets/modernizr/modernizr-1.7.min.js')}}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jquery-1.11.0.min.js')}}"></script>
-    <script src="{{ asset('ssets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js')}}"></script>
+    <script src="{{ asset('assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js')}}"></script>
     <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js')}}"></script>
     <script src="{{ asset('assets/google-analytics/analytics.js')}}"></script>
@@ -88,8 +90,8 @@
         <header>
             <div id="collection-title">
                 <a href="https://www.ed.ac.uk" class="uoelogo" title="The University of Edinburgh Home" target="_blank"></a>
-                <a href="{{ url('/cockburn/home') }}" class="geologylogo" title="Cockburn Geological Collection Home"></a>
-                <a href="{{ url('/cockburn/home') }}" class="menulogo" title="Cockburn Geological Collection Home"></a>
+                <a href="{{ url('/cockburn') }}" class="geologylogo" title="Cockburn Geological Collection Home"></a>
+                <a href="{{ url('/cockburn') }}" class="menulogo" title="Cockburn Geological Collection Home"></a>
             </div>
             <div id="collection-search">
                 <form action="{{ url('/cockburn/redirect') }}" method="post">
@@ -119,7 +121,7 @@
                 <footer>
                     <div class="footer-links">
                         <div class="site-links">
-                            <a href="{{ url('/cockburn/home') }}">Cockburn Collection</a>
+                            <a href="{{ url('/cockburn') }}">Cockburn Collection</a>
                             <a href="{{ url('/cockburn/about') }}">About this Collection</a>
                             <a href="{{ url('/cockburn/feedback') }}" class="last">Feedback</a>
                         </div>
@@ -150,7 +152,11 @@
 
     </div>
     <div class="col-sidebar">
-        @include('defaults.search.partials.facets')
+        @hasSection('sidebar')
+            @yield('sidebar')
+        @else
+            @include('defaults.search.partials.facets')
+        @endif
     </div>
 
 </body>
