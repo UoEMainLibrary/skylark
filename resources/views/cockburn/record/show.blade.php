@@ -300,3 +300,92 @@
     <input type="button" value="Back to Search Results" class="backbtn" onClick="history.go(-1);">
 
 @endsection
+
+@if(! empty($relatedItems))
+    @section('sidebar')
+        @php
+            $relatedTitleField = str_replace('.', '', config('skylight.field_mappings.Title', ''));
+            $relatedTypeField = str_replace('.', '', config('skylight.field_mappings.Type', ''));
+            $relatedThumbnailField = str_replace('.', '', config('skylight.field_mappings.Thumbnail', ''));
+            $relatedImageUriField = str_replace('.', '', config('skylight.field_mappings.ImageUri', ''));
+            $relatedCount = count($relatedItems);
+        @endphp
+
+        <h4>Related Items</h4>
+        <ul class="related">
+            @foreach($relatedItems as $index => $relatedItem)
+                @php
+                    $relatedTitle = 'Untitled';
+                    if (! empty($relatedItem[$relatedTitleField])) {
+                        $titleValue = $relatedItem[$relatedTitleField];
+                        $relatedTitle = is_array($titleValue) ? ($titleValue[0] ?? 'Untitled') : $titleValue;
+                    }
+
+                    $relatedId = null;
+                    if (isset($relatedItem['id'])) {
+                        $relatedId = is_array($relatedItem['id']) ? ($relatedItem['id'][0] ?? null) : $relatedItem['id'];
+                    } elseif (isset($relatedItem['handle'])) {
+                        $handle = is_array($relatedItem['handle']) ? ($relatedItem['handle'][0] ?? '') : $relatedItem['handle'];
+                        $relatedId = preg_replace('/^.*\//', '', (string) $handle);
+                    }
+
+                    // Prefer the IIIF image URI for the thumbnail (matches the legacy LUNA-backed
+                    // image). The stored value already includes the canonical
+                    // "/full/full/0/default.jpg" IIIF descriptor, so strip that suffix to recover
+                    // the bare identifier URL before appending a different size descriptor.
+                    $relatedThumbnailUri = null;
+                    $relatedFullImageUri = null;
+                    if (! empty($relatedItem[$relatedImageUriField])) {
+                        $imageUriValue = $relatedItem[$relatedImageUriField];
+                        $imageUri = is_array($imageUriValue) ? ($imageUriValue[0] ?? null) : $imageUriValue;
+                        if ($imageUri) {
+                            $iiifBase = preg_replace('#/full/[^/]+/\d+/[^/]+\.[a-zA-Z]+$#', '', (string) $imageUri);
+                            $iiifBase = rtrim((string) $iiifBase, '/');
+                            $relatedThumbnailUri = $iiifBase.'/full/,50/0/default.jpg';
+                            $relatedFullImageUri = $iiifBase.'/full/full/0/default.jpg';
+                        }
+                    }
+
+                    $relatedType = null;
+                    $relatedTypeFilter = null;
+                    if (! empty($relatedItem[$relatedTypeField])) {
+                        $typeValue = $relatedItem[$relatedTypeField];
+                        $relatedType = is_array($typeValue) ? ($typeValue[0] ?? null) : $typeValue;
+                        if ($relatedType !== null) {
+                            $relatedTypeFilter = urlencode(strtolower($relatedType)).'+%7C%7C%7C+'.urlencode($relatedType);
+                        }
+                    }
+
+                    $liClass = '';
+                    if ($index === 0) {
+                        $liClass = ' class="first"';
+                    } elseif ($index === $relatedCount - 1) {
+                        $liClass = ' class="last"';
+                    }
+                @endphp
+
+                <li{!! $liClass !!}>
+                    @if($relatedId)
+                        <a class="related-record" href="./record/{{ $relatedId }}" title="{{ $relatedTitle }}">{{ $relatedTitle }}</a>
+                    @else
+                        <span class="related-record">{{ $relatedTitle }}</span>
+                    @endif
+
+                    @if($relatedThumbnailUri)
+                        <div class="thumbnail-image">
+                            <a title="{{ $relatedTitle }}" class="fancybox" rel="group" href="{{ $relatedFullImageUri }}">
+                                <img src="{{ $relatedThumbnailUri }}" class="record-thumbnail-search" title="{{ $relatedTitle }}" />
+                            </a>
+                        </div>
+                    @endif
+
+                    <div class="tags">
+                        @if($relatedType && $relatedTypeFilter)
+                            <a href="./search/*:*/Type:%22{{ $relatedTypeFilter }}%22">{{ $relatedType }}</a>
+                        @endif
+                    </div>
+                </li>
+            @endforeach
+        </ul>
+    @endsection
+@endif

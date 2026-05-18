@@ -30,7 +30,7 @@
     <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
     <script src="{{ asset('assets/modernizr/modernizr-1.7.min.js')}}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jquery-1.11.0.min.js')}}"></script>
-    <script src="{{ asset('ssets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js')}}"></script>
+    <script src="{{ asset('assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js')}}"></script>
     <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js')}}"></script>
     <script src="{{ asset('assets/google-analytics/analytics.js')}}"></script>
@@ -150,7 +150,11 @@
 
     </div>
     <div class="col-sidebar">
-        @include('defaults.search.partials.facets')
+        @hasSection('sidebar')
+            @yield('sidebar')
+        @else
+            @include('defaults.search.partials.facets')
+        @endif
     </div>
 
 </body>

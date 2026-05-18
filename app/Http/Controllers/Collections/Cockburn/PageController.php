@@ -32,7 +32,10 @@ class PageController extends Controller
         }
 
         try {
-            $recentResults = $repository->searchWithHighlighting('*:*', [], 0, 'system_create_dt desc', 5);
+            // Mirror the legacy Skylight CockburnRecord controller: sort by the
+            // DSpace accession date (newest first) so the "Recently added items"
+            // strip matches the order shown on the old site.
+            $recentResults = $repository->searchWithHighlighting('*:*', [], 0, 'dc.date.accessioned_dt desc', 5);
             $docs = $recentResults['docs'] ?? [];
         } catch (\Exception $e) {
             // Solr unreachable — render without recent docs
