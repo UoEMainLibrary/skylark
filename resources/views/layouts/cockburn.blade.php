@@ -13,6 +13,8 @@
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <base href="{{ \App\Support\CollectionUrl::baseHref() }}">
+
     <link rel="shortcut icon" href="{{ asset('collections/cockburn/images/favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('collections/cockburn/images/apple-touch-icon.png') }}">
 

@@ -125,3 +125,16 @@ it('uses the correct (typo-free) jquery-ui asset path in the cockburn layout', f
         ->toContain('/assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js')
         ->and($html)->not->toContain('/ssets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js');
 });
+
+it('renders a <base href> pointing at the collection root so relative links resolve', function (): void {
+    // Without this, ./record/X on /cockburn/record/Y resolves to
+    // /cockburn/record/record/X and 404s.
+    config([
+        'app.collection_path_prefix' => '/cockburn',
+        'skylight.url_prefix' => 'cockburn',
+    ]);
+
+    $html = view('cockburn.pages.about')->render();
+
+    expect($html)->toContain('<base href="'.url('/cockburn').'/">');
+});
