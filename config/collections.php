@@ -123,6 +123,7 @@ return [
             env('SCOTGOVYEARBOOKS_HOST', '') => 'iog',
             env('SJAC_HOST', '') => 'jlss',
             env('POINTSOFARRIVAL_HOST', '') => 'pointsofarrival',
+            env('SOPA_HOST', '') => 'physics',
         ],
         fn (string $host): bool => $host !== '',
         ARRAY_FILTER_USE_KEY

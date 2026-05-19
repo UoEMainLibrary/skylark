@@ -10,6 +10,7 @@ use App\Http\Controllers\Collections\Guardbook\PageController as GuardbookContro
 use App\Http\Controllers\Collections\Lhsacasenotes\PageController as LhsacasenotesController;
 use App\Http\Controllers\Collections\Mimed\PageController as MimedController;
 use App\Http\Controllers\Collections\Openbooks\PageController as OpenbooksController;
+use App\Http\Controllers\Collections\Physics\PageController as PhysicsController;
 use App\Http\Controllers\Collections\PublicArt\PageController as PublicArtController;
 use App\Http\Controllers\Collections\Stcecilias\PageController as StceciliasController;
 use App\Http\Controllers\PageController;
@@ -38,6 +39,18 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/browse/{facet}', [OpenbooksController::class, 'browse'])
             ->where('facet', '[A-Za-z]+');
     },
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'physics',
+    'route_name' => 'physics',
+    'domain_hosts' => array_keys(array_filter(
+        config('collections.domains', []),
+        static fn (string $collection): bool => $collection === 'physics',
+    )),
+    'home' => [PhysicsController::class, 'home'],
+    'mirador_view' => 'physics.mirador',
+    'feedback' => true,
 ]);
 
 Route::get('/', function () {
