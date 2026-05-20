@@ -211,6 +211,12 @@ it('renders the physics accessibility statement under the physics layout', funct
         ->and($html)->not->toContain('<body lang=EN-US');
 });
 
+it('loads the jcarousel plugin so the shared script.js init does not throw', function (): void {
+    $html = view('physics.pages.about')->render();
+
+    expect($html)->toContain('/assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js');
+});
+
 it('uses the correct jquery-ui asset path in the physics layout', function (): void {
     $html = view('physics.pages.about')->render();
 

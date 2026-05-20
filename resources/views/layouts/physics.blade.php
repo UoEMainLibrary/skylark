@@ -31,6 +31,7 @@
     <script src="{{ asset('assets/modernizr/modernizr-1.7.min.js') }}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jquery-1.11.0.min.js') }}"></script>
     <script src="{{ asset('assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js') }}"></script>
     <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
 
     @if(config('skylight.ga_code'))
