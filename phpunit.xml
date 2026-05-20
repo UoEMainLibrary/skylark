@@ -33,6 +33,8 @@
         <env name="NIGHTWATCH_ENABLED" value="false"/>
         <!-- Registers Open Books dedicated-host routes in tests (see tests/Feature/OpenBooksCollectionTest.php) -->
         <env name="OPENBOOKS_HOST" value="openbooks.testing"/>
+        <!-- Registers SOPA (Physics) dedicated-host routes in tests (see tests/Feature/PhysicsCollectionTest.php) -->
+        <env name="SOPA_HOST" value="sopacollection.testing"/>
         <!-- Pin the CMS toggle off in tests so a developer's .env CMS_ENABLED=true
              doesn't leak in. Tests that need the toggle on flip it per-test
              via config(['cms.enabled' => true]). -->

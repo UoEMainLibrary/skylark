@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Http\Controllers\Collections\Physics;
+
+use App\Http\Controllers\Controller;
+use App\Services\RepositoryFactory;
+use App\Support\CollectionUrl;
+
+class PageController extends Controller
+{
+    public function __construct(protected RepositoryFactory $repositoryFactory) {}
+
+    /**
+     * Display the SOPA (Physics) homepage with browse facets and the five
+     * most-recently-added documents.
+     */
+    public function home()
+    {
+        $repository = $this->repositoryFactory->current();
+
+        $facets = [];
+        $docs = [];
+        $baseSearch = CollectionUrl::url('search/*:*');
+
+        try {
+            $results = $repository->searchWithHighlighting('*:*', [], 0, '', 0);
+            $facets = $results['facets'] ?? [];
+        } catch (\Exception $e) {
+            report($e);
+        }
+
+        try {
+            // Mirror the legacy Skylight CockburnRecord-style controller: sort
+            // by the DSpace accession date (newest first) so the "Recently
+            // added items" strip matches the order shown on the old SOPA site.
+            $recentResults = $repository->searchWithHighlighting('*:*', [], 0, 'dc.date.accessioned_dt desc', 5);
+            $docs = $recentResults['docs'] ?? [];
+        } catch (\Exception $e) {
+            // Solr unreachable — render without recent docs
+        }
+
+        return view('physics.home', [
+            'facets' => $facets,
+            'base_search' => $baseSearch,
+            'base_parameters' => '',
+            'delimiter' => config('skylight.filter_delimiter'),
+            'docs' => $docs,
+            'query' => '',
+        ]);
+    }
+}
