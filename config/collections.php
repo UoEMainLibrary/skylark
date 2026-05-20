@@ -124,6 +124,7 @@ return [
             env('SJAC_HOST', '') => 'jlss',
             env('POINTSOFARRIVAL_HOST', '') => 'pointsofarrival',
             env('SOPA_HOST', '') => 'physics',
+            env('SOPA_TEST_HOST', '') => 'physics',
         ],
         fn (string $host): bool => $host !== '',
         ARRAY_FILTER_USE_KEY

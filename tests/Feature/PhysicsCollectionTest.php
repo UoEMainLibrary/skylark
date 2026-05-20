@@ -264,6 +264,12 @@ it('serves the physics home page at / on a configured dedicated host', function 
         ->assertSuccessful();
 });
 
+it('serves the physics home page on the optional SOPA_TEST_HOST', function (): void {
+    $this->withHeaders(['Host' => 'test.sopacollection.testing'])
+        ->get('/')
+        ->assertSuccessful();
+});
+
 it('loads SOPA-specific skylight config when /physics is requested', function (): void {
     $this->get('/physics')->assertSuccessful();
 
