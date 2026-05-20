@@ -93,6 +93,52 @@ it('renders the Related Items sidebar on the Physics record page with the legacy
         ->and($html)->toContain('small-icon media-image');
 });
 
+it('renders bitstreams as inline thumbnails (not as a full-resolution main image)', function (): void {
+    config([
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Bitstream' => 'dc.format.original.en',
+            'Thumbnail' => 'dc.format.thumbnail.en',
+            'Description' => 'dc.description.en',
+        ],
+    ]);
+
+    $html = view('physics.record.show', [
+        'record' => [
+            'dctitleen' => ['Charles Barkla Plaque'],
+            'dcdescriptionen' => ['Charles Barkla plaque unveiling at Hermitage House.'],
+            'dcformatoriginalen' => [
+                'id##DSC01328.JPG##1234##10683/102021##1##stuff',
+                'id##DSC01368.JPG##5678##10683/102021##2##stuff',
+            ],
+            'dcformatthumbnailen' => [
+                'id##DSC01328.JPG.jpg##100##10683/102021##5##thumb',
+                'id##DSC01368.JPG.jpg##100##10683/102021##4##thumb',
+            ],
+        ],
+        'recordTitle' => 'Charles Barkla Plaque',
+        'recordDisplay' => [],
+        'fieldMappings' => config('skylight.field_mappings'),
+        'filters' => [],
+        'bitstreamField' => 'dcformatoriginalen',
+        'thumbnailField' => 'dcformatthumbnailen',
+        'bitstreams' => [],
+        'relatedItems' => [],
+    ])->render();
+
+    expect($html)
+        // Confirm the broken Cockburn-style "main image + thumbnail strip" layout is gone.
+        ->not->toContain('record-main-image')
+        ->and($html)->not->toContain('class="main-image"')
+        ->and($html)->not->toContain('class="thumbnail-strip"')
+        ->and($html)->not->toContain('class="thumbnail-tile')
+        // Each bitstream renders as an inline fancybox link wrapping the small thumbnail.
+        ->and($html)->toContain('<a title="Charles Barkla Plaque" class="fancybox" href="./record/102021/1/DSC01328.JPG"><img src="./record/102021/5/DSC01328.JPG.jpg"')
+        ->and($html)->toContain('<a title="Charles Barkla Plaque" class="fancybox" href="./record/102021/2/DSC01368.JPG"><img src="./record/102021/4/DSC01368.JPG.jpg"')
+        // Alt text falls through to the Description field, matching the live SOPA markup.
+        ->and($html)->toContain('alt="Charles Barkla plaque unveiling at Hermitage House."');
+});
+
 it('falls back to facets in the sidebar when no related items are passed', function (): void {
     $html = view('physics.record.show', [
         'record' => ['dctitleen' => ['Test SOPA record']],

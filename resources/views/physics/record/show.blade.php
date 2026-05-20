@@ -142,6 +142,15 @@
 
         @if(isset($record[$bitstreamField]))
             @php
+                $descriptionField = str_replace('.', '', $fieldMappings['Description'] ?? '');
+                $descriptionValue = '';
+                if ($descriptionField && isset($record[$descriptionField])) {
+                    $descriptionValue = is_array($record[$descriptionField])
+                        ? ($record[$descriptionField][0] ?? '')
+                        : $record[$descriptionField];
+                }
+                $altText = $descriptionValue !== '' ? $descriptionValue : $recordTitle;
+
                 $bitstreamArray = [];
                 foreach ($record[$bitstreamField] as $bitstreamForArray) {
                     $segments = explode('##', $bitstreamForArray);
@@ -152,14 +161,22 @@
                 }
                 ksort($bitstreamArray);
 
-                $thumbnailLinks = [];
-                $numThumbnails = 0;
-                $mainImage = false;
-                $mainImageHtml = '';
-                $audioFile = false;
-                $videoFile = false;
+                $thumbnailMap = [];
+                if (isset($record[$thumbnailField])) {
+                    foreach ($record[$thumbnailField] as $thumbnail) {
+                        $tSegments = explode('##', $thumbnail);
+                        $tFilename = $tSegments[1] ?? '';
+                        if ($tFilename !== '') {
+                            $thumbnailMap[$tFilename] = $thumbnail;
+                        }
+                    }
+                }
+
+                $imageLinks = [];
                 $audioLink = '';
                 $videoLink = '';
+                $audioFile = false;
+                $videoFile = false;
             @endphp
 
             <div class="record_bitstreams">
@@ -169,7 +186,6 @@
 
                 @foreach($bitstreamArray as $bitstream)
                     @php
-                        $mp4ok = false;
                         $bSegments = explode('##', $bitstream);
                         $bFilename = $bSegments[1] ?? '';
                         $bHandle = $bSegments[3] ?? '';
@@ -178,44 +194,21 @@
                         $bUri = './record/' . $bHandleId . '/' . $bSeq . '/' . $bFilename;
                     @endphp
 
-                    @if(str_contains(strtolower($bUri), '.jpg'))
-                        @if(!$mainImage)
-                            @php
-                                $mainImageHtml = '<div class="main-image">';
-                                $mainImageHtml .= '<a title="' . e($recordTitle) . '" class="fancybox" rel="group" href="' . $bUri . '">';
-                                $mainImageHtml .= '<img class="record-main-image" src="' . $bUri . '" alt="' . e($recordTitle) . '">';
-                                $mainImageHtml .= '</a></div>';
-                                $mainImage = true;
-                            @endphp
-                        @else
-                            @if(isset($record[$thumbnailField]))
-                                @foreach($record[$thumbnailField] as $thumbnail)
-                                    @php
-                                        $tSegments = explode('##', $thumbnail);
-                                        $tFilename = $tSegments[1] ?? '';
-                                    @endphp
+                    @if(str_contains(strtolower($bFilename), '.jpg') || str_contains(strtolower($bFilename), '.jpeg'))
+                        @php
+                            $thumbnailKey = $bFilename . '.jpg';
+                            if (isset($thumbnailMap[$thumbnailKey])) {
+                                $tSegments = explode('##', $thumbnailMap[$thumbnailKey]);
+                                $tSeq = $tSegments[4] ?? '';
+                                $tFilename = $tSegments[1] ?? '';
+                                $tUri = './record/' . $bHandleId . '/' . $tSeq . '/' . $tFilename;
 
-                                    @if($tFilename === $bFilename . '.jpg')
-                                        @php
-                                            $tSeq = $tSegments[4] ?? '';
-                                            $tUri = './record/' . $bHandleId . '/' . $tSeq . '/' . $tFilename;
+                                $imageLinks[] = '<a title="' . e($recordTitle) . '" class="fancybox" href="' . $bUri . '">'
+                                    . '<img src="' . $tUri . '" title="' . e($recordTitle) . '" alt="' . e($altText) . '"></a>';
+                            }
+                        @endphp
 
-                                            $thumb = '<div class="thumbnail-tile';
-                                            if ($numThumbnails % 4 === 0) {
-                                                $thumb .= ' first';
-                                            }
-                                            $thumb .= '"><a title="' . e($recordTitle) . '" class="fancybox" rel="group" href="' . $bUri . '">';
-                                            $thumb .= '<img src="' . $tUri . '" class="record-thumbnail" title="' . e($recordTitle) . '" /></a></div>';
-
-                                            $thumbnailLinks[] = $thumb;
-                                            $numThumbnails++;
-                                        @endphp
-                                    @endif
-                                @endforeach
-                            @endif
-                        @endif
-
-                    @elseif(str_contains(strtolower($bUri), '.mp3'))
+                    @elseif(str_contains(strtolower($bFilename), '.mp3'))
                         @php
                             $audioLink .= '<audio controls>';
                             $audioLink .= '<source src="' . $bUri . '" type="audio/mpeg" />Audio loading...';
@@ -226,11 +219,8 @@
                     @elseif(str_contains(strtolower($bFilename), '.mp4'))
                         @php
                             $bUri = $mediaUri . $bHandleId . '/' . $bSeq . '/' . $bFilename;
-                            $ua = request()->userAgent();
-
-                            if (!str_contains($ua, 'Chrome') || str_contains($ua, 'Edge')) {
-                                $mp4ok = true;
-                            }
+                            $ua = (string) request()->userAgent();
+                            $mp4ok = ! str_contains($ua, 'Chrome') || str_contains($ua, 'Edge');
 
                             if ($mp4ok) {
                                 $videoLink .= '<div class="flowplayer" title="' . e($recordTitle) . ': ' . e($bFilename) . '">';
@@ -243,8 +233,8 @@
 
                     @elseif(str_contains(strtolower($bFilename), '.webm'))
                         @php
-                            $ua = request()->userAgent();
-                            if (!str_contains($ua, 'Edge') && str_contains($ua, 'Chrome')) {
+                            $ua = (string) request()->userAgent();
+                            if (! str_contains($ua, 'Edge') && str_contains($ua, 'Chrome')) {
                                 $bUri = $mediaUri . $bHandleId . '/' . $bSeq . '/' . $bFilename;
                                 $videoLink .= '<div class="flowplayer" title="' . e($recordTitle) . ': ' . e($bFilename) . '">';
                                 $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
@@ -256,39 +246,14 @@
                     @endif
                 @endforeach
 
-                @if($mainImage)
-                    {!! $mainImageHtml !!}
-                    <div class="clearfix"></div>
-                @endif
-
-                @if($numThumbnails > 0)
-                    @php $i = 0; $newStrip = false; @endphp
-                    <div class="thumbnail-strip">
-                        @foreach($thumbnailLinks as $thumb)
-                            @if($newStrip)
-                                </div><div class="clearfix"></div><div class="thumbnail-strip">
-                                @php $newStrip = false; @endphp
-                            @endif
-
-                            {!! $thumb !!}
-
-                            @php
-                                $i++;
-                                if ($i % 4 === 0) {
-                                    $newStrip = true;
-                                }
-                            @endphp
-                        @endforeach
-                    </div>
-                    <div class="clearfix"></div>
-                @endif
+                {!! implode(' ', $imageLinks) !!}
 
                 @if($audioFile)
-                    <br>.<br>{!! $audioLink !!}
+                    {!! $audioLink !!}
                 @endif
 
                 @if($videoFile)
-                    <br>.<br>{!! $videoLink !!}
+                    {!! $videoLink !!}
                 @endif
 
                 {{-- Legacy "high resolution" note mirrored from the live SOPA record page. --}}
