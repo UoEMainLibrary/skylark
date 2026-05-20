@@ -232,7 +232,7 @@
                     <strong>{{ $startRow }}-{{ $endRow }}</strong> of
                     <strong>{{ number_format($total) }}</strong> results
                 </span>
-               {{-- {!! $paginationLinks !!} --}}
+                {!! $paginationLinks !!}
             </div>
         @endif
     </div>

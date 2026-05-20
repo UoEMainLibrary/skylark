@@ -93,6 +93,40 @@ it('renders the Related Items sidebar on the Physics record page with the legacy
         ->and($html)->toContain('small-icon media-image');
 });
 
+it('renders pagination links on the physics search results page', function (): void {
+    $html = view('physics.search.results', [
+        'docs' => [
+            [
+                'id' => '102876',
+                'dctitleen' => ['Royal Observatory Edinburgh'],
+            ],
+        ],
+        'total' => 25,
+        'query' => '*:*',
+        'searchbox_query' => '',
+        'base_search' => './search/*:*',
+        'base_parameters' => '',
+        'facets' => [],
+        'highlights' => [],
+        'suggestions' => [],
+        'startRow' => 1,
+        'endRow' => 10,
+        'offset' => 0,
+        'rows' => 10,
+        'sort_by' => '',
+        'sort_options' => [],
+        'paginationLinks' => '<ul class="pagination pagination-sm pagination-xs"><li><a href="./search/*:*?offset=10">2</a></li></ul>',
+        'active_filters' => [],
+        'delimiter' => '|||',
+    ])->render();
+
+    expect($html)
+        ->toContain('<ul class="pagination pagination-sm pagination-xs">')
+        ->and($html)->toContain('href="./search/*:*?offset=10"')
+        // Confirm the legacy commented-out marker is gone so this can't silently regress.
+        ->and($html)->not->toContain('{!! $paginationLinks !!}');
+});
+
 it('renders bitstreams as inline thumbnails (not as a full-resolution main image)', function (): void {
     config([
         'skylight.field_mappings' => [
