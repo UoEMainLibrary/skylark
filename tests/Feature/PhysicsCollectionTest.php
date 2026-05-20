@@ -162,6 +162,16 @@ it('serves the physics home page at /physics', function (): void {
     $this->get('/physics')->assertSuccessful();
 });
 
+it('serves the advanced search form at /physics/advanced/form', function (): void {
+    $this->get('/physics/advanced/form')
+        ->assertSuccessful()
+        ->assertSee('Advanced Search', false)
+        ->assertSee('action="'.url('/physics/advanced/post').'"', false)
+        ->assertSee('name="Title"', false)
+        ->assertSee('name="Author"', false)
+        ->assertSee('name="operator"', false);
+});
+
 it('serves the physics home page at / on a configured dedicated host', function (): void {
     $this->withHeaders(['Host' => 'sopacollection.testing'])
         ->get('/')
