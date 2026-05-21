@@ -71,6 +71,7 @@
                         ['url' => url('/art-on-campus/search/*:*'), 'label' => 'Browse artworks'],
                         ['url' => url('/art-on-campus/search/*:*/?map=true'), 'label' => 'Map'],
                         ['url' => url('/art-on-campus/paolozzi'), 'label' => 'Paolozzi Mosaics'],
+                        ['url' => url('/art-on-campus/cast-collections'), 'label' => 'Cast Collections'],
                         ['url' => url('/art'), 'label' => 'University Art Collection'],
                     ];
                 @endphp
@@ -130,6 +131,7 @@
                         <li><a href="{{ url('/art-on-campus/search/*:*') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Browse artworks</a></li>
                         <li><a href="{{ url('/art-on-campus/search/*:*/?map=true') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">View map</a></li>
                         <li><a href="{{ url('/art-on-campus/paolozzi') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Paolozzi Mosaics</a></li>
+                        <li><a href="{{ url('/art-on-campus/cast-collections') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">Cast Collections</a></li>
                         <li><a href="{{ url('/art') }}" class="text-pa-ink-700 underline underline-offset-2 decoration-pa-ink-300 hover:text-pa-accent hover:decoration-pa-accent">University Art Collection</a></li>
                     </ul>
                 </div>

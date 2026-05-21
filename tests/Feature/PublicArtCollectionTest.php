@@ -827,6 +827,40 @@ it('no longer renders the student-intern footnote on the V2 home page', function
         ->assertDontSee('ISG Innovation Grant');
 });
 
+it('serves the new Cast Collections page with the supplied client copy and external links', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $this->get('/art-on-campus/cast-collections')
+        ->assertSuccessful()
+        ->assertSee('University Cast Collections')
+        // Lead-paragraph phrases (split because the Blade wraps prose across
+        // lines, so a single long substring won't match contiguously).
+        ->assertSee('most significant')
+        ->assertSee('historic plaster casts')
+        ->assertSee('Parthenon frieze')
+        // Brochure (Cast Collection PDF on era.ed.ac.uk).
+        ->assertSee('Cast Collection brochure (PDF)')
+        ->assertSee('era.ed.ac.uk/server/api/core/bitstreams/c0c13972-6155-499b-a9fb-8d55768092eb/content', false)
+        // Past Projects block and the live cast-collection blog link.
+        ->assertSee('More information: Past Projects', false)
+        ->assertSee('the Edinburgh Cast Collection project site')
+        ->assertSee('https://blogs.ed.ac.uk/casts/the-collection/', false)
+        // Client-supplied image, served from the public/collections asset path.
+        ->assertSee('collections/public-art/images/cast-collections/east-pediment-cast.jpg', false);
+});
+
+it('lists Cast Collections in the V2 primary nav and footer Explore section', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $response = $this->get('/art-on-campus')->assertSuccessful();
+    $html = $response->getContent();
+
+    // Two link instances expected: one in the primary nav, one in the footer
+    // Explore list. Both href and visible label should round-trip.
+    expect(substr_count($html, '/art-on-campus/cast-collections'))->toBeGreaterThanOrEqual(2)
+        ->and(substr_count($html, 'Cast Collections'))->toBeGreaterThanOrEqual(2);
+});
+
 it('shows the renamed Paolozzi nav label and the new University Art Collection link in the V2 layout', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
