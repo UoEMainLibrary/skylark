@@ -9,6 +9,22 @@
     #record-map .ol-layer canvas {
         filter: grayscale(0.55) saturate(0.7) brightness(1.02);
     }
+
+    /* Thumbnail panel:
+       - Without JS, all thumbnails render inline as a long grid (worst-case
+         records like Ideas with 200+ images make a very tall page, but every
+         thumbnail stays keyboard-reachable and discoverable).
+       - With JS, the gallery enhancer adds .is-scrollable to constrain the
+         grid to a vertically scrolling panel. Browser-native scroll keeps
+         keyboard / screen-reader behaviour intact and the scrollbar makes
+         the affordance discoverable. Below the threshold of ~12 images the
+         content fits inside the max-height and no scrollbar appears. */
+    [data-thumb-grid].is-scrollable {
+        max-height: 22rem;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+        scroll-behavior: smooth;
+    }
 </style>
 @endpush
 
@@ -143,7 +159,10 @@
 
                 @if(count($images) > 1)
                     <p data-hero-status class="sr-only" aria-live="polite"></p>
-                    <ul role="list" class="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6">
+                    <ul role="list"
+                        data-thumb-grid
+                        aria-label="All {{ count($images) }} images of this artwork"
+                        class="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6">
                         @foreach($images as $i => $img)
                             <li>
                                 <button type="button"
@@ -352,6 +371,17 @@
             var status = gallery.querySelector('[data-hero-status]');
             var thumbs = gallery.querySelectorAll('[data-thumb]');
             var trigger = gallery.querySelector('[data-zoom-trigger]');
+            var thumbGrid = gallery.querySelector('[data-thumb-grid]');
+
+            // Progressive enhancement: collapse the thumbnail grid into a
+            // vertically scrolling panel (see the .is-scrollable rule in the
+            // styles block). The grid still fills the article column; users
+            // see ~3 rows and scroll for the rest, instead of the grid
+            // stretching down a 200-image record page indefinitely. Without
+            // JS the original grid renders, every thumbnail inline.
+            if (thumbGrid) {
+                thumbGrid.classList.add('is-scrollable');
+            }
 
             thumbs.forEach(function (btn) {
                 btn.addEventListener('click', function () {

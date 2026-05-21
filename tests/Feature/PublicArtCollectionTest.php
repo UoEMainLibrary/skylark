@@ -430,6 +430,45 @@ it('does not rewrite per-artwork Solr field values when rendering V2', function 
         ->toContain('Upstream DSpace description, rendered untouched.');
 });
 
+it('constrains the V2 record thumbnail grid to a JS-enhanced scroll panel with a no-JS grid fallback', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+        ],
+    ]);
+
+    // Build a record with enough images to trigger the scroll fallback in
+    // the browser. The number itself isn't load-bearing — the test just pins
+    // the enhancement contract.
+    $imageUris = array_fill(0, 20, 'https://example.test/iiif/abc/full/full/0/default.jpg');
+
+    $html = view('public-art-v2.record.show', [
+        'record' => [
+            'dctitleen' => ['Ideas'],
+            'dcidentifierimageUri' => $imageUris,
+        ],
+        'recordTitle' => 'Ideas',
+        'recordDisplay' => ['Title'],
+    ])->render();
+
+    expect($html)
+        // No-JS fallback: thumbnails are still emitted inline as a single
+        // <ul> grid (no hidden offscreen list, no pagination).
+        ->toContain('grid grid-cols-4 gap-3 sm:grid-cols-6')
+        ->toContain('aria-label="All 20 images of this artwork"')
+        // JS hook + CSS rule are both present so the enhancer can flip the
+        // grid into a scroll panel without shipping more script.
+        ->toContain('data-thumb-grid')
+        ->toContain("classList.add('is-scrollable')")
+        ->toContain('[data-thumb-grid].is-scrollable')
+        ->toContain('max-height: 22rem');
+});
+
 it('hides Subject, Artist Biography, City and Country on the V2 record page (client allow-list)', function () {
     config([
         'skylight.public_art_skin_version' => 2,
