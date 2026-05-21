@@ -9,6 +9,22 @@
     #record-map .ol-layer canvas {
         filter: grayscale(0.55) saturate(0.7) brightness(1.02);
     }
+
+    /* Thumbnail panel:
+       - Without JS, all thumbnails render inline as a long grid (worst-case
+         records like Ideas with 200+ images make a very tall page, but every
+         thumbnail stays keyboard-reachable and discoverable).
+       - With JS, the gallery enhancer adds .is-scrollable to constrain the
+         grid to a vertically scrolling panel. Browser-native scroll keeps
+         keyboard / screen-reader behaviour intact and the scrollbar makes
+         the affordance discoverable. Below the threshold of ~12 images the
+         content fits inside the max-height and no scrollbar appears. */
+    [data-thumb-grid].is-scrollable {
+        max-height: 22rem;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+        scroll-behavior: smooth;
+    }
 </style>
 @endpush
 
@@ -78,6 +94,13 @@
     $videoEmbeds = config('skylight.public_art_videos', []);
     $videoKey = strtolower(trim(strip_tags($recordTitle)));
     $videoId = $videoEmbeds[$videoKey] ?? null;
+
+    // Per the client's 2026 record-page tweaks, the artwork detail page should
+    // only surface Artist, Dates, Media (Format), Dimensions (Format Extent)
+    // and Description. Anything else carried in `recorddisplay` (artist bio,
+    // city, country, subject, etc.) is suppressed here without touching the
+    // upstream config or the legacy v1 skin.
+    $allowedRecordFields = ['Artist', 'Dates', 'Format', 'Format Extent', 'Description'];
 @endphp
 
 {{-- Breadcrumb / back nav --}}
@@ -136,7 +159,10 @@
 
                 @if(count($images) > 1)
                     <p data-hero-status class="sr-only" aria-live="polite"></p>
-                    <ul role="list" class="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6">
+                    <ul role="list"
+                        data-thumb-grid
+                        aria-label="All {{ count($images) }} images of this artwork"
+                        class="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6">
                         @foreach($images as $i => $img)
                             <li>
                                 <button type="button"
@@ -167,39 +193,16 @@
             <h1 class="mt-2 text-3xl font-semibold tracking-tight text-pa-ink-900 sm:text-4xl">{{ $recordTitle }}</h1>
         </header>
 
-        {{-- Optional video embed for featured artworks (Ideas, etc.) --}}
-        @if($videoId)
-            <section class="mt-8" aria-labelledby="video-heading">
-                <h2 id="video-heading" class="sr-only">Video about {{ $recordTitle }}</h2>
-                <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-                    <iframe src="https://media.ed.ac.uk/embed/secure/iframe/entryId/{{ $videoId }}/showInfo/false/showTitle/false/embedPlaceholder/true"
-                            title="Video about {{ $recordTitle }} (Media Hopper)"
-                            allow="autoplay *; fullscreen *; encrypted-media *"
-                            loading="lazy"
-                            frameborder="0"
-                            class="h-full w-full"></iframe>
-                </div>
-                <p class="mt-2 text-sm text-pa-ink-700">
-                    Captions are available within the video player. The
-                    @include('public-art-v2.partials.external-link', [
-                        'href' => 'https://media.ed.ac.uk/media/'.$videoId,
-                        'label' => 'full-page version of this video',
-                        'class' => 'text-pa-accent',
-                    ])
-                    on Media Hopper offers transcript and download links where provided by the publisher.
-                </p>
-            </section>
-        @endif
-
         {{-- Description / metadata, all on one scroll --}}
         <section class="mt-10" aria-label="About this artwork">
             <dl class="divide-y divide-pa-ink-100 border-t border-pa-ink-100">
                 @foreach($recordDisplay as $key)
+                    @continue(! in_array($key, $allowedRecordFields, true))
                     @php
                         $field = str_replace('.', '', $fieldMappings[$key] ?? '');
                         $value = $record[$field][0] ?? null;
                     @endphp
-                    @if($value !== null && $value !== '' && $key !== 'Title')
+                    @if($value !== null && $value !== '')
                         @php
                             // Override descriptions arrive as plain text with \n\n between
                             // paragraphs; upstream Solr values are single-line strings that
@@ -223,6 +226,37 @@
                 @endforeach
             </dl>
         </section>
+
+        {{-- Optional video embed for featured artworks (Ideas, etc.).
+             Per the client's 2026 record-page tweaks, the video sits beneath the
+             artwork description and above the "Back to all artworks" actions.
+
+             We embed via Kaltura's CDN (entry_id={$videoId} + the public
+             wid=1_65sjprmo widget) rather than media.ed.ac.uk/embed/secure/iframe
+             — the Media Hopper proxy was being gated for some visitors. Same
+             underlying asset, public access path. --}}
+        @if($videoId)
+            <section class="mt-10" aria-labelledby="video-heading">
+                <h2 id="video-heading" class="sr-only">Video about {{ $recordTitle }}</h2>
+                <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
+                    <iframe src="https://cdnapisec.kaltura.com/p/2010292/sp/201029200/embedIframeJs/uiconf_id/32599141/partner_id/2010292?iframeembed=true&playerId=kaltura_player&entry_id={{ $videoId }}&flashvars[streamerType]=auto&flashvars[localizationCode]=en&flashvars[sideBarContainer.plugin]=true&flashvars[sideBarContainer.position]=left&flashvars[sideBarContainer.clickToClose]=true&flashvars[chapters.plugin]=true&flashvars[chapters.layout]=vertical&flashvars[chapters.thumbnailRotator]=false&flashvars[streamSelector.plugin]=true&flashvars[EmbedPlayer.SpinnerTarget]=videoHolder&flashvars[dualScreen.plugin]=true&flashvars[Kaltura.addCrossoriginToIframe]=true&wid=1_65sjprmo"
+                            title="Video about {{ $recordTitle }} (Media Hopper)"
+                            allow="autoplay *; fullscreen *; encrypted-media *"
+                            loading="lazy"
+                            frameborder="0"
+                            class="h-full w-full"></iframe>
+                </div>
+                <p class="mt-2 text-sm text-pa-ink-700">
+                    Captions are available within the video player. The
+                    @include('public-art-v2.partials.external-link', [
+                        'href' => 'https://media.ed.ac.uk/media/'.$videoId,
+                        'label' => 'full-page version of this video',
+                        'class' => 'text-pa-accent',
+                    ])
+                    on Media Hopper offers transcript and download links where provided by the publisher.
+                </p>
+            </section>
+        @endif
 
         <div class="mt-10 flex flex-wrap gap-3">
             <a href="{{ url('/art-on-campus/search/*:*') }}"
@@ -337,6 +371,17 @@
             var status = gallery.querySelector('[data-hero-status]');
             var thumbs = gallery.querySelectorAll('[data-thumb]');
             var trigger = gallery.querySelector('[data-zoom-trigger]');
+            var thumbGrid = gallery.querySelector('[data-thumb-grid]');
+
+            // Progressive enhancement: collapse the thumbnail grid into a
+            // vertically scrolling panel (see the .is-scrollable rule in the
+            // styles block). The grid still fills the article column; users
+            // see ~3 rows and scroll for the rest, instead of the grid
+            // stretching down a 200-image record page indefinitely. Without
+            // JS the original grid renders, every thumbnail inline.
+            if (thumbGrid) {
+                thumbGrid.classList.add('is-scrollable');
+            }
 
             thumbs.forEach(function (btn) {
                 btn.addEventListener('click', function () {

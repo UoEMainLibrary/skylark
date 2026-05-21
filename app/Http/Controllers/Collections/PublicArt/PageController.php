@@ -22,4 +22,12 @@ class PageController extends Controller
     {
         return view(CollectionViewResolver::publicArt('public-art.pages.paolozzi'));
     }
+
+    /**
+     * Display the University Cast Collections page.
+     */
+    public function castCollections()
+    {
+        return view(CollectionViewResolver::publicArt('public-art.pages.cast-collections'));
+    }
 }
