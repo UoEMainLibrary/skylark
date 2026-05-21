@@ -78,6 +78,13 @@
     $videoEmbeds = config('skylight.public_art_videos', []);
     $videoKey = strtolower(trim(strip_tags($recordTitle)));
     $videoId = $videoEmbeds[$videoKey] ?? null;
+
+    // Per the client's 2026 record-page tweaks, the artwork detail page should
+    // only surface Artist, Dates, Media (Format), Dimensions (Format Extent)
+    // and Description. Anything else carried in `recorddisplay` (artist bio,
+    // city, country, subject, etc.) is suppressed here without touching the
+    // upstream config or the legacy v1 skin.
+    $allowedRecordFields = ['Artist', 'Dates', 'Format', 'Format Extent', 'Description'];
 @endphp
 
 {{-- Breadcrumb / back nav --}}
@@ -167,39 +174,16 @@
             <h1 class="mt-2 text-3xl font-semibold tracking-tight text-pa-ink-900 sm:text-4xl">{{ $recordTitle }}</h1>
         </header>
 
-        {{-- Optional video embed for featured artworks (Ideas, etc.) --}}
-        @if($videoId)
-            <section class="mt-8" aria-labelledby="video-heading">
-                <h2 id="video-heading" class="sr-only">Video about {{ $recordTitle }}</h2>
-                <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-                    <iframe src="https://media.ed.ac.uk/embed/secure/iframe/entryId/{{ $videoId }}/showInfo/false/showTitle/false/embedPlaceholder/true"
-                            title="Video about {{ $recordTitle }} (Media Hopper)"
-                            allow="autoplay *; fullscreen *; encrypted-media *"
-                            loading="lazy"
-                            frameborder="0"
-                            class="h-full w-full"></iframe>
-                </div>
-                <p class="mt-2 text-sm text-pa-ink-700">
-                    Captions are available within the video player. The
-                    @include('public-art-v2.partials.external-link', [
-                        'href' => 'https://media.ed.ac.uk/media/'.$videoId,
-                        'label' => 'full-page version of this video',
-                        'class' => 'text-pa-accent',
-                    ])
-                    on Media Hopper offers transcript and download links where provided by the publisher.
-                </p>
-            </section>
-        @endif
-
         {{-- Description / metadata, all on one scroll --}}
         <section class="mt-10" aria-label="About this artwork">
             <dl class="divide-y divide-pa-ink-100 border-t border-pa-ink-100">
                 @foreach($recordDisplay as $key)
+                    @continue(! in_array($key, $allowedRecordFields, true))
                     @php
                         $field = str_replace('.', '', $fieldMappings[$key] ?? '');
                         $value = $record[$field][0] ?? null;
                     @endphp
-                    @if($value !== null && $value !== '' && $key !== 'Title')
+                    @if($value !== null && $value !== '')
                         @php
                             // Override descriptions arrive as plain text with \n\n between
                             // paragraphs; upstream Solr values are single-line strings that
@@ -223,6 +207,37 @@
                 @endforeach
             </dl>
         </section>
+
+        {{-- Optional video embed for featured artworks (Ideas, etc.).
+             Per the client's 2026 record-page tweaks, the video sits beneath the
+             artwork description and above the "Back to all artworks" actions.
+
+             We embed via Kaltura's CDN (entry_id={$videoId} + the public
+             wid=1_65sjprmo widget) rather than media.ed.ac.uk/embed/secure/iframe
+             — the Media Hopper proxy was being gated for some visitors. Same
+             underlying asset, public access path. --}}
+        @if($videoId)
+            <section class="mt-10" aria-labelledby="video-heading">
+                <h2 id="video-heading" class="sr-only">Video about {{ $recordTitle }}</h2>
+                <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
+                    <iframe src="https://cdnapisec.kaltura.com/p/2010292/sp/201029200/embedIframeJs/uiconf_id/32599141/partner_id/2010292?iframeembed=true&playerId=kaltura_player&entry_id={{ $videoId }}&flashvars[streamerType]=auto&flashvars[localizationCode]=en&flashvars[sideBarContainer.plugin]=true&flashvars[sideBarContainer.position]=left&flashvars[sideBarContainer.clickToClose]=true&flashvars[chapters.plugin]=true&flashvars[chapters.layout]=vertical&flashvars[chapters.thumbnailRotator]=false&flashvars[streamSelector.plugin]=true&flashvars[EmbedPlayer.SpinnerTarget]=videoHolder&flashvars[dualScreen.plugin]=true&flashvars[Kaltura.addCrossoriginToIframe]=true&wid=1_65sjprmo"
+                            title="Video about {{ $recordTitle }} (Media Hopper)"
+                            allow="autoplay *; fullscreen *; encrypted-media *"
+                            loading="lazy"
+                            frameborder="0"
+                            class="h-full w-full"></iframe>
+                </div>
+                <p class="mt-2 text-sm text-pa-ink-700">
+                    Captions are available within the video player. The
+                    @include('public-art-v2.partials.external-link', [
+                        'href' => 'https://media.ed.ac.uk/media/'.$videoId,
+                        'label' => 'full-page version of this video',
+                        'class' => 'text-pa-accent',
+                    ])
+                    on Media Hopper offers transcript and download links where provided by the publisher.
+                </p>
+            </section>
+        @endif
 
         <div class="mt-10 flex flex-wrap gap-3">
             <a href="{{ url('/art-on-campus/search/*:*') }}"

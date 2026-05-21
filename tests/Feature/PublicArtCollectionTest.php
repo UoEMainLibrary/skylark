@@ -430,6 +430,126 @@ it('does not rewrite per-artwork Solr field values when rendering V2', function 
         ->toContain('Upstream DSpace description, rendered untouched.');
 });
 
+it('hides Subject, Artist Biography, City and Country on the V2 record page (client allow-list)', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+            'Dates' => 'dc.coverage.temporal.en',
+            'Format' => 'dc.format',
+            'Format Extent' => 'dc.format.extent',
+            'Description' => 'dc.description.en',
+            'Subject' => 'dc.subject',
+            'Artist Biography' => 'dc.contributor.authorbio.en',
+            'City' => 'dc.coverage.spatialcity.en',
+            'Country' => 'dc.coverage.spatialcountry.en',
+        ],
+    ]);
+
+    $html = view('public-art-v2.record.show', [
+        'record' => [
+            'dctitleen' => ['Untitled (Rhino head)'],
+            'dccontributorauthorfullen' => ['Helen Denerley'],
+            'dccoveragetemporalen' => ['2009'],
+            'dcformat' => ['scrap metal'],
+            'dcformatextent' => ['life-size'],
+            'dcdescriptionen' => ['A rhino sculpture welded from reclaimed steel.'],
+            'dcsubject' => ['Animals; Sculpture'],
+            'dccontributorauthorbioen' => ['Helen Denerley is a Scottish sculptor working with reclaimed metal.'],
+            'dccoveragespatialcityen' => ['Edinburgh'],
+            'dccoveragespatialcountryen' => ['Scotland'],
+        ],
+        'recordTitle' => 'Untitled (Rhino head)',
+        'recordDisplay' => [
+            'Title', 'Artist', 'Creator', 'Dates', 'City', 'Country',
+            'Format', 'Format Extent', 'Description', 'Subject', 'Artist Biography',
+        ],
+    ])->render();
+
+    expect($html)
+        // Allow-list: Artist, Dates, Media, Dimensions, Description.
+        ->toContain('>Artist<')
+        ->toContain('>Dates<')
+        ->toContain('>Media<')
+        ->toContain('>Dimensions<')
+        ->toContain('>Description<')
+        ->toContain('Helen Denerley')
+        ->toContain('A rhino sculpture welded from reclaimed steel.')
+        // Hidden fields should not appear as <dt> labels OR as content.
+        ->not->toContain('>Subject<')
+        ->not->toContain('>Artist Biography<')
+        ->not->toContain('>City<')
+        ->not->toContain('>Country<')
+        ->not->toContain('Animals; Sculpture')
+        ->not->toContain('Helen Denerley is a Scottish sculptor')
+        ->not->toContain('>Edinburgh<')
+        ->not->toContain('>Scotland<');
+});
+
+it('uses the public Kaltura CDN url (not media.ed.ac.uk/embed/secure) for per-record videos', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+        ],
+        // Mirror the config/collections/public-art.php map for this assertion.
+        'skylight.public_art_videos' => ['ideas' => '1_lh3jbplo'],
+    ]);
+
+    $html = view('public-art-v2.record.show', [
+        'record' => ['dctitleen' => ['Ideas']],
+        'recordTitle' => 'Ideas',
+        'recordDisplay' => ['Title'],
+    ])->render();
+
+    expect($html)
+        ->toContain('cdnapisec.kaltura.com')
+        ->toContain('entry_id=1_lh3jbplo')
+        ->toContain('wid=1_65sjprmo')
+        // The legacy gated proxy must not slip back in.
+        ->not->toContain('media.ed.ac.uk/embed/secure/iframe');
+});
+
+it('renders the per-record video beneath the description and above the Back to all artworks button', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+            'Description' => 'dc.description.en',
+        ],
+        'skylight.public_art_videos' => ['the basic material is not the word but the letter' => '0_tmmkjuz4'],
+    ]);
+
+    $html = view('public-art-v2.record.show', [
+        'record' => [
+            'dctitleen' => ['The Basic Material is Not the Word but the Letter'],
+            'dcdescriptionen' => ['About the work.'],
+        ],
+        'recordTitle' => 'The Basic Material is Not the Word but the Letter',
+        'recordDisplay' => ['Title', 'Description'],
+    ])->render();
+
+    $descriptionPos = strpos($html, 'About the work.');
+    $videoPos = strpos($html, 'entry_id=0_tmmkjuz4');
+    $backBtnPos = strpos($html, 'Back to all artworks');
+
+    expect($descriptionPos)->toBeInt()
+        ->and($videoPos)->toBeInt()->toBeGreaterThan($descriptionPos)
+        ->and($backBtnPos)->toBeInt()->toBeGreaterThan($videoPos);
+});
+
 it('applies the Format → Media and Format Extent → Dimensions rename', function () {
     config([
         'skylight.public_art_skin_version' => 2,
@@ -631,19 +751,19 @@ it('shows the Edinburgh Runestone block in the More Information section on the V
         ->assertSee('https://www.socantscot.org/wp-content/uploads/2018/04/Runestone-0703-FINAL-web.pdf', false);
 });
 
-it('does not link to the speculative Public Art Shorts / Podcast cards on the V2 home page', function () {
+it('shows the Public Art Shorts and Podcast links above the Runestone block on the V2 home page', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
-    // These two links were added speculatively during the V2 reskin
-    // (commit 299d32a) — neither URL was supplied by the client, neither
-    // resolved to live content, and they were removed once flagged. Keep
-    // them out unless the client supplies replacement URLs.
+    // Client request (May 2026): reinstate the two links the V2 reskin had
+    // removed, even though neither destination URL currently resolves. The
+    // hrefs are placeholders that match what was previously in the template;
+    // swap them when the client supplies working destinations.
     $this->get('/art-on-campus')
         ->assertSuccessful()
-        ->assertDontSee('media.ed.ac.uk/playlist/dedicated', false)
-        ->assertDontSee('heritage-blog.is.ed.ac.uk/category/the-collection-public-art-podcast', false)
-        ->assertDontSee('Public Art Shorts')
-        ->assertDontSee('The Collection: Public Art Podcast');
+        ->assertSee('Public Art Shorts')
+        ->assertSee('The Collection: Public Art Podcast')
+        ->assertSee('media.ed.ac.uk/playlist/dedicated/229339282/1_4n2k0ev6/1_lh3jbplo', false)
+        ->assertSee('heritage-blog.is.ed.ac.uk/category/the-collection-public-art-podcast/', false);
 });
 
 it('shows the Heritage Collections / CRC block and contact address on the V2 home page', function () {
