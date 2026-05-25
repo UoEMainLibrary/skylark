@@ -368,7 +368,7 @@ it('normalises browse-order lookup keys (case, whitespace, tags)', function () {
 
 it('returns curated browse-order positions, with unknown titles last', function () {
     expect(PublicArtOverrides::browseSortKey('Ideas'))->toBe(0)
-        ->and(PublicArtOverrides::browseSortKey('Startled Horse Rising'))->toBe(25)
+        ->and(PublicArtOverrides::browseSortKey('Startled Horse Rising'))->toBe(26)
         ->and(PublicArtOverrides::browseSortKey('Some Unmapped Work'))->toBe(PHP_INT_MAX)
         ->and(PublicArtOverrides::browseSortKey(null))->toBe(PHP_INT_MAX);
 });
@@ -551,8 +551,9 @@ it('uses the public Kaltura CDN url (not media.ed.ac.uk/embed/secure) for per-re
 
     expect($html)
         ->toContain('cdnapisec.kaltura.com')
+        ->toContain('uiconf_id/40887822')
         ->toContain('entry_id=1_lh3jbplo')
-        ->toContain('wid=1_65sjprmo')
+        ->toContain('widget_id=0_j4c8cidb')
         // The legacy gated proxy must not slip back in.
         ->not->toContain('media.ed.ac.uk/embed/secure/iframe');
 });
@@ -740,7 +741,7 @@ it('configures the public-art-overrides config file with labels and 26 browse en
     $config = require config_path('public-art-overrides.php');
 
     expect($config['labels'])->toBe(['Format' => 'Media', 'Format Extent' => 'Dimensions'])
-        ->and($config['browse_order'])->toHaveCount(26)
+        ->and($config['browse_order'])->toHaveCount(27)
         ->and($config['browse_order'][0])->toBe('Ideas')
         ->and(end($config['browse_order']))->toBe('Startled Horse Rising')
         ->and($config)->not->toHaveKey('records');
@@ -793,16 +794,14 @@ it('shows the Edinburgh Runestone block in the More Information section on the V
 it('shows the Public Art Shorts and Podcast links above the Runestone block on the V2 home page', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
-    // Client request (May 2026): reinstate the two links the V2 reskin had
-    // removed, even though neither destination URL currently resolves. The
-    // hrefs are placeholders that match what was previously in the template;
-    // swap them when the client supplies working destinations.
+    // Client request (May 2026): keep the two links present in the V2 reskin
+    // and point them at the latest destinations supplied by the collection.
     $this->get('/art-on-campus')
         ->assertSuccessful()
         ->assertSee('Public Art Shorts')
         ->assertSee('The Collection: Public Art Podcast')
-        ->assertSee('media.ed.ac.uk/playlist/dedicated/229339282/1_4n2k0ev6/1_lh3jbplo', false)
-        ->assertSee('heritage-blog.is.ed.ac.uk/category/the-collection-public-art-podcast/', false);
+        ->assertSee('media.ed.ac.uk/search?fields=tags&keyword=%22public%20art%20shorts%22', false)
+        ->assertSee('media.ed.ac.uk/channel/The+Collection%3A+Public+Art+Podcast+-+Apple+Podcasts/95117231', false);
 });
 
 it('shows the Heritage Collections / CRC block and contact address on the V2 home page', function () {
@@ -811,7 +810,7 @@ it('shows the Heritage Collections / CRC block and contact address on the V2 hom
     $this->get('/art-on-campus')
         ->assertSuccessful()
         ->assertSee('Heritage Collections and Centre for Research Collections')
-        ->assertSee('https://www.ed.ac.uk/visit/museums-galleries/heritage-collections', false)
+        ->assertSee('https://library.ed.ac.uk/heritage-collections', false)
         ->assertSee('Centre for Research Collections')
         ->assertSee('EH8 9LJ')
         ->assertSee('+44 (0)131 650 8379')

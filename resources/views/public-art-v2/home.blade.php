@@ -159,13 +159,10 @@
     <h2 id="more-info-heading" class="text-2xl font-semibold tracking-tight text-pa-ink-900">More information</h2>
 
     {{-- Public Art Shorts (Media Hopper) and The Collection: Public Art Podcast
-         (Heritage Blog). The destinations are still the original URLs that were
-         404ing when these cards were removed; the client has asked for them
-         back even though they don't yet resolve. Swap the hrefs when working
-         URLs are supplied. Markup matches the keylined card format used
-         pre-b6f810e. --}}
+         destinations supplied by the client (May 2026). Markup matches the
+         keylined card format used pre-b6f810e. --}}
     <div class="mt-6 grid gap-4 sm:grid-cols-2">
-        <a href="https://media.ed.ac.uk/playlist/dedicated/229339282/1_4n2k0ev6/1_lh3jbplo"
+        <a href="https://media.ed.ac.uk/search?fields=tags&keyword=%22public%20art%20shorts%22"
            target="_blank" rel="noopener"
            class="group flex items-start justify-between gap-4 rounded border border-pa-ink-100 bg-white p-5 transition-shadow hover:border-pa-ink-400 hover:shadow-sm">
             <span class="block">
@@ -175,7 +172,7 @@
             <svg class="mt-1 h-5 w-5 shrink-0 text-pa-ink-600 group-hover:text-pa-accent" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
         </a>
 
-        <a href="https://heritage-blog.is.ed.ac.uk/category/the-collection-public-art-podcast/"
+        <a href="https://media.ed.ac.uk/channel/The+Collection%3A+Public+Art+Podcast+-+Apple+Podcasts/95117231"
            target="_blank" rel="noopener"
            class="group flex items-start justify-between gap-4 rounded border border-pa-ink-100 bg-white p-5 transition-shadow hover:border-pa-ink-400 hover:shadow-sm">
             <span class="block">
@@ -215,7 +212,7 @@
     <p class="mt-3 max-w-3xl text-pa-ink-700">
         Further information about
         @include('public-art-v2.partials.external-link', [
-            'href' => 'https://www.ed.ac.uk/visit/museums-galleries/heritage-collections',
+            'href' => 'https://library.ed.ac.uk/heritage-collections',
             'label' => 'Heritage Collections and the Centre for Research Collections',
             'class' => 'text-pa-accent',
         ]).
