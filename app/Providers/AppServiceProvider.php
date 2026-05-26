@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.eerc-v2', EercNavComposer::class);
         View::composer('layouts.openbooks', OpenBooksLayoutComposer::class);
         View::composer('lhsacasenotes.partials.sidebar', LhsacasenotesSidebarComposer::class);
+        View::composer('towardsdolly.partials.sidebar', LhsacasenotesSidebarComposer::class);
 
         // CMS-managed pages — see config/cms.php for the registry. Each
         // composer injects $cms (CmsPage|null) and $cmsEnabled (bool).

@@ -13,6 +13,7 @@ use App\Http\Controllers\Collections\Openbooks\PageController as OpenbooksContro
 use App\Http\Controllers\Collections\Physics\PageController as PhysicsController;
 use App\Http\Controllers\Collections\PublicArt\PageController as PublicArtController;
 use App\Http\Controllers\Collections\Stcecilias\PageController as StceciliasController;
+use App\Http\Controllers\Collections\Towardsdolly\PageController as TowardsdollyController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
@@ -245,6 +246,22 @@ CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
         Route::get('/tuberculosis', [LhsacasenotesController::class, 'tuberculosis'])->name('tuberculosis');
         Route::get('/achievements', [LhsacasenotesController::class, 'achievements'])->name('achievements');
         Route::get('/catalogues', [LhsacasenotesController::class, 'catalogues'])->name('catalogues');
+    },
+]);
+
+CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
+    'prefix' => 'towardsdolly',
+    'route_name' => 'towardsdolly',
+    'home' => [TowardsdollyController::class, 'home'],
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/history', [TowardsdollyController::class, 'history'])->name('history');
+        Route::get('/people', [TowardsdollyController::class, 'people'])->name('people');
+        Route::get('/catalogues', [TowardsdollyController::class, 'catalogues'])->name('catalogues');
+        Route::get('/audio', [TowardsdollyController::class, 'audio'])->name('audio');
+        Route::get('/browse/{facet}', [TowardsdollyController::class, 'browse'])
+            ->where('facet', 'Subject|Person')
+            ->name('browse');
     },
 ]);
 
