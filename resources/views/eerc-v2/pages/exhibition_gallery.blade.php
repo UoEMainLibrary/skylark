@@ -89,8 +89,12 @@
                 <h2 class="mt-2 text-xl font-bold text-gray-900">Haddington Voices (2024)</h2>
                 <p class="mt-1 text-sm text-gray-500">Film &middot; 57 minutes</p>
                 <p class="mt-4 text-gray-700">Drawing on material collected as part of the RESP East Lothian study; in a series of themed segments covering work, leisure, wartime and the townscape, this film explores different aspects of life in Haddington through the voices of some of the interviewees.</p>
-                <div class="mt-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-500">
-                    Video embed will be added when the film file is provided.
+                <div class="mt-4">
+                    <video controls width="100%" preload="auto" title="Haddington Voices" poster="{{ asset('collections/eerc/images/v2/exhibition-haddington-voices-thumb.jpg') }}" class="rounded-md">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59186/EH-5%20Haddington%20Voices_-17LUFS.mp4?sequence=4&isAllowed=y') }}">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59186/EH-5%20Haddington%20Voices_EBU%20R128.mp4?sequence=5&isAllowed=y') }}">
+                        Sorry, your browser doesn't support embedded videos.
+                    </video>
                 </div>
                 <p class="mt-3 text-sm text-gray-500">Created by Colin Gateley and Mark Mulhern. Images from John Gray Centre, East Lothian Council. Music by Edith Forsyth.</p>
             </div>
@@ -132,14 +136,17 @@
 
                 <h3 id="days-work-film" class="mt-8 scroll-mt-4 text-lg font-semibold text-gray-900">&lsquo;All in a Day&rsquo;s Work&rsquo; &mdash; short film</h3>
                 <p class="mt-1 text-sm text-gray-500">Film &middot; RESP Student Intern Ailsa Dixon</p>
-                <figure class="mt-4 overflow-hidden rounded-md bg-black shadow-sm ring-1 ring-gray-200">
-                    <img src="{{ asset('collections/eerc/images/v2/all-in-a-days-work-film-poster.jpeg') }}" alt="Still from the film All in a Day&rsquo;s Work" class="w-full object-cover" loading="lazy">
-                </figure>
+                <div class="mt-4">
+                    <video controls width="100%" preload="auto" title="All in a Day&rsquo;s Work" poster="{{ asset('collections/eerc/images/v2/all-in-a-days-work-film-poster.jpeg') }}" class="rounded-md">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59187/EH-8%20RESP%20Allinadayswork%20film.mp4?sequence=3&isAllowed=y') }}">
+                        Sorry, your browser doesn't support embedded videos.
+                    </video>
+                </div>
                 <blockquote class="mt-4 border-l-4 border-resp-teal-400 pl-4 text-gray-700 italic">
                     <p>&lsquo;All in a Day&rsquo;s Work&rsquo; Reflections on work and play from the Haddington Active and Sporting memories groups. A short film created by RESP Student Intern Ailsa Dixon.</p>
                     <p class="mt-3 not-italic text-gray-600">Music written and performed by Katie Shepherd and Ailsa Dixon.</p>
                 </blockquote>
-                <p class="mt-3 text-sm text-gray-500">The moving image file will be embedded here once it is available on the University digital preservation service; until then, this still and credits introduce the film on the site.</p>
+                <p class="mt-3 text-sm text-gray-500">Hosted via the University digital preservation service and delivered through the collections.ed bitstream proxy.</p>
             </div>
         </article>
 
