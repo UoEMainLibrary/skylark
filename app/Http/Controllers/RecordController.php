@@ -63,6 +63,7 @@ class RecordController extends Controller
         $bitstreamField = str_replace('.', '', $fieldMappings['Bitstream'] ?? '');
         $thumbnailField = str_replace('.', '', $fieldMappings['Thumbnail'] ?? '');
         $titleField = str_replace('.', '', $fieldMappings['Title'] ?? '');
+        $identifierField = str_replace('.', '', ($fieldMappings['Identifier'] ?? $fieldMappings['Accession Number'] ?? ''));
         $parentCollectionField = str_replace('.', '', $fieldMappings['Parent Collection'] ?? '');
         $subCollectionField = str_replace('.', '', $fieldMappings['Sub Collections'] ?? '');
         $internalUriField = str_replace('.', '', $fieldMappings['Internal URI'] ?? '');
@@ -76,6 +77,9 @@ class RecordController extends Controller
         if (isset($record[$titleField]) && ! empty($record[$titleField])) {
             $titleValue = $record[$titleField];
             $recordTitle = is_array($titleValue) ? ($titleValue[0] ?? 'Untitled') : $titleValue;
+        } elseif ($identifierField !== '' && isset($record[$identifierField]) && ! empty($record[$identifierField])) {
+            $identifierValue = $record[$identifierField];
+            $recordTitle = is_array($identifierValue) ? ($identifierValue[0] ?? 'Untitled') : $identifierValue;
         }
 
         // Get highlight query parameter
