@@ -6,6 +6,7 @@ use App\Services\RepositoryFactory;
 use App\Support\CollectionUrl;
 use App\Support\CollectionViewResolver;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SearchController extends Controller
 {
@@ -83,24 +84,7 @@ class SearchController extends Controller
                 $parsedFilters['url_filters']
             );
         } catch (\Exception $e) {
-            report($e);
-
-            // Per-collection error view if one exists; otherwise a minimal
-            // plain response so a transient Solr outage never cascades to a
-            // fatal 500 in collections that haven't shipped a search.error
-            // template.
-            $errorView = $this->collectionView('search.error');
-            if (! view()->exists($errorView)) {
-                return response(
-                    'There was a problem performing your search. Please try again later.',
-                    500
-                );
-            }
-
-            return view($errorView, [
-                'error' => $e->getMessage(),
-                'query' => $query,
-            ]);
+            return $this->searchFailureResponse($e, $query);
         }
 
         // Build base search URL for facets and pagination
@@ -216,8 +200,9 @@ class SearchController extends Controller
                 if (isset($configFilters[$filterName])) {
                     $solrField = $configFilters[$filterName];
 
-                    // Restore newlines around "|||" — Solr stores them with \n delimiters.
-                    // Handles all variants: no spaces, space-separated, or already-newlined.
+                    // Legacy DSpace facets store compound values with line breaks around
+                    // the "|||" delimiter (e.g. "theatre\n|||\nTheatre"), so preserve
+                    // that representation when converting URL filters to Solr fq values.
                     $solrValue = preg_replace('/\s*\|\|\|\s*/', "\n|||\n", $filterValue);
 
                     $solrFilters[] = "{$solrField}:{$solrValue}";
@@ -325,10 +310,7 @@ class SearchController extends Controller
                 []
             );
         } catch (\Exception $e) {
-            return view($this->collectionView('search.error'), [
-                'error' => $e->getMessage(),
-                'query' => '*:*',
-            ]);
+            return $this->searchFailureResponse($e, '*:*');
         }
 
         $baseSearch = url("{$prefix}/advanced/search");
@@ -454,5 +436,39 @@ class SearchController extends Controller
         $links .= '</ul>';
 
         return $links;
+    }
+
+    protected function searchFailureResponse(\Throwable $e, string $query)
+    {
+        report($e);
+
+        $isAccessDenied = $this->isSearchBackendAccessDenied($e);
+        $status = $isAccessDenied ? 503 : 500;
+        $message = $isAccessDenied
+            ? 'Search is temporarily unavailable because the repository access is denied. If you are working locally, connect to the VPN and try again.'
+            : 'There was a problem performing your search. Please try again later.';
+
+        $errorView = $this->collectionView('search.error');
+        if (! view()->exists($errorView)) {
+            return response($message, $status);
+        }
+
+        return response()->view($errorView, [
+            'error' => $e->getMessage(),
+            'query' => $query,
+            'accessDenied' => $isAccessDenied,
+            'friendlyMessage' => $message,
+        ], $status);
+    }
+
+    protected function isSearchBackendAccessDenied(\Throwable $e): bool
+    {
+        $message = $e->getMessage();
+
+        return Str::contains($message, [
+            'Solr query failed: 401',
+            'Solr query failed: 403',
+            'Access denied',
+        ]);
     }
 }

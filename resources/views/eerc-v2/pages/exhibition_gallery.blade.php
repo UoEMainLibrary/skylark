@@ -107,8 +107,11 @@
                 <h2 class="mt-2 text-xl font-bold text-gray-900">Charlie Horne: The Past is Still With Us (2019)</h2>
                 <p class="mt-1 text-sm text-gray-500">Film &middot; 19 minutes</p>
                 <p class="mt-4 text-gray-700">This short film explores the life of Charlie Horne — fisherman, D-Day veteran, dancer and centenarian — through the recordings he made with volunteer RESP fieldworker, Martine Robertson.</p>
-                <div class="mt-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-500">
-                    Video embed will be added when the film file is provided.
+                <div class="mt-4">
+                    <video controls width="100%" preload="auto" title="Charlie Horne: The Past is Still With Us" poster="{{ asset('collections/eerc/images/v2/exhibition-charlie-horne-thumb.jpg') }}" class="rounded-md">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59170/EH-6%20The%20Past%20is%20Still%20with%20Us.mp4?sequence=3&isAllowed=y') }}">
+                        Sorry, your browser doesn't support embedded videos.
+                    </video>
                 </div>
                 <p class="mt-3 text-sm text-gray-500">Film created by Martine Robertson and Colin Gateley. Music by Edith Forsyth.</p>
                 <div class="mt-4 flex flex-wrap gap-3">
