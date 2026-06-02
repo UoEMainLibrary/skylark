@@ -8,4 +8,9 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+Schedule::command('app:schedule-heartbeat')
+    ->hourly()
+    ->name('schedule-heartbeat')
+    ->withoutOverlapping();
+
 Schedule::command('app:refresh-map-data')->dailyAt('03:00');
