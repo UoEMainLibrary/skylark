@@ -203,7 +203,7 @@ HTML;
 
 <p>The work of the EERC and the RESP has been entirely funded by the Scotland Inheritance Fund and now, through this website, is preserved and made available on an open access basis under the ongoing care of the Centre for Research Collections at the University of Edinburgh.</p>
 
-<p>You can <a href="{$docxUrl}" download>read more about the EERC, RESP and the Archive Project</a> here.</p>
+<p>You can <a href="{$docxUrl}" target="_blank" rel="noopener">read more about the EERC, RESP and the Archive Project<span class="sr-only"> (opens in a new tab)</span></a> here.</p>
 HTML;
     }
 
