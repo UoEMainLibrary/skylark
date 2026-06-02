@@ -133,9 +133,16 @@
                 <h2 class="mt-2 text-xl font-bold text-gray-900">All in A Day&rsquo;s Work: Recollections from Haddington Active &amp; Sporting Memories Group (2025)</h2>
                 <p class="mt-1 text-sm text-gray-500">Publication &middot; Katie Shepherd and Ailsa Dixon</p>
                 <p class="mt-4 text-gray-700">In 2025 two RESP student interns interviewed members of the Haddington Active &amp; Sporting Memories group which meets at the John Gray Centre in Haddington. Facilitated by group leaders Graham Cross and Ruth Fyfe, the students worked on this publication over a number of months.</p>
-                <div class="mt-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-500">
-                    PDF download will be available when the digital copy is provided.
-                </div>
+                <p class="mt-4">
+                    <a href="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59172/EH-7%20All%20in%20a%20Days%20Work%20publication.pdf?sequence=1&isAllowed=y') }}"
+                       target="_blank"
+                       rel="noopener"
+                       class="inline-flex items-center gap-1 text-sm font-medium text-resp-teal-600 hover:underline">
+                        Download the publication (PDF)
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                        <span class="sr-only"> (opens in a new tab)</span>
+                    </a>
+                </p>
 
                 <h3 id="days-work-film" class="mt-8 scroll-mt-4 text-lg font-semibold text-gray-900">&lsquo;All in a Day&rsquo;s Work&rsquo; &mdash; short film</h3>
                 <p class="mt-1 text-sm text-gray-500">Film &middot; RESP Student Intern Ailsa Dixon</p>

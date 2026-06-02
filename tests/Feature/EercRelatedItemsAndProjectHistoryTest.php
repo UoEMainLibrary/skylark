@@ -28,6 +28,27 @@ it('renders the project history background document link in a new tab', function
         ->not->toContain('download');
 });
 
+it('renders the full eerc accessibility statement from the legacy static page', function (): void {
+    config(['skylight.resp_skin_version' => 2, 'cms.enabled' => false]);
+
+    $response = $this->get('/eerc/accessibility')->assertSuccessful();
+
+    $response
+        ->assertSee('Regional Ethnology of Scotland Project (front-facing) website', false)
+        ->assertSee('Public Sector Body (Websites and Mobile Applications)', false)
+        ->assertSee('Information.systems@ed.ac.uk', false)
+        ->assertSee('WCAG 2.2 AA', false)
+        ->assertSee('Contact Scotland BSL', false)
+        ->assertSee('Disproportionate burden', false)
+        ->assertSee('Preparation of this accessibility statement', false)
+        ->assertSee('Change log', false)
+        ->assertSee('prepared on', false)
+        ->assertSee('September 2021', false)
+        ->assertSee('last reviewed on', false)
+        ->assertSee('September 2024', false)
+        ->assertDontSee('aim to meet WCAG 2.1 Level AA', false);
+});
+
 it('updates seeded project history cms content to open the document in a new tab', function (): void {
     $migration = 'database/migrations/2026_06_02_062545_update_eerc_project_history_cms_doc_link.php';
     $docxUrl = asset('collections/eerc/documents/background-to-the-resp-26-3-26.docx');
