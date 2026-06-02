@@ -107,7 +107,7 @@
                 <p class="mt-1 text-sm text-gray-500">Film &middot; 19 minutes</p>
                 <p class="mt-4 text-gray-700">This short film explores the life of Charlie Horne — fisherman, D-Day veteran, dancer and centenarian — through the recordings he made with volunteer RESP fieldworker, Martine Robertson.</p>
                 <div class="mt-4">
-                    <video controls width="100%" preload="auto" title="Charlie Horne: The Past Is Still With Us" poster="{{ asset('collections/eerc/images/v2/exhibition-charlie-horne-thumb.jpg') }}" class="rounded-md">
+                    <video controls width="100%" preload="auto" title="Charlie Horne: The Past is Still With Us" poster="{{ asset('collections/eerc/images/v2/exhibition-charlie-horne-thumb.jpg') }}" class="rounded-md">
                         <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59170/EH-6%20The%20Past%20is%20Still%20with%20Us.mp4?sequence=3&isAllowed=y') }}">
                         Sorry, your browser doesn't support embedded videos.
                     </video>
@@ -132,12 +132,16 @@
                 <h2 class="mt-2 text-xl font-bold text-gray-900">All in A Day&rsquo;s Work: Recollections from Haddington Active &amp; Sporting Memories Group (2025)</h2>
                 <p class="mt-1 text-sm text-gray-500">Publication &middot; Katie Shepherd and Ailsa Dixon</p>
                 <p class="mt-4 text-gray-700">In 2025 two RESP student interns interviewed members of the Haddington Active &amp; Sporting Memories group which meets at the John Gray Centre in Haddington. Facilitated by group leaders Graham Cross and Ruth Fyfe, the students worked on this publication over a number of months.</p>
-                <div class="mt-4">
-                    <a href="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59172/EH-7%20All%20in%20a%20Days%20Work%20publication.pdf?sequence=1&isAllowed=y') }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-sm font-medium text-resp-teal-600 hover:underline">
-                        Download publication (PDF)
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                <p class="mt-4">
+                    <a href="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59172/EH-7%20All%20in%20a%20Days%20Work%20publication.pdf?sequence=1&isAllowed=y') }}"
+                       target="_blank"
+                       rel="noopener"
+                       class="inline-flex items-center gap-1 text-sm font-medium text-resp-teal-600 hover:underline">
+                        Download the publication (PDF)
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                        <span class="sr-only"> (opens in a new tab)</span>
                     </a>
-                </div>
+                </p>
 
                 <h3 id="days-work-film" class="mt-8 scroll-mt-4 text-lg font-semibold text-gray-900">&lsquo;All in a Day&rsquo;s Work&rsquo; &mdash; short film</h3>
                 <p class="mt-1 text-sm text-gray-500">Film &middot; RESP Student Intern Ailsa Dixon</p>

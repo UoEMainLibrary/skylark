@@ -174,7 +174,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'related_fields' => [
-        'Resource_Id' => 'resource',
+        'Parent' => 'parent',
     ],
     'related_number' => 10,
 
