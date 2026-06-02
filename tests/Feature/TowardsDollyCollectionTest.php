@@ -93,6 +93,15 @@ it('serves the towardsdolly static pages', function (string $path): void {
     'browse/Subject',
 ]);
 
+it('renders about page videos for towardsdolly', function (): void {
+    fakeTowardsDollyArchivesSpace();
+
+    $this->get('/towardsdolly/about')
+        ->assertSuccessful()
+        ->assertSee('collections/towardsdolly/videos/Towards_Dolly_Wellcome_Trust_showreel.mp4', false)
+        ->assertSee('collections/towardsdolly/videos/0051021v-001.mp4', false);
+});
+
 it('serves search results with empty ArchivesSpace responses', function (): void {
     fakeTowardsDollyArchivesSpace();
 

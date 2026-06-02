@@ -91,7 +91,6 @@
                 <p class="mt-4 text-gray-700">Drawing on material collected as part of the RESP East Lothian study; in a series of themed segments covering work, leisure, wartime and the townscape, this film explores different aspects of life in Haddington through the voices of some of the interviewees.</p>
                 <div class="mt-4">
                     <video controls width="100%" preload="auto" title="Haddington Voices" poster="{{ asset('collections/eerc/images/v2/exhibition-haddington-voices-thumb.jpg') }}" class="rounded-md">
-                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59186/EH-5%20Haddington%20Voices_-17LUFS.mp4?sequence=4&isAllowed=y') }}">
                         <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/59186/EH-5%20Haddington%20Voices_EBU%20R128.mp4?sequence=5&isAllowed=y') }}">
                         Sorry, your browser doesn't support embedded videos.
                     </video>
