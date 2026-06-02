@@ -40,11 +40,11 @@
                     <div class="collection-image-box">
                         <figure class="clickbox">
                             <img class="component_image" src="{{ config('skylight.image_server').'/iiif/2/'.$itemImage.'/square/96,/0/default.jpg' }}" alt="{{ $title }}">
-                            <div class="clickbox-text"><i class="fa fa-camera"></i><div class="curl"></div><a class="component_image_link" href="{{ url('/jlss/record/'.$recordId) }}"></a></div>
+                            <div class="clickbox-text"><i class="fa fa-camera"></i><div class="curl"></div><a class="component_image_link" href="{{ \App\Support\CollectionUrl::url('record/'.$recordId) }}"></a></div>
                         </figure>
                     </div>
                 @endif
-                <h3><a href="{{ url('/jlss/record/'.$recordId) }}">{{ $title }}</a>@if($date) ({{ $date }}) @endif</h3>
+                <h3><a href="{{ \App\Support\CollectionUrl::url('record/'.$recordId) }}">{{ $title }}</a>@if($date) ({{ $date }}) @endif</h3>
                 @foreach($searchDisplay as $label)
                     @continue($label === 'Title')
                     @php
@@ -69,7 +69,7 @@
         <div class="sidebar-nav">
             @foreach($facets as $facet)
                 <ul class="list-group">
-                    <li class="list-group-item active"><a href="{{ url('/jlss/browse/'.$facet['name']) }}">{{ $facet['name'] }}</a></li>
+                    <li class="list-group-item active"><a href="{{ \App\Support\CollectionUrl::url('browse/'.$facet['name']) }}">{{ $facet['name'] }}</a></li>
                     @forelse($facet['terms'] as $term)
                         <li class="list-group-item"><span class="badge">{{ $term['count'] }}</span>{{ $term['display_name'] }}</li>
                     @empty

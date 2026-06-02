@@ -55,6 +55,8 @@ it('falls back to accession number when jlss title is missing', function (): voi
 });
 
 it('renders jlss record metadata using configured field mappings', function (): void {
+    config(['skylight.url_prefix' => 'jlss']);
+
     $fieldMappings = [
         'Title' => 'dc.title.en',
         'Accession Number' => 'dc.identifier.en',

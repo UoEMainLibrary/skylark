@@ -114,6 +114,7 @@ return [
     |
     | Map full hostnames to collection keys. Checked before prefix detection.
     | Set OPENBOOKS_HOST locally (e.g. openbooks.skylark.test) and on staging.
+    | Set SJAC_HOST for JLSS (e.g. test.sjac.collection.is.ed.ac.uk on staging).
     |
     */
     'domains' => array_filter(

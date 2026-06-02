@@ -35,6 +35,8 @@
         <env name="OPENBOOKS_HOST" value="openbooks.testing"/>
         <!-- Registers SOPA (Physics) dedicated-host routes in tests (see tests/Feature/PhysicsCollectionTest.php) -->
         <env name="SOPA_HOST" value="sopacollection.testing"/>
+        <!-- Registers SJAC (JLSS) dedicated-host routes in tests (see tests/Feature/JlssCollectionTest.php) -->
+        <env name="SJAC_HOST" value="sjac.testing"/>
         <!-- Pin the CMS toggle off in tests so a developer's .env CMS_ENABLED=true
              doesn't leak in. Tests that need the toggle on flip it per-test
              via config(['cms.enabled' => true]). -->
