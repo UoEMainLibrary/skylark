@@ -90,7 +90,7 @@
 <div class="col-md-3 col-sm-3 hidden-xs">
     <div class="header-search">
         <div id="collection-search">
-            <form action="{{ url('/jlss/search') }}" method="post" class="navbar-form">
+            <form action="{{ \App\Support\CollectionUrl::url('search') }}" method="post" class="navbar-form">
                 @csrf
                 <div class="input-group search-box">
                     <input type="text" class="form-control" placeholder="Search" name="q" id="q">

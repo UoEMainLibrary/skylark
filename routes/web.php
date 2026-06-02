@@ -20,11 +20,12 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
 use App\Routing\CollectionRouteRegistrar;
+use App\Support\CollectionUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
- * Dedicated collection hostnames (OPENBOOKS_HOST, etc.) register Route::domain(...) groups here
+ * Dedicated collection hostnames (OPENBOOKS_HOST, SJAC_HOST, etc.) register Route::domain(...) groups here
  * before the unconstrained `/` route so GET / resolves to the collection home, not clds.home.
  */
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
@@ -85,7 +86,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
     'extra_routes' => function () {
-        Route::get('/search', fn () => redirect('/jlss/search/*:*'))->name('search.home');
+        Route::get('/search', fn () => redirect(CollectionUrl::url('search/*:*')))->name('search.home');
         Route::get('/browse/{facet}', [JlssController::class, 'browse'])
             ->where('facet', '[A-Za-z]+')
             ->name('browse');

@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
-    <base href="{{ url('/jlss/') }}/">
+    <base href="{{ \App\Support\CollectionUrl::baseHref() }}">
     <title>@yield('title', 'Jewish Lives Scottish Spaces')</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,12 +35,12 @@
             </div>
             <div class="collapse navbar-collapse" id="jlssNav">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/jlss') }}" class="nav-link">Home</a></li>
-                    <li><a href="{{ url('/jlss/about') }}" class="nav-link">About</a></li>
+                    <li><a href="{{ \App\Support\CollectionUrl::url() }}" class="nav-link">Home</a></li>
+                    <li><a href="{{ \App\Support\CollectionUrl::url('about') }}" class="nav-link">About</a></li>
                     <li><a href="https://www.sjac.org.uk/" target="_blank" rel="noopener" class="nav-link">SJAC</a></li>
                     <li><a href="http://jewishmigrationtoscotland.is.ed.ac.uk/" target="_blank" rel="noopener" class="nav-link">JLSS Blog</a></li>
                     <li><a href="https://www.sjac.org.uk/about/donations/" target="_blank" rel="noopener" class="nav-link">Donate</a></li>
-                    <li><a href="{{ url('/jlss/feedback') }}" class="nav-link">Feedback</a></li>
+                    <li><a href="{{ \App\Support\CollectionUrl::url('feedback') }}" class="nav-link">Feedback</a></li>
                 </ul>
             </div>
         </div>
@@ -50,11 +50,11 @@
         <div class="container">
             <div class="header-normal">
                 <div id="collection-logo">
-                    <a href="{{ url('/jlss') }}" title="Home">
+                    <a href="{{ \App\Support\CollectionUrl::url() }}" title="Home">
                         <img src="{{ asset('collections/jlss/images/sjac_logo.png') }}" alt="Scottish Jewish Archives Logo" class="img-responsive pull-right img-circle">
                     </a>
                 </div>
-                <a href="{{ url('/jlss') }}" title="Home">
+                <a href="{{ \App\Support\CollectionUrl::url() }}" title="Home">
                     <div id="collection-title">Scottish Jewish Archives Centre <br>
                         <div id="collection-sub-title">Digital Collection</div>
                     </div>
@@ -72,9 +72,9 @@
         <div class="col-sm-12 col-xs-12 footer-disclaimer">
             <div class="footer-policies">
                 <a class="footer-policies" href="https://www.ed.ac.uk/about/website/privacy" target="_blank" rel="noopener">Privacy &amp; Cookies</a>
-                &nbsp;&nbsp;<a class="footer-policies" href="{{ url('/jlss/takedown') }}">Takedown Policy</a>
-                &nbsp;&nbsp;<a class="footer-policies" href="{{ url('/jlss/licensing') }}">Licensing &amp; Copyright</a>
-                &nbsp;&nbsp;<a class="footer-policies" href="{{ url('/jlss/accessibility') }}">Accessibility</a>
+                &nbsp;&nbsp;<a class="footer-policies" href="{{ \App\Support\CollectionUrl::url('takedown') }}">Takedown Policy</a>
+                &nbsp;&nbsp;<a class="footer-policies" href="{{ \App\Support\CollectionUrl::url('licensing') }}">Licensing &amp; Copyright</a>
+                &nbsp;&nbsp;<a class="footer-policies" href="{{ \App\Support\CollectionUrl::url('accessibility') }}">Accessibility</a>
                 <p class="footer-copyright">Unless explicitly stated otherwise, all material is copyright &copy; {{ date('Y') }} <a class="footer-policies" href="https://www.sjac.org.uk" target="_blank" rel="noopener">Scottish Jewish Archives Centre</a></p>
             </div>
         </div>

@@ -17,6 +17,32 @@ it('registers expected jlss routes', function (string $name): void {
     'jlss.browse',
 ]);
 
+it('registers jlss routes on the configured SJAC dedicated host', function (): void {
+    expect(env('SJAC_HOST'))->toBe('sjac.testing')
+        ->and(config('collections.domains'))->toHaveKey('sjac.testing');
+
+    $hasDomainHome = collect(app('router')->getRoutes())->contains(
+        fn ($route) => $route->uri() === '/' && $route->getDomain() === 'sjac.testing'
+    );
+
+    expect($hasDomainHome)->toBeTrue();
+});
+
+it('serves the jlss home page at / on a configured dedicated host', function (): void {
+    $this->get('http://sjac.testing/')
+        ->assertSuccessful()
+        ->assertSee('Scottish Jewish Archives Centre', false)
+        ->assertSee('Collections', false);
+});
+
+it('uses root-relative collection links on a dedicated host', function (): void {
+    $this->get('http://sjac.testing/about')
+        ->assertSuccessful()
+        ->assertSee('href="http://sjac.testing"', false)
+        ->assertSee('href="http://sjac.testing/about"', false)
+        ->assertDontSee('/jlss/about', false);
+});
+
 it('serves jlss pages from subfolder path', function (string $path): void {
     $url = $path === '' ? '/jlss' : "/jlss/{$path}";
     $this->get($url)->assertSuccessful();
