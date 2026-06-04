@@ -24,6 +24,19 @@ it('returns vpn-aware message when search backend denies access', function (): v
         ->and($response->getContent())->toContain('connect to the VPN');
 });
 
+it('treats Solr syntax errors as client errors', function (): void {
+    $controller = new class(app(RepositoryFactory::class)) extends SearchController
+    {
+        public function check(Throwable $e): bool
+        {
+            return $this->isSolrQueryClientError($e);
+        }
+    };
+
+    expect($controller->check(new Exception('Solr query failed: 400 - SyntaxError')))->toBeTrue()
+        ->and($controller->check(new Exception('Solr query failed: 500 - Internal Error')))->toBeFalse();
+});
+
 it('keeps generic message for non-access-denied errors', function (): void {
     config(['app.current_collection' => 'jlss']);
 
