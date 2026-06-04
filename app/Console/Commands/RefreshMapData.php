@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Helpers\BitstreamHelper;
+use App\Support\EercGeocodeQuery;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -11,7 +12,8 @@ class RefreshMapData extends Command
 {
     protected $signature = 'app:refresh-map-data
         {--dry-run : Show what would be done without writing the file}
-        {--skip-geocode : Skip geocoding and only update counts/thumbnails}';
+        {--skip-geocode : Skip geocoding and only update counts/thumbnails}
+        {--report= : Path for geocode failure report (default: storage/logs/eerc_map_geocode_report.json)}';
 
     protected $description = 'Refresh the EERC interactive map data from ArchivesSpace';
 
@@ -64,8 +66,18 @@ class RefreshMapData extends Command
         }
 
         $this->info('Step 3: Geocoding place names...');
-        $locations = $this->geocodeSubjects($geoSubjects, $geocodeCache);
+        $geocodeFailures = [];
+        $locations = $this->geocodeSubjects($geoSubjects, $geocodeCache, $geocodeFailures, $eercConfig);
         $this->info(sprintf('  Geocoded %d locations.', count($locations)));
+
+        if ($geocodeFailures !== []) {
+            $reportPath = $this->writeGeocodeFailureReport($geocodeFailures);
+            $this->warn(sprintf(
+                '  %d geographic subject(s) could not be geocoded. See %s for place names and linked interview records.',
+                count($geocodeFailures),
+                $reportPath
+            ));
+        }
 
         $this->info('Step 4: Fetching interview counts and thumbnails...');
         $locations = $this->enrichWithInterviewData($locations, $eercConfig);
@@ -235,10 +247,15 @@ class RefreshMapData extends Command
      *
      * @param  array<int, array{name: string, uri: string, count: int}>  $geoSubjects
      * @param  array<string, array>  $geocodeCache
+     * @param  array<int, array<string, mixed>>  $failures
      * @return array<int, array>
      */
-    protected function geocodeSubjects(array $geoSubjects, array &$geocodeCache): array
-    {
+    protected function geocodeSubjects(
+        array $geoSubjects,
+        array &$geocodeCache,
+        array &$failures,
+        array $config,
+    ): array {
         $locations = [];
         $newGeocodes = 0;
 
@@ -264,7 +281,9 @@ class RefreshMapData extends Command
                 continue;
             }
 
-            $coords = $this->geocodePlace($name);
+            $queriesAttempted = EercGeocodeQuery::searchQueries($name);
+            $geocodeResult = $this->geocodePlace($queriesAttempted);
+            $coords = $geocodeResult['coords'] ?? null;
 
             if ($coords) {
                 $geocodeCache[$name] = [
@@ -282,9 +301,18 @@ class RefreshMapData extends Command
                 ];
 
                 $newGeocodes++;
-                sleep(1); // Nominatim requires 1s between requests
             } else {
-                $this->warn("  Could not geocode: {$name}");
+                $sampleInterviews = $this->fetchSampleInterviewsForSubject($name, $config);
+
+                $failures[] = [
+                    'subject_name' => $name,
+                    'subject_uri' => $subject['uri'],
+                    'interview_count' => $subject['count'],
+                    'queries_attempted' => $queriesAttempted,
+                    'sample_interviews' => $sampleInterviews,
+                ];
+
+                $this->logGeocodeFailure($name, $subject['count'], $sampleInterviews, $queriesAttempted);
             }
         }
 
@@ -299,37 +327,183 @@ class RefreshMapData extends Command
     }
 
     /**
-     * Geocode a single place name using OpenStreetMap Nominatim.
-     *
-     * @return array{lat: float, lon: float}|null
+     * @param  array<int, string>  $queries
+     * @return array{coords: array{lat: float, lon: float}, query: string}|null
      */
-    protected function geocodePlace(string $placeName): ?array
+    protected function geocodePlace(array $queries): ?array
     {
-        try {
-            $response = Http::timeout(10)
-                ->withHeaders(['User-Agent' => 'RESP-Archive-Map/1.0 (University of Edinburgh)'])
-                ->get('https://nominatim.openstreetmap.org/search', [
-                    'q' => $placeName.', Scotland, UK',
-                    'format' => 'json',
-                    'limit' => 1,
-                    'addressdetails' => 0,
-                ]);
+        foreach ($queries as $query) {
+            try {
+                $response = Http::timeout(10)
+                    ->withHeaders(['User-Agent' => 'RESP-Archive-Map/1.0 (University of Edinburgh)'])
+                    ->get('https://nominatim.openstreetmap.org/search', [
+                        'q' => $query,
+                        'format' => 'json',
+                        'limit' => 1,
+                        'addressdetails' => 0,
+                    ]);
 
-            if ($response->successful()) {
-                $results = $response->json();
+                sleep(1); // Nominatim requires 1s between requests
 
-                if (! empty($results)) {
-                    return [
-                        'lat' => (float) $results[0]['lat'],
-                        'lon' => (float) $results[0]['lon'],
-                    ];
+                if ($response->successful()) {
+                    $results = $response->json();
+
+                    if (! empty($results)) {
+                        return [
+                            'coords' => [
+                                'lat' => (float) $results[0]['lat'],
+                                'lon' => (float) $results[0]['lon'],
+                            ],
+                            'query' => $query,
+                        ];
+                    }
                 }
+            } catch (\Exception $e) {
+                Log::warning("Geocoding failed for '{$query}': ".$e->getMessage());
+                sleep(1);
             }
-        } catch (\Exception $e) {
-            Log::warning("Geocoding failed for '{$placeName}': ".$e->getMessage());
         }
 
         return null;
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $failures
+     */
+    protected function writeGeocodeFailureReport(array $failures): string
+    {
+        $reportPath = $this->option('report')
+            ?: storage_path('logs/eerc_map_geocode_report.json');
+
+        $dir = dirname($reportPath);
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $payload = [
+            'generated_at' => now()->toIso8601String(),
+            'failure_count' => count($failures),
+            'note' => 'Each failure is a geographic subject heading shared by one or more interviews (archival objects). '
+                .'Interview titles below are records tagged with that subject — not separate geocode targets.',
+            'failures' => $failures,
+        ];
+
+        file_put_contents(
+            $reportPath,
+            json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        );
+
+        $textPath = preg_replace('/\.json$/', '.log', $reportPath) ?: $reportPath.'.log';
+        $lines = ['EERC map geocode failures — '.now()->toDateTimeString(), ''];
+
+        foreach ($failures as $failure) {
+            $lines[] = 'Subject: '.$failure['subject_name'];
+            $lines[] = '  Subject URI: '.$failure['subject_uri'];
+            $lines[] = '  Interviews tagged with this place (facet count): '.$failure['interview_count'];
+
+            foreach ($failure['sample_interviews'] as $interview) {
+                $lines[] = '  - '.$interview['title'].' ('.$interview['id'].')';
+            }
+
+            $lines[] = '  Nominatim queries tried:';
+            foreach ($failure['queries_attempted'] as $query) {
+                $lines[] = '    * '.$query;
+            }
+
+            $lines[] = '';
+        }
+
+        file_put_contents($textPath, implode("\n", $lines));
+
+        return $reportPath;
+    }
+
+    /**
+     * @param  array<int, array{id: string, title: string}>  $sampleInterviews
+     * @param  array<int, string>  $queriesAttempted
+     */
+    protected function logGeocodeFailure(
+        string $subjectName,
+        int $interviewCount,
+        array $sampleInterviews,
+        array $queriesAttempted,
+    ): void {
+        $this->warn("  Could not geocode subject: {$subjectName}");
+        $this->line("    Tagged on {$interviewCount} interview(s) in Solr facets.");
+
+        if ($sampleInterviews === []) {
+            $this->line('    No sample interview records returned from Solr.');
+
+            return;
+        }
+
+        $this->line('    Example interview record(s) using this place subject:');
+
+        foreach ($sampleInterviews as $interview) {
+            $this->line("      - {$interview['title']} ({$interview['id']})");
+        }
+
+        $this->line('    Nominatim queries tried: '.implode(' | ', array_slice($queriesAttempted, 0, 3))
+            .(count($queriesAttempted) > 3 ? ' …' : ''));
+    }
+
+    /**
+     * Sample archival objects (interviews) tagged with a geographic subject.
+     *
+     * @return array<int, array{id: string, title: string}>
+     */
+    protected function fetchSampleInterviewsForSubject(string $subjectName, array $config, int $limit = 8): array
+    {
+        $containerField = $config['container_field'] ?? 'resource';
+        $containerIds = $config['container_id'] ?? [];
+
+        try {
+            $url = "{$this->solrBase}/{$this->solrCore}/select";
+            $url .= '?q=*:*&wt=json&rows='.$limit.'&fl=id,title';
+            $url .= '&fq=subjects:"'.urlencode($subjectName).'"';
+            $url .= '&fq=-id:*pui';
+            $url .= '&fq=types:"archival_object"';
+
+            foreach ($containerIds as $containerId) {
+                $url .= '&fq='.urlencode("{$containerField}:{$containerId}");
+            }
+
+            $response = Http::timeout(10)->get($url);
+
+            if (! $response->successful()) {
+                return [];
+            }
+
+            $interviews = [];
+
+            foreach ($response->json()['response']['docs'] ?? [] as $doc) {
+                $id = $doc['id'] ?? '';
+                $title = $doc['title'] ?? '';
+
+                if (is_array($id)) {
+                    $id = $id[0] ?? '';
+                }
+
+                if (is_array($title)) {
+                    $title = $title[0] ?? 'Untitled';
+                }
+
+                if ($id === '') {
+                    continue;
+                }
+
+                $interviews[] = [
+                    'id' => (string) $id,
+                    'title' => (string) ($title !== '' ? $title : 'Untitled'),
+                ];
+            }
+
+            return $interviews;
+        } catch (\Exception $e) {
+            Log::warning("Failed to fetch interviews for subject '{$subjectName}': ".$e->getMessage());
+
+            return [];
+        }
     }
 
     /**
