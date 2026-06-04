@@ -72,18 +72,13 @@
             @foreach($docs as $doc)
                 @php
                     $title = addslashes($doc[$titleField][0] ?? 'Untitled');
-                    $locStr = $doc[$locationField][0] ?? '';
+                    $coords = \App\Support\PublicArtOverrides::firstMapCoordinates($doc, $locationField);
                     $rawImg = $doc[$imageField][0] ?? '';
                     $thumb = str_replace('/full/full/', '/full/50,/', $rawImg);
                     $docId = is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? '');
                 @endphp
-                @if($locStr !== '')
-                    @php
-                        $parts = explode(',', $locStr);
-                    @endphp
-                    @if(count($parts) === 2)
-                        locationsArray.push([{{ trim($parts[1]) }}, {{ trim($parts[0]) }}, '{{ url('/public-art/record/' . $docId) }}', '{{ $title }}', '{{ $thumb }}']);
-                    @endif
+                @if($coords !== null)
+                        locationsArray.push([{{ $coords['lon'] }}, {{ $coords['lat'] }}, '{{ url('/public-art/record/' . $docId) }}', '{{ $title }}', '{{ $thumb }}']);
                 @endif
             @endforeach
         </script>

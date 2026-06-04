@@ -54,15 +54,9 @@
         }
     }
 
-    $mapLat = null;
-    $mapLon = null;
-    if (! empty($record[$locationField][0])) {
-        $parts = explode(',', $record[$locationField][0]);
-        if (count($parts) === 2) {
-            $mapLat = trim($parts[0]);
-            $mapLon = trim($parts[1]);
-        }
-    }
+    $mapCoordinates = \App\Support\PublicArtOverrides::firstMapCoordinates($record, $locationField);
+    $mapLat = $mapCoordinates['lat'] ?? null;
+    $mapLon = $mapCoordinates['lon'] ?? null;
 @endphp
 
 <div class="container content col-xs-12">

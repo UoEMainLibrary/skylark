@@ -89,4 +89,60 @@ final class PublicArtOverrides
 
         return array_map(fn (array $entry) => $entry['doc'], $indexed);
     }
+
+    /**
+     * First human-readable value from a Solr field (string or multi-valued array).
+     */
+    public static function firstFieldValue(array $record, string $field): ?string
+    {
+        $raw = $record[$field] ?? null;
+
+        if ($raw === null) {
+            return null;
+        }
+
+        if (! is_array($raw)) {
+            $value = trim((string) $raw);
+
+            return $value !== '' ? $value : null;
+        }
+
+        $value = trim((string) ($raw[0] ?? ''));
+
+        return $value !== '' ? $value : null;
+    }
+
+    /**
+     * Parse the first map coordinate pair from a record (lat, lon).
+     *
+     * Records may carry multiple coordinates in Solr; the record page and map
+     * pin should only ever use the first entry.
+     *
+     * @return array{lat: string, lon: string}|null
+     */
+    public static function firstMapCoordinates(array $record, string $locationField): ?array
+    {
+        $raw = $record[$locationField] ?? [];
+
+        if (! is_array($raw)) {
+            $raw = [$raw];
+        }
+
+        $first = trim((string) ($raw[0] ?? ''));
+
+        if ($first === '') {
+            return null;
+        }
+
+        $parts = array_map(trim(...), explode(',', $first, 2));
+
+        if (count($parts) !== 2 || $parts[0] === '' || $parts[1] === '') {
+            return null;
+        }
+
+        return [
+            'lat' => $parts[0],
+            'lon' => $parts[1],
+        ];
+    }
 }

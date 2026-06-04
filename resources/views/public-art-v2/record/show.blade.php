@@ -74,18 +74,12 @@
         }
     }
 
-    // Map coords
-    $mapLat = null;
-    $mapLon = null;
-    if (! empty($record[$locationField][0])) {
-        $parts = explode(',', $record[$locationField][0]);
-        if (count($parts) === 2) {
-            $mapLat = trim($parts[0]);
-            $mapLon = trim($parts[1]);
-        }
-    }
+    // Map coords: only the first Solr value — one map, one pin on the record page.
+    $mapCoordinates = \App\Support\PublicArtOverrides::firstMapCoordinates($record, $locationField);
+    $mapLat = $mapCoordinates['lat'] ?? null;
+    $mapLon = $mapCoordinates['lon'] ?? null;
 
-    $locationName = $record[$locationNameField][0] ?? null;
+    $locationName = \App\Support\PublicArtOverrides::firstFieldValue($record, $locationNameField);
     $artistName = $record[$artistField][0] ?? null;
 
     // Optional Media Hopper / Kaltura embed lookup by artwork title
