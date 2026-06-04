@@ -325,6 +325,48 @@ it('renders a skip-map link, labelled map region, and textual location list on t
         ->toContain('Artworks on the map');
 });
 
+it('uses only the first map coordinate when a record has multiple', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+        ],
+    ]);
+
+    $html = view('public-art-v2.record.show', [
+        'record' => [
+            'dctitleen' => ['Multi-site Artwork'],
+            'dcidentifierimageUri' => ['https://example.test/iiif/abc/full/full/0/default.jpg'],
+            'dccoveragespatialcoorden' => ['55.9445, -3.1892', '51.5000, -0.1200'],
+            'dccoveragespatialen' => ['George Square', 'London'],
+        ],
+        'recordTitle' => 'Multi-site Artwork',
+        'recordDisplay' => ['Title'],
+    ])->render();
+
+    expect(substr_count($html, 'id="record-map"'))->toBe(1)
+        ->and(substr_count($html, 'collections/public-art/map/bundle.js'))->toBe(1);
+
+    expect($html)
+        ->toContain('55.9445, -3.1892')
+        ->not->toContain('51.5000')
+        ->not->toContain('-0.1200')
+        ->toContain('George Square')
+        ->not->toContain('London')
+        ->toContain('window.lat = 55.9445')
+        ->toContain('window.lon = -3.1892');
+});
+
+it('parses the first map coordinate when Solr returns a single string value', function () {
+    expect(PublicArtOverrides::firstMapCoordinates(
+        ['dccoveragespatialcoorden' => '55.9445, -3.1892'],
+        'dccoveragespatialcoorden'
+    ))->toBe(['lat' => '55.9445', 'lon' => '-3.1892']);
+});
+
 it('emits a skip-map link and labelled map region on V2 record pages', function () {
     config([
         'skylight.public_art_skin_version' => 2,

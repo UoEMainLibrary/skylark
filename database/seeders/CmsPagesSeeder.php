@@ -203,34 +203,13 @@ HTML;
 
 <p>The work of the EERC and the RESP has been entirely funded by the Scotland Inheritance Fund and now, through this website, is preserved and made available on an open access basis under the ongoing care of the Centre for Research Collections at the University of Edinburgh.</p>
 
-<p>You can <a href="{$docxUrl}" download>read more about the EERC, RESP and the Archive Project</a> here.</p>
+<p>You can <a href="{$docxUrl}" target="_blank" rel="noopener">read more about the EERC, RESP and the Archive Project<span class="sr-only"> (opens in a new tab)</span></a> here.</p>
 HTML;
     }
 
     protected function respAccessibilityBody(): string
     {
-        $contactUrl = url('/eerc/contact');
-
-        return <<<HTML
-<p>The RESP Archive Project is committed to making its website accessible to as wide an audience as possible. We strive to comply with current accessibility standards and aim to meet WCAG 2.1 Level AA.</p>
-
-<h2>What we are doing</h2>
-<ul>
-    <li>Using semantic HTML for proper document structure</li>
-    <li>Providing alt text for images</li>
-    <li>Ensuring keyboard navigation is supported throughout the site</li>
-    <li>Maintaining adequate colour contrast ratios</li>
-    <li>Providing captions and transcripts for audio content where possible</li>
-</ul>
-
-<h2>Known issues</h2>
-<p>We are aware that some older content may not fully meet current accessibility standards. We are working to address these issues as resources allow.</p>
-
-<h2>Feedback</h2>
-<p>If you experience any accessibility barriers while using this website, please <a href="{$contactUrl}">contact us</a>. We welcome your feedback and will do our best to address any issues promptly.</p>
-
-<p>For the University of Edinburgh&rsquo;s full accessibility statement, please visit <a href="https://www.ed.ac.uk/about/website/accessibility" target="_blank" rel="noopener">the University accessibility page</a>.</p>
-HTML;
+        return trim(view('eerc-v2.partials.accessibility_statement_body')->render());
     }
 
     protected function publicArtHomeBody(): string

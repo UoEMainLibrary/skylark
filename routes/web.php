@@ -6,7 +6,9 @@ use App\Http\Controllers\Collections\Cockburn\PageController as CockburnControll
 use App\Http\Controllers\Collections\Coimbra\PageController as CoimbraController;
 use App\Http\Controllers\Collections\CoimbraColls\PageController as CoimbraCollsController;
 use App\Http\Controllers\Collections\Eerc\PageController as EercController;
+use App\Http\Controllers\Collections\Geddes\PageController as GeddesController;
 use App\Http\Controllers\Collections\Guardbook\PageController as GuardbookController;
+use App\Http\Controllers\Collections\Jlss\PageController as JlssController;
 use App\Http\Controllers\Collections\Lhsacasenotes\PageController as LhsacasenotesController;
 use App\Http\Controllers\Collections\Mimed\PageController as MimedController;
 use App\Http\Controllers\Collections\Openbooks\PageController as OpenbooksController;
@@ -18,11 +20,12 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
 use App\Routing\CollectionRouteRegistrar;
+use App\Support\CollectionUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
- * Dedicated collection hostnames (OPENBOOKS_HOST, etc.) register Route::domain(...) groups here
+ * Dedicated collection hostnames (OPENBOOKS_HOST, SJAC_HOST, etc.) register Route::domain(...) groups here
  * before the unconstrained `/` route so GET / resolves to the collection home, not clds.home.
  */
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
@@ -52,6 +55,42 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'home' => [PhysicsController::class, 'home'],
     'mirador_view' => 'physics.mirador',
     'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'geddes',
+    'route_name' => 'geddes',
+    'home' => [GeddesController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/search', fn () => redirect('/geddes/search/*:*'))->name('search.home');
+        Route::get('/history', [GeddesController::class, 'history'])->name('history');
+        Route::get('/people', [GeddesController::class, 'people'])->name('people');
+        Route::get('/research', [GeddesController::class, 'research'])->name('research');
+        Route::get('/contact', [GeddesController::class, 'contact'])->name('contact');
+        Route::get('/browse/{facet}', [GeddesController::class, 'browse'])
+            ->where('facet', '[A-Za-z]+')
+            ->name('browse');
+    },
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'jlss',
+    'route_name' => 'jlss',
+    'domain_hosts' => array_keys(array_filter(
+        config('collections.domains', []),
+        static fn (string $collection): bool => $collection === 'jlss',
+    )),
+    'home' => [JlssController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/search', fn () => redirect(CollectionUrl::url('search/*:*')))->name('search.home');
+        Route::get('/browse/{facet}', [JlssController::class, 'browse'])
+            ->where('facet', '[A-Za-z]+')
+            ->name('browse');
+    },
 ]);
 
 Route::get('/', function () {

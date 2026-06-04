@@ -24,13 +24,33 @@ class SolrService
 
         // Build the base URL for Solr (DSpace or ArchivesSpace)
         // Using direct HTTP client due to Solarium issues with non-standard Solr setups
-        $this->baseUrl = env('SOLR_BASE_URL', 'http://localhost:8080/solr/search/');
+        $this->baseUrl = $this->resolveSolrBaseUrl();
 
         $this->containerId = $config['container_id'];
         $this->containerField = $config['container_field'];
         $this->resultsPerPage = $config['results_per_page'];
         $this->isDSpace = env('SOLR_REPOSITORY_TYPE', 'dspace') === 'dspace';
         $this->handlePrefix = config('skylight.handle_prefix', '10683');
+    }
+
+    protected function resolveSolrBaseUrl(): string
+    {
+        $configuredBase = (string) config('skylight.solr_base', '');
+        if ($configuredBase !== '') {
+            return $configuredBase;
+        }
+
+        $legacyBase = env('SOLR_BASE_URL');
+        if (is_string($legacyBase) && $legacyBase !== '') {
+            return $legacyBase;
+        }
+
+        $solrUrl = env('SOLR_URL');
+        if (is_string($solrUrl) && $solrUrl !== '') {
+            return $solrUrl;
+        }
+
+        return 'http://localhost:8080/solr/search/';
     }
 
     /**
@@ -218,11 +238,11 @@ class SolrService
     public function getRelatedItems(array $record, int $limit = 10): array
     {
         $relatedFieldMappings = config('skylight.related_fields', []);
-        
+
         if (empty($relatedFieldMappings)) {
             return [];
         }
-        
+
         $queries = [];
 
         // Build queries for each related field
@@ -247,10 +267,10 @@ class SolrService
 
         // Get current record ID for exclusion
         $currentId = $record['Id'] ?? $record['id'] ?? null;
-        if (!$currentId) {
+        if (! $currentId) {
             return [];
         }
-        
+
         // Construct full handle for exclusion
         $fullHandle = $this->handlePrefix.'/'.$currentId;
 
@@ -522,11 +542,11 @@ class SolrService
                     // activeFilters contains URL segments like: Type:"rare+books+|||+Rare+Books"
                     // termName is the raw Solr value like: "rare books\n|||\nRare Books" (with newlines)
                     $isActive = false;
-                    
+
                     // Normalize the term name to match URL encoding (spaces/newlines -> +)
                     // Note: Laravel already decodes %7C to | in route parameters, so leave pipes as-is
                     $normalizedTermName = str_replace(["\r\n", "\n", "\r", ' '], '+', $termName);
-                    
+
                     foreach ($activeFilters as $activeFilter) {
                         // Check if the filter contains this normalized term
                         if (str_contains($activeFilter, $normalizedTermName)) {

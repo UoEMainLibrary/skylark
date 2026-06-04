@@ -25,13 +25,33 @@ class DSpaceService implements RepositoryInterface
     {
         $fallback = config('services.solr');
 
-        $this->baseUrl = env('SOLR_BASE_URL', 'http://localhost:8080/solr/search/');
+        $this->baseUrl = $this->resolveSolrBaseUrl();
         $this->containerId = config('skylight.container_id', $fallback['container_id']);
         $this->containerField = config('skylight.container_field', $fallback['container_field']);
         $this->resultsPerPage = config('skylight.results_per_page', $fallback['results_per_page']);
         $this->isDSpace = config('skylight.repository_type', 'dspace') === 'dspace';
         $this->handlePrefix = config('skylight.handle_prefix', '10683');
         $this->filterSort = (bool) config('skylight.filter_sort', false);
+    }
+
+    protected function resolveSolrBaseUrl(): string
+    {
+        $configuredBase = (string) config('skylight.solr_base', '');
+        if ($configuredBase !== '') {
+            return $configuredBase;
+        }
+
+        $legacyBase = env('SOLR_BASE_URL');
+        if (is_string($legacyBase) && $legacyBase !== '') {
+            return $legacyBase;
+        }
+
+        $solrUrl = env('SOLR_URL');
+        if (is_string($solrUrl) && $solrUrl !== '') {
+            return $solrUrl;
+        }
+
+        return 'http://localhost:8080/solr/search/';
     }
 
     /**

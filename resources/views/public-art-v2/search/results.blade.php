@@ -162,18 +162,14 @@
         // both the screen-reader / keyboard alternative and the JS marker source.
         $mappedLocations = [];
         foreach ($docs as $doc) {
-            $locStr = $doc[$locationField][0] ?? '';
-            if ($locStr === '') {
-                continue;
-            }
-            $parts = explode(',', $locStr);
-            if (count($parts) !== 2) {
+            $coords = \App\Support\PublicArtOverrides::firstMapCoordinates($doc, $locationField);
+            if ($coords === null) {
                 continue;
             }
             $mappedLocations[] = [
                 'title' => $doc[$titleField][0] ?? 'Untitled',
-                'lat' => trim($parts[0]),
-                'lon' => trim($parts[1]),
+                'lat' => $coords['lat'],
+                'lon' => $coords['lon'],
                 'id' => is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? ''),
                 'thumb' => str_replace('/full/full/', '/full/80,/', $doc[$imageField][0] ?? ''),
             ];
