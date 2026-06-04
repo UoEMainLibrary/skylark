@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Services\RepositoryFactory;
 use App\Support\CollectionUrl;
 use App\Support\CollectionViewResolver;
+use App\Support\SolrFilterQuery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class SearchController extends Controller
@@ -211,7 +213,7 @@ class SearchController extends Controller
         }
 
         return [
-            'solr_filters' => $solrFilters,
+            'solr_filters' => SolrFilterQuery::onlyValid($solrFilters),
             'url_filters' => $urlFilters,
         ];
     }
@@ -299,6 +301,7 @@ class SearchController extends Controller
         }
 
         $repository = $this->repositoryFactory->current();
+        $solrFilters = SolrFilterQuery::onlyValid($solrFilters);
 
         try {
             $results = $repository->searchWithHighlighting(
@@ -440,7 +443,15 @@ class SearchController extends Controller
 
     protected function searchFailureResponse(\Throwable $e, string $query)
     {
-        report($e);
+        if ($this->isSolrQueryClientError($e)) {
+            Log::warning('Search skipped invalid Solr filter query', [
+                'query' => $query,
+                'collection' => config('app.current_collection'),
+                'message' => Str::limit($e->getMessage(), 500),
+            ]);
+        } elseif (! $this->isSearchBackendAccessDenied($e)) {
+            report($e);
+        }
 
         $isAccessDenied = $this->isSearchBackendAccessDenied($e);
         $status = $isAccessDenied ? 503 : 500;
@@ -470,5 +481,10 @@ class SearchController extends Controller
             'Solr query failed: 403',
             'Access denied',
         ]);
+    }
+
+    protected function isSolrQueryClientError(\Throwable $e): bool
+    {
+        return Str::contains($e->getMessage(), 'Solr query failed: 400');
     }
 }
