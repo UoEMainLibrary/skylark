@@ -890,6 +890,38 @@ it('serves the new Cast Collections page with the supplied client copy and exter
         ->assertSee('collections/public-art/images/cast-collections/east-pediment-cast.jpg', false);
 });
 
+it('serves the Old College Artworks page with the supplied client copy and images', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $this->get('/art-on-campus/old-college')
+        ->assertSuccessful()
+        ->assertSee('<h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Old College Artworks</h1>', false)
+        ->assertSee('<title>Old College Artworks | Art on Campus</title>', false)
+        ->assertSee('Old College Heritage and Values Project')
+        ->assertSee('July 2025')
+        ->assertSee('colonialism, enslavement and empire')
+        ->assertSee('Note on access')
+        ->assertSee('https://library.ed.ac.uk/heritage-collections/old-college-artwork', false)
+        ->assertSee('collections/public-art/images/old-college/main-stairway-milenka-soskin.png', false)
+        ->assertSee('collections/public-art/images/old-college/main-stairway-chris-close.jpg', false)
+        ->assertSee('collections/public-art/images/old-college/raeburn-room-milenka-soskin.jpeg', false)
+        ->assertSee('collections/public-art/images/old-college/lee-elder-rooms-milenka-soskin.png', false)
+        ->assertSee('Architectural drawing of Main Stairway by Milenka Soskin')
+        ->assertSee('Photography: Chris Close')
+        ->assertSee('Architectural drawing of Raeburn Room by Milenka Soskin')
+        ->assertSee('Architectural drawings of Lee and Elder Rooms by Milenka Soskin');
+});
+
+it('lists Old College in the V2 primary nav and footer Explore section', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $response = $this->get('/art-on-campus')->assertSuccessful();
+    $html = $response->getContent();
+
+    expect(substr_count($html, '/art-on-campus/old-college'))->toBeGreaterThanOrEqual(2)
+        ->and(substr_count($html, 'Old College'))->toBeGreaterThanOrEqual(2);
+});
+
 it('lists Cast Collections in the V2 primary nav and footer Explore section', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
