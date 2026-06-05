@@ -68,7 +68,7 @@
                 </td>
                 <td style="vertical-align: middle">
                     <audio controls width="300" preload="metadata" title="Farming compilation">
-                        <source src="https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/farming_compilation_DG5-1-1-1_and_DG38-9-1-1.mp3">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/farming_compilation_DG5-1-1-1_and_DG38-9-1-1.mp3') }}">
                         Sorry, your browser doesn't support embedded audio.
                     </audio>
                 </td>
@@ -82,7 +82,7 @@
                 </td>
                 <td style="vertical-align: middle">
                     <audio controls width="300" preload="metadata" title="School dinners">
-                        <source src="https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/School%20dinners_EL21-1-1-1.mp3">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/School%20dinners_EL21-1-1-1.mp3') }}">
                         Sorry, your browser doesn't support embedded audio.
                     </audio>
                 </td>
@@ -96,7 +96,7 @@
                 </td>
                 <td style="vertical-align: middle">
                     <audio controls width="300" preload="metadata" title="Travel and Transport">
-                        <source src="https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/Travel%20and%20Transport_DG17-1-1-1.mp3">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/Travel%20and%20Transport_DG17-1-1-1.mp3') }}">
                         Sorry, your browser doesn't support embedded audio.
                     </audio>
                 </td>
@@ -110,7 +110,7 @@
                 </td>
                 <td style="vertical-align: middle">
                     <audio controls width="300" preload="metadata" title="Sweets">
-                        <source src="https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/Sweets_EL20-2-1-1.mp3">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/Sweets_EL20-2-1-1.mp3') }}">
                         Sorry, your browser doesn't support embedded audio.
                     </audio>
                 </td>
@@ -124,7 +124,7 @@
                 </td>
                 <td style="vertical-align: middle">
                     <audio controls width="300" preload="metadata" title="Toys">
-                        <source src="https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/Toys_DG14-8-1-1.mp3">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/Toys_DG14-8-1-1.mp3') }}">
                         Sorry, your browser doesn't support embedded audio.
                     </audio>
                 </td>
@@ -138,7 +138,7 @@
                 </td>
                 <td style="vertical-align: middle">
                     <audio controls width="300" preload="metadata" title="Shopping">
-                        <source src="https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/shopping_DG4-19-1-1.mp3">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/shopping_DG4-19-1-1.mp3') }}">
                         Sorry, your browser doesn't support embedded audio.
                     </audio>
                 </td>
@@ -152,7 +152,7 @@
                 </td>
                 <td style="vertical-align: middle">
                     <audio controls width="300" preload="metadata" title="Playground games">
-                        <source src="https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/Playground%20games_DG31-3-1-1.mp3">
+                        <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57057/Playground%20games_DG31-3-1-1.mp3') }}">
                         Sorry, your browser doesn't support embedded audio.
                     </audio>
                 </td>

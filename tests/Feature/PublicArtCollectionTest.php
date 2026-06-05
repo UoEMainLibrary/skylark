@@ -322,7 +322,16 @@ it('renders a skip-map link, labelled map region, and textual location list on t
         ->toContain('id="map-textual-list"')
         ->toContain('id="map-textual-list-heading"')
         ->toContain('aria-label="Interactive map of artworks across the University of Edinburgh campuses')
-        ->toContain('Artworks on the map');
+        ->toContain('Artworks on the map')
+        ->toContain('window.publicArtPinIcon')
+        ->toContain('collections/public-art/locations/pinpoint.png');
+});
+
+it('serves local map pin icons for public art OpenLayers bundles', function (): void {
+    expect(file_get_contents(public_path('collections/public-art/locations/main.js')))
+        ->toContain("window.publicArtPinIcon || '/collections/public-art/locations/pinpoint.png'")
+        ->and(file_get_contents(public_path('collections/public-art/map/main.js')))
+        ->toContain("window.publicArtRecordPinIcon || '/collections/public-art/map/pinpoint.png'");
 });
 
 it('uses only the first map coordinate when a record has multiple', function () {
@@ -395,7 +404,9 @@ it('emits a skip-map link and labelled map region on V2 record pages', function 
         ->toContain('href="#location-after-map"')
         ->toContain('id="location-after-map"')
         ->toContain('aria-label="Interactive map showing the location of Mapped Artwork"')
-        ->toContain('Approximate coordinates');
+        ->toContain('Approximate coordinates')
+        ->toContain('window.publicArtRecordPinIcon')
+        ->toContain('pinpoint.png');
 });
 
 /**

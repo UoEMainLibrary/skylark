@@ -155,6 +155,7 @@
             <script>
                 lon = {{ $mapLon }};
                 lat = {{ $mapLat }};
+                window.publicArtRecordPinIcon = @json(asset('collections/public-art/map/pinpoint.png'));
             </script>
             <script src="{{ asset('collections/public-art/map/bundle.js') }}"></script>
         @endif

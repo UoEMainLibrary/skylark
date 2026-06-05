@@ -67,20 +67,34 @@
         </div>
     @else
         <div id="map" class="full-width" style="height: 1500px;"></div>
+        @php
+            $mappedLocations = [];
+            foreach ($docs as $doc) {
+                $coords = \App\Support\PublicArtOverrides::firstMapCoordinates($doc, $locationField);
+                if ($coords === null) {
+                    continue;
+                }
+                $docId = is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? '');
+                $rawImg = $doc[$imageField][0] ?? '';
+                $mappedLocations[] = [
+                    'title' => $doc[$titleField][0] ?? 'Untitled',
+                    'lat' => $coords['lat'],
+                    'lon' => $coords['lon'],
+                    'id' => $docId,
+                    'thumb' => str_replace('/full/full/', '/full/50,/', $rawImg),
+                ];
+            }
+        @endphp
         <script>
-            var locationsArray = [];
-            @foreach($docs as $doc)
-                @php
-                    $title = addslashes($doc[$titleField][0] ?? 'Untitled');
-                    $coords = \App\Support\PublicArtOverrides::firstMapCoordinates($doc, $locationField);
-                    $rawImg = $doc[$imageField][0] ?? '';
-                    $thumb = str_replace('/full/full/', '/full/50,/', $rawImg);
-                    $docId = is_array($doc['id'] ?? '') ? ($doc['id'][0] ?? '') : ($doc['id'] ?? '');
-                @endphp
-                @if($coords !== null)
-                        locationsArray.push([{{ $coords['lon'] }}, {{ $coords['lat'] }}, '{{ url('/public-art/record/' . $docId) }}', '{{ $title }}', '{{ $thumb }}']);
-                @endif
-            @endforeach
+            window.publicArtPinIcon = @json(asset('collections/public-art/locations/pinpoint.png'));
+            window.publicArtPinHoverIcon = @json(asset('collections/public-art/locations/pinpoint2.png'));
+            var locationsArray = @json(collect($mappedLocations)->map(fn (array $loc): array => [
+                (float) $loc['lon'],
+                (float) $loc['lat'],
+                url('/public-art/record/'.$loc['id']),
+                $loc['title'],
+                $loc['thumb'],
+            ])->values()->all());
         </script>
         <script src="{{ asset('collections/public-art/locations/bundle.js') }}"></script>
     @endif
