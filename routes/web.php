@@ -231,6 +231,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'extra_routes' => function () {
         Route::get('/paolozzi', [PublicArtController::class, 'paolozzi'])->name('paolozzi');
         Route::get('/cast-collections', [PublicArtController::class, 'castCollections'])->name('cast-collections');
+        Route::get('/old-college', [PublicArtController::class, 'oldCollege'])->name('old-college');
         // The standalone "University Art Collection" page was retired in
         // favour of linking the wider catalogue at /art directly from
         // the primary nav. The named `public-art.artcollection` route
