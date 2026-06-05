@@ -82,7 +82,7 @@
             </div>
         </article>
 
-        {{-- Haddington Voices (new) --}}
+        {{-- Haddington Voices (2024): EBU R128 is the web master; -17LUFS (seq. 4) is an alternate loudness export of the same film. --}}
         <article id="haddington-voices" class="scroll-mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 <span class="inline-flex items-center rounded-full bg-resp-teal-100 px-3 py-0.5 text-xs font-medium text-resp-teal-800">New</span>

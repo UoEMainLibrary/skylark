@@ -33,6 +33,8 @@ var map = new Map({
     });
 
 //read in features from json
+var pinIcon = window.publicArtPinIcon || '/collections/public-art/locations/pinpoint.png';
+var pinHoverIcon = window.publicArtPinHoverIcon || '/collections/public-art/locations/pinpoint2.png';
 var lon;
 var lat;
 var title;
@@ -47,7 +49,7 @@ function addLocation(lon, lat, record, title, image){
     poi.setStyle(new Style({
           image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
             crossOrigin: null,
-            src: 'https://collections.ed.ac.uk/theme/public-art/locations/pinpoint.png',
+            src: pinIcon,
             scale: 1.25
           })),
           overflow: true
@@ -78,7 +80,7 @@ function addLocation(lon, lat, record, title, image){
         oldFeature.setStyle(new Style({
               image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
                 crossOrigin: null,
-                src: 'https://collections.ed.ac.uk/theme/public-art/locations/pinpoint.png',
+                src: pinIcon,
                 scale: 1.25
               })),
               overflow: true
@@ -86,7 +88,7 @@ function addLocation(lon, lat, record, title, image){
         feature.setStyle(new Style({
               image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
                 crossOrigin: null,
-                src: 'https://collections.ed.ac.uk/theme/public-art/locations/pinpoint2.png',
+                src: pinHoverIcon,
                 scale: 1.50
               })),
               overflow: true,
