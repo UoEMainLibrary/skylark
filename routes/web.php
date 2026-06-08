@@ -13,6 +13,7 @@ use App\Http\Controllers\Collections\Lhsacasenotes\PageController as Lhsacasenot
 use App\Http\Controllers\Collections\Mimed\PageController as MimedController;
 use App\Http\Controllers\Collections\Openbooks\PageController as OpenbooksController;
 use App\Http\Controllers\Collections\Physics\PageController as PhysicsController;
+use App\Http\Controllers\Collections\Pointsofarrival\PageController as PointsofarrivalController;
 use App\Http\Controllers\Collections\PublicArt\PageController as PublicArtController;
 use App\Http\Controllers\Collections\Stcecilias\PageController as StceciliasController;
 use App\Http\Controllers\Collections\Towardsdolly\PageController as TowardsdollyController;
@@ -90,6 +91,27 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/browse/{facet}', [JlssController::class, 'browse'])
             ->where('facet', '[A-Za-z]+')
             ->name('browse');
+    },
+]);
+
+$pointsofarrivalConfig = require config_path('collections/pointsofarrival.php');
+$pointsofarrivalContentPages = implode('|', $pointsofarrivalConfig['content_pages'] ?? []);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'pointsofarrival',
+    'route_name' => 'pointsofarrival',
+    'domain_hosts' => array_keys(array_filter(
+        config('collections.domains', []),
+        static fn (string $collection): bool => $collection === 'pointsofarrival',
+    )),
+    'home' => [PointsofarrivalController::class, 'home'],
+    'mirador_view' => 'stcecilias.mirador',
+    'about' => fn () => redirect(CollectionUrl::url('introduction')),
+    'feedback' => true,
+    'extra_routes' => function () use ($pointsofarrivalContentPages) {
+        Route::get('/{page}', [PointsofarrivalController::class, 'content'])
+            ->where('page', $pointsofarrivalContentPages)
+            ->name('content');
     },
 ]);
 
