@@ -34,6 +34,12 @@ class SearchController extends Controller
             return view()->exists($resolved) ? $resolved : $view;
         }
 
+        if ($collection === 'geddes') {
+            $resolved = CollectionViewResolver::geddes($collectionView);
+
+            return view()->exists($resolved) ? $resolved : $view;
+        }
+
         return view()->exists($collectionView) ? $collectionView : $view;
     }
 

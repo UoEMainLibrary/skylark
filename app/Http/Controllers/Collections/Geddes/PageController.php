@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Collections\Geddes;
 
 use App\Http\Controllers\Controller;
 use App\Services\RepositoryFactory;
+use App\Support\CollectionViewResolver;
 
 class PageController extends Controller
 {
@@ -11,27 +12,27 @@ class PageController extends Controller
 
     public function home()
     {
-        return view('geddes.home');
+        return view(CollectionViewResolver::geddes('geddes.home'));
     }
 
     public function history()
     {
-        return view('geddes.pages.history');
+        return view(CollectionViewResolver::geddes('geddes.pages.history'));
     }
 
     public function people()
     {
-        return view('geddes.pages.people');
+        return view(CollectionViewResolver::geddes('geddes.pages.people'));
     }
 
     public function research()
     {
-        return view('geddes.pages.research');
+        return view(CollectionViewResolver::geddes('geddes.pages.research'));
     }
 
     public function contact()
     {
-        return view('geddes.pages.contact');
+        return view(CollectionViewResolver::geddes('geddes.pages.contact'));
     }
 
     public function browse(string $facet)
@@ -50,7 +51,7 @@ class PageController extends Controller
 
         $browseData = $repository->browseTerms($facet, 500);
 
-        return view('geddes.pages.browse', [
+        return view(CollectionViewResolver::geddes('geddes.pages.browse'), [
             'browseFacet' => $facet,
             'browseData' => $browseData,
         ]);
