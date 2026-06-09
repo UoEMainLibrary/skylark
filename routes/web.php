@@ -8,6 +8,7 @@ use App\Http\Controllers\Collections\CoimbraColls\PageController as CoimbraColls
 use App\Http\Controllers\Collections\Eerc\PageController as EercController;
 use App\Http\Controllers\Collections\Geddes\PageController as GeddesController;
 use App\Http\Controllers\Collections\Guardbook\PageController as GuardbookController;
+use App\Http\Controllers\Collections\Iog\PageController as IogController;
 use App\Http\Controllers\Collections\Jlss\PageController as JlssController;
 use App\Http\Controllers\Collections\Lhsacasenotes\PageController as LhsacasenotesController;
 use App\Http\Controllers\Collections\Mimed\PageController as MimedController;
@@ -91,6 +92,21 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/browse/{facet}', [JlssController::class, 'browse'])
             ->where('facet', '[A-Za-z]+')
             ->name('browse');
+    },
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'iog',
+    'route_name' => 'iog',
+    'domain_hosts' => array_keys(array_filter(
+        config('collections.domains', []),
+        static fn (string $collection): bool => $collection === 'iog',
+    )),
+    'home' => [IogController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => false,
+    'extra_routes' => function () {
+        Route::get('/history', [IogController::class, 'history'])->name('history');
     },
 ]);
 

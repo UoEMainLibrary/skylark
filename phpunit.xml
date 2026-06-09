@@ -38,6 +38,8 @@
         <!-- Registers SJAC (JLSS) dedicated-host routes in tests (see tests/Feature/JlssCollectionTest.php) -->
         <env name="SJAC_HOST" value="sjac.testing"/>
         <env name="POINTSOFARRIVAL_HOST" value="pointsofarrival.testing"/>
+        <!-- Registers Scottish Government Yearbooks dedicated-host routes in tests (see tests/Feature/IogCollectionTest.php) -->
+        <env name="SCOTGOVYEARBOOKS_HOST" value="scottishgovernmentyearbooks.testing"/>
         <!-- Pin the CMS toggle off in tests so a developer's .env CMS_ENABLED=true
              doesn't leak in. Tests that need the toggle on flip it per-test
              via config(['cms.enabled' => true]). -->
