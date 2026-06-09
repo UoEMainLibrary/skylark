@@ -10,10 +10,11 @@ return array_merge($dspaceDefaults, [
 
     'adminemail' => 'lddt@mlist.is.ed.ac.uk',
 
-    // Dev DSpace community UUID is the default so local Skylark works without
-    // any env override (matches the Points of Arrival pattern). Production
-    // sets IOG_CONTAINER_ID=48aea4e8-2840-47e5-931e-5b1ae117ce78 explicitly.
-    'container_id' => env('IOG_CONTAINER_ID', 'e99d9f85-ef2f-4de4-820b-9561cb759fec'),
+    // Production DSpace community UUID is the default — we only read from
+    // Solr and want the latest data everywhere by default. Dev/staging
+    // overrides via IOG_CONTAINER_ID (legacy dev UUID:
+    // e99d9f85-ef2f-4de4-820b-9561cb759fec).
+    'container_id' => env('IOG_CONTAINER_ID', '48aea4e8-2840-47e5-931e-5b1ae117ce78'),
 
     'oaipmhcollection' => 'hdl_10683_22746',
     'sitemap_type' => 'external',
