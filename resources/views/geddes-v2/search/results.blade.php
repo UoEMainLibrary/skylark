@@ -40,8 +40,8 @@
                     $imageValue = $imageField !== '' ? ($doc[$imageField] ?? null) : null;
                     $image = is_array($imageValue) ? ($imageValue[0] ?? null) : $imageValue;
                 @endphp
-                <div class="geddes-search-row clearfix">
-                    <div class="float-left w-[90%] pr-2">
+                <div class="geddes-search-row flex flex-col gap-4 sm:flex-row sm:items-start">
+                    <div class="min-w-0 flex-1">
                         <h3><a href="{{ url('/geddes/record/'.$recordId) }}">{{ $title }}</a></h3>
                         @foreach($searchDisplay as $label)
                             @continue($label === 'Title')
@@ -51,14 +51,14 @@
                                 $displayValue = is_array($rawValue) ? ($rawValue[0] ?? null) : $rawValue;
                             @endphp
                             @if(!empty($displayValue))
-                                <div class="text-sm"><strong>{{ $label }}:</strong> {{ strip_tags((string) $displayValue) }}</div>
+                                <div class="search-meta"><strong>{{ $label }}:</strong> {{ strip_tags((string) $displayValue) }}</div>
                             @endif
                         @endforeach
                     </div>
                     @if($image)
-                        <div class="float-right w-[10%] min-w-[60px]">
+                        <div class="shrink-0 sm:w-20">
                             <a href="{{ url('/geddes/record/'.$recordId) }}">
-                                <img src="{{ str_replace('/full/0/', '/,40/0/', $image) }}" class="h-auto w-full" alt="{{ $title }}">
+                                <img src="{{ str_replace('/full/0/', '/,40/0/', $image) }}" class="h-auto w-full max-w-20" alt="{{ $title }}">
                             </a>
                         </div>
                     @endif

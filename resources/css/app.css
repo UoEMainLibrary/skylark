@@ -107,11 +107,19 @@
     }
 
     .geddes-search-row {
-        @apply border-b border-gray-200 bg-gray-50 px-2 py-4 odd:bg-gray-200;
+        @apply border-b border-gray-200 bg-gray-50 px-4 py-5 odd:bg-gray-200;
+    }
+
+    .geddes-search-row h3 {
+        @apply mb-2 text-lg leading-snug font-bold break-words text-geddes-heading;
     }
 
     .geddes-search-row h3 a {
         @apply text-geddes-heading no-underline hover:text-geddes-accent hover:underline;
+    }
+
+    .geddes-search-row .search-meta {
+        @apply mt-1 text-sm leading-relaxed text-gray-600;
     }
 
     .geddes-facet-list > li:first-child {
