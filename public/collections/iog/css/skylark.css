@@ -1,0 +1,42 @@
+/*
+ * Skylark-specific overrides for the legacy iog theme.
+ *
+ * The legacy CodeIgniter site rendered pagination as a flat sequence of
+ * <a> tags. Skylark's shared SearchController::buildPaginationLinks() emits
+ * Bootstrap-style <ul class="pagination"><li>...</li></ul> markup, which
+ * relies on Bootstrap CSS to lay the items out horizontally. Because the iog
+ * layout doesn't pull in Bootstrap (matching the legacy theme), we need to
+ * provide the minimum CSS to render the pagination inline without bullets.
+ */
+ul.pagination {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+ul.pagination li {
+    display: inline-block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.pagination li.active span,
+ul.pagination li > span,
+ul.pagination li > a {
+    display: inline-block;
+    padding: 0 5px;
+    color: #666;
+    text-decoration: none;
+}
+
+ul.pagination li.active span {
+    background: #e8e8e8;
+    color: #333;
+    font-weight: bold;
+}
+
+ul.pagination li > a:hover {
+    color: #333;
+    text-decoration: underline;
+}

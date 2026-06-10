@@ -80,3 +80,23 @@ it('renders geddes v2 home slideshow without duplicate breakpoint columns', func
         ->assertDontSee('class="col-xl"', false)
         ->assertDontSee('class="col-lg"', false);
 });
+
+it('compiles shared pagination styles so ul.pagination renders inline in Tailwind layouts', function () {
+    // Geddes v2, public-art v2, eerc v2 etc. all rely on @vite('resources/css/app.css').
+    // Skylark's shared SearchController::buildPaginationLinks() emits
+    // `<ul class="pagination"><li>...</li></ul>` which would stack vertically
+    // without an explicit display rule (Tailwind's preflight clears list-style
+    // but leaves <li> at display: list-item). The compiled CSS must override
+    // that to keep pagination on one line.
+    $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+    $cssEntry = collect($manifest)
+        ->first(fn (array $entry): bool => isset($entry['file']) && str_ends_with($entry['file'], '.css'));
+
+    expect($cssEntry)->not->toBeNull();
+
+    $css = file_get_contents(public_path('build/'.$cssEntry['file']));
+
+    expect($css)
+        ->toContain('ul.pagination')
+        ->toContain('inline-block');
+});

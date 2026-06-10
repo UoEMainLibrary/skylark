@@ -13,6 +13,7 @@
     <link rel="shortcut icon" href="{{ asset('collections/iog/images/favicon.ico') }}">
 
     <link rel="stylesheet" href="{{ asset('collections/iog/css/style.css') }}?v=2">
+    <link rel="stylesheet" href="{{ asset('collections/iog/css/skylark.css') }}?v=1">
     <link rel="stylesheet" href="{{ asset('assets/fancybox/source/jquery.fancybox.css') }}?v=2.1.4" type="text/css" media="screen" />
     <link rel="stylesheet" href="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-buttons.css') }}?v=1.0.5" type="text/css" media="screen" />
     <link rel="stylesheet" href="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-thumbs.css') }}?v=1.0.7" type="text/css" media="screen" />
