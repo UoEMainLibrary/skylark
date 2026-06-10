@@ -30,4 +30,12 @@ class PageController extends Controller
     {
         return view(CollectionViewResolver::publicArt('public-art.pages.cast-collections'));
     }
+
+    /**
+     * Display the Old College Artworks page.
+     */
+    public function oldCollege()
+    {
+        return view(CollectionViewResolver::publicArt('public-art.pages.old-college'));
+    }
 }

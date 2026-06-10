@@ -322,7 +322,16 @@ it('renders a skip-map link, labelled map region, and textual location list on t
         ->toContain('id="map-textual-list"')
         ->toContain('id="map-textual-list-heading"')
         ->toContain('aria-label="Interactive map of artworks across the University of Edinburgh campuses')
-        ->toContain('Artworks on the map');
+        ->toContain('Artworks on the map')
+        ->toContain('window.publicArtPinIcon')
+        ->toContain('collections/public-art/locations/pinpoint.png');
+});
+
+it('serves local map pin icons for public art OpenLayers bundles', function (): void {
+    expect(file_get_contents(public_path('collections/public-art/locations/main.js')))
+        ->toContain("window.publicArtPinIcon || '/collections/public-art/locations/pinpoint.png'")
+        ->and(file_get_contents(public_path('collections/public-art/map/main.js')))
+        ->toContain("window.publicArtRecordPinIcon || '/collections/public-art/map/pinpoint.png'");
 });
 
 it('uses only the first map coordinate when a record has multiple', function () {
@@ -395,7 +404,9 @@ it('emits a skip-map link and labelled map region on V2 record pages', function 
         ->toContain('href="#location-after-map"')
         ->toContain('id="location-after-map"')
         ->toContain('aria-label="Interactive map showing the location of Mapped Artwork"')
-        ->toContain('Approximate coordinates');
+        ->toContain('Approximate coordinates')
+        ->toContain('window.publicArtRecordPinIcon')
+        ->toContain('pinpoint.png');
 });
 
 /**
@@ -888,6 +899,48 @@ it('serves the new Cast Collections page with the supplied client copy and exter
         ->assertSee('https://blogs.ed.ac.uk/casts/the-collection/', false)
         // Client-supplied image, served from the public/collections asset path.
         ->assertSee('collections/public-art/images/cast-collections/east-pediment-cast.jpg', false);
+});
+
+it('serves the Old College Artworks page with the supplied client copy and images', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $response = $this->get('/art-on-campus/old-college')
+        ->assertSuccessful()
+        ->assertSee('<h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Old College Artworks</h1>', false)
+        ->assertSee('<title>Old College Artworks | Art on Campus</title>', false)
+        ->assertSee('Old College Heritage and Values Project (2023&ndash;ongoing)', false)
+        ->assertSeeInOrder(['between the seventeenth and', 'twentieth centuries'])
+        ->assertDontSee('seventeenth to the twentieth centuries')
+        ->assertSee('July 2025')
+        ->assertSee('colonialism, enslavement and empire')
+        ->assertSee('<h2>Access</h2>', false)
+        ->assertDontSee('Note on access')
+        ->assertSee('https://library.ed.ac.uk/heritage-collections/old-college-artwork', false)
+        ->assertSee('collections/public-art/images/old-college/main-stairway-milenka-soskin.png', false)
+        ->assertSee('collections/public-art/images/old-college/main-stairway-chris-close.jpg', false)
+        ->assertSee('collections/public-art/images/old-college/raeburn-room-milenka-soskin.jpeg', false)
+        ->assertSee('collections/public-art/images/old-college/lee-elder-rooms-milenka-soskin.png', false)
+        ->assertSee('Architectural drawing of Main Stairway by Milenka Soskin')
+        ->assertSee('Photography: Chris Close')
+        ->assertSee('Architectural drawing of Raeburn Room by Milenka Soskin')
+        ->assertSee('Architectural drawings of Lee and Elder Rooms by Milenka Soskin');
+
+    // After the client edit, the Chris Close photo of the main-stairway hang
+    // appears before the Milenka Soskin architectural drawing of the same
+    // space.
+    $html = $response->getContent();
+    expect(strpos($html, 'main-stairway-chris-close.jpg'))
+        ->toBeLessThan(strpos($html, 'main-stairway-milenka-soskin.png'));
+});
+
+it('lists Old College in the V2 primary nav and footer Explore section', function () {
+    config(['skylight.public_art_skin_version' => 2]);
+
+    $response = $this->get('/art-on-campus')->assertSuccessful();
+    $html = $response->getContent();
+
+    expect(substr_count($html, '/art-on-campus/old-college'))->toBeGreaterThanOrEqual(2)
+        ->and(substr_count($html, 'Old College'))->toBeGreaterThanOrEqual(2);
 });
 
 it('lists Cast Collections in the V2 primary nav and footer Explore section', function () {

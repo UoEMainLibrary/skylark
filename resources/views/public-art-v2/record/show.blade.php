@@ -441,6 +441,7 @@
     <script>
         window.lon = {{ $mapLon }};
         window.lat = {{ $mapLat }};
+        window.publicArtRecordPinIcon = @json(asset('collections/public-art/map/pinpoint.png'));
     </script>
     <script>
         // The legacy OpenLayers bundle expects a #map div; alias #record-map to it.

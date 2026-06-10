@@ -63,6 +63,10 @@ class PageController extends Controller
             $collectionView = CollectionViewResolver::publicArt($collectionView);
         }
 
+        if ($collection === 'geddes') {
+            $collectionView = CollectionViewResolver::geddes($collectionView);
+        }
+
         return view()->exists($collectionView)
             ? view($collectionView)
             : view("pages.{$name}");

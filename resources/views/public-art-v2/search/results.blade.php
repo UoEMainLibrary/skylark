@@ -215,11 +215,15 @@
     </section>
 
     <script>
-        var locationsArray = [
-            @foreach($mappedLocations as $loc)
-                [{{ $loc['lon'] }}, {{ $loc['lat'] }}, '{{ url('/art-on-campus/record/'.$loc['id']) }}', '{{ addslashes($loc['title']) }}', '{{ $loc['thumb'] }}'],
-            @endforeach
-        ];
+        window.publicArtPinIcon = @json(asset('collections/public-art/locations/pinpoint.png'));
+        window.publicArtPinHoverIcon = @json(asset('collections/public-art/locations/pinpoint2.png'));
+        var locationsArray = @json(collect($mappedLocations)->map(fn (array $loc): array => [
+            (float) $loc['lon'],
+            (float) $loc['lat'],
+            url('/art-on-campus/record/'.$loc['id']),
+            $loc['title'],
+            $loc['thumb'],
+        ])->values()->all());
     </script>
     <link rel="stylesheet" href="https://openlayers.org/en/latest/css/ol.css" type="text/css">
     <script src="{{ asset('collections/public-art/locations/bundle.js') }}"></script>

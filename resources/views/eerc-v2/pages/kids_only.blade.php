@@ -43,7 +43,7 @@
                     Worksheet
                 </a>
                 <audio controls preload="metadata" class="h-10 w-full" title="{{ $activity['title'] }}">
-                    <source src="{{ $activity['audio'] }}">
+                    <source src="{{ \App\Helpers\BitstreamHelper::rewriteBitstreamUrl($activity['audio']) }}">
                     Sorry, your browser doesn't support embedded audio.
                 </audio>
             </div>

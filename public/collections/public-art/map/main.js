@@ -10,13 +10,16 @@ import {Icon, Style} from 'ol/style.js';
 import {defaults as defaultInteractions, MouseWheelZoom} from 'ol/interaction.js';
 import {focus} from 'ol/events/condition.js';
 
+var recordPinIcon = window.publicArtRecordPinIcon || '/collections/public-art/map/pinpoint.png';
+
 var poi = new Feature({
-        geometry: new Point(fromLonLat([lon, lat]))
+        geometry: new Point(fromLonLat([Number(lon), Number(lat)]))
       });
 poi.setStyle(new Style({
         image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
           crossOrigin: 'anonymous',
-          src: '../theme/public-art/map/pinpoint.png'
+          src: recordPinIcon,
+          scale: 1.25
         }))
       }));
 
@@ -43,7 +46,7 @@ new Map({
       target: 'map',
       view: new View({
         //projection: 'EPSG:4326',
-        center: fromLonLat([lon,lat]),
+        center: fromLonLat([Number(lon), Number(lat)]),
         zoom: 18
       })
     });

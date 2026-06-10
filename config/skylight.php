@@ -30,6 +30,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Geddes Skin Version
+    |--------------------------------------------------------------------------
+    |
+    | Controls which front-end skin is used for the Patrick Geddes / Evergreen
+    | collection.
+    | Version 1: Original Bootstrap 3 skin
+    | Version 2: Tailwind CSS reskin (same look and feel, tidied)
+    |
+    */
+
+    'geddes_skin_version' => (int) env('GEDDES_SKIN_VERSION', 1),
+
+    /*
+    |--------------------------------------------------------------------------
     | Search Results Configuration
     |--------------------------------------------------------------------------
     |
