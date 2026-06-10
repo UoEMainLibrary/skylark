@@ -57,7 +57,11 @@
 
     @if($total === 0)
         <h1>No results found</h1>
-        <p>Your search for <strong>{{ urldecode($query) }}</strong> did not return any results.</p>
+        @if($query === '*:*' || $query === '*')
+            <p>Your search did not return any results.</p>
+        @else
+            <p>Your search for <strong>{{ urldecode($query) }}</strong> did not return any results.</p>
+        @endif
         <p>Try broadening your search or <a href="{{ $collectionUrl('search/*:*') }}">browse all items</a>.</p>
     @else
         <div class="listing-filter">

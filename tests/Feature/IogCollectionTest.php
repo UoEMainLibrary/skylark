@@ -1,5 +1,7 @@
 <?php
 
+use App\Contracts\RepositoryInterface;
+use App\Services\DSpaceService;
 use Illuminate\Support\Facades\Route;
 
 it('registers expected iog routes', function (string $name): void {
@@ -113,6 +115,92 @@ it('renders the legacy nav with visible "opens in a new tab" labels', function (
         ->assertSee('SPS (opens in a new tab)', false)
         ->assertSee('>History<', false)
         ->assertSee('>About<', false);
+});
+
+function bindIogRepositoryStub(array &$captured): void
+{
+    $stub = new class($captured) implements RepositoryInterface
+    {
+        public function __construct(public array &$captured) {}
+
+        public function search(string $query, array $filters = [], int $page = 1, ?string $sortBy = null): array
+        {
+            return ['docs' => [], 'total' => 0, 'start' => 0, 'rows' => 0, 'facets' => []];
+        }
+
+        public function searchWithHighlighting(string $query, array $filters, int $offset, string $sortBy, int $rows, array $activeFilters = []): array
+        {
+            // Only capture the first call so the sidebar facets composer's
+            // `*:*` lookup doesn't overwrite the controller's query.
+            if ($this->captured['query'] === null) {
+                $this->captured['query'] = $query;
+                $this->captured['filters'] = $filters;
+            }
+
+            return [
+                'docs' => [],
+                'total' => 0,
+                'start' => $offset,
+                'rows' => $rows,
+                'facets' => [],
+                'highlights' => [],
+                'suggestions' => [],
+            ];
+        }
+
+        public function getRecord(string $id): ?array
+        {
+            return null;
+        }
+
+        public function getRelatedItems(array $record, int $limit = 10): array
+        {
+            return [];
+        }
+
+        public function buildFacetsWithActiveState(array $facetData, array $activeFilters, array $configFilters): array
+        {
+            return [];
+        }
+
+        public function transformFieldNames(array $record): array
+        {
+            return $record;
+        }
+    };
+
+    app()->instance(DSpaceService::class, $stub);
+}
+
+it('iog advanced search sends user terms in q (not fq) so DSpace text field matches', function (): void {
+    $captured = ['query' => null, 'filters' => null];
+    bindIogRepositoryStub($captured);
+
+    $this->get('/iog/advanced/search/Keywords:test?operator=OR')->assertSuccessful();
+
+    expect($captured['query'])->toBe('test')
+        ->and($captured['filters'])->toBe([]);
+});
+
+it('iog advanced search combines multiple fields with the chosen operator', function (): void {
+    $captured = ['query' => null, 'filters' => null];
+    bindIogRepositoryStub($captured);
+
+    $this->get('/iog/advanced/search/Keywords:foo/Subject:bar?operator=AND')->assertSuccessful();
+
+    expect($captured['query'])->toBe('foo AND dc.subject:bar');
+});
+
+it('loads the iog Skylark override stylesheet so pagination renders inline', function (): void {
+    $response = $this->get('/iog')->assertSuccessful();
+
+    expect($response->getContent())->toContain('collections/iog/css/skylark.css');
+
+    $cssPath = public_path('collections/iog/css/skylark.css');
+    expect(file_exists($cssPath))->toBeTrue();
+    expect(file_get_contents($cssPath))
+        ->toContain('ul.pagination li')
+        ->toContain('inline-block');
 });
 
 it('registers a sidebar facets composer for the iog layout', function (): void {
