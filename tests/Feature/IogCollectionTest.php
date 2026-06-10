@@ -14,7 +14,23 @@ it('registers expected iog routes', function (string $name): void {
     'iog.takedown',
     'iog.accessibility',
     'iog.history',
+    'iog.advanced',
+    'iog.advanced.form',
+    'iog.advanced.post',
+    'iog.advanced.search',
 ]);
+
+it('serves the iog advanced search form with the configured search fields', function (): void {
+    $response = $this->get('/iog/advanced/form')
+        ->assertSuccessful()
+        ->assertSee('<h1>Advanced Search</h1>', false)
+        ->assertSee('/iog/advanced/post', false)
+        ->assertSee('name="operator"', false);
+
+    foreach (array_keys(config('skylight.search_fields', [])) as $label) {
+        $response->assertSee('name="'.str_replace(' ', '_', $label).'"', false);
+    }
+});
 
 it('registers iog routes on the configured dedicated host', function (): void {
     expect(env('SCOTGOVYEARBOOKS_HOST'))->toBe('scottishgovernmentyearbooks.testing')
