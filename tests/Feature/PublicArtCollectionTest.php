@@ -327,6 +327,67 @@ it('renders a skip-map link, labelled map region, and textual location list on t
         ->toContain('collections/public-art/locations/pinpoint.png');
 });
 
+it('compiles the V2 search map view with location pins as valid PHP', function (string $skinVersion, string $view, string $recordPathPrefix) {
+    // Regression for /art-on-campus/search/*:*?map=true erroring with
+    // "Unclosed '[' on line 220 does not match ')'". Blade's directive
+    // argument parser doesn't handle multi-line arrow functions with array
+    // literals inside `@json(...)`, so the map view needs to build the
+    // locations payload in a `@php` block before passing it to @json().
+    config([
+        'skylight.public_art_skin_version' => (int) $skinVersion,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+        ],
+    ]);
+
+    // The blades flip between grid and map view based on `?map=true`.
+    request()->merge(['map' => 'true']);
+
+    $docs = [
+        [
+            'id' => 'abc',
+            'dctitleen' => ['Mapped Artwork'],
+            'dcidentifierimageUri' => ['https://example.test/iiif/abc/full/full/0/default.jpg'],
+            'dccoveragespatialcoorden' => ['55.9445, -3.1892'],
+        ],
+    ];
+
+    $html = view($view, [
+        'docs' => $docs,
+        'total' => 1,
+        'query' => '*:*',
+        'searchbox_query' => '',
+        'base_search' => $recordPathPrefix.'/search/*:*',
+        'base_parameters' => '',
+        'facets' => [],
+        'highlights' => [],
+        'suggestions' => [],
+        'startRow' => 1,
+        'endRow' => 1,
+        'offset' => 0,
+        'rows' => 30,
+        'sort_by' => '',
+        'sort_options' => [],
+        'paginationLinks' => '',
+        'active_filters' => [],
+        'delimiter' => '|',
+    ])->render();
+
+    expect($html)
+        ->toContain('var locationsArray =')
+        ->toContain('Mapped Artwork')
+        ->toContain('55.9445')
+        ->toContain('-3.1892')
+        // The record URL is JSON-encoded (slashes escaped) inside the
+        // locationsArray payload, so accept either escaped or plain form.
+        ->toMatch('#'.preg_quote($recordPathPrefix, '#').'\\\\?/record\\\\?/abc#');
+})->with([
+    'V1 layout' => ['1', 'public-art.search.results', '/public-art'],
+    'V2 layout' => ['2', 'public-art-v2.search.results', '/art-on-campus'],
+]);
+
 it('serves local map pin icons for public art OpenLayers bundles', function (): void {
     expect(file_get_contents(public_path('collections/public-art/locations/main.js')))
         ->toContain("window.publicArtPinIcon || '/collections/public-art/locations/pinpoint.png'")

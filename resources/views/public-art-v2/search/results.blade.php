@@ -214,16 +214,22 @@
         @endif
     </section>
 
-    <script>
-        window.publicArtPinIcon = @json(asset('collections/public-art/locations/pinpoint.png'));
-        window.publicArtPinHoverIcon = @json(asset('collections/public-art/locations/pinpoint2.png'));
-        var locationsArray = @json(collect($mappedLocations)->map(fn (array $loc): array => [
+    @php
+        // Blade's directive argument parser doesn't handle multi-line arrow
+        // functions with array literals inside `@json(...)`, so build the
+        // payload in PHP first and pass a single variable to @json().
+        $locationsArray = collect($mappedLocations)->map(fn (array $loc): array => [
             (float) $loc['lon'],
             (float) $loc['lat'],
             url('/art-on-campus/record/'.$loc['id']),
             $loc['title'],
             $loc['thumb'],
-        ])->values()->all());
+        ])->values()->all();
+    @endphp
+    <script>
+        window.publicArtPinIcon = @json(asset('collections/public-art/locations/pinpoint.png'));
+        window.publicArtPinHoverIcon = @json(asset('collections/public-art/locations/pinpoint2.png'));
+        var locationsArray = @json($locationsArray);
     </script>
     <link rel="stylesheet" href="https://openlayers.org/en/latest/css/ol.css" type="text/css">
     <script src="{{ asset('collections/public-art/locations/bundle.js') }}"></script>
