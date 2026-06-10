@@ -13,22 +13,20 @@
         <h2>About the Old College Heritage and Values Project</h2>
         <p>
             The largest displays of the University&rsquo;s art collection on campus are at Old College, where
-            approximately 100 portraits of figures connected to the University between the seventeenth to the
-            twentieth centuries are on display. The Old College Heritage and Values Project is a multi-year initiative
-            focussed on reviewing and updating these displays and their interpretation.
+            approximately 100 portraits of figures connected to the University between the seventeenth and the
+            twentieth centuries are on display. The Old College Heritage and Values Project (2023&ndash;ongoing)
+            is a multi-year initiative focussed on reviewing and updating these displays and their interpretation.
         </p>
 
-        <div class="not-prose my-8 flex justify-center">
-            <figure class="overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50" style="width: 50%; min-width: 10rem;">
-                <img src="{{ asset('collections/public-art/images/old-college/main-stairway-milenka-soskin.png') }}"
-                     alt="Isometric wireframe architectural drawing of the Old College main stairway hall, showing portrait placements along the staircase walls."
-                     loading="lazy"
-                     class="h-auto w-full" />
-                <figcaption class="px-3 py-2 text-xs text-pa-ink-700">
-                    Architectural drawing of Main Stairway by Milenka Soskin, Old College Project intern, 2025.
-                </figcaption>
-            </figure>
-        </div>
+        <figure class="not-prose mx-auto my-8 w-4/5 max-w-2xl overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
+            <img src="{{ asset('collections/public-art/images/old-college/main-stairway-chris-close.jpg') }}"
+                 alt="The main stairway at Old College with historic gold-framed portraits on blue walls and a cluster of contemporary artworks on the lower wall beside the staircase."
+                 loading="lazy"
+                 class="h-auto w-full" />
+            <figcaption class="px-3 py-2 text-xs text-pa-ink-700">
+                Artwork displays in main stairway, 2024. Photography: Chris Close.
+            </figcaption>
+        </figure>
 
         <p>
             Built at the turn of the 19th century, Old College was the University&rsquo;s main campus in its time,
@@ -48,15 +46,17 @@
             research, creative responses, and consultation.
         </p>
 
-        <figure class="not-prose mx-auto my-8 w-4/5 max-w-2xl overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-            <img src="{{ asset('collections/public-art/images/old-college/main-stairway-chris-close.jpg') }}"
-                 alt="The main stairway at Old College with historic gold-framed portraits on blue walls and a cluster of contemporary artworks on the lower wall beside the staircase."
-                 loading="lazy"
-                 class="h-auto w-full" />
-            <figcaption class="px-3 py-2 text-xs text-pa-ink-700">
-                Artwork displays in main stairway, 2024. Photography: Chris Close.
-            </figcaption>
-        </figure>
+        <div class="not-prose my-8 flex justify-center">
+            <figure class="overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50" style="width: 50%; min-width: 10rem;">
+                <img src="{{ asset('collections/public-art/images/old-college/main-stairway-milenka-soskin.png') }}"
+                     alt="Isometric wireframe architectural drawing of the Old College main stairway hall, showing portrait placements along the staircase walls."
+                     loading="lazy"
+                     class="h-auto w-full" />
+                <figcaption class="px-3 py-2 text-xs text-pa-ink-700">
+                    Architectural drawing of Main Stairway by Milenka Soskin, Old College Project intern, 2025.
+                </figcaption>
+            </figure>
+        </div>
 
         <p>
             Alongside the historic portraiture, a display of contemporary artworks from the collection was installed
@@ -68,7 +68,7 @@
             histories, race and racism, feminist thought, housing and digital technologies.
         </p>
 
-        <h2>Note on access</h2>
+        <h2>Access</h2>
         <p>
             Please note that access to the artwork displays at Old College is limited as they are situated in spaces
             frequently used for private events and staff meetings. Proposals for wider access are being developed as
