@@ -1,50 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.cockburn')
 
-@section('title', 'Accessibility Statement - University of Edinburgh Collections')
-
-@push('styles')
-<style type="text/css">
-    #content, .tab-heading, .navbar, footer {
-        display: none;
-    }
-
-    .accessibility-content {
-        margin-top: 50px;
-        margin-bottom: 50px;
-        padding: 25px;
-    }
-
-    .accessibility-content h1,
-    .accessibility-content h2,
-    .accessibility-content h3 {
-        color: #2f5496;
-        margin-bottom: 0.5cm;
-    }
-
-    .accessibility-content h1 {
-        font-size: 24pt;
-    }
-
-    .accessibility-content h2 {
-        font-size: 20pt;
-    }
-
-    .accessibility-content h3 {
-        font-size: 16pt;
-    }
-
-    .accessibility-content a:link,
-    .accessibility-content a:visited {
-        color: #0563c1;
-        text-decoration: underline;
-    }
-</style>
-@endpush
+@section('title', 'Accessibility - Cockburn Geological Museum')
 
 @section('content')
-<div class="container accessibility-content">
+<div class="content byEditor accessibility-statement">
 <h1>Accessibility
-statement for <a href="https://collections.ed.ac.uk/ ">Collections</a></h1>
+statement for the <a href="https://collections.ed.ac.uk/cockburn">Cockburn Geological Collection Website</a></h1>
 </p>
 <p>
 
@@ -54,36 +15,32 @@ statement for <a href="https://collections.ed.ac.uk/ ">Collections</a></h1>
 
 </p>
 <p>This accessibility statement applies to:</p>
-<p><a href="https://collections.ed.ac.uk/ ">https://collections.ed.ac.uk/ </a>
+<p><a href="https://collections.ed.ac.uk/cockburn">https://collections.ed.ac.uk/cockburn</a>
 </p>
 
 <p>
 </p>
 
-<!-- { {The site may not be in full control. If it isn't, the below is likely incorrect} } -->
-<p>This website is run by the Library
-and University Collections Directorate which is part of Information
-Services Group at the
-University of Edinburgh. We want as many people as possible to be
+<!-- { {The site may not be in full control. If it isn't, the below is likely incorrect and will need to be edited} } -->
+
+<p>This website is run by Library and University Collections, Information Services Group at the University of Edinburgh. We want as many people as possible to be
 able to use this application. For example, that means you should be
 able to:</p>
 <p>
 
+<!-- { {This sections varies. Check the items listed below match with the approved Statement - add/delete items as necessary } } -->
+
 </p>
 <ul>
-<li>Change most colours and contrast levels</li>
-<li>Magnify text to 200%</li>
-<li>Experience no cognitive test</li>
-<li>Experience no time limits when using the website</li>
+<li>Zoom in up to 500%.</li>
+<li>Customise most of the font styles and colours.</li>
+<li>Experience no time limits when using the site.</li>
+<li>Not encounter any flashing, scrolling or moving text.</li>
 </ul>
 <p>
 
 </p>
-<p>We’ve
-also made the website text as simple as possible to understand.
-However, some of our content is technical, and we use technical terms
-where there is no easier wording we could use without changing what
-the text means.</p>
+<p>We’ve also made the website text as simple as possible to understand.</p>
 <p>
 
 </p>
@@ -130,22 +87,25 @@ on SensusAccess</a></p>
 <p>
 
 </p>
+
+<!-- { {This section varies according to the site. Edit as appropriate} } -->
+
 <ul>
-<li>There are examples of text as images for logos</li>
-<li>Several images do not have any or informative alternative text</li>
-<li>Reflow is not operational to 400%</li>
-<li>Some new tab/windows and pop ups open without alerting the user</li>
-<li>Not all hyperlinks are formatted with meaningful hypertext</li>
-<li>There are some instances of colour contrast issues on the site</li>
-<li>Not all content can be reached by keyboard navigation alone</li>
-<li>Headings are not properly coded and some heading levels are skipped</li>
-<li>Some information is conveyed by colour only</li>
-<li>There is some moving content which cannot be paused or stopped by user</li>
-<li>No transcript or human corrected captions are present for the audio-visual content</li>
-<li>Not all videos have audio description</li>
-<li>Screen readers are not fully compatible with the site</li>
-<li>Voice recognition software is not fully compatible with the site</li>
-<li>Some portable document format (PDF) files are not fully accessible;</li>
+<li>There are some areas where the colour contrast could be improved.</li>
+<li>Reflow is not enabled to 400%.</li>
+<li>There is no skip to main content button.</li>
+<li>It is not always clear where a user has navigated to and selection displays could be made clearer.</li>
+<li>Some non-text content does not have alternative text.</li>
+<li>All links do not necessarily have meaningful hypertext.</li>
+<li>Some hyperlinks are conveyed in colour only and are not underlined.</li>
+<li>Assistive software such as voice recognition and screen readers are not fully compatible with the website.</li>
+<li>Tooltips do not appear when navigating with keyboard.</li> 
+<li>Not all content can be reached by keyboard only.</li>
+<li>An object cannot be selected and independently zoomed in the item viewer via keyboard only without affecting the entire page.</li>
+<li>Some links open in a new tab without warning.</li>
+<li>Some form elements do not have labels.</li>
+<li>Not all element role supports its ARIA attributes.</li>
+<li>Not all select elements have accessible names.</li>
 </ul>
 <p>
 
@@ -225,7 +185,7 @@ an accessibility problem on a public sector website</a></p>
 <p>
 
 </p>
-<h2>Contacting us by phone using British Sign Language Service</h2>
+<h2>Contacting us by phone using British Sign Language</h2>
 <p>
 British
 Sign Language service</p>
@@ -276,7 +236,7 @@ content listed below is non-accessible for the following reasons.</p>
 
 </h3>
 <p>The
-following items to not comply with the WCAG 2.2 AA success criteria:</p>
+following items do not comply with the WCAG 2.2 AA success criteria:</p>
 <p>
 
 </p>
@@ -284,81 +244,56 @@ following items to not comply with the WCAG 2.2 AA success criteria:</p>
 
 </p>
 
-<!-- Delete sections that do not apply to the statement -->
-<!-- Change the { {nonComDesc} } to whatever the statement is supposed to say -->
 
-	<ul><li>Not all non-text items presented to users has alternative text</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#non-text-content">1.1.1 - Non Text Content</a></p>
+<!-- { {Add sections which apply to this statement} } -->
+<!-- { {Maintain the formatting of the items, as shown below in the examples below} } -->
 
 
-    <ul><li>Some video content does not have transcript present</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#audio-only-and-video-only-prerecorded">1.2.1 - Audio-only and Video-only</a></p>
-		
-
-    <ul><li>Not all audio-visual content have human corrected captions</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#captions-prerecorded">1.2.2 - Captions (Prerecorded)</a></p>
-
-    <ul>
-	<li>Not all video content have audio descriptions</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#audio-description-or-media-alternative-prerecorded">1.2.3 - Audio Description or Media Alternative (Prerecorded)</a></p>
-
-    <ul>
-	<li>There is use of colour as the sole means of conveying information</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#use-of-color">1.4.1 - Use of Colour</a></p>
+	<ul><li>Some non-text content does not have appropriate alternative text<p></li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#non-text-content">1.1.1 - Non Text Content</a></p>
 
 
-    <ul>
-	<li>There were colour contrast issues</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#contrast-minimum">1.4.3 - Contrast (Minimum)</a></p>
+    <ul><li>Some hyperlinks are conveyed with colour only</li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#use-of-color">1.4.1 - Use of Color</a></p>
 
 
-    <ul>
-	<li>Some items are examples of text as an image and do not contain the appropriate alternative text</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#images-of-text">1.4.5 - Images of Text</a></p>
+	<ul><li>There may not be sufficient colour contrast between font and background colours, especially where the text size is small</li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#contrast-minimum">1.4.3 - Contrast (Minimum)</a></p>
 
 
-    <ul>
-	<li>Readability of the site is affected when magnified beyond 300% and reflow is not operational</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#reflow">1.4.10 - Reflow</a></p>
+	<ul><li>Reflow is not enabled to 400% </li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#reflow">1.4.10 - Reflow</a></p>
 
 
-    <ul>
-	<li>Not all tooltips are not fully accessible </li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#content-on-hover-or-focus">1.4.13 - Content on Hover or Focus</a></p>
+	<ul><li>Not all tooltips are accessible when using keyboard or assistive technology</li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#content-on-hover-or-focus">1.4.13 - Content on Hover or Focus</a></p>
 
 
-    <ul>
-	<li>Not all content can be reached by keyboard navigation alone</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#keyboard">2.1.1 - Keyboard</a></p>
+	<ul><li>Some content is not operable via keyboard only</li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#keyboard">2.1.1 - Keyboard</a></p>
 
 
-    <ul>
-	<li>There are examples of moving content which cannot be paused or start playing automatically</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#pause-stop-hide">2.2.2 - Pause, Stop, Hide</a></p>
+	<ul><li>No skip to main content button is enabled on the site</li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#bypass-blocks">2.4.1 - Bypass Blocks</a></p>
 
 
-    <ul>
-	<li>Some links do not contain meaningful hypertext to inform the user of their target location</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#link-purpose-in-context">2.4.4 - Link Purpose (In Context)</a></p>
-
-<ul>
-	<li>Some heading levels are missed, which affects screen reader software</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#headings-and-labels">2.4.6 - Headings and Labels</a></p>
-
-    <ul>
-	<li>Some hyperlinks open link in new tab / window, and some pop-ups do not alert the user this will happen</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#on-input">3.2.2 - On Input</a></p>
-
-    <ul>
-	<li>Screen readers and Voice recognition software are not fully compatible with the system</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#name-role-value">4.1.2 - Name, Role, Value</a></p>
-
-    <ul>
-	<li>Not all PDF documents are fully accessible</li></ul>
-		<p><a href="https://www.w3.org/TR/WCAG22/#name-role-value">4.1.2 - Name, Role, Value</a></p>
+	<ul><li>Some links do not contain meaningful hypertext to inform the user of their target location</li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#link-purpose-in-context">2.4.4 - Link Purpose (in Context)</a></p>
 
 
-</p>
+	<ul><li>Visual information to identify user interface components, such as keyboard focus, do not always have a sufficient contrast ratio</li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#focus-visible">2.4.7 - Focus Visible</a></p>
+
+
+	<ul><li>Some links open in a new tab without warning</li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#on-input">3.2.2 - On Input</a></p>
+
+
+	<ul><li>The website is not fully compatible with assistive software as not all elements are labelled correctly and have an accessible name e.g. some form elements do not have labels, some elements do not use supported ARIA attributes and some select elements do not have accessible names </li></ul>
+	<p><a href="https://www.w3.org/TR/WCAG22/#name-role-value">4.1.2 - Name-Role-Value</a></p>
+
+
+
 <p>We
 aim to improve our websites accessibility on a regular and continuous
 basis. See the section below ('What we're doing to improve
@@ -367,13 +302,15 @@ accessibility') on how we are improving our site accessibility.
 <p>
 
 <!-- { {The site may not be in full control. If it isn't, the below is likely incorrect} } -->
+<!-- { {Add DATE_FOR_IMPROVEMENTS = Date Statement was approved + 11 months} } -->
 </p>
 <p>We
 are working towards solving these problems and expect significant
-improvements by November 2025. The site is fully within our control.</p>
+improvements by February 2026. The site is fully within our control.</p>
 <p>
 
 <!-- { {The statement may make claims of disproportionate burden, double-check that it matches below} } -->
+
 </p>
 <h3>Disproportionate burden</h3>
 <p>
@@ -383,6 +320,7 @@ disproportionate burden to fix.</p>
 <p>
 
 <!-- { {The statement may make claims of not within scope of regulations, double-check that it matches below} } -->
+
 </p>
 <h3>Content that’s not within the scope of the accessibility regulations</h3>
 <p>
@@ -399,11 +337,12 @@ this time we believe no content is outwith the scope of the accessibility regula
 </p>
 
 <!-- { {The site may not be in full control. If it isn't, the below is likely incorrect} } -->
+<!-- { {Add DATE_FOR_IMPROVEMENTS = Date Statement was approved + 11 months} } -->
+
 <p>We
 will continue to address and make significant improvements to the
 accessibility issues highlighted. Unless specified otherwise, a
-complete solution or significant improvement will be in place by November 2025. The site is completely within our control.
-</p>
+complete solution or significant improvement will be in place by February 2026. At this time we believe the site is fully under our control.
 <p>
 
 </p>
@@ -417,16 +356,18 @@ accessibility and retest the accessibility of this website.</p>
 </p>
 <p>
 
-</p>
-<h2>Preparation of this accessibility statement</h2>
-<p><b>This statement was prepared on 20th September 2021. It was last reviewed on 2nd December 2024. The website was last tested on November 20th 2024.</b></p>
-<p>
+<!-- { {Add the required dates to this section} } -->
+<!-- { {FIRST_STATEMENT_DATE = the date of the FIRST version of this statement - check the currently published version of the site for the date to use} } -->
+<!-- { {LAST_REVIEW_DATE = the date this version of the statement was approved by Viki's team } } -->
+<!-- { {TESTING_DATE = the date this version of the statement was tested.  If it was tested over multiple days then use the last day} } -->
 
 </p>
-<p>The
-testing was carried out by the Library
-and University Collections Directorate which is part of Information
-Services Group at the University of Edinburgh using
+<h2>Preparation of this accessibility statement</h2>
+<p><b>This statement was prepared on 15th September 2024. It was last reviewed on 14th February 2025.</b></p> 
+
+<p><b>The website was last tested on 17th December 2024. The
+testing was carried out by Library
+and University Collections, Information Services Group at the University of Edinburgh</b> using
 both automated and manual methods. The site was tested on a PC,
 primarily using Microsoft Edge alongside Mozilla Firefox and Google
 Chrome.</p>
@@ -453,9 +394,11 @@ reasons of breadth and variety.</p>
 
 </p>
 <p>We
-ran automated testing using <a href="https://wave.webaim.org/">WAVE
-WebAIM</a> and AXE and
+ran automated testing using <a href="https://www.deque.com/axe/devtools/chrome-browser-extension/">AXE Devtools</a> and
 then manual testing that included:</p>
+
+<!-- { {Check the items on the list below match with the approved statement - add/delete as appropriate} } -->
+
 <ul>
 	<li>Spell
 	check functionality;</li>
@@ -474,6 +417,7 @@ then manual testing that included:</p>
 	conveyed in the colour or sound only;</li>
 	<li>Flashing,
 	moving or scrolling text;</li>
+	<li>Operability if JavaScript is disabled;</li>
 	<li>Use
 	with screen reading software (for example JAWS);</li>
 	<li>Assistive
@@ -485,17 +429,14 @@ then manual testing that included:</p>
 	limits;</li>
 	<li>Compatibility
 	with mobile accessibility functionality (Android and iOS).</li>
-	<li>Any
-	drag functionality and alternatives</li>
-	<li>Consistent
-	help function</li>
-	<li>No
-	need to re enter data already submitted</li>
-	<li>Any
-	cognitive tests 
-	</li>
 </ul>
+
+<!-- { {Delete the entire Change Log section if this is the first manual test - i.e. no fixes have been implemented} } -->
+<!-- { {The fixes should be grouped by date.  They should contain a description of the fix and the WCAG element referred to - see example below. Entries should follow the same format as below} } -->
+
 <h2>Change Log</h2>
-<p
+<p>
+</p>
+
 </div>
 @endsection
