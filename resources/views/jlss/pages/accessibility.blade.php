@@ -5,6 +5,8 @@
 @section('content')
 <div class="col-md-9 col-sm-9 col-xs-12">
 
+<div class="col-md-9 col-sm-9 col-xs-12">
+    
     <div class="content byEditor">
 
         <h1>Accessibility statement for University of Edinburgh, Scottish Jewish Archives Centre (SJAC) Digital Collection</h1>
@@ -85,17 +87,17 @@
                     <a href="https://www.w3.org/TR/WCAG21/#keyboard-accessible">2.1 - Keyboard accessible</a>
                     <p></p>
                 </li>
-                <li>Information is conveyed as an image of text rather than as text itelf so that it's not compatible with screen readers and other assistive technology
+                <li>Information is conveyed as an image of text rather than as text itelf so that it's not compatible with screen readers and other assistive technology 
                     <br>
                     <a href="https://www.w3.org/TR/WCAG21/#images-of-text">1.4.5 - Images of text</a>
                     <p></p>
                 </li>
-                <li>Most tooltips disappear as soon as the cursor moves. Also tooltips are not always present for all icons and images.
+                <li>Most tooltips disappear as soon as the cursor moves. Also tooltips are not always present for all icons and images. 
                     <br>
                     <a href="https://www.w3.org/TR/WCAG21/#content-on-hover-or-focus">1.4.13 - Content on Hover or Focus</a>
                     <p></p>
                 </li>
-                <li>There may not be sufficient colour contrast between font and background colours especially where the text size is very small.
+                <li>There may not be sufficient colour contrast between font and background colours especially where the text size is very small. 
                     <br>
                     <a href="https://www.w3.org/TR/2008/REC-WCAG20-20081211/#visual-audio-contrast-contrast">1.4.3 - Contrast (Minimum)</a>
                     <p></p>
@@ -151,7 +153,7 @@
         <div class="content-divider-inline"><p>divider</p></div>
         <div class="about-para">
             <p>We will continue to work with the developer to address these issues and deliver a solution or suitable workaround.</p>
-            <p>We will continue to monitor system accessibility and will carry out further accessibility testing as these issues are resolved. However, due to the complex nature of the information displayed it may not be possible to resolve all accessibility issues. If this is the case, we will ensure reasonable adjustments are in place to make sure no user is disadvantaged. We plan to have resolved the majority of accessibility issues by September 2020 at the latest.</p>
+            <p>We will continue to monitor system accessibility and will carry out further accessibility testing as these issues are resolved. However, due to the complex nature of the information displayed it may not be possible to resolve all accessibility issues. If this is the case, we will ensure reasonable adjustments are in place to make sure no user is disadvantaged. We plan to have resolved the majority of accessibility issues by July 2022 at the latest.</p>
         </div>
 
         <h1> Information Services and accessibility</h1>
@@ -160,10 +162,12 @@
             <p>Information Services (IS) has further information on accessibility including assistive technology, creating accessible documents, and services IS provides for disabled users.</p>
             <p><a href="https://www.ed.ac.uk/information-services/help-consultancy/accessibility">Assistive technology, creating accessible documents, and services IS provides for disabled users</a></p>
             <br>
-            <p><strong>This statement was prepared on 16 September 2019. It was last updated on 18 September 2019.</strong></p>
+            <p><strong>This statement was prepared on 15 September 2021. It was last updated on 15 September 2021.</strong></p>
         </div>
 
     </div>
+
+</div>
 
 </div>
 @endsection
