@@ -13,6 +13,8 @@ it('renders the full legacy accessibility statement for each collection', functi
     'cockburn' => ['/cockburn/accessibility', ['Cockburn Geological Collection Website', 'Preparation of this accessibility statement']],
     'pointsofarrival' => ['/pointsofarrival/accessibility', ['Points of Arrival website', 'Preparation of this accessibility statement']],
     'jlss' => ['/jlss/accessibility', ['Scottish Jewish Archives Centre (SJAC) Digital Collection', 'prepared on 15 September 2021']],
+    'alumni' => ['/alumni/accessibility', ['Historical Alumni', 'Preparation of this accessibility statement']],
+    'guardbook' => ['/guardbook/accessibility', ['Guardbook', 'Preparation of this accessibility statement']],
 ]);
 
 it('renders the sjac statement from the test-deployment branch wording', function (): void {
@@ -31,4 +33,6 @@ it('does not show the generic collections stub on collection accessibility pages
     '/openbooks/accessibility',
     '/cockburn/accessibility',
     '/pointsofarrival/accessibility',
+    '/alumni/accessibility',
+    '/guardbook/accessibility',
 ]);
