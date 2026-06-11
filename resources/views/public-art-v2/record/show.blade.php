@@ -87,7 +87,8 @@
     // under the public_art_videos key.
     $videoEmbeds = config('skylight.public_art_videos', []);
     $videoKey = strtolower(trim(strip_tags($recordTitle)));
-    $videoId = $videoEmbeds[$videoKey] ?? null;
+    $videoEmbed = $videoEmbeds[$videoKey] ?? null;
+    $videoId = is_array($videoEmbed) ? ($videoEmbed['entry'] ?? null) : null;
 
     // Per the client's 2026 record-page tweaks, the artwork detail page should
     // only surface Artist, Dates, Media (Format), Dimensions (Format Extent)
@@ -229,16 +230,18 @@
              wid=1_65sjprmo widget) rather than media.ed.ac.uk/embed/secure/iframe
              — the Media Hopper proxy was being gated for some visitors. Same
              underlying asset, public access path. --}}
-        @if($videoId)
+        @if($videoId && is_array($videoEmbed))
             <section class="mt-10" aria-labelledby="video-heading">
                 <h2 id="video-heading" class="sr-only">Video about {{ $recordTitle }}</h2>
                 <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-                    <iframe src="https://cdnapisec.kaltura.com/p/2010292/sp/201029200/embedIframeJs/uiconf_id/40887822/partner_id/2010292?iframeembed=true&playerId=kaltura_player&entry_id={{ $videoId }}&widget_id=0_j4c8cidb"
-                            title="Video about {{ $recordTitle }} (Media Hopper)"
-                            allow="autoplay *; fullscreen *; encrypted-media *"
-                            loading="lazy"
-                            frameborder="0"
-                            class="h-full w-full"></iframe>
+                    @include('public-art-v2.partials.kaltura-video-iframe', [
+                        'entryId' => $videoEmbed['entry'],
+                        'widgetId' => $videoEmbed['widget'],
+                        'widgetParam' => $videoEmbed['widget_param'] ?? 'widget_id',
+                        'uiConfId' => $videoEmbed['uiconf'] ?? '40887822',
+                        'useFlashvars' => $videoEmbed['use_flashvars'] ?? false,
+                        'title' => 'Video about '.$recordTitle.' (Media Hopper)',
+                    ])
                 </div>
                 <p class="mt-2 text-sm text-pa-ink-700">
                     Captions are available within the video player. The

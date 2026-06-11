@@ -109,12 +109,14 @@
              The underlying video entry is still 1_lh3jbplo — same asset, different
              access path. --}}
         <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
-            <iframe src="https://cdnapisec.kaltura.com/p/2010292/sp/201029200/embedIframeJs/uiconf_id/32599141/partner_id/2010292?iframeembed=true&playerId=kaltura_player&entry_id=1_lh3jbplo&flashvars[streamerType]=auto&flashvars[localizationCode]=en&flashvars[sideBarContainer.plugin]=true&flashvars[sideBarContainer.position]=left&flashvars[sideBarContainer.clickToClose]=true&flashvars[chapters.plugin]=true&flashvars[chapters.layout]=vertical&flashvars[chapters.thumbnailRotator]=false&flashvars[streamSelector.plugin]=true&flashvars[EmbedPlayer.SpinnerTarget]=videoHolder&flashvars[dualScreen.plugin]=true&flashvars[Kaltura.addCrossoriginToIframe]=true&wid=1_65sjprmo"
-                    title="Video about Ideas by Katie Paterson at the King's Buildings (Media Hopper)"
-                    allow="autoplay *; fullscreen *; encrypted-media *"
-                    loading="lazy"
-                    frameborder="0"
-                    class="h-full w-full"></iframe>
+            @include('public-art-v2.partials.kaltura-video-iframe', [
+                'entryId' => '1_lh3jbplo',
+                'widgetId' => '1_65sjprmo',
+                'widgetParam' => 'wid',
+                'uiConfId' => '32599141',
+                'useFlashvars' => true,
+                'title' => "Video about Ideas by Katie Paterson at the King's Buildings (Media Hopper)",
+            ])
         </div>
     </div>
 
