@@ -21,7 +21,7 @@ statement for <a href="https://collections.ed.ac.uk/guardbook">Guardbook</a></h1
 <p>
 </p>
 
-<!-- {{The site may not be in full control. If it isn't, the below is likely incorrect}} -->
+<!-- { {The site may not be in full control. If it isn't, the below is likely incorrect} } -->
 
 <p>This website is run by Library and University Collections, Information Services Group at the University of Edinburgh.
 We want as many people as possible to be
@@ -118,7 +118,7 @@ you need information on this website in a different format, including
 accessible PDF, large print, audio recording or braille:
 </p>
 
-<!-- {{You may need to change the contact details if the site is not within the control of L&UC}} -->
+<!-- { {You may need to change the contact details if the site is not within the control of L&UC} } -->
 
 
 <ul>
@@ -142,7 +142,7 @@ meeting accessibility requirements, please contact:&nbsp;
 
 </p>
 
-<!-- {{You may need to change the contact details if the site is not within the control of L&UC}} -->
+<!-- { {You may need to change the contact details if the site is not within the control of L&UC} } -->
 
 <ul>
 	<li>Email: <a href="mailto:Information.systems@ed.ac.uk">Information.systems@ed.ac.uk</a></li>
@@ -244,7 +244,7 @@ following items to not comply with the WCAG 2.2 AA success criteria:</p>
 </p>
 
 <!-- Delete sections that do not apply to the statement -->
-<!-- Change the {{nonComDesc}} to whatever the statement is supposed to say -->
+<!-- Change the { {nonComDesc} } to whatever the statement is supposed to say -->
 
     <ul>
 	<li>Not all non-text items have appropriate alternative text </li></ul>
@@ -317,14 +317,14 @@ accessibility') on how we are improving our site accessibility.
 </p>
 <p>
 
-<!-- {{The site may not be in full control. If it isn't, the below is likely incorrect}} -->
+<!-- { {The site may not be in full control. If it isn't, the below is likely incorrect} } -->
 </p>
 <p>We
 are working towards solving these problems and expect significant
 improvements by November 2025. The site is fully within our control.</p>
 <p>
 
-<!-- {{The statement may make claims of disproportionate burden, double-check that it matches below}} -->
+<!-- { {The statement may make claims of disproportionate burden, double-check that it matches below} } -->
 </p>
 <h3>Disproportionate burden</h3>
 <p>
@@ -333,7 +333,7 @@ are not currently claiming that any accessibility problems would be a
 disproportionate burden to fix.</p>
 <p>
 
-<!-- {{The statement may make claims of not within scope of regulations, double-check that it matches below}} -->
+<!-- { {The statement may make claims of not within scope of regulations, double-check that it matches below} } -->
 </p>
 <h3>Content that’s not within the scope of the accessibility regulations</h3>
 <p>
@@ -349,7 +349,7 @@ this time we believe no content is outwith the scope of the accessibility regula
 
 </p>
 
-<!-- {{The site may not be in full control. If it isn't, the below is likely incorrect}} -->
+<!-- { {The site may not be in full control. If it isn't, the below is likely incorrect} } -->
 <p>We
 will continue to address and make significant improvements to the
 accessibility issues highlighted. Unless specified otherwise, a
