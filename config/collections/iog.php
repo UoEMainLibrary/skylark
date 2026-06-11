@@ -74,9 +74,13 @@ return array_merge($dspaceDefaults, [
     'filters' => [
         'Author' => 'author_filter',
         'Subject' => 'subject_filter',
+        'Year' => 'dateIssued.year',
     ],
 
     'date_filters' => [],
+
+    // 16 publication years (1976, 1978–1992); default facet_limit is 10.
+    'facet_limit' => 20,
 
     'sort_fields' => [
         'Author' => 'dc.contributor.author_sort',

@@ -2,7 +2,17 @@
 
 use App\Contracts\RepositoryInterface;
 use App\Services\DSpaceService;
+use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+
+/**
+ * @return array<string, mixed>
+ */
+function iogConfig(): array
+{
+    return require config_path('collections/iog.php');
+}
 
 it('registers expected iog routes', function (string $name): void {
     expect(Route::has($name))->toBeTrue("route [{$name}] is missing");
@@ -213,4 +223,53 @@ it('registers a sidebar facets composer for the iog layout', function (): void {
     $this->get('/iog')
         ->assertSuccessful()
         ->assertSee('col-sidebar', false);
+});
+
+it('configures a Year facet on dateIssued.year with enough facet_limit for all years', function (): void {
+    expect(iogConfig()['filters'])
+        ->toHaveKey('Year', 'dateIssued.year')
+        ->and(iogConfig()['facet_limit'])->toBeGreaterThanOrEqual(16);
+});
+
+it('renders clickable Year facet links in the iog sidebar', function (): void {
+    $html = view('iog.partials.sidebar-facets', [
+        'facets' => [[
+            'name' => 'Year',
+            'active_terms' => [],
+            'inactive_terms' => [[
+                'name' => '1980',
+                'display_name' => '1980',
+                'count' => 30,
+            ]],
+            'queries' => [],
+        ]],
+        'base_search' => '/iog/search/*:*',
+        'delimiter' => ':',
+        'base_parameters' => '',
+        'collectionUrl' => static fn (string $path = ''): string => '/iog/'.ltrim($path, '/'),
+    ])->render();
+
+    expect($html)
+        ->toContain('>Year<')
+        ->toContain('1980 (30)')
+        ->toContain('/iog/search/*:*/Year:%221980%22');
+});
+
+it('forwards Year facet filter URL segments to Solr as fq parameters', function (): void {
+    Http::fake([
+        '*' => Http::response([
+            'response' => ['numFound' => 30, 'docs' => []],
+            'facet_counts' => ['facet_fields' => []],
+            'highlighting' => [],
+        ], 200),
+    ]);
+
+    $this->get('/iog/search/*:*/Year:%221980%22')
+        ->assertSuccessful();
+
+    Http::assertSent(function (Request $request): bool {
+        $url = (string) $request->url();
+
+        return str_contains($url, 'fq=dateIssued.year%3A%221980%22');
+    });
 });
