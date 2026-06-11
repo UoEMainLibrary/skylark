@@ -665,9 +665,10 @@ it('uses the public Kaltura CDN url (not media.ed.ac.uk/embed/secure) for per-re
 
     expect($html)
         ->toContain('cdnapisec.kaltura.com')
-        ->toContain('uiconf_id/40887822')
+        ->toContain('uiconf_id/32599141')
         ->toContain('entry_id=1_lh3jbplo')
-        ->toContain('widget_id=0_j4c8cidb')
+        ->toContain('wid=1_65sjprmo')
+        ->not->toContain('widget_id=0_j4c8cidb')
         // The legacy gated proxy must not slip back in.
         ->not->toContain('media.ed.ac.uk/embed/secure/iframe');
 });
