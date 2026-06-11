@@ -111,6 +111,10 @@
         <div class="aspect-video w-full overflow-hidden rounded border border-pa-ink-100 bg-pa-ink-50">
             @include('public-art-v2.partials.kaltura-video-iframe', [
                 'entryId' => '1_lh3jbplo',
+                'widgetId' => '1_65sjprmo',
+                'widgetParam' => 'wid',
+                'uiConfId' => '32599141',
+                'useFlashvars' => true,
                 'title' => "Video about Ideas by Katie Paterson at the King's Buildings (Media Hopper)",
             ])
         </div>
