@@ -14,20 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 /**
- * Stub every outbound Solr / ArchivesSpace HTTP call with an empty response so
- * the test suite never depends on the VPN-only ArchivesSpace cluster.
- */
-function fakeArchivesSpaceSolr(): void
-{
-    Http::fake([
-        '*' => Http::response([
-            'response' => ['numFound' => 0, 'docs' => []],
-            'facet_counts' => ['facet_fields' => []],
-        ], 200),
-    ]);
-}
-
-/**
  * Read the per-collection config file directly. This is independent of the
  * `CollectionMiddleware`, which only merges the config when an HTTP request
  * is dispatched against the collection's URL prefix.

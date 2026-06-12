@@ -6,6 +6,7 @@ use App\Http\Controllers\Collections\Cockburn\PageController as CockburnControll
 use App\Http\Controllers\Collections\Coimbra\PageController as CoimbraController;
 use App\Http\Controllers\Collections\CoimbraColls\PageController as CoimbraCollsController;
 use App\Http\Controllers\Collections\Eerc\PageController as EercController;
+use App\Http\Controllers\Collections\Fairbairn\PageController as FairbairnController;
 use App\Http\Controllers\Collections\Geddes\PageController as GeddesController;
 use App\Http\Controllers\Collections\Guardbook\PageController as GuardbookController;
 use App\Http\Controllers\Collections\Jlss\PageController as JlssController;
@@ -323,6 +324,22 @@ CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
         Route::get('/audio', [TowardsdollyController::class, 'audio'])->name('audio');
         Route::get('/browse/{facet}', [TowardsdollyController::class, 'browse'])
             ->where('facet', 'Subject|Person')
+            ->name('browse');
+    },
+]);
+
+CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
+    'prefix' => 'fairbairn',
+    'route_name' => 'fairbairn',
+    'domain_hosts' => array_keys(array_filter(
+        config('collections.domains', []),
+        static fn (string $collection): bool => $collection === 'fairbairn',
+    )),
+    'home' => [FairbairnController::class, 'home'],
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/browse/{facet}', [FairbairnController::class, 'browse'])
+            ->where('facet', 'Subject|Agent')
             ->name('browse');
     },
 ]);
