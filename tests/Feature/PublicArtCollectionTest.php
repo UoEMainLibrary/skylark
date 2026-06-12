@@ -654,7 +654,15 @@ it('uses the public Kaltura CDN url (not media.ed.ac.uk/embed/secure) for per-re
             'Artist' => 'dc.contributor.authorfull.en',
         ],
         // Mirror the config/collections/public-art.php map for this assertion.
-        'skylight.public_art_videos' => ['ideas' => '1_lh3jbplo'],
+        'skylight.public_art_videos' => [
+            'ideas' => [
+                'entry' => '1_lh3jbplo',
+                'widget' => '1_65sjprmo',
+                'widget_param' => 'wid',
+                'uiconf' => '32599141',
+                'use_flashvars' => true,
+            ],
+        ],
     ]);
 
     $html = view('public-art-v2.record.show', [
@@ -665,11 +673,43 @@ it('uses the public Kaltura CDN url (not media.ed.ac.uk/embed/secure) for per-re
 
     expect($html)
         ->toContain('cdnapisec.kaltura.com')
-        ->toContain('uiconf_id/40887822')
+        ->toContain('uiconf_id/32599141')
         ->toContain('entry_id=1_lh3jbplo')
-        ->toContain('widget_id=0_j4c8cidb')
+        ->toContain('wid=1_65sjprmo')
+        ->not->toContain('widget_id=0_j4c8cidb')
         // The legacy gated proxy must not slip back in.
         ->not->toContain('media.ed.ac.uk/embed/secure/iframe');
+});
+
+it('uses the entry-specific Kaltura widget id for artist Public Art Shorts videos', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+        ],
+        'skylight.public_art_videos' => [
+            'the next big thing...is a series of little things' => [
+                'entry' => '1_rs2vb5l9',
+                'widget' => '1_4h6g4272',
+            ],
+        ],
+    ]);
+
+    $html = view('public-art-v2.record.show', [
+        'record' => ['dctitleen' => ['The Next Big Thing...is a Series of Little Things']],
+        'recordTitle' => 'The Next Big Thing...is a Series of Little Things',
+        'recordDisplay' => ['Title'],
+    ])->render();
+
+    expect($html)
+        ->toContain('entry_id=1_rs2vb5l9')
+        ->toContain('widget_id=1_4h6g4272')
+        ->toContain('uiconf_id/40887822')
+        ->not->toContain('wid=1_65sjprmo');
 });
 
 it('renders the per-record video beneath the description and above the Back to all artworks button', function () {
@@ -683,7 +723,12 @@ it('renders the per-record video beneath the description and above the Back to a
             'Artist' => 'dc.contributor.authorfull.en',
             'Description' => 'dc.description.en',
         ],
-        'skylight.public_art_videos' => ['the basic material is not the word but the letter' => '0_tmmkjuz4'],
+        'skylight.public_art_videos' => [
+            'the basic material is not the word but the letter' => [
+                'entry' => '0_tmmkjuz4',
+                'widget' => '0_j4c8cidb',
+            ],
+        ],
     ]);
 
     $html = view('public-art-v2.record.show', [
@@ -697,11 +742,13 @@ it('renders the per-record video beneath the description and above the Back to a
 
     $descriptionPos = strpos($html, 'About the work.');
     $videoPos = strpos($html, 'entry_id=0_tmmkjuz4');
+    $widgetPos = strpos($html, 'widget_id=0_j4c8cidb');
     $backBtnPos = strpos($html, 'Back to all artworks');
 
     expect($descriptionPos)->toBeInt()
         ->and($videoPos)->toBeInt()->toBeGreaterThan($descriptionPos)
-        ->and($backBtnPos)->toBeInt()->toBeGreaterThan($videoPos);
+        ->and($widgetPos)->toBeInt()->toBeGreaterThan($videoPos)
+        ->and($backBtnPos)->toBeInt()->toBeGreaterThan($widgetPos);
 });
 
 it('applies the Format → Media and Format Extent → Dimensions rename', function () {
@@ -867,11 +914,29 @@ it('maps Public Art record videos by lower-cased artwork title in collection con
     expect($config)->toHaveKey('public_art_videos');
 
     expect($config['public_art_videos'])->toBe([
-        'ideas' => '1_lh3jbplo',
-        'the next big thing...is a series of little things' => '1_rs2vb5l9',
-        'the basic material is not the word but the letter' => '0_tmmkjuz4',
-        'untitled (rhino head)' => '1_gzno6iwu',
-        'bite / haynes nano stage' => '1_1elsd561',
+        'ideas' => [
+            'entry' => '1_lh3jbplo',
+            'widget' => '1_65sjprmo',
+            'widget_param' => 'wid',
+            'uiconf' => '32599141',
+            'use_flashvars' => true,
+        ],
+        'the next big thing...is a series of little things' => [
+            'entry' => '1_rs2vb5l9',
+            'widget' => '1_4h6g4272',
+        ],
+        'the basic material is not the word but the letter' => [
+            'entry' => '0_tmmkjuz4',
+            'widget' => '0_j4c8cidb',
+        ],
+        'untitled (rhino head)' => [
+            'entry' => '1_gzno6iwu',
+            'widget' => '1_si1vukuv',
+        ],
+        'bite / haynes nano stage' => [
+            'entry' => '1_1elsd561',
+            'widget' => '1_v8wtxhzh',
+        ],
     ]);
 
     // Keys are normalised the same way the record blade normalises lookup
