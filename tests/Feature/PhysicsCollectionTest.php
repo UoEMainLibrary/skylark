@@ -198,17 +198,26 @@ it('falls back to facets in the sidebar when no related items are passed', funct
     expect($html)->not->toContain('<h4>Related Items</h4>');
 });
 
-it('renders the physics accessibility statement under the physics layout', function (): void {
+it('renders the physics accessibility statement as a standalone Viki-template page', function (): void {
     $html = view('physics.pages.accessibility')->render();
 
     expect($html)
-        ->toContain('Accessibility')
-        ->and($html)->toContain('School of Physics and Astronomy Image Archive (SOPA)')
+        ->toContain('School of Physics and Astronomy Image Archive (SOPA)')
         ->and($html)->toContain('https://www.w3.org/TR/WCAG22/#audio-description-prerecorded')
-        // Confirm the broken legacy Outlook-cache link did not slip through.
+        ->and($html)->toContain('Change Log')
+        ->and($html)->toContain('Contacting us by phone using British Sign Language')
+        // Standalone Viki template: standard heading colour and link colour.
+        ->and($html)->toContain('color: #2f5496')
+        ->and($html)->toContain('#0563c1')
+        // Confirm we did not leave Blade directives or Word-export remnants in the output.
+        ->and($html)->not->toContain('@verbatim')
+        ->and($html)->not->toContain('Word-exported HTML')
         ->and($html)->not->toContain('vgalt/AppData/Local/Microsoft')
-        // Confirm we did not nest <html>/<head>/<body> tags inside the layout body.
-        ->and($html)->not->toContain('<body lang=EN-US');
+        ->and($html)->not->toContain('font-family:"Arial;line-height:1.1;"')
+        ->and($html)->not->toContain('<body lang=EN-US')
+        // Standalone page must not pull in the physics collection layout/nav.
+        ->and($html)->not->toContain('/assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js')
+        ->and($html)->not->toContain('/collections/physics/');
 });
 
 it('loads the jcarousel plugin so the shared script.js init does not throw', function (): void {

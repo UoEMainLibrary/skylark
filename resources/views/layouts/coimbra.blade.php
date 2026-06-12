@@ -136,7 +136,7 @@
 
                     <li><a href="https://www.ed.ac.uk/about/website/privacy">Privacy &amp; cookies</a></li>
 
-                    <li><a title="Website Accessibility Link" target="_blank" href="./accessibility">Accessibility (Opens in a new tab)</a></li>
+                    <li><a title="Website Accessibility Link" target="_blank" href="{{ url('/coimbra/accessibility') }}">Accessibility (Opens in a new tab)</a></li>
 
                     <li><a href="https://www.ed.ac.uk/about/website/freedom-information">Freedom of Information Publication Scheme</a></li>
 
