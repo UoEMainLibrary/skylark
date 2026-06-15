@@ -112,5 +112,6 @@ it('serves the pointsofarrival accessibility route with collection navigation', 
         ->toContain('Points of Arrival website')
         ->toContain('2rd March 2023')
         ->toContain('poa-sidebar')
-        ->toContain('poa-img-banner');
+        ->toContain('poa-img-banner')
+        ->toContain('stills-banner.png');
 });
