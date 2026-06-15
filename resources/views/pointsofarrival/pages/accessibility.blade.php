@@ -12,7 +12,6 @@
     }
 
     body.poa-accessibility .container-fluid,
-    body.poa-accessibility #poa-theme,
     body.poa-accessibility #poa-theme .col-xs-12 {
         background: #fff;
     }
@@ -22,11 +21,11 @@
         right: 0;
         width: auto;
         margin-left: 0;
-        min-height: calc(100vh - 120px);
+        background: transparent;
     }
 
     body.poa-accessibility .content.accessibility-statement {
-        background: transparent;
+        background: #fff;
     }
 
     .accessibility-statement,
