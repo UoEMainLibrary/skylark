@@ -1,9 +1,8 @@
-@extends('layouts.pointsofarrival')
+@extends('layouts.accessibility-statement')
 
-@section('title', 'Accessibility | Points Of Arrival')
+@section('title', 'Accessibility Statement - Points of Arrival')
 
 @section('content')
-<div class="content byEditor accessibility-statement">
 <h1>Accessibility statement for <a href="https://pointsofarrival.is.ed.ac.uk/">Points of Arrival website</a></h1>
     <p><strong>Website accessibility statement inline with Public Sector Body (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018</strong></p>
     <p>This accessibility statement applies to  <a href="https://pointsofarrival.is.ed.ac.uk/">https://pointsofarrival.is.ed.ac.uk/</a></p>
@@ -164,7 +163,7 @@
         </li>
         <li>Screen readers are not able to identify some parts of the page
             <ul>
-                <li><a href="https://www.w3.org/TR/WCAG21/#name-role-valuet">4.1.2 - Name, Role, Value</a></li>
+                <li><a href="https://www.w3.org/TR/WCAG21/#name-role-value">4.1.2 - Name, Role, Value</a></li>
             </ul>
         </li>
     </ul>
@@ -178,7 +177,7 @@
     <p>At this time, we believe all items are within our control. We will continue to address the accessibility issues highlighted to deliver a solution or suitable workaround. We are looking to move this site to a new content management system within the next 12 months and will be working to ensure this resolves the accessibility issues. Unless specified otherwise, a complete solution or significant improvement will be in place for those items within our control by March 2024.</p>
     <p>While we are in the process of resolving these accessibility issues, or where we are unable, we will ensure reasonable adjustments are in place to make sure no user is disadvantaged. As changes are made, we will continue to review accessibility and retest the accessibility of this website.</p>
 
-    <h2>Preparation of this accessibility statement</h3>
+    <h2>Preparation of this accessibility statement</h2>
     <p><strong>This statement was first prepared on 2rd March 2023 .It was last reviewed on 3rd March 2023.</strong></p>
     <p>This website was first tested on 3rd March 2023. . Testing was carried out by The University of Edinburgh Library and University Collections Digital Library Development team using the automated <a href="https://wave.webaim.org/">Wave WEBAIM</a> and <a href="https://littleforest.co.uk/">Little Forest</a> testing tool.</p>
     <p>This was primarily using the Google Chrome (100.0.4896.127), Mozilla Firefox (91.8.0esr), Internet Explorer (11.0) and Microsoft Edge (100.0.1185.39) browsers for comparative purposes.</p>
@@ -205,6 +204,4 @@
 
     <h2>Change Log</h2>
     <p>Since our first evaluation and statement, which was based on automated testing, we have undertaken extensive manual testing. This includes utilising a range of assistive technology to ensure we have a clear picture of the accessibility issues and how best to resolve them.</p>
-
-</div>
 @endsection
