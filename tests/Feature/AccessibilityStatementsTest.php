@@ -12,16 +12,22 @@ it('renders the full legacy accessibility statement for each collection', functi
     'openbooks' => ['/openbooks/accessibility', ['Open Books website', 'Preparation of this accessibility statement']],
     'cockburn' => ['/cockburn/accessibility', ['Cockburn Geological Collection Website', 'Preparation of this accessibility statement']],
     'pointsofarrival' => ['/pointsofarrival/accessibility', ['Points of Arrival website', 'Preparation of this accessibility statement']],
-    'jlss' => ['/jlss/accessibility', ['Scottish Jewish Archives Centre (SJAC) Digital Collection', 'prepared on 15 September 2021']],
+    'jlss' => ['/jlss/accessibility', ['Scottish Jewish Archives Centre (SJAC) Digital Collection', 'Preparation of this accessibility statement', '14 March 2024', 'WCAG 2.2']],
     'alumni' => ['/alumni/accessibility', ['Historical Alumni', 'Preparation of this accessibility statement']],
     'guardbook' => ['/guardbook/accessibility', ['Guardbook', 'Preparation of this accessibility statement']],
 ]);
 
-it('renders the sjac statement from the test-deployment branch wording', function (): void {
+it('renders the sjac accessibility statement from the March 2024 document', function (): void {
     $this->get('/jlss/accessibility')
         ->assertSuccessful()
-        ->assertSee('July 2022 at the latest', false)
-        ->assertSee('prepared on 15 September 2021', false);
+        ->assertSee('last reviewed on 14 March 2024', false)
+        ->assertSee('Web Content Accessibility Guidelines (WCAG) 2.2 AA standard', false)
+        ->assertSee('February 2025', false)
+        ->assertSee('info@sjac.org.uk', false)
+        ->assertSee('Magnify content to 500%', false)
+        ->assertDontSee('July 2022 at the latest', false)
+        ->assertDontSee('Security of and Access to Your Personal Data', false)
+        ->assertDontSee('Web Content Accessibility Guidelines version 2.1', false);
 });
 
 it('does not show the generic collections stub on collection accessibility pages', function (string $path): void {
