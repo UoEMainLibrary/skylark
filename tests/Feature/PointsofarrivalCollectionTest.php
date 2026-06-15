@@ -78,7 +78,14 @@ it('redirects about to introduction', function (): void {
         ->assertRedirect('/pointsofarrival/introduction');
 });
 
-it('renders the pointsofarrival accessibility statement as a standalone page', function (): void {
+it('includes an accessibility statement link in the left hand navigation', function (): void {
+    $this->get('/pointsofarrival')
+        ->assertSuccessful()
+        ->assertSee('href="./accessibility"', false)
+        ->assertSee('Accessibility Statement', false);
+});
+
+it('renders the pointsofarrival accessibility statement within the collection layout', function (): void {
     $html = view('pointsofarrival.pages.accessibility')->render();
 
     expect($html)
@@ -87,13 +94,12 @@ it('renders the pointsofarrival accessibility statement as a standalone page', f
         ->toContain('Change Log')
         ->toContain('color: #2f5496')
         ->toContain('#0563c1')
-        ->not->toContain('poa-img-banner')
-        ->not->toContain('navbar-fixed-top')
-        ->not->toContain('<html>')
+        ->toContain('poa-sidebar')
+        ->toContain('Accessibility Statement')
         ->not->toContain('name-role-valuet');
 });
 
-it('serves the pointsofarrival accessibility route without collection chrome', function (): void {
+it('serves the pointsofarrival accessibility route with collection navigation', function (): void {
     $response = $this->get('/pointsofarrival/accessibility');
 
     $response->assertSuccessful();
@@ -103,7 +109,6 @@ it('serves the pointsofarrival accessibility route without collection chrome', f
     expect($html)
         ->toContain('Points of Arrival website')
         ->toContain('2rd March 2023')
-        ->not->toContain('poa-img-banner')
-        ->not->toContain('Scottish Jewish Archives Centre')
-        ->not->toContain('video-stills/stills-banner.png');
+        ->toContain('poa-sidebar')
+        ->toContain('poa-img-banner');
 });

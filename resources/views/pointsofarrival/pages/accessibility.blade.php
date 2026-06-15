@@ -1,8 +1,66 @@
-@extends('layouts.accessibility-statement')
+@extends('layouts.pointsofarrival')
 
-@section('title', 'Accessibility Statement - Points of Arrival')
+@section('title', 'Accessibility | Points Of Arrival')
+
+@push('styles')
+<style>
+    .accessibility-statement,
+    .accessibility-statement p,
+    .accessibility-statement ul,
+    .accessibility-statement ol,
+    .accessibility-statement li {
+        font-family: Arial, sans-serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        text-align: left;
+    }
+
+    .accessibility-statement h1,
+    .accessibility-statement h2,
+    .accessibility-statement h3,
+    .accessibility-statement h4 {
+        color: #2f5496;
+        font-family: Arial, sans-serif;
+        margin-top: 0.75cm;
+        margin-bottom: 0.5cm;
+    }
+
+    .accessibility-statement h1 { font-size: 24pt; }
+    .accessibility-statement h2 { font-size: 20pt; }
+    .accessibility-statement h3 { font-size: 16pt; }
+    .accessibility-statement h4 { font-size: 14pt; }
+
+    .accessibility-statement a:link,
+    .accessibility-statement a:visited {
+        color: #0563c1;
+        text-decoration: underline;
+    }
+
+    .accessibility-statement ul {
+        list-style-type: disc;
+        margin-left: 1.5em;
+        padding-left: 0.5em;
+    }
+
+    .accessibility-statement ul ul { list-style-type: circle; }
+    .accessibility-statement ul ul ul { list-style-type: square; }
+
+    .accessibility-statement ol {
+        list-style-type: decimal;
+        margin-left: 1.5em;
+        padding-left: 0.5em;
+    }
+
+    .accessibility-statement li { margin-bottom: 0.1cm; }
+</style>
+@endpush
 
 @section('content')
+<div class="container-fluid">
+    @include('pointsofarrival.partials.poa_sidebar')
+
+    <div class="col-sm-12 col-xs-12 col-md-8 col-lg-8">
+        <div class="content byEditor accessibility-statement">
 <h1>Accessibility statement for <a href="https://pointsofarrival.is.ed.ac.uk/">Points of Arrival website</a></h1>
     <p><strong>Website accessibility statement inline with Public Sector Body (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018</strong></p>
     <p>This accessibility statement applies to  <a href="https://pointsofarrival.is.ed.ac.uk/">https://pointsofarrival.is.ed.ac.uk/</a></p>
@@ -204,4 +262,7 @@
 
     <h2>Change Log</h2>
     <p>Since our first evaluation and statement, which was based on automated testing, we have undertaken extensive manual testing. This includes utilising a range of assistive technology to ensure we have a clear picture of the accessibility issues and how best to resolve them.</p>
+        </div>
+    </div>
+</div>
 @endsection
