@@ -2,8 +2,98 @@
 
 @section('title', 'Accessibility | Points Of Arrival')
 
+@section('body_class', 'poa-accessibility')
+
+@push('styles')
+<style>
+    html:has(body.poa-accessibility),
+    body.poa-accessibility {
+        background: #fff !important;
+    }
+
+    body.poa-accessibility .container-fluid,
+    body.poa-accessibility #poa-theme .col-xs-12 {
+        background: #fff;
+    }
+
+    body.poa-accessibility #poa-theme {
+        left: 265px;
+        right: 0;
+        width: auto;
+        margin-left: 0;
+        background: transparent;
+    }
+
+    body.poa-accessibility .content.accessibility-statement {
+        background: #fff;
+    }
+
+    .accessibility-statement,
+    .accessibility-statement p,
+    .accessibility-statement ul,
+    .accessibility-statement ol,
+    .accessibility-statement li {
+        font-family: Arial, sans-serif !important;
+        font-size: 12pt;
+        line-height: 1.5;
+        text-align: left;
+        color: #000 !important;
+    }
+
+    .accessibility-statement h1,
+    .accessibility-statement h2,
+    .accessibility-statement h3,
+    .accessibility-statement h4 {
+        color: #2f5496 !important;
+        font-family: Arial, sans-serif !important;
+        margin-top: 0.75cm;
+        margin-bottom: 0.5cm;
+    }
+
+    .accessibility-statement h1 { font-size: 24pt; }
+    .accessibility-statement h2 { font-size: 20pt; }
+    .accessibility-statement h3 { font-size: 16pt; }
+    .accessibility-statement h4 { font-size: 14pt; }
+
+    .accessibility-statement a:link,
+    .accessibility-statement a:visited {
+        color: #0563c1 !important;
+        text-decoration: underline;
+        display: inline;
+    }
+
+    .accessibility-statement a:hover,
+    .accessibility-statement a:focus {
+        color: #0563c1 !important;
+        box-shadow: none !important;
+    }
+
+    .accessibility-statement ul {
+        list-style-type: disc;
+        margin-left: 1.5em;
+        padding-left: 0.5em;
+    }
+
+    .accessibility-statement ul ul { list-style-type: circle; }
+    .accessibility-statement ul ul ul { list-style-type: square; }
+
+    .accessibility-statement ol {
+        list-style-type: decimal;
+        margin-left: 1.5em;
+        padding-left: 0.5em;
+    }
+
+    .accessibility-statement li { margin-bottom: 0.1cm; }
+</style>
+@endpush
+
 @section('content')
-<div class="content byEditor accessibility-statement">
+<div class="container-fluid">
+    @include('pointsofarrival.partials.poa_sidebar')
+
+    <div id="poa-theme">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="content byEditor accessibility-statement">
 <h1>Accessibility statement for <a href="https://pointsofarrival.is.ed.ac.uk/">Points of Arrival website</a></h1>
     <p><strong>Website accessibility statement inline with Public Sector Body (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018</strong></p>
     <p>This accessibility statement applies to  <a href="https://pointsofarrival.is.ed.ac.uk/">https://pointsofarrival.is.ed.ac.uk/</a></p>
@@ -164,7 +254,7 @@
         </li>
         <li>Screen readers are not able to identify some parts of the page
             <ul>
-                <li><a href="https://www.w3.org/TR/WCAG21/#name-role-valuet">4.1.2 - Name, Role, Value</a></li>
+                <li><a href="https://www.w3.org/TR/WCAG21/#name-role-value">4.1.2 - Name, Role, Value</a></li>
             </ul>
         </li>
     </ul>
@@ -178,7 +268,7 @@
     <p>At this time, we believe all items are within our control. We will continue to address the accessibility issues highlighted to deliver a solution or suitable workaround. We are looking to move this site to a new content management system within the next 12 months and will be working to ensure this resolves the accessibility issues. Unless specified otherwise, a complete solution or significant improvement will be in place for those items within our control by March 2024.</p>
     <p>While we are in the process of resolving these accessibility issues, or where we are unable, we will ensure reasonable adjustments are in place to make sure no user is disadvantaged. As changes are made, we will continue to review accessibility and retest the accessibility of this website.</p>
 
-    <h2>Preparation of this accessibility statement</h3>
+    <h2>Preparation of this accessibility statement</h2>
     <p><strong>This statement was first prepared on 2rd March 2023 .It was last reviewed on 3rd March 2023.</strong></p>
     <p>This website was first tested on 3rd March 2023. . Testing was carried out by The University of Edinburgh Library and University Collections Digital Library Development team using the automated <a href="https://wave.webaim.org/">Wave WEBAIM</a> and <a href="https://littleforest.co.uk/">Little Forest</a> testing tool.</p>
     <p>This was primarily using the Google Chrome (100.0.4896.127), Mozilla Firefox (91.8.0esr), Internet Explorer (11.0) and Microsoft Edge (100.0.1185.39) browsers for comparative purposes.</p>
@@ -205,6 +295,8 @@
 
     <h2>Change Log</h2>
     <p>Since our first evaluation and statement, which was based on automated testing, we have undertaken extensive manual testing. This includes utilising a range of assistive technology to ensure we have a clear picture of the accessibility issues and how best to resolve them.</p>
-
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
