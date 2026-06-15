@@ -13,11 +13,11 @@
         showReferenceStrip: true,
         showNavigationControl: true,
         tileSources: [
-            { type: 'image', url: "https://test.collections.ed.ac.uk/theme/public-art/assets/paolozzi_images/0069069d.png" },
-            { type: 'image', url: "https://test.collections.ed.ac.uk/theme/public-art/assets/paolozzi_images/0069147d.png" },
-            { type: 'image', url: "https://test.collections.ed.ac.uk/theme/public-art/assets/paolozzi_images/0069592d.png" },
-            { type: 'image', url: "https://test.collections.ed.ac.uk/theme/public-art/assets/paolozzi_images/0069748d.png" },
-            { type: 'image', url: "https://test.collections.ed.ac.uk/theme/public-art/assets/paolozzi_images/0069760d.png" }
+            { type: 'image', url: "{{ asset('collections/public-art/assets/paolozzi_images/0069069d.png') }}" },
+            { type: 'image', url: "{{ asset('collections/public-art/assets/paolozzi_images/0069147d.png') }}" },
+            { type: 'image', url: "{{ asset('collections/public-art/assets/paolozzi_images/0069592d.png') }}" },
+            { type: 'image', url: "{{ asset('collections/public-art/assets/paolozzi_images/0069748d.png') }}" },
+            { type: 'image', url: "{{ asset('collections/public-art/assets/paolozzi_images/0069760d.png') }}" }
         ]
     });
 </script>

@@ -93,6 +93,16 @@ it('renders the v2 paolozzi page with updated content', function () {
         ->assertSee('paolozzi/0069748c.jpg', false);
 });
 
+it('serves paolozzi mosaic images from local assets in the v1 viewer', function () {
+    config(['skylight.public_art_skin_version' => 1]);
+
+    $this->get('/art-on-campus/paolozzi')
+        ->assertSuccessful()
+        ->assertSee('collections/public-art/assets/paolozzi_images/0069069d.png', false)
+        ->assertSee('collections/public-art/assets/paolozzi_images/0069760d.png', false)
+        ->assertDontSee('test.collections.ed.ac.uk', false);
+});
+
 it('switches to v2 views when public_art_skin_version is 2', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
