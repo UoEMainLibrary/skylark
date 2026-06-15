@@ -9,18 +9,19 @@
     .accessibility-statement ul,
     .accessibility-statement ol,
     .accessibility-statement li {
-        font-family: Arial, sans-serif;
+        font-family: Arial, sans-serif !important;
         font-size: 12pt;
         line-height: 1.5;
         text-align: left;
+        color: #000 !important;
     }
 
     .accessibility-statement h1,
     .accessibility-statement h2,
     .accessibility-statement h3,
     .accessibility-statement h4 {
-        color: #2f5496;
-        font-family: Arial, sans-serif;
+        color: #2f5496 !important;
+        font-family: Arial, sans-serif !important;
         margin-top: 0.75cm;
         margin-bottom: 0.5cm;
     }
@@ -32,8 +33,15 @@
 
     .accessibility-statement a:link,
     .accessibility-statement a:visited {
-        color: #0563c1;
+        color: #0563c1 !important;
         text-decoration: underline;
+        display: inline;
+    }
+
+    .accessibility-statement a:hover,
+    .accessibility-statement a:focus {
+        color: #0563c1 !important;
+        box-shadow: none !important;
     }
 
     .accessibility-statement ul {
@@ -59,8 +67,9 @@
 <div class="container-fluid">
     @include('pointsofarrival.partials.poa_sidebar')
 
-    <div class="col-sm-12 col-xs-12 col-md-8 col-lg-8">
-        <div class="content byEditor accessibility-statement">
+    <div id="poa-theme">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="content byEditor accessibility-statement">
 <h1>Accessibility statement for <a href="https://pointsofarrival.is.ed.ac.uk/">Points of Arrival website</a></h1>
     <p><strong>Website accessibility statement inline with Public Sector Body (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018</strong></p>
     <p>This accessibility statement applies to  <a href="https://pointsofarrival.is.ed.ac.uk/">https://pointsofarrival.is.ed.ac.uk/</a></p>
@@ -262,6 +271,7 @@
 
     <h2>Change Log</h2>
     <p>Since our first evaluation and statement, which was based on automated testing, we have undertaken extensive manual testing. This includes utilising a range of assistive technology to ensure we have a clear picture of the accessibility issues and how best to resolve them.</p>
+            </div>
         </div>
     </div>
 </div>
