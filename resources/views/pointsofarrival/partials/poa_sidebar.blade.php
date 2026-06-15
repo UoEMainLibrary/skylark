@@ -5,6 +5,7 @@
     <a href="./themes"><button class="accordion acc-btn">Themes</button></a>
     <a href="./resources"><button class="accordion acc-btn">Resource List</button></a>
     <a href="./contact"><button class="accordion acc-btn">Contact</button></a>
+    <a href="./accessibility"><button class="accordion acc-btn">Accessibility Statement</button></a>
 </div>
 
 <script>
