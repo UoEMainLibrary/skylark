@@ -96,6 +96,7 @@ it('renders the pointsofarrival accessibility statement within the collection la
         ->toContain('#0563c1')
         ->toContain('poa-sidebar')
         ->toContain('poa-theme')
+        ->toContain('poa-accessibility')
         ->toContain('Accessibility Statement')
         ->not->toContain('name-role-valuet');
 });

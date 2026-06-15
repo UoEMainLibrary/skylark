@@ -2,8 +2,33 @@
 
 @section('title', 'Accessibility | Points Of Arrival')
 
+@section('body_class', 'poa-accessibility')
+
 @push('styles')
 <style>
+    html:has(body.poa-accessibility),
+    body.poa-accessibility {
+        background: #fff !important;
+    }
+
+    body.poa-accessibility .container-fluid,
+    body.poa-accessibility #poa-theme,
+    body.poa-accessibility #poa-theme .col-xs-12 {
+        background: #fff;
+    }
+
+    body.poa-accessibility #poa-theme {
+        left: 265px;
+        right: 0;
+        width: auto;
+        margin-left: 0;
+        min-height: calc(100vh - 120px);
+    }
+
+    body.poa-accessibility .content.accessibility-statement {
+        background: transparent;
+    }
+
     .accessibility-statement,
     .accessibility-statement p,
     .accessibility-statement ul,
