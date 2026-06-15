@@ -77,3 +77,33 @@ it('redirects about to introduction', function (): void {
     $this->get('/pointsofarrival/about')
         ->assertRedirect('/pointsofarrival/introduction');
 });
+
+it('renders the pointsofarrival accessibility statement as a standalone page', function (): void {
+    $html = view('pointsofarrival.pages.accessibility')->render();
+
+    expect($html)
+        ->toContain('Points of Arrival website')
+        ->toContain('Preparation of this accessibility statement')
+        ->toContain('Change Log')
+        ->toContain('color: #2f5496')
+        ->toContain('#0563c1')
+        ->not->toContain('poa-img-banner')
+        ->not->toContain('navbar-fixed-top')
+        ->not->toContain('<html>')
+        ->not->toContain('name-role-valuet');
+});
+
+it('serves the pointsofarrival accessibility route without collection chrome', function (): void {
+    $response = $this->get('/pointsofarrival/accessibility');
+
+    $response->assertSuccessful();
+
+    $html = $response->getContent();
+
+    expect($html)
+        ->toContain('Points of Arrival website')
+        ->toContain('2rd March 2023')
+        ->not->toContain('poa-img-banner')
+        ->not->toContain('Scottish Jewish Archives Centre')
+        ->not->toContain('video-stills/stills-banner.png');
+});
