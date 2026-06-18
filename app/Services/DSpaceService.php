@@ -432,8 +432,9 @@ class DSpaceService implements RepositoryInterface
         }
 
         // Set sort (Solr expects spaces, not plus signs)
-        if (! empty($sortBy)) {
-            $params['sort'] = str_replace('+', ' ', $sortBy);
+        $effectiveSort = $sortBy !== '' ? $sortBy : (string) config('skylight.default_sort', '');
+        if ($effectiveSort !== '') {
+            $params['sort'] = str_replace('+', ' ', $effectiveSort);
         }
 
         // Add highlighting
