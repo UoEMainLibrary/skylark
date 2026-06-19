@@ -1,61 +1,12 @@
 @extends('layouts.alumni')
 
-@section('title', 'Accessibility - University of Edinburgh Art Collection')
+@section('title', 'Accessibility - University of Edinburgh Historical Alumni')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="en">
+<div class="col-main">
+<div class="content byEditor accessibility-statement">
 
-<!-- Search for the double curly bracket chars to navigate to areas to change in this template e.g. Ctrl+F "" -->
-
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title>Accessibility Statement</title>
-    <style type="text/css">
-
-		body > *:not(#container),  #container > *:not(#main), #main > *:not(.col-main) {
-			display: none;
-		}
-
-		#container {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-
-		#main {
-			padding-top: 25px;
-			width: 80%;
-		}
-
-		.col-main {
-			width: 100%;
-		}
-
-		footer {
-			height: auto !important;
-		}
-
-		.footer-links {
-			height: auto !important;
-			width: auto !important;
-		}
-
-		@page { size: 21cm 29.7cm; margin: 2.54cm }
-		body, p { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5; text-align: left; margin-bottom: 0.25cm; direction: ltr; background: transparent }
-		h1, h2, h3 { color: #2f5496; text-align: left; margin-bottom: 0.5cm; direction: ltr; background: transparent; page-break-after: avoid }
-		h1 { font-size: 24pt; }
-		h2 { font-size: 20pt; }
-		h3 { font-size: 16pt; }
-		a:link, a:visited { color: #0563c1; text-decoration: underline }
-		b { font-weight: bold; }
-	</style>
-
-</head>
-<body lang="en-GB" link="#0563c1" vlink="#954f72" dir="ltr">
-
-
-<h1 style="line-height: 1em">Accessibility
+<h1>Accessibility
 statement for <a href="https://collections.ed.ac.uk/alumni">Historical Alumni</a></h1>
 </p>
 <p>
@@ -531,6 +482,6 @@ Since our initial report, we have undertaken more extensive manual testing with 
 	
 <p>
 </p>
-</body>
-</html>
+</div>
+</div>
 @endsection
