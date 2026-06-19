@@ -10,7 +10,7 @@
 
                 <ul class="list-group">
                     <li class="list-group-item active">
-                        <a href="./search/*?sort_by=dc.title_sort+asc">
+                        <a href="{{ $collectionUrl('search/*:*') }}?sort_by=dc.title_sort+asc">
                             {{ $facet['name'] }}
                         </a>
                     </li>
@@ -41,13 +41,17 @@
                     @if(sizeof($active_terms) > 0)
                         @foreach($active_terms as $term)
                             @php
-                                $pattern = '#/' . rawurlencode($facet['name']) . ':%22' . preg_quote($term['name'], '#') . '%22#';
+                                $normalizedName = str_replace(["\r\n|||\r\n", "\n|||\n"], ' ||| ', $term['name']);
+                                $encodedFacet = rawurlencode($facet['name']);
+                                $encodedTerm = urlencode($normalizedName);
+                                $pattern = '#/' . $encodedFacet . ':%22' . preg_quote($encodedTerm, '#') . '%22#';
                                 $remove = preg_replace($pattern, '', $base_search, -1);
+                                $remove = rtrim($remove, '/');
                             @endphp
                             <li class="list-group-item">
                                 <span class="badge">{{ $term['count'] }}</span>
                                 {{ $term['display_name'] }}
-                                <a class="deselect" href="{{ $remove }}">
+                                <a class="deselect" href="{{ $remove }}{{ $base_parameters }}">
                                     <i class="fa fa-close"></i>&nbsp;
                                 </a>
                             </li>
@@ -55,9 +59,16 @@
                     @endif
 
                     @foreach($inactive_terms as $term)
+                        @php
+                            $normalizedName = str_replace(["\r\n|||\r\n", "\n|||\n"], ' ||| ', $term['name']);
+                            $encodedTerm = urlencode($normalizedName);
+                            $stripPattern = '#/' . preg_quote($facet['name'], '#') . ':%22[^/]*#';
+                            $baseWithoutFacet = rtrim(preg_replace($stripPattern, '', $base_search, -1), '/');
+                            $addUrl = $baseWithoutFacet . '/' . $facet['name'] . ':%22' . $encodedTerm . '%22' . $base_parameters;
+                        @endphp
                         <li class="list-group-item">
                             <span class="badge">{{ $term['count'] }}</span>
-                            <a href="{{ $base_search }}/{{ $facet['name'] }}:%22{{ $term['name'] }}%22{{ $base_parameters }}">
+                            <a href="{{ $addUrl }}">
                                 {{ $term['display_name'] }}
                             </a>
                         </li>
