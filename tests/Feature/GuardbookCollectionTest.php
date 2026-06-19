@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SearchController;
 use App\Services\DSpaceService;
+use App\Support\CollectionUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -192,4 +193,60 @@ it('routes guardbook search through SearchController@index', function (): void {
 
     expect($route->getControllerClass())->toBe(SearchController::class)
         ->and($route->getActionMethod())->toBe('index');
+});
+
+it('links View all volumes to the browse-all search page', function (): void {
+    fakeGuardbookSolr(numFound: 42, facetFields: ['subject_filter' => ['A', 5]]);
+
+    $response = $this->get('/guardbook')->assertSuccessful();
+    $expectedHref = CollectionUrl::url('search/*:*');
+
+    expect($response->getContent())
+        ->toContain('View all volumes')
+        ->toContain('href="'.$expectedHref.'"')
+        ->not->toContain('/collections/guardbook/about');
+});
+
+it('marks guardbook A-Z facet terms active when URL uses compact ||| values', function (): void {
+    config([
+        'skylight' => array_merge(config('skylight', []), guardbookConfig()),
+    ]);
+
+    $service = new DSpaceService;
+
+    $facets = $service->buildFacetsWithActiveState(
+        ['subject_filter' => ["a\n|||\nA", 3, "b\n|||\nB", 2]],
+        ['A-Z:"a|||A"'],
+        config('skylight.filters'),
+    );
+
+    expect($facets[0]['active_terms'])->toHaveCount(1)
+        ->and($facets[0]['active_terms'][0]['display_name'])->toBe('A')
+        ->and($facets[0]['inactive_terms'])->toHaveCount(1)
+        ->and($facets[0]['inactive_terms'][0]['display_name'])->toBe('B');
+});
+
+it('does not duplicate A-Z filters when switching letters in the sidebar', function (): void {
+    Http::fake([
+        '*' => Http::response([
+            'response' => [
+                'numFound' => 3,
+                'docs' => [['id' => '1001', 'dctitleen' => ['Guardbook Volume 1']]],
+            ],
+            'facet_counts' => [
+                'facet_fields' => [
+                    'subject_filter' => ["a\n|||\nA", 3, "b\n|||\nB", 2],
+                ],
+            ],
+            'highlighting' => [],
+        ], 200),
+    ]);
+
+    $response = $this->get('/guardbook/search/*:*/A-Z:%22a%7C%7C%7CA%22')->assertSuccessful();
+    $html = $response->getContent();
+
+    expect($html)
+        ->not->toContain('A-Z:%22a%7C%7C%7CA%22/A-Z:')
+        ->toContain('fa-close')
+        ->toMatch('/href="[^"]*\/A-Z:%22b[^"]*%22/');
 });
