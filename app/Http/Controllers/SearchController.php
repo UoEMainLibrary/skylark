@@ -76,7 +76,7 @@ class SearchController extends Controller
         // Get pagination and sort parameters
         $offset = (int) $request->get('offset', 0);
         $sortBy = $request->get('sort_by', '');
-        $rows = (int) $request->get('num_results', config('skylight.results_per_page'));
+        $rows = $this->resolveSearchRows($request, $filterSegments);
 
         // Get repository service for current collection
         $repository = $this->repositoryFactory->current();
@@ -98,22 +98,25 @@ class SearchController extends Controller
         // Build base search URL for facets and pagination
         $baseSearch = $this->buildBaseSearchUrl($query, $filterSegments);
 
-        // Build base parameters for sort
-        $baseParameters = $request->getQueryString() ? '?'.$request->getQueryString() : '';
-        $baseParameters = preg_replace('/[?&]sort_by=[^&]*/', '', $baseParameters);
+        // Preserve sort_by (and other params) for pagination; drop offset so facet/sort links reset to page 1.
+        $baseParameters = $this->buildBaseParameters($request);
 
         // Calculate row display
         $startRow = $offset + 1;
         $endRow = min($offset + $rows, $results['total']);
 
+        $unpaginatedFilterActive = $this->hasUnpaginatedFilterActive($filterSegments);
+
         // Build pagination links
-        $paginationLinks = $this->buildPaginationLinks(
-            $results['total'],
-            $rows,
-            $offset,
-            $baseSearch,
-            $baseParameters
-        );
+        $paginationLinks = ($unpaginatedFilterActive && $results['total'] <= $rows)
+            ? ''
+            : $this->buildPaginationLinks(
+                $results['total'],
+                $rows,
+                $offset,
+                $baseSearch,
+                $baseParameters
+            );
 
         // Prepare view data
         $data = [
@@ -395,6 +398,61 @@ class SearchController extends Controller
         }
 
         return $url;
+    }
+
+    /**
+     * Build query-string parameters for facet, sort, and pagination links.
+     * Preserves sort_by while dropping offset so non-pagination links start at page 1.
+     */
+    protected function buildBaseParameters(Request $request): string
+    {
+        $queryString = (string) $request->getQueryString();
+        if ($queryString === '') {
+            return '';
+        }
+
+        parse_str($queryString, $params);
+        unset($params['offset']);
+
+        if ($params === []) {
+            return '';
+        }
+
+        return '?'.http_build_query($params);
+    }
+
+    /**
+     * Resolve the Solr rows value, honouring unpaginated facet browse when configured.
+     */
+    protected function resolveSearchRows(Request $request, array $filterSegments): int
+    {
+        if ($this->hasUnpaginatedFilterActive($filterSegments)) {
+            return (int) config('skylight.facet_browse_max_rows', 500);
+        }
+
+        return (int) $request->get('num_results', config('skylight.results_per_page'));
+    }
+
+    /**
+     * Whether the current search has an active facet filter configured for unpaginated browse.
+     */
+    protected function hasUnpaginatedFilterActive(array $filterSegments): bool
+    {
+        $unpaginatedFilters = config('skylight.unpaginated_filters', []);
+        if ($unpaginatedFilters === []) {
+            return false;
+        }
+
+        $delimiter = config('skylight.filter_delimiter', ':');
+
+        foreach ($filterSegments as $segment) {
+            $parts = explode($delimiter, urldecode($segment), 2);
+            if (count($parts) === 2 && in_array($parts[0], $unpaginatedFilters, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
