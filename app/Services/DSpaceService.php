@@ -432,8 +432,9 @@ class DSpaceService implements RepositoryInterface
         }
 
         // Set sort (Solr expects spaces, not plus signs)
-        if (! empty($sortBy)) {
-            $params['sort'] = str_replace('+', ' ', $sortBy);
+        $effectiveSort = $sortBy !== '' ? $sortBy : (string) config('skylight.default_sort', '');
+        if ($effectiveSort !== '') {
+            $params['sort'] = str_replace('+', ' ', $effectiveSort);
         }
 
         // Add highlighting
@@ -547,19 +548,17 @@ class DSpaceService implements RepositoryInterface
                     }
 
                     // Check if this term is active
-                    // activeFilters contains URL segments like: Type:"rare+books+|||+Rare+Books"
-                    // termName is the raw Solr value like: "rare books\n|||\nRare Books" (with newlines)
+                    // activeFilters contains URL segments like: A-Z:"a|||A"
+                    // termName is the raw Solr value like: "a\n|||\nA" (with newlines)
                     $isActive = false;
 
-                    // Normalize term for comparison: collapse newlines to spaces
-                    $normalizedTermName = str_replace(["\r\n", "\n", "\r"], ' ', $termName);
-
                     foreach ($activeFilters as $activeFilter) {
-                        // Normalize the active filter the same way: decode + to space AND
-                        // collapse newlines (from %0A in URLs) to space so the comparison
-                        // matches against $normalizedTermName, which is also space-collapsed.
-                        $normalizedFilter = str_replace(['+', "\r\n", "\n", "\r"], ' ', $activeFilter);
-                        if (str_contains($normalizedFilter, $normalizedTermName)) {
+                        $activeValue = $this->extractFacetFilterValue($activeFilter, $facetDisplayName);
+                        if ($activeValue === null) {
+                            continue;
+                        }
+
+                        if ($this->normalizeFacetTermForComparison($activeValue) === $this->normalizeFacetTermForComparison($termName)) {
                             $isActive = true;
                             break;
                         }
@@ -591,6 +590,35 @@ class DSpaceService implements RepositoryInterface
         }
 
         return $facets;
+    }
+
+    /**
+     * Extract the facet value from a URL filter segment (e.g. A-Z:"a|||A").
+     */
+    protected function extractFacetFilterValue(string $activeFilter, string $facetDisplayName): ?string
+    {
+        $delimiter = config('skylight.filter_delimiter', ':');
+        $decoded = urldecode($activeFilter);
+        $parts = explode($delimiter, $decoded, 2);
+
+        if (count($parts) !== 2 || $parts[0] !== $facetDisplayName) {
+            return null;
+        }
+
+        return trim($parts[1], '"');
+    }
+
+    /**
+     * Normalise facet term values for active/inactive comparison.
+     */
+    protected function normalizeFacetTermForComparison(string $value): string
+    {
+        $value = urldecode($value);
+        $value = trim($value, '"');
+        $value = str_replace(['+', "\r\n", "\n", "\r"], ' ', $value);
+        $value = preg_replace('/\s*\|\|\|\s*/', '|||', $value) ?? $value;
+
+        return strtolower(trim($value));
     }
 
     /**
