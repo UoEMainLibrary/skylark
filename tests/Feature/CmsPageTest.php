@@ -6,6 +6,7 @@ use App\Models\CmsPage;
 use App\Support\Cms;
 use Database\Seeders\CmsPagesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 
 uses(RefreshDatabase::class);
 
@@ -95,6 +96,35 @@ it('preserves existing rows on reseed (firstOrCreate keyed on collection+slug)',
 
     expect(CmsPage::lookup('eerc', 'about')?->body)
         ->toBe('<p>existing custom body should not be overwritten</p>');
+});
+
+it('replaces staging skylark urls in cms_pages with the live collections host', function (): void {
+    $migration = 'database/migrations/2026_06_19_220627_fix_public_art_accessibility_cms_staging_urls.php';
+
+    Artisan::call('migrate:rollback', [
+        '--path' => $migration,
+        '--force' => true,
+    ]);
+
+    CmsPage::query()->create([
+        'collection' => CmsPage::COLLECTION_PUBLIC_ART,
+        'slug' => 'accessibility',
+        'title' => 'Accessibility',
+        'body' => <<<'HTML'
+<p>This accessibility statement applies to the <em>Art on Campus</em> website at <a href="https://test.skylark.is.ed.ac.uk/art-on-campus">https://test.skylark.is.ed.ac.uk/art-on-campus</a>.</p>
+HTML,
+    ]);
+
+    Artisan::call('migrate', [
+        '--path' => $migration,
+        '--force' => true,
+    ]);
+
+    $body = CmsPage::lookup(CmsPage::COLLECTION_PUBLIC_ART, 'accessibility')?->body;
+
+    expect($body)
+        ->toContain('https://collections.ed.ac.uk/art-on-campus')
+        ->not->toContain('test.skylark.is.ed.ac.uk');
 });
 
 // ---- Public-facing toggle behaviour ----------------------------------------
