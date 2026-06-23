@@ -487,6 +487,22 @@ it('returns curated browse-order positions, with unknown titles last', function 
         ->and(PublicArtOverrides::browseSortKey(null))->toBe(PHP_INT_MAX);
 });
 
+it('orders Sucker Darts (2016) above Rhino Head (2012) in the curated browse list', function () {
+    expect(PublicArtOverrides::browseSortKey('Untitled (Sucker Darts)'))
+        ->toBeLessThan(PublicArtOverrides::browseSortKey('Untitled (Rhino head)'));
+});
+
+it('matches the upstream "A Torch Racer (Golden Boy)" title so it slots into the curated order', function () {
+    // Upstream DSpace renders this title with parentheses, not square
+    // brackets. The curated browse list must match that wording exactly or
+    // the work falls to the bottom of the page (after 1833) instead of
+    // sitting in its 1888 slot.
+    expect(PublicArtOverrides::browseSortKey('A Torch Racer (Golden Boy)'))
+        ->not->toBe(PHP_INT_MAX)
+        ->and(PublicArtOverrides::browseSortKey('A Torch Racer (Golden Boy)'))
+        ->toBeLessThan(PublicArtOverrides::browseSortKey('William Dick'));
+});
+
 it('relabels Format and Format Extent for the V2 metadata table', function () {
     expect(PublicArtOverrides::labels())
         ->toMatchArray([
