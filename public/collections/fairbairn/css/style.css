@@ -345,6 +345,10 @@ table td,
 table th							{ padding: 8px 0px; text-align: left; color: #975800; }
 table th                            { width: 30%; }
 table td                            { color: #373B41;  white-space: pre-line;}
+/* Record metadata uses Blade templates; pre-line would preserve source
+   indentation as extra blank lines between links/br tags. Long text fields
+   already get explicit nl2br() in the record view. */
+.full-metadata table td              { white-space: normal; }
 table tr                            { border-bottom: 1px solid #EEEDE8; }
 table tr:last-child                 { border: 0; border-bottom: none; }
 .content a                          { color: #373B41;}

@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
+use Tests\TestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -11,7 +14,7 @@
 |
 */
 
-pest()->extend(Tests\TestCase::class)
+pest()->extend(TestCase::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
@@ -41,7 +44,12 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function fakeArchivesSpaceSolr(): void
 {
-    // ..
+    Http::fake([
+        '*' => Http::response([
+            'response' => ['numFound' => 0, 'docs' => []],
+            'facet_counts' => ['facet_fields' => []],
+        ], 200),
+    ]);
 }
