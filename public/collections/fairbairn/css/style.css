@@ -315,6 +315,27 @@ h1 .icon							{ top: -5px; left: -65px; }
 .pagination a 						{ color: #666; text-decoration: none; display: inline-block; padding: 0 5px; }
 .pagination a.selected 				{ background: #e8e8e8; color: #333; }
 .pagination a:hover					{ color: #333; text-decoration: underline; }
+/* SearchController pagination: ul/li markup (Bootstrap class names) without Bootstrap CSS loaded */
+div.pagination > ul.pagination {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+	vertical-align: middle;
+}
+div.pagination > ul.pagination > li {
+	display: inline-block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	vertical-align: middle;
+}
+div.pagination > ul.pagination > li.active span {
+	background: #e8e8e8;
+	color: #333;
+	display: inline-block;
+	padding: 0 5px;
+}
 .pagination .prev,
 .pagination .next					{ display: block; position: absolute; top: 0; font-size: 16px; background: url(../images/bg-arrows.png) no-repeat 0px 0px; }
 .pagination .prev					{ left: 0; padding: 0 10px 0 25px; }

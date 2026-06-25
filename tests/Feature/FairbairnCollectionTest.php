@@ -234,6 +234,16 @@ it('routes /search/{query} via SearchController@index', function (): void {
         ->and($route->getActionMethod())->toBe('index');
 });
 
+it('styles SearchController pagination as a horizontal list', function (): void {
+    $css = file_get_contents(public_path('collections/fairbairn/css/style.css'));
+
+    expect($css)
+        ->toContain('div.pagination > ul.pagination')
+        ->toContain('div.pagination > ul.pagination > li')
+        ->toContain('list-style: none')
+        ->toContain('display: inline-block');
+});
+
 it('maps the Solr notes field to Notes rather than scopecontent', function (): void {
     config(['skylight' => array_merge(config('skylight', []), fairbairnConfig())]);
 
