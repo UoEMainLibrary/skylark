@@ -7,6 +7,18 @@
     $identifierValue = $record['Identifier'] ?? $record['_raw']['component_id'] ?? null;
     $identifierValue = is_array($identifierValue) ? ($identifierValue[0] ?? '') : (string) $identifierValue;
     $isNlsRecord = str_starts_with($identifierValue, 'MS');
+    $eadNoteFields = [
+        'Notes',
+        'Physical',
+        'Physical Description',
+        'Scope and Contents',
+        'Related',
+        'Access',
+        'Bibliography',
+        'Alternative Format',
+        'Rights',
+    ];
+    $eadNoteTags = '<dimensions><extent><physfacet><physloc><a><em><strong><br><p>';
 @endphp
 
 @section('title', $displayTitle)
@@ -59,6 +71,8 @@
                                         @else
                                             {{ $metadatavalue }}
                                         @endif
+                                    @elseif(in_array($displayField, $eadNoteFields, true))
+                                        {!! nl2br(strip_tags((string) $metadatavalue, $eadNoteTags)) !!}
                                     @else
                                         {!! nl2br(e((string) (is_array($metadatavalue) ? implode(', ', array_filter($metadatavalue, 'is_string')) : $metadatavalue))) !!}
                                     @endif

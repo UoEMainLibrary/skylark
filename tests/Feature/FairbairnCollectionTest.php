@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\SearchController;
+use App\Services\ArchivesSpaceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -231,4 +232,84 @@ it('routes /search/{query} via SearchController@index', function (): void {
 
     expect($route->getControllerClass())->toBe(SearchController::class)
         ->and($route->getActionMethod())->toBe('index');
+});
+
+it('maps the Solr notes field to Notes rather than scopecontent', function (): void {
+    config(['skylight' => array_merge(config('skylight', []), fairbairnConfig())]);
+
+    $service = app(ArchivesSpaceService::class);
+    $transformed = $service->transformFieldNames([
+        'id' => '/repositories/6/archival_objects/20833',
+        'component_id' => 'Fairbairn.S.234',
+        'notes' => [
+            '<dimensions>vii, 247 pages ; 22 cm </dimensions>',
+            'From the library of William Ronald Dodds Fairbairn',
+            'This record has been automatically converted from MARC',
+        ],
+        'json' => json_encode([
+            'notes' => [
+                [
+                    'type' => 'physdesc',
+                    'jsonmodel_type' => 'note_singlepart',
+                    'content' => ['<dimensions>vii, 247 pages ; 22 cm </dimensions>'],
+                ],
+            ],
+        ]),
+    ], false);
+
+    expect($transformed['Notes'])->toBe([
+        '<dimensions>vii, 247 pages ; 22 cm </dimensions>',
+        'From the library of William Ronald Dodds Fairbairn',
+        'This record has been automatically converted from MARC',
+    ])->and($transformed['Physical Description'])->toBe([
+        '<dimensions>vii, 247 pages ; 22 cm </dimensions>',
+    ]);
+});
+
+it('renders Notes and Physical Description on fairbairn record pages', function (): void {
+    Http::fake([
+        '*' => Http::response([
+            'response' => [
+                'numFound' => 1,
+                'docs' => [[
+                    'id' => '/repositories/6/archival_objects/20833',
+                    'title' => 'A history of dreams',
+                    'component_id' => 'Fairbairn.S.234',
+                    'creators' => ['Ratcliff, A. J. J (Arthur James John), 1894- author'],
+                    'notes' => [
+                        '<dimensions>vii, 247 pages ; 22 cm </dimensions>',
+                        'From the library of William Ronald Dodds Fairbairn',
+                        'This record has been automatically converted from MARC',
+                    ],
+                    'json' => json_encode([
+                        'notes' => [
+                            [
+                                'type' => 'physdesc',
+                                'jsonmodel_type' => 'note_singlepart',
+                                'content' => ['<dimensions>vii, 247 pages ; 22 cm </dimensions>'],
+                            ],
+                            [
+                                'type' => 'acqinfo',
+                                'jsonmodel_type' => 'note_multipart',
+                                'subnotes' => [[
+                                    'jsonmodel_type' => 'note_text',
+                                    'content' => 'From the library of William Ronald Dodds Fairbairn',
+                                ]],
+                            ],
+                        ],
+                    ]),
+                ]],
+            ],
+        ], 200),
+    ]);
+
+    $response = $this->get('/fairbairn/record/20833/archival_object')->assertSuccessful();
+
+    $response
+        ->assertSee('<th>Notes</th>', false)
+        ->assertSee('From the library of William Ronald Dodds Fairbairn', false)
+        ->assertSee('This record has been automatically converted from MARC', false)
+        ->assertSee('<th>Physical Description</th>', false)
+        ->assertSee('vii, 247 pages ; 22 cm', false)
+        ->assertDontSee('&lt;dimensions&gt;', false);
 });

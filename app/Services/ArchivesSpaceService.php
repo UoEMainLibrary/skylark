@@ -397,11 +397,19 @@ class ArchivesSpaceService implements RepositoryInterface
         $allNotes = null;
 
         foreach ($fieldMappings as $displayName => $solrField) {
-            // Special handling for the interview summary (scopecontent via 'notes')
+            // EERC maps "Interview summary" to the Solr `notes` field name but reads
+            // scopecontent from the JSON blob. Other ArchivesSpace collections (e.g.
+            // fairbairn, lhsacasenotes) expose the indexed Solr `notes` array as "Notes".
             if ($solrField === 'notes') {
-                $interviewSummary = $this->extractInterviewSummary($record, $forSearchResults);
-                if ($interviewSummary) {
-                    $transformed[$displayName] = $interviewSummary;
+                if ($displayName === 'Interview summary') {
+                    $interviewSummary = $this->extractInterviewSummary($record, $forSearchResults);
+                    if ($interviewSummary) {
+                        $transformed[$displayName] = $interviewSummary;
+                    }
+                } elseif (isset($record['notes'])) {
+                    $transformed[$displayName] = is_array($record['notes'])
+                        ? $record['notes']
+                        : [$record['notes']];
                 }
 
                 continue;
