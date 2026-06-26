@@ -101,10 +101,25 @@ Optional: **`public/collections/{collection}/`** for CSS, images, JS. Reference 
 
 Prefer thin controllers: collection-specific logic can move to small action classes later if branches grow.
 
-### 8. Smoke tests
+### 8. Sidebar facets (gotcha)
 
-- Open `/foo` (home).
+The shared layout pattern (`layouts/foo.blade.php`) often falls through to a `partials/sidebar-facets.blade.php` include when a view doesn't define a `sidebar` section (see [`layouts/openbooks.blade.php`](../resources/views/layouts/openbooks.blade.php) and [`layouts/iog.blade.php`](../resources/views/layouts/iog.blade.php)). That partial reads `$sidebar_facets`, `$sidebar_base_search`, `$sidebar_delimiter`, and `$sidebar_base_parameters`.
+
+The home view does **not** pass those variables itself. A **view composer** must be registered against the layout to fetch facets from Solr and inject them on every render. Without a composer the home page renders with an empty facet column.
+
+Pattern:
+
+1. Add `app/View/Composers/FooLayoutComposer.php` — copy [`OpenBooksLayoutComposer`](../app/View/Composers/OpenBooksLayoutComposer.php) / [`IogLayoutComposer`](../app/View/Composers/IogLayoutComposer.php); it calls `RepositoryFactory::current()->searchWithHighlighting('*:*', …)`.
+2. Register it in [`AppServiceProvider::boot()`](../app/Providers/AppServiceProvider.php): `View::composer('layouts.foo', FooLayoutComposer::class);`.
+3. Confirm `FOO_CONTAINER_ID` (or whichever `container_id` env var) is set in `.env` and `phpunit.xml`, otherwise the composer logs a warning and the sidebar is empty.
+
+Facet URLs are double-encoded by convention: `Subject:%22lower+%7C%7C%7C+Display%22` (i.e. `urlencode($value)` + `%22` quotes + `%7C%7C%7C` for `|||`). The shared partial already does this — match the same encoding in any custom links (carousel tiles, record subject tags, etc.) so filter parsing in [`SearchController::parseFilters`](../app/Http/Controllers/SearchController.php) stays consistent.
+
+### 9. Smoke tests
+
+- Open `/foo` (home) — verify sidebar facets render.
 - Run a search and open one record.
+- Click a sidebar facet, then a carousel/subject tag link, and confirm the URLs round-trip cleanly.
 - If enabled: advanced search, Mirador, IIIF links.
 
 ---
