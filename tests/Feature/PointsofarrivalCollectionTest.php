@@ -77,3 +77,41 @@ it('redirects about to introduction', function (): void {
     $this->get('/pointsofarrival/about')
         ->assertRedirect('/pointsofarrival/introduction');
 });
+
+it('includes an accessibility statement link in the left hand navigation', function (): void {
+    $this->get('/pointsofarrival')
+        ->assertSuccessful()
+        ->assertSee('href="./accessibility"', false)
+        ->assertSee('Accessibility Statement', false);
+});
+
+it('renders the pointsofarrival accessibility statement within the collection layout', function (): void {
+    $html = view('pointsofarrival.pages.accessibility')->render();
+
+    expect($html)
+        ->toContain('Points of Arrival website')
+        ->toContain('Preparation of this accessibility statement')
+        ->toContain('Change Log')
+        ->toContain('color: #2f5496')
+        ->toContain('#0563c1')
+        ->toContain('poa-sidebar')
+        ->toContain('poa-theme')
+        ->toContain('poa-accessibility')
+        ->toContain('Accessibility Statement')
+        ->not->toContain('name-role-valuet');
+});
+
+it('serves the pointsofarrival accessibility route with collection navigation', function (): void {
+    $response = $this->get('/pointsofarrival/accessibility');
+
+    $response->assertSuccessful();
+
+    $html = $response->getContent();
+
+    expect($html)
+        ->toContain('Points of Arrival website')
+        ->toContain('2rd March 2023')
+        ->toContain('poa-sidebar')
+        ->toContain('poa-img-banner')
+        ->toContain('stills-banner.png');
+});

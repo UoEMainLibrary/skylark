@@ -40,7 +40,11 @@ return array_merge($dspaceDefaults, [
 
     'adminemail' => 'lddt@mlist.is.ed.ac.uk',
 
-    'container_id' => env('POINTSOFARRIVAL_CONTAINER_ID', 'bac433ed-36a9-4660-b49c-49d3fd0bed2c'),
+    // Production DSpace community UUID is the default — we only read from
+    // Solr and want the latest data everywhere by default. Dev/staging
+    // overrides via POINTSOFARRIVAL_CONTAINER_ID (legacy dev UUID:
+    // bac433ed-36a9-4660-b49c-49d3fd0bed2c).
+    'container_id' => env('POINTSOFARRIVAL_CONTAINER_ID', '5f407bc8-1f6c-4ab7-830a-66fac8e07c7f'),
 
     'oaipmhcollection' => 'hdl_10683_14558',
 

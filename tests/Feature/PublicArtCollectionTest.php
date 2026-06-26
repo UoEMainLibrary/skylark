@@ -327,6 +327,67 @@ it('renders a skip-map link, labelled map region, and textual location list on t
         ->toContain('collections/public-art/locations/pinpoint.png');
 });
 
+it('compiles the V2 search map view with location pins as valid PHP', function (string $skinVersion, string $view, string $recordPathPrefix) {
+    // Regression for /art-on-campus/search/*:*?map=true erroring with
+    // "Unclosed '[' on line 220 does not match ')'". Blade's directive
+    // argument parser doesn't handle multi-line arrow functions with array
+    // literals inside `@json(...)`, so the map view needs to build the
+    // locations payload in a `@php` block before passing it to @json().
+    config([
+        'skylight.public_art_skin_version' => (int) $skinVersion,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+        ],
+    ]);
+
+    // The blades flip between grid and map view based on `?map=true`.
+    request()->merge(['map' => 'true']);
+
+    $docs = [
+        [
+            'id' => 'abc',
+            'dctitleen' => ['Mapped Artwork'],
+            'dcidentifierimageUri' => ['https://example.test/iiif/abc/full/full/0/default.jpg'],
+            'dccoveragespatialcoorden' => ['55.9445, -3.1892'],
+        ],
+    ];
+
+    $html = view($view, [
+        'docs' => $docs,
+        'total' => 1,
+        'query' => '*:*',
+        'searchbox_query' => '',
+        'base_search' => $recordPathPrefix.'/search/*:*',
+        'base_parameters' => '',
+        'facets' => [],
+        'highlights' => [],
+        'suggestions' => [],
+        'startRow' => 1,
+        'endRow' => 1,
+        'offset' => 0,
+        'rows' => 30,
+        'sort_by' => '',
+        'sort_options' => [],
+        'paginationLinks' => '',
+        'active_filters' => [],
+        'delimiter' => '|',
+    ])->render();
+
+    expect($html)
+        ->toContain('var locationsArray =')
+        ->toContain('Mapped Artwork')
+        ->toContain('55.9445')
+        ->toContain('-3.1892')
+        // The record URL is JSON-encoded (slashes escaped) inside the
+        // locationsArray payload, so accept either escaped or plain form.
+        ->toMatch('#'.preg_quote($recordPathPrefix, '#').'\\\\?/record\\\\?/abc#');
+})->with([
+    'V1 layout' => ['1', 'public-art.search.results', '/public-art'],
+    'V2 layout' => ['2', 'public-art-v2.search.results', '/art-on-campus'],
+]);
+
 it('serves local map pin icons for public art OpenLayers bundles', function (): void {
     expect(file_get_contents(public_path('collections/public-art/locations/main.js')))
         ->toContain("window.publicArtPinIcon || '/collections/public-art/locations/pinpoint.png'")
@@ -593,7 +654,15 @@ it('uses the public Kaltura CDN url (not media.ed.ac.uk/embed/secure) for per-re
             'Artist' => 'dc.contributor.authorfull.en',
         ],
         // Mirror the config/collections/public-art.php map for this assertion.
-        'skylight.public_art_videos' => ['ideas' => '1_lh3jbplo'],
+        'skylight.public_art_videos' => [
+            'ideas' => [
+                'entry' => '1_lh3jbplo',
+                'widget' => '1_65sjprmo',
+                'widget_param' => 'wid',
+                'uiconf' => '32599141',
+                'use_flashvars' => true,
+            ],
+        ],
     ]);
 
     $html = view('public-art-v2.record.show', [
@@ -604,11 +673,43 @@ it('uses the public Kaltura CDN url (not media.ed.ac.uk/embed/secure) for per-re
 
     expect($html)
         ->toContain('cdnapisec.kaltura.com')
-        ->toContain('uiconf_id/40887822')
+        ->toContain('uiconf_id/32599141')
         ->toContain('entry_id=1_lh3jbplo')
-        ->toContain('widget_id=0_j4c8cidb')
+        ->toContain('wid=1_65sjprmo')
+        ->not->toContain('widget_id=0_j4c8cidb')
         // The legacy gated proxy must not slip back in.
         ->not->toContain('media.ed.ac.uk/embed/secure/iframe');
+});
+
+it('uses the entry-specific Kaltura widget id for artist Public Art Shorts videos', function () {
+    config([
+        'skylight.public_art_skin_version' => 2,
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Image URI' => 'dc.identifier.imageUri',
+            'Map Reference' => 'dc.coverage.spatial.coord.en',
+            'Location' => 'dc.coverage.spatial.en',
+            'Artist' => 'dc.contributor.authorfull.en',
+        ],
+        'skylight.public_art_videos' => [
+            'the next big thing...is a series of little things' => [
+                'entry' => '1_rs2vb5l9',
+                'widget' => '1_4h6g4272',
+            ],
+        ],
+    ]);
+
+    $html = view('public-art-v2.record.show', [
+        'record' => ['dctitleen' => ['The Next Big Thing...is a Series of Little Things']],
+        'recordTitle' => 'The Next Big Thing...is a Series of Little Things',
+        'recordDisplay' => ['Title'],
+    ])->render();
+
+    expect($html)
+        ->toContain('entry_id=1_rs2vb5l9')
+        ->toContain('widget_id=1_4h6g4272')
+        ->toContain('uiconf_id/40887822')
+        ->not->toContain('wid=1_65sjprmo');
 });
 
 it('renders the per-record video beneath the description and above the Back to all artworks button', function () {
@@ -622,7 +723,12 @@ it('renders the per-record video beneath the description and above the Back to a
             'Artist' => 'dc.contributor.authorfull.en',
             'Description' => 'dc.description.en',
         ],
-        'skylight.public_art_videos' => ['the basic material is not the word but the letter' => '0_tmmkjuz4'],
+        'skylight.public_art_videos' => [
+            'the basic material is not the word but the letter' => [
+                'entry' => '0_tmmkjuz4',
+                'widget' => '0_j4c8cidb',
+            ],
+        ],
     ]);
 
     $html = view('public-art-v2.record.show', [
@@ -636,11 +742,13 @@ it('renders the per-record video beneath the description and above the Back to a
 
     $descriptionPos = strpos($html, 'About the work.');
     $videoPos = strpos($html, 'entry_id=0_tmmkjuz4');
+    $widgetPos = strpos($html, 'widget_id=0_j4c8cidb');
     $backBtnPos = strpos($html, 'Back to all artworks');
 
     expect($descriptionPos)->toBeInt()
         ->and($videoPos)->toBeInt()->toBeGreaterThan($descriptionPos)
-        ->and($backBtnPos)->toBeInt()->toBeGreaterThan($videoPos);
+        ->and($widgetPos)->toBeInt()->toBeGreaterThan($videoPos)
+        ->and($backBtnPos)->toBeInt()->toBeGreaterThan($widgetPos);
 });
 
 it('applies the Format → Media and Format Extent → Dimensions rename', function () {
@@ -806,11 +914,29 @@ it('maps Public Art record videos by lower-cased artwork title in collection con
     expect($config)->toHaveKey('public_art_videos');
 
     expect($config['public_art_videos'])->toBe([
-        'ideas' => '1_lh3jbplo',
-        'the next big thing...is a series of little things' => '1_rs2vb5l9',
-        'the basic material is not the word but the letter' => '0_tmmkjuz4',
-        'untitled (rhino head)' => '1_gzno6iwu',
-        'bite / haynes nano stage' => '1_1elsd561',
+        'ideas' => [
+            'entry' => '1_lh3jbplo',
+            'widget' => '1_65sjprmo',
+            'widget_param' => 'wid',
+            'uiconf' => '32599141',
+            'use_flashvars' => true,
+        ],
+        'the next big thing...is a series of little things' => [
+            'entry' => '1_rs2vb5l9',
+            'widget' => '1_4h6g4272',
+        ],
+        'the basic material is not the word but the letter' => [
+            'entry' => '0_tmmkjuz4',
+            'widget' => '0_j4c8cidb',
+        ],
+        'untitled (rhino head)' => [
+            'entry' => '1_gzno6iwu',
+            'widget' => '1_si1vukuv',
+        ],
+        'bite / haynes nano stage' => [
+            'entry' => '1_1elsd561',
+            'widget' => '1_v8wtxhzh',
+        ],
     ]);
 
     // Keys are normalised the same way the record blade normalises lookup
@@ -904,14 +1030,17 @@ it('serves the new Cast Collections page with the supplied client copy and exter
 it('serves the Old College Artworks page with the supplied client copy and images', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
-    $this->get('/art-on-campus/old-college')
+    $response = $this->get('/art-on-campus/old-college')
         ->assertSuccessful()
         ->assertSee('<h1 class="mt-2 text-4xl font-semibold tracking-tight text-pa-ink-900 sm:text-5xl">Old College Artworks</h1>', false)
         ->assertSee('<title>Old College Artworks | Art on Campus</title>', false)
-        ->assertSee('Old College Heritage and Values Project')
+        ->assertSee('Old College Heritage and Values Project (2023&ndash;ongoing)', false)
+        ->assertSeeInOrder(['between the seventeenth and', 'twentieth centuries'])
+        ->assertDontSee('seventeenth to the twentieth centuries')
         ->assertSee('July 2025')
         ->assertSee('colonialism, enslavement and empire')
-        ->assertSee('Note on access')
+        ->assertSee('<h2>Access</h2>', false)
+        ->assertDontSee('Note on access')
         ->assertSee('https://library.ed.ac.uk/heritage-collections/old-college-artwork', false)
         ->assertSee('collections/public-art/images/old-college/main-stairway-milenka-soskin.png', false)
         ->assertSee('collections/public-art/images/old-college/main-stairway-chris-close.jpg', false)
@@ -921,6 +1050,13 @@ it('serves the Old College Artworks page with the supplied client copy and image
         ->assertSee('Photography: Chris Close')
         ->assertSee('Architectural drawing of Raeburn Room by Milenka Soskin')
         ->assertSee('Architectural drawings of Lee and Elder Rooms by Milenka Soskin');
+
+    // After the client edit, the Chris Close photo of the main-stairway hang
+    // appears before the Milenka Soskin architectural drawing of the same
+    // space.
+    $html = $response->getContent();
+    expect(strpos($html, 'main-stairway-chris-close.jpg'))
+        ->toBeLessThan(strpos($html, 'main-stairway-milenka-soskin.png'));
 });
 
 it('lists Old College in the V2 primary nav and footer Explore section', function () {

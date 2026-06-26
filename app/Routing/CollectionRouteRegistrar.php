@@ -130,6 +130,7 @@ class CollectionRouteRegistrar
      * @param  array{
      *     prefix: string,
      *     route_name: string,
+     *     domain_hosts?: list<string>,
      *     home: array{0: class-string, 1: string}|Closure,
      *     images?: bool,
      *     feedback?: bool,
@@ -141,41 +142,53 @@ class CollectionRouteRegistrar
         $prefix = $definition['prefix'];
         $routeName = $definition['route_name'];
 
+        foreach ($definition['domain_hosts'] ?? [] as $host) {
+            RouteFacade::domain($host)->group(function () use ($definition): void {
+                self::registerArchiveSpaceRoutes($definition, false);
+            });
+        }
+
         RouteFacade::prefix($prefix)->name($routeName.'.')->group(function () use ($definition): void {
-            self::registerArchiveSpaceRoutes($definition);
+            self::registerArchiveSpaceRoutes($definition, true);
         });
     }
 
-    private static function registerArchiveSpaceRoutes(array $definition): void
+    /**
+     * @param  bool  $assignNames  When false, routes are unnamed (dedicated-domain duplicate).
+     */
+    private static function registerArchiveSpaceRoutes(array $definition, bool $assignNames): void
     {
-        RouteFacade::get('/', $definition['home'])->name('home');
+        $named = static function (Route $route, string $suffix) use ($assignNames): void {
+            if ($assignNames) {
+                $route->name($suffix);
+            }
+        };
 
-        RouteFacade::post('/redirect', [SearchController::class, 'redirect'])->name('search.redirect');
+        $named(RouteFacade::get('/', $definition['home']), 'home');
 
-        RouteFacade::get('/search/{query}/{filters?}', [SearchController::class, 'index'])
+        $named(RouteFacade::post('/redirect', [SearchController::class, 'redirect']), 'search.redirect');
+
+        $named(RouteFacade::get('/search/{query}/{filters?}', [SearchController::class, 'index'])
             ->where('query', '[^/]+')
-            ->where('filters', '.*')
-            ->name('search.index');
+            ->where('filters', '.*'), 'search.index');
 
         if ($definition['images'] ?? false) {
-            RouteFacade::get('/record/{id}/{seq}/{filename}', [RecordController::class, 'proxyImage'])
+            $named(RouteFacade::get('/record/{id}/{seq}/{filename}', [RecordController::class, 'proxyImage'])
                 ->where('id', '[0-9]+')
                 ->where('seq', '[0-9]+')
-                ->where('filename', '.+')
-                ->name('record.image');
+                ->where('filename', '.+'), 'record.image');
         }
 
-        RouteFacade::get('/record/{id}/{type?}', [RecordController::class, 'show'])
-            ->where('id', '[0-9]+')
-            ->name('record.show');
+        $named(RouteFacade::get('/record/{id}/{type?}', [RecordController::class, 'show'])
+            ->where('id', '[0-9]+'), 'record.show');
 
-        RouteFacade::get('/about', [PageController::class, 'about'])->name('about');
-        RouteFacade::get('/licensing', [PageController::class, 'licensing'])->name('licensing');
-        RouteFacade::get('/takedown', [PageController::class, 'takedown'])->name('takedown');
-        RouteFacade::get('/accessibility', [PageController::class, 'accessibility'])->name('accessibility');
+        $named(RouteFacade::get('/about', [PageController::class, 'about']), 'about');
+        $named(RouteFacade::get('/licensing', [PageController::class, 'licensing']), 'licensing');
+        $named(RouteFacade::get('/takedown', [PageController::class, 'takedown']), 'takedown');
+        $named(RouteFacade::get('/accessibility', [PageController::class, 'accessibility']), 'accessibility');
 
         if ($definition['feedback'] ?? false) {
-            RouteFacade::get('/feedback', [PageController::class, 'feedback'])->name('feedback');
+            $named(RouteFacade::get('/feedback', [PageController::class, 'feedback']), 'feedback');
         }
 
         if (isset($definition['extra_routes']) && $definition['extra_routes'] instanceof Closure) {

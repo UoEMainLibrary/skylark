@@ -133,14 +133,34 @@ return array_merge($dspaceDefaults, [
     /*
      * Per-record video embeds, keyed by the lower-cased, stripped-of-tags,
      * trimmed artwork title (matching the lookup in
-     * resources/views/public-art-v2/record/show.blade.php). Values are
-     * Media Hopper / Kaltura entry ids.
+     * resources/views/public-art-v2/record/show.blade.php).
+     *
+     * Each entry needs its own Kaltura widget id (from the media.ed.ac.uk page
+     * twitter:player meta). Reusing another entry's widget breaks playback.
      */
     'public_art_videos' => [
-        'ideas' => '1_lh3jbplo',
-        'the next big thing...is a series of little things' => '1_rs2vb5l9',
-        'the basic material is not the word but the letter' => '0_tmmkjuz4',
-        'untitled (rhino head)' => '1_gzno6iwu',
-        'bite / haynes nano stage' => '1_1elsd561',
+        'ideas' => [
+            'entry' => '1_lh3jbplo',
+            'widget' => '1_65sjprmo',
+            'widget_param' => 'wid',
+            'uiconf' => '32599141',
+            'use_flashvars' => true,
+        ],
+        'the next big thing...is a series of little things' => [
+            'entry' => '1_rs2vb5l9',
+            'widget' => '1_4h6g4272',
+        ],
+        'the basic material is not the word but the letter' => [
+            'entry' => '0_tmmkjuz4',
+            'widget' => '0_j4c8cidb',
+        ],
+        'untitled (rhino head)' => [
+            'entry' => '1_gzno6iwu',
+            'widget' => '1_si1vukuv',
+        ],
+        'bite / haynes nano stage' => [
+            'entry' => '1_1elsd561',
+            'widget' => '1_v8wtxhzh',
+        ],
     ],
 ]);

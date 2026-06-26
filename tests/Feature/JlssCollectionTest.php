@@ -75,3 +75,18 @@ it('shows jlss about sidebar search and collection links', function (): void {
         ->assertSee('Theatre', false)
         ->assertSee('Migration', false);
 });
+
+it('renders the jlss accessibility statement within the collection layout', function (): void {
+    $response = $this->get('/jlss/accessibility');
+
+    $response->assertSuccessful();
+
+    $html = $response->getContent();
+
+    expect($html)
+        ->toContain('Scottish Jewish Archives Centre')
+        ->toContain('Disproportionate burden')
+        ->toContain('navbar')
+        ->toContain('color: #2f5496')
+        ->not->toContain('content-divider-inline');
+});

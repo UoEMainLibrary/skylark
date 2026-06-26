@@ -21,10 +21,10 @@ return array_merge($dspaceDefaults, [
     ],
 
     'schema_links' => [
-      'Title'=>'name',
-      'Subject'=>'about',
-      'Shelfmark'=>'identifier',
-      'Link'=>'url',
+        'Title' => 'name',
+        'Subject' => 'about',
+        'Shelfmark' => 'identifier',
+        'Link' => 'url',
     ],
 
     'recorddisplay' => [
@@ -68,6 +68,9 @@ return array_merge($dspaceDefaults, [
     ],
 
     'results_per_page' => 10,
+
+    'unpaginated_filters' => ['A-Z'],
+    'facet_browse_max_rows' => 500,
 
     'oaipmhcollection' => 'hdl_10683_52783',
 

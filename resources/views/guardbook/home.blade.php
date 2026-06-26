@@ -6,7 +6,7 @@
 <div class="col-md-9 col-sm-9 col-xs-12 index-content">
 
     <p class="float-right">
-       <a class="btn btn-default" href="{{url('/collections/guardbook/about"')}}">View all volumes</a>
+       <a class="btn btn-default" href="{{ $collectionUrl('search/*:*') }}">View all volumes</a>
     </p>
     <div class="clearfix"></div>
     <img src="{{ asset('collections/guardbook/images/0028709c.jpg')}}" alt="Guardbook example" class="img-responsive pull-right" />

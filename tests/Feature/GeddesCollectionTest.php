@@ -67,7 +67,6 @@ it('serves geddes v2 pages when skin version is 2', function (string $path) {
     'feedback',
     'licensing',
     'takedown',
-    'accessibility',
 ]);
 
 it('renders geddes v2 home slideshow without duplicate breakpoint columns', function () {
@@ -100,3 +99,28 @@ it('compiles shared pagination styles so ul.pagination renders inline in Tailwin
         ->toContain('ul.pagination')
         ->toContain('inline-block');
 });
+
+it('renders the geddes accessibility statement as a standalone Viki-template page', function (string $skin): void {
+    config(['skylight.geddes_skin_version' => $skin === 'v1' ? 1 : 2]);
+
+    $response = $this->get('/geddes/accessibility');
+
+    $response->assertSuccessful();
+
+    $html = $response->getContent();
+
+    expect($html)
+        ->toContain('The Patrick Geddes Archives website')
+        ->and($html)->toContain('Change Log')
+        ->and($html)->toContain('Preparation of this accessibility statement')
+        // Bullet lists should render with disc markers from the standalone CSS.
+        ->and($html)->toContain('list-style-type: disc')
+        ->and($html)->toContain('color: #2f5496')
+        // HTML typos that were in the legacy view should be fixed.
+        ->and($html)->not->toContain('< h1 >')
+        ->and($html)->not->toContain('Preparation of this accessibility statement</h3>')
+        ->and($html)->not->toContain('#name-role-valuet')
+        // Standalone page must not pull in the v1 or v2 geddes layout chrome.
+        ->and($html)->not->toContain('bg-geddes-forest')
+        ->and($html)->not->toContain('/collections/geddes/css/style.css');
+})->with(['v1', 'v2']);

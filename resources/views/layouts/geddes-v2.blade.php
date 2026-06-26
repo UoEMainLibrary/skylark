@@ -85,7 +85,7 @@
         </div>
     </nav>
 
-    <header class="bg-white">
+    <header class="bg-geddes-forest">
         <div class="mx-auto max-w-7xl px-4 sm:px-6">
             <a href="{{ url('/geddes') }}" class="block py-2" title="Home">
                 <picture>

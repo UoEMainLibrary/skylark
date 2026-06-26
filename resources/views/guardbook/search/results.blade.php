@@ -46,7 +46,7 @@
 
         <div class="row search-row">
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 results-num">
-                <h5 class="text-muted">Showing {{ $rows }} results</h5>
+                <h5 class="text-muted">Showing {{ $startRow }}&ndash;{{ $endRow }} of {{ $total }} results</h5>
             </div>
 
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 results-num sort">
