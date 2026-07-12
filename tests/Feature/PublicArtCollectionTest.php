@@ -173,7 +173,6 @@ it('discloses every public-art-v2 external link as opening in a new tab', functi
     'layouts/public-art-v2.blade.php',
     'public-art-v2/home.blade.php',
     'public-art-v2/record/show.blade.php',
-    'public-art-v2/pages/accessibility.blade.php',
     'public-art-v2/pages/feedback.blade.php',
     'public-art-v2/pages/licensing.blade.php',
     'public-art-v2/pages/paolozzi.blade.php',
@@ -293,24 +292,27 @@ it('keeps the V2 ink/accent palette WCAG-compliant against white and ink-50', fu
     }
 });
 
-it('aligns the V2 accessibility statement with the official policy contacts and structure', function () {
+it('renders the Art on Campus accessibility statement as a standalone Viki-template page', function () {
     config(['skylight.public_art_skin_version' => 2]);
 
     $response = $this->get('/art-on-campus/accessibility')->assertSuccessful();
 
-    $response
-        ->assertSee('Accessibility statement for Art on Campus')
-        ->assertSee('Library and University Collections Directorate')
-        ->assertSee('Information.systems@ed.ac.uk', false)
-        ->assertSee('+44 (0)131 651 5151')
-        ->assertSee('Contact Scotland BSL')
-        ->assertSee('Equality Advisory and Support Service')
-        ->assertSee('Compliance status')
-        ->assertSee('partially compliant')
-        ->assertSee('Disproportionate burden')
-        ->assertSee('Preparation of this accessibility statement')
-        ->assertSee('20 March 2026')
-        ->assertSee('Change log');
+    $html = $response->getContent();
+
+    expect($html)
+        ->toContain('Accessibility statement for <a href="https://collections.ed.ac.uk/art-on-campus">Art on Campus</a>')
+        ->and($html)->toContain('is-crc@ed.ac.uk')
+        ->and($html)->toContain('last reviewed on 07th July 2026')
+        ->and($html)->toContain('WCAG) 2.2 AA standard')
+        ->and($html)->toContain('Change Log')
+        ->and($html)->toContain('Preparation of this accessibility statement')
+        ->and($html)->toContain('list-style-type: disc')
+        ->and($html)->toContain('color: #2f5496')
+        // Viki's requested non-accessible content layout: separate bullet list then WCAG link.
+        ->and($html)->toContain('</ul>'."\n".'<p><a href="https://www.w3.org/TR/WCAG22/#non-text-content">1.1.1 - Non-text Content</a></p>')
+        // Standalone page must not pull in the V2 collection layout chrome.
+        ->and($html)->not->toContain('bg-pa-ink-50')
+        ->and($html)->not->toContain('University Art Collection');
 });
 
 it('renders a skip-map link, labelled map region, and textual location list on the V2 search map view', function () {
