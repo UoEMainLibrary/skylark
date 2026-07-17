@@ -9,6 +9,7 @@ use App\Http\Controllers\Collections\Eerc\PageController as EercController;
 use App\Http\Controllers\Collections\Fairbairn\PageController as FairbairnController;
 use App\Http\Controllers\Collections\Geddes\PageController as GeddesController;
 use App\Http\Controllers\Collections\Guardbook\PageController as GuardbookController;
+use App\Http\Controllers\Collections\Iconics\PageController as IconicsController;
 use App\Http\Controllers\Collections\Iog\PageController as IogController;
 use App\Http\Controllers\Collections\Jlss\PageController as JlssController;
 use App\Http\Controllers\Collections\Lhsacasenotes\PageController as LhsacasenotesController;
@@ -199,6 +200,15 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'home' => [CockburnController::class, 'home'],
     'mirador_view' => 'cockburn.mirador',
     'iiif' => [MimedController::class, 'iiif'],
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'iconics',
+    'route_name' => 'iconics',
+    'home' => [IconicsController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'iiif' => [IconicsController::class, 'iiif'],
     'feedback' => true,
 ]);
 
