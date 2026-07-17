@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Collections\Alumni\PageController as AlumniController;
+use App\Http\Controllers\Collections\Archivemedia\PageController as ArchivemediaController;
 use App\Http\Controllers\Collections\Art\PageController as ArtController;
 use App\Http\Controllers\Collections\Cockburn\PageController as CockburnController;
 use App\Http\Controllers\Collections\Coimbra\PageController as CoimbraController;
@@ -191,6 +192,15 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/women', [AlumniController::class, 'women'])->name('women');
         Route::get('/ww1roll', [AlumniController::class, 'ww1Roll'])->name('ww1roll');
     },
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'archivemedia',
+    'route_name' => 'archivemedia',
+    'home' => [ArchivemediaController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'iiif' => [ArchivemediaController::class, 'iiif'],
+    'feedback' => true,
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
