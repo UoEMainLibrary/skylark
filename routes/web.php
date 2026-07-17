@@ -1,11 +1,8 @@
 <?php
 
 use App\Http\Controllers\Collections\Alumni\PageController as AlumniController;
-<<<<<<< HEAD
 use App\Http\Controllers\Collections\Anatomy\PageController as AnatomyController;
-=======
 use App\Http\Controllers\Collections\Archivemedia\PageController as ArchivemediaController;
->>>>>>> origin/staging
 use App\Http\Controllers\Collections\Art\PageController as ArtController;
 use App\Http\Controllers\Collections\Bodylanguage\PageController as BodylanguageController;
 use App\Http\Controllers\Collections\Cockburn\PageController as CockburnController;
@@ -202,18 +199,19 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
-<<<<<<< HEAD
     'prefix' => 'anatomy',
     'route_name' => 'anatomy',
     'home' => [AnatomyController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
-=======
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'archivemedia',
     'route_name' => 'archivemedia',
     'home' => [ArchivemediaController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'iiif' => [ArchivemediaController::class, 'iiif'],
->>>>>>> origin/staging
     'feedback' => true,
 ]);
 
