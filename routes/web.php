@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Collections\Alumni\PageController as AlumniController;
 use App\Http\Controllers\Collections\Art\PageController as ArtController;
+use App\Http\Controllers\Collections\Calendars\PageController as CalendarsController;
 use App\Http\Controllers\Collections\Cockburn\PageController as CockburnController;
 use App\Http\Controllers\Collections\Coimbra\PageController as CoimbraController;
 use App\Http\Controllers\Collections\CoimbraColls\PageController as CoimbraCollsController;
@@ -190,6 +191,17 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/vetgrad', [AlumniController::class, 'vetGrad'])->name('vetgrad');
         Route::get('/women', [AlumniController::class, 'women'])->name('women');
         Route::get('/ww1roll', [AlumniController::class, 'ww1Roll'])->name('ww1roll');
+    },
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'calendars',
+    'route_name' => 'calendars',
+    'home' => [CalendarsController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/laing', [CalendarsController::class, 'laing'])->name('laing');
     },
 ]);
 
