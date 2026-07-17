@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Collections\Alumni\PageController as AlumniController;
+use App\Http\Controllers\Collections\Anatomy\PageController as AnatomyController;
 use App\Http\Controllers\Collections\Archivemedia\PageController as ArchivemediaController;
 use App\Http\Controllers\Collections\Art\PageController as ArtController;
 use App\Http\Controllers\Collections\Bodylanguage\PageController as BodylanguageController;
@@ -195,6 +196,14 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/women', [AlumniController::class, 'women'])->name('women');
         Route::get('/ww1roll', [AlumniController::class, 'ww1Roll'])->name('ww1roll');
     },
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'anatomy',
+    'route_name' => 'anatomy',
+    'home' => [AnatomyController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
