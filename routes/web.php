@@ -20,6 +20,7 @@ use App\Http\Controllers\Collections\Openbooks\PageController as OpenbooksContro
 use App\Http\Controllers\Collections\Physics\PageController as PhysicsController;
 use App\Http\Controllers\Collections\Pointsofarrival\PageController as PointsofarrivalController;
 use App\Http\Controllers\Collections\PublicArt\PageController as PublicArtController;
+use App\Http\Controllers\Collections\Speccoll\PageController as SpeccollController;
 use App\Http\Controllers\Collections\Stcecilias\PageController as StceciliasController;
 use App\Http\Controllers\Collections\Towardsdolly\PageController as TowardsdollyController;
 use App\Http\Controllers\PageController;
@@ -315,6 +316,14 @@ Route::get('/public-art{path}', function (Request $request, string $path = '') {
 
     return redirect($target, 301);
 })->where('path', '(/.*)?');
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'speccoll',
+    'route_name' => 'speccoll',
+    'home' => [SpeccollController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'stcecilias',
