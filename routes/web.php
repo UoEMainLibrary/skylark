@@ -3,6 +3,7 @@
 use App\Http\Controllers\Collections\Alumni\PageController as AlumniController;
 use App\Http\Controllers\Collections\Archivemedia\PageController as ArchivemediaController;
 use App\Http\Controllers\Collections\Art\PageController as ArtController;
+use App\Http\Controllers\Collections\Bodylanguage\PageController as BodylanguageController;
 use App\Http\Controllers\Collections\Cockburn\PageController as CockburnController;
 use App\Http\Controllers\Collections\Coimbra\PageController as CoimbraController;
 use App\Http\Controllers\Collections\CoimbraColls\PageController as CoimbraCollsController;
@@ -359,6 +360,21 @@ CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
         Route::get('/catalogues', [TowardsdollyController::class, 'catalogues'])->name('catalogues');
         Route::get('/audio', [TowardsdollyController::class, 'audio'])->name('audio');
         Route::get('/browse/{facet}', [TowardsdollyController::class, 'browse'])
+            ->where('facet', 'Subject|Person')
+            ->name('browse');
+    },
+]);
+
+CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
+    'prefix' => 'bodylanguage',
+    'route_name' => 'bodylanguage',
+    'home' => [BodylanguageController::class, 'home'],
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/catalogue', [BodylanguageController::class, 'catalogue'])->name('catalogue');
+        Route::get('/contact', [BodylanguageController::class, 'contact'])->name('contact');
+        Route::get('/people', [BodylanguageController::class, 'people'])->name('people');
+        Route::get('/browse/{facet}', [BodylanguageController::class, 'browse'])
             ->where('facet', 'Subject|Person')
             ->name('browse');
     },
