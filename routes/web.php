@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Collections\Alumni\PageController as AlumniController;
+use App\Http\Controllers\Collections\Anatomy\PageController as AnatomyController;
+use App\Http\Controllers\Collections\Archivemedia\PageController as ArchivemediaController;
 use App\Http\Controllers\Collections\Art\PageController as ArtController;
 use App\Http\Controllers\Collections\Calendars\PageController as CalendarsController;
+use App\Http\Controllers\Collections\Bodylanguage\PageController as BodylanguageController;
 use App\Http\Controllers\Collections\Cockburn\PageController as CockburnController;
 use App\Http\Controllers\Collections\Coimbra\PageController as CoimbraController;
 use App\Http\Controllers\Collections\CoimbraColls\PageController as CoimbraCollsController;
@@ -10,6 +13,7 @@ use App\Http\Controllers\Collections\Eerc\PageController as EercController;
 use App\Http\Controllers\Collections\Fairbairn\PageController as FairbairnController;
 use App\Http\Controllers\Collections\Geddes\PageController as GeddesController;
 use App\Http\Controllers\Collections\Guardbook\PageController as GuardbookController;
+use App\Http\Controllers\Collections\Iconics\PageController as IconicsController;
 use App\Http\Controllers\Collections\Iog\PageController as IogController;
 use App\Http\Controllers\Collections\Jlss\PageController as JlssController;
 use App\Http\Controllers\Collections\Lhsacasenotes\PageController as LhsacasenotesController;
@@ -18,6 +22,7 @@ use App\Http\Controllers\Collections\Openbooks\PageController as OpenbooksContro
 use App\Http\Controllers\Collections\Physics\PageController as PhysicsController;
 use App\Http\Controllers\Collections\Pointsofarrival\PageController as PointsofarrivalController;
 use App\Http\Controllers\Collections\PublicArt\PageController as PublicArtController;
+use App\Http\Controllers\Collections\Speccoll\PageController as SpeccollController;
 use App\Http\Controllers\Collections\Stcecilias\PageController as StceciliasController;
 use App\Http\Controllers\Collections\Towardsdolly\PageController as TowardsdollyController;
 use App\Http\Controllers\PageController;
@@ -206,11 +211,37 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'anatomy',
+    'route_name' => 'anatomy',
+    'home' => [AnatomyController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'archivemedia',
+    'route_name' => 'archivemedia',
+    'home' => [ArchivemediaController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'iiif' => [ArchivemediaController::class, 'iiif'],
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'cockburn',
     'route_name' => 'cockburn',
     'home' => [CockburnController::class, 'home'],
     'mirador_view' => 'cockburn.mirador',
     'iiif' => [MimedController::class, 'iiif'],
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'iconics',
+    'route_name' => 'iconics',
+    'home' => [IconicsController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'iiif' => [IconicsController::class, 'iiif'],
     'feedback' => true,
 ]);
 
@@ -308,6 +339,14 @@ Route::get('/public-art{path}', function (Request $request, string $path = '') {
 })->where('path', '(/.*)?');
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
+    'prefix' => 'speccoll',
+    'route_name' => 'speccoll',
+    'home' => [SpeccollController::class, 'home'],
+    'mirador_view' => 'mimed.mirador',
+    'feedback' => true,
+]);
+
+CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'stcecilias',
     'route_name' => 'stcecilias',
     'home' => [StceciliasController::class, 'home'],
@@ -351,6 +390,21 @@ CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
         Route::get('/catalogues', [TowardsdollyController::class, 'catalogues'])->name('catalogues');
         Route::get('/audio', [TowardsdollyController::class, 'audio'])->name('audio');
         Route::get('/browse/{facet}', [TowardsdollyController::class, 'browse'])
+            ->where('facet', 'Subject|Person')
+            ->name('browse');
+    },
+]);
+
+CollectionRouteRegistrar::registerArchiveSpacePrefixedCollection([
+    'prefix' => 'bodylanguage',
+    'route_name' => 'bodylanguage',
+    'home' => [BodylanguageController::class, 'home'],
+    'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/catalogue', [BodylanguageController::class, 'catalogue'])->name('catalogue');
+        Route::get('/contact', [BodylanguageController::class, 'contact'])->name('contact');
+        Route::get('/people', [BodylanguageController::class, 'people'])->name('people');
+        Route::get('/browse/{facet}', [BodylanguageController::class, 'browse'])
             ->where('facet', 'Subject|Person')
             ->name('browse');
     },
