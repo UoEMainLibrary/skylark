@@ -89,10 +89,50 @@ it('loads anatomy-specific skylight config when /anatomy is requested', function
         ->and(config('skylight.oaipmhcollection'))->toBe('hdl_10683_117442');
 });
 
-it('renders anatomy record page facet links with the legacy double-encoded filter shape', function (): void {
+it('renders anatomy search results with the legacy class="artist" byline and dated title', function (): void {
     config([
         'skylight.field_mappings' => [
             'Title' => 'dc.title.en',
+            'Author' => 'dc.contributor.author.en',
+            'Date' => 'dc.coverage.temporal.en',
+            'Bitstream' => 'dc.format.original.en',
+            'Thumbnail' => 'dc.format.thumbnail.en',
+            'ImageUri' => 'dc.identifier.uri.en',
+        ],
+    ]);
+
+    $html = view('anatomy.search.results', [
+        'query' => '*:*',
+        'docs' => [
+            [
+                'id' => '1',
+                'dctitleen' => ['Skull of Charles Bell'],
+                'dccontributorauthoren' => ['Charles Bell'],
+                'dccoveragetemporalen' => ['1820'],
+            ],
+        ],
+        'total' => 1,
+        'startRow' => 1,
+        'endRow' => 1,
+        'sort_options' => ['Title' => 'dc.title_sort'],
+        'base_search' => './search/*:*',
+        'base_parameters' => '',
+        'paginationLinks' => '',
+    ])->render();
+
+    expect($html)
+        ->toContain('class="artist"')
+        ->and($html)->toContain('>Charles Bell</a>')
+        ->and($html)->toContain('/Author:%22charles+bell+%7C%7C%7C+Charles+Bell%22')
+        ->and($html)->toContain('Skull of Charles Bell (1820)')
+        ->and($html)->not->toContain('class="author"');
+});
+
+it('renders the anatomy record page with the legacy full-title byline, table and related-items sidebar', function (): void {
+    config([
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Author' => 'dc.contributor.author.en',
             'Description' => 'dc.description.en',
             'Accession Number' => 'dc.identifier.en',
         ],
@@ -104,9 +144,10 @@ it('renders anatomy record page facet links with the legacy double-encoded filte
     $html = view('anatomy.record.show', [
         'record' => [
             'dctitleen' => ['Sample anatomical specimen'],
+            'dccontributorauthoren' => ['Charles Bell'],
         ],
         'recordTitle' => 'Sample anatomical specimen',
-        'recordDisplay' => [],
+        'recordDisplay' => ['Title'],
         'fieldMappings' => config('skylight.field_mappings'),
         'filters' => array_keys(config('skylight.filters', [])),
         'bitstreamField' => '',
@@ -116,14 +157,20 @@ it('renders anatomy record page facet links with the legacy double-encoded filte
             [
                 'id' => '5555',
                 'dctitleen' => ['Related specimen'],
-                'dccontributorauthorfullen' => ['Charles Bell'],
+                'dccontributorauthoren' => ['Charles Bell'],
             ],
         ],
     ])->render();
 
-    // If the record view links any Author chips, they must use %22 quotes and
-    // %7C%7C%7C (`|||`) between the lower-cased and display forms. Never a
-    // literal `|||` in the href.
-    expect($html)->not->toContain('href="./search/*/Author:%22charles bell')
+    // Legacy anatomy record.php uses class="artist" for the byline and
+    // Artist:%22...+%7C%7C%7C+...%22 links; related_items.php produces
+    // <a class="related-record"> entries with per-doc .tags → Artist filter
+    // links. Never a literal `|||` in the href.
+    expect($html)
+        ->toContain('<h1 class="itemtitle">Sample anatomical specimen</h1>')
+        ->and($html)->toContain('class="artist"')
+        ->and($html)->toContain('/Artist:%22charles+bell+%7C%7C%7C+Charles+Bell%22')
+        ->and($html)->toContain('<a class="related-record"')
+        ->and($html)->toContain('>Related specimen')
         ->and($html)->not->toContain('|||');
 });

@@ -94,15 +94,27 @@
                                             $origFilter = urlencode($author);
                                             $lowerOrigFilter = urlencode(strtolower($author));
                                         @endphp
-                                        <a class="author" href="./search/*:*/Author:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">
-                                            {{ $author }}
-                                        </a>
+                                        <a class="artist" href="./search/*:*/Author:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">{{ $author }}</a>
                                     @endforeach
                                 @endif
 
+                                @php
+                                    $dateSuffix = '';
+                                    if (array_key_exists($dateField, $doc)) {
+                                        $dateVal = is_array($doc[$dateField]) ? ($doc[$dateField][0] ?? '') : $doc[$dateField];
+                                        if ($dateVal !== '') {
+                                            $dateSuffix = ' ('.$dateVal.')';
+                                        }
+                                    } elseif (array_key_exists('dateIssuedyear', $doc)) {
+                                        $issued = is_array($doc['dateIssuedyear']) ? ($doc['dateIssuedyear'][0] ?? '') : $doc['dateIssuedyear'];
+                                        if ($issued !== '') {
+                                            $dateSuffix = ' ( '.$issued.')';
+                                        }
+                                    }
+                                @endphp
                                 <h3>
                                     <a href="{{ url('/archivemedia/record/' . $doc['id'].'?highlight='.$query) }}">
-                                        {{ $title }}
+                                        {{ $title }}{{ $dateSuffix }}
                                     </a>
                                 </h3>
 
@@ -120,7 +132,7 @@
                                 </div>
                             </div>
 
-                            <div class="thumbnail-image">
+                            <div class="thumbnail-image-search">
                                 @php
                                     $displayedImage = false;
                                 @endphp
@@ -137,17 +149,7 @@
 
                                         @if(!$displayedImage && str_contains($imageUri, 'luna'))
                                             @php
-                                                $size = @getimagesize($imageUri);
-                                                $width = $size[0] ?? null;
-                                                $height = $size[1] ?? null;
-
-                                                if ($width && $height && $width > $height) {
-                                                    $parms = '/120,/0/';
-                                                } else {
-                                                    $parms = '/,120/0/';
-                                                }
-
-                                                $thumbUrl = str_replace('/full/0/', $parms, $imageUri);
+                                                $thumbUrl = str_replace('/full/0/', '/!250,250/0/', $imageUri);
                                             @endphp
 
                                             <a title="{{ $title }}" class="fancybox" rel="group" href="{{ $imageUri }}">

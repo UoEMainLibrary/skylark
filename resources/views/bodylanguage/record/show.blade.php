@@ -4,9 +4,16 @@
     $titleValue = is_array($record['Title'] ?? null) ? ($record['Title'][0] ?? 'Untitled') : ($record['Title'] ?? 'Untitled');
     $displayTitle = strip_tags($titleValue);
     $filterKeys = array_keys(config('skylight.filters', []));
+
     $identifierValue = $record['Identifier'] ?? $record['_raw']['component_id'] ?? null;
     $identifierValue = is_array($identifierValue) ? ($identifierValue[0] ?? '') : (string) $identifierValue;
-    $isNlsRecord = str_starts_with($identifierValue, 'MS');
+
+    $recordAspaceId = $record['Id'] ?? $record['id'] ?? null;
+    $recordAspaceId = is_array($recordAspaceId) ? ($recordAspaceId[0] ?? '') : (string) $recordAspaceId;
+
+    $linkUrlPrefix = rtrim((string) config('skylight.link_url', ''), '/');
+
+    // EAD note fields we allow tags in (mirrors legacy nl2br + limited-tag output).
     $eadNoteFields = [
         'Notes',
         'Physical',
@@ -25,27 +32,23 @@
 
 @section('content')
 <div class="content">
-    <div itemscope itemtype="http://schema.org/CreativeWork">
-        <div class="full-title">
-            <h1 class="itemtitle">{{ $displayTitle }}</h1>
-        </div>
 
-        @php
-            $parentId = $record['Parent_Id'] ?? $record['_raw']['parent_id'] ?? null;
-            $parentType = $record['Parent_Type'] ?? $record['_raw']['parent_type'] ?? null;
-            $parentId = is_array($parentId) ? ($parentId[0] ?? null) : $parentId;
-            $parentType = is_array($parentType) ? ($parentType[0] ?? null) : $parentType;
-        @endphp
-        @if($parentId && $parentType)
-            <a href="{{ $collectionUrl('record/'.$parentId.'/'.$parentType) }}">Parent Record</a>
-        @endif
+    <div class="full-title">
+        <h1 class="itemtitle">{{ $displayTitle }}</h1>
+    </div>
 
-        <div class="full-metadata">
-            <table>
-                <tbody>
+    <div class="smol-divider"></div>
+    @if($linkUrlPrefix !== '' && $recordAspaceId !== '')
+        <a class="results-link" href="{{ $linkUrlPrefix.$recordAspaceId }}" title="Full record at archive collections online" target="_blank">View full record in University of Edinburgh archives catalogue</a>
+    @endif
+    <div class="divider"></div>
+
+    <div class="full-metadata">
+        <table>
+            <tbody>
                 @php $idShown = false; @endphp
                 @foreach($recordDisplay as $displayField)
-                    @if(isset($record[$displayField]) && !empty($record[$displayField]))
+                    @if(isset($record[$displayField]) && ! empty($record[$displayField]))
                         <tr>
                             <th>{{ $displayField }}</th>
                             <td>
@@ -53,7 +56,7 @@
                                 @foreach($values as $index => $metadatavalue)
                                     @if(in_array($displayField, $filterKeys, true) && is_string($metadatavalue))
                                         @php $origFilter = urlencode($metadatavalue); @endphp
-                                        <a href="{{ $collectionUrl('search/*:*/'.$displayField.':%22'.$origFilter.'%22') }}" title="{{ $metadatavalue }}">{{ $metadatavalue }}</a>
+                                        <a href="./search/*:*/{{ $displayField }}:%22{{ $origFilter }}%22" class="resultslist-link">{{ $metadatavalue }}</a>
                                     @elseif($displayField === 'Identifier')
                                         @if(! $idShown)
                                             {{ $metadatavalue }}
@@ -88,57 +91,44 @@
                 <tr>
                     <th>Consult at</th>
                     <td>
-                        @if($isNlsRecord)
-                            <a href="https://www.nls.uk/" target="_blank" rel="noopener" title="National Library of Scotland">National Library of Scotland</a>
-                        @else
-                            <a href="https://www.ed.ac.uk/information-services/library-museum-gallery/crc" target="_blank" rel="noopener" title="University of Edinburgh, Centre for Research Collections">University of Edinburgh, Centre for Research Collections</a>
-                        @endif
+                        <a href="https://www.ed.ac.uk/information-services/library-museum-gallery/cultural-heritage-collections/crc/visitor-information/opening-times-location" target="_blank" title="University of Edinburgh, Centre for Research Collections">University of Edinburgh, Centre for Research Collections</a>
                     </td>
                 </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="clearfix"></div>
-
-        <input type="button" value="Back to Search Results" class="backbtn" onclick="history.go(-1);">
+            </tbody>
+        </table>
     </div>
+    <div class="clearfix"></div>
+
+    <input type="button" value="Back to Search Results" class="backbtn" onclick="history.go(-1);">
+
+    <div class="big-divider"></div>
 </div>
 @endsection
 
 @section('sidebar')
-<div class="col-sidebar">
-    <h4>Related Items</h4>
-    <ul class="related">
-        @if(!empty($relatedItems))
-            @foreach($relatedItems as $index => $item)
-                @php
-                    $relatedTitleRaw = is_array($item['Title'] ?? null) ? ($item['Title'][0] ?? 'Untitled') : ($item['Title'] ?? 'Untitled');
-                    $relatedTitle = strip_tags($relatedTitleRaw);
+<h4>Related Items</h4>
+<ul class="related">
+    @if(! empty($relatedItems))
+        @foreach($relatedItems as $index => $item)
+            @php
+                $relatedTitleRaw = is_array($item['Title'] ?? null) ? ($item['Title'][0] ?? 'Untitled') : ($item['Title'] ?? 'Untitled');
+                $relatedTitle = strip_tags($relatedTitleRaw);
 
-                    $relatedFullId = $item['Id'] ?? $item['id'] ?? '';
-                    $relatedIdParts = explode('/', $relatedFullId);
-                    $relatedNumericId = end($relatedIdParts);
+                $relatedFullId = $item['Id'] ?? $item['id'] ?? '';
+                $relatedFullId = is_array($relatedFullId) ? ($relatedFullId[0] ?? '') : $relatedFullId;
+                $relatedIdParts = explode('/', (string) $relatedFullId);
+                $relatedNumericId = end($relatedIdParts);
 
-                    $relatedTypes = $item['_raw']['types'] ?? [];
-                    $relatedType = is_array($relatedTypes) ? ($relatedTypes[0] ?? 'archival_object') : ($relatedTypes ?: 'archival_object');
-
-                    $relatedComponentId = $item['_raw']['component_id'] ?? $item['Identifier'] ?? null;
-                    $relatedComponentId = is_array($relatedComponentId) ? ($relatedComponentId[0] ?? null) : $relatedComponentId;
-                    $relatedDates = $item['Dates'][0]['expression'] ?? ($item['_raw']['dates'][0]['expression'] ?? null);
-                @endphp
-                <li @class(['first' => $index === 0, 'last' => $index === count($relatedItems) - 1])>
-                    <a class="related-record" href="{{ $collectionUrl('record/'.$relatedNumericId.'/'.$relatedType) }}">{{ $relatedTitle }}</a>
-                    @if($relatedComponentId)
-                        <div class="component_id">{{ $relatedComponentId }}</div>
-                    @endif
-                    @if(is_string($relatedDates) && $relatedDates !== '')
-                        {{ $relatedDates }}
-                    @endif
-                </li>
-            @endforeach
-        @else
-            <li>None.</li>
-        @endif
-    </ul>
-</div>
+                $relatedTypes = $item['_raw']['types'] ?? [];
+                $relatedType = is_array($relatedTypes) ? ($relatedTypes[0] ?? 'archival_object') : ($relatedTypes ?: 'archival_object');
+            @endphp
+            <li @class(['first' => $index === 0, 'last' => $index === count($relatedItems) - 1])>
+                <a href="./record/{{ $relatedNumericId }}/{{ $relatedType }}">{{ $relatedTitle }}</a>
+                <div class="sidebar-overlay"></div>
+            </li>
+        @endforeach
+    @else
+        <li>None.</li>
+    @endif
+</ul>
 @endsection

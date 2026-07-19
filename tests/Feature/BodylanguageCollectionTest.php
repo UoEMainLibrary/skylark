@@ -115,6 +115,64 @@ it('serves a bodylanguage search results page with Subject and Person facet head
         ->assertSee('Person', false);
 });
 
+it('renders the bodylanguage record page with the legacy full-title, results-link, big-divider and .sidebar-overlay sidebar', function (): void {
+    config([
+        'skylight.field_mappings' => [
+            'Title' => 'title',
+            'Identifier' => 'component_id',
+            'Id' => 'id',
+        ],
+        'skylight.link_url' => 'https://archivesspace.collections.ed.ac.uk',
+        'skylight.filters' => [
+            'Subject' => 'subjects',
+        ],
+    ]);
+
+    $html = view('bodylanguage.record.show', [
+        'record' => [
+            'Title' => ['Artefacts, c.1957'],
+            'Identifier' => ['EUA GD55/1/4/7'],
+            'Id' => ['/repositories/2/archival_objects/141164'],
+        ],
+        'recordTitle' => 'Artefacts, c.1957',
+        'recordDisplay' => ['Identifier'],
+        'fieldMappings' => config('skylight.field_mappings'),
+        'filters' => array_keys(config('skylight.filters', [])),
+        'bitstreamField' => '',
+        'thumbnailField' => '',
+        'bitstreams' => [],
+        'relatedItems' => [
+            [
+                'Title' => ['Related archival object'],
+                'Id' => ['/repositories/2/archival_objects/141165'],
+                '_raw' => ['types' => ['archival_object']],
+            ],
+        ],
+        'collectionUrl' => fn (string $path = '') => '/bodylanguage/'.ltrim($path, '/'),
+    ])->render();
+
+    // Legacy bodylanguage record.php has:
+    //   .content > .full-title > h1.itemtitle, .smol-divider, a.results-link
+    //   pointing at the ArchivesSpace public URL, .divider, .full-metadata
+    //   table (with "Consult at" row) and .big-divider at the end.
+    // related_items.php renders <a href="./record/{id}/{type}"> (no
+    // related-record class) and a .sidebar-overlay div per row.
+    expect($html)
+        ->toContain('<div class="full-title">')
+        ->and($html)->toContain('<h1 class="itemtitle">Artefacts, c.1957</h1>')
+        ->and($html)->toContain('<div class="smol-divider"></div>')
+        ->and($html)->toContain('class="results-link"')
+        ->and($html)->toContain('archivesspace.collections.ed.ac.uk/repositories/2/archival_objects/141164')
+        ->and($html)->toContain('View full record in University of Edinburgh archives catalogue')
+        ->and($html)->toContain('<div class="divider"></div>')
+        ->and($html)->toContain('<div class="full-metadata">')
+        ->and($html)->toContain('<th>Consult at</th>')
+        ->and($html)->toContain('<div class="big-divider"></div>')
+        ->and($html)->toContain('./record/141165/archival_object')
+        ->and($html)->toContain('<div class="sidebar-overlay"></div>')
+        ->and($html)->not->toContain('related-record');
+});
+
 it('renders bodylanguage search sidebar facet links with the legacy double-encoded quoted-term shape', function (): void {
     $html = view('bodylanguage.search.partials.facets', [
         'facets' => [

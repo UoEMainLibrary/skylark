@@ -35,8 +35,10 @@ class PageController extends Controller
         try {
             // Legacy random_items view pulls a random slice of the collection.
             // Solr's `random_{seed}` field gives us a stable-per-request order.
+            // Row count matches legacy Skylight `getRandomItems($rows = 12)`
+            // in solr_client_dspace_6.php.
             $seed = random_int(1, 100000);
-            $randomResults = $repository->searchWithHighlighting('*:*', [], 0, 'random_'.$seed.' asc', 8);
+            $randomResults = $repository->searchWithHighlighting('*:*', [], 0, 'random_'.$seed.' asc', 12);
             $randomItems = $randomResults['docs'] ?? [];
         } catch (\Exception $e) {
             // Solr unreachable — render intro block without random items.

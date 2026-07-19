@@ -2,6 +2,8 @@
 
 @section('title', 'Library and University Collections - Iconics - Feedback')
 
+@section('layout', 'full')
+
 @section('content')
 <div class="feedback_form">
 

@@ -84,14 +84,44 @@
                 @yield('content')
 
                 <footer>
+                    <div class="footer-links">
+                        <div class="site-links">
+                            <a href="{{ url('/archivemedia') }}">Archivemedia</a>
+                            <a href="{{ url('/archivemedia/iiif') }}">IIIF</a>
+                            <a href="{{ url('/archivemedia/feedback') }}" class="last">Feedback</a>
+                        </div>
+
+                        {{--
+                            Social links are inherited verbatim from the legacy Skylight archivemedia footer
+                            (theme copy-paste from the Art Collection). They point at Art Collection accounts
+                            rather than archivemedia-specific channels; retained for parity with the live site.
+                        --}}
+                        <div class="social-links">
+                            <ul class="social-icons">
+                                <li><a href="https://itunes.apple.com/gb/podcast/2-the-art-of-hiding/id1086099131?i=363892837&mt=2" class="itunes-icon" target="_blank" title="Art Collection on iTunes"><i class="fa fa-music fa-2x fa-fw"></i><span class="sr-only"> (opens in a new tab)</span></a></li>
+                                <li><a href="https://www.facebook.com/UniversityOfEdinburghFineArtCollection" target="_blank" title="Art Collection on Facebook"><i class="fa fa-facebook fa-2x fa-fw"></i><span class="sr-only"> (opens in a new tab)</span></a></li>
+                                <li><a href="https://twitter.com/UoEArtColl" target="_blank" title="Art Collection on Twitter"><i class="fa fa-twitter fa-2x fa-fw"></i><span class="sr-only"> (opens in a new tab)</span></a></li>
+                                <li><a href="http://uoeartandarchives.tumblr.com/" target="_blank" title="Art Collection on Tumblr"><i class="fa fa-tumblr fa-2x fa-fw"></i><span class="sr-only"> (opens in a new tab)</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div class="footer-disclaimer">
+                        <div class="footer-logo">
+                            <a href="https://www.ed.ac.uk/schools-departments/information-services/about/organisation/library-and-collections" target="_blank" class="luclogo" title="Library &amp; University Collections Home"><span class="sr-only">(opens in a new tab)</span></a>
+                        </div>
                         <div class="footer-policies">
+                            <p>This collection is part of <a href="{{ url('/') }}" title="University Collections Home">University Collections</a>.</p>
                             <p>
-                                <a href="https://www.ed.ac.uk/about/website/privacy" title="Privacy and Cookies Link" target="_blank">Privacy &amp; Cookies<span class="sr-only"> (Opens in a new tab)</span></a>
-                                &nbsp;&nbsp;<a href="{{ url('/archivemedia/takedown') }}" title="Takedown Policy Link">Takedown Policy</a>
+                                <a href="https://www.ed.ac.uk/about/website/privacy" title="Privacy and Cookies Link" target="_blank">Privacy &amp; Cookies<span class="sr-only"> (opens in a new tab)</span></a>
+                                &nbsp;&nbsp;<a href="https://www.ed.ac.uk/information-services/library-museum-gallery/crc/services/copying-and-digitisation/image-licensing/takedown-policy" title="Takedown Policy Link" target="_blank">Takedown Policy<span class="sr-only"> (opens in a new tab)</span></a>
                                 &nbsp;&nbsp;<a href="{{ url('/archivemedia/licensing') }}" title="Licensing and Copyright Link">Licensing &amp; Copyright</a>
-                                &nbsp;&nbsp;<a href="{{ url('/archivemedia/accessibility') }}" title="Website Accessibility Link" target="_blank">Accessibility<span class="sr-only"> (Opens in a new tab)</span></a>
+                                &nbsp;&nbsp;<a href="{{ url('/archivemedia/accessibility') }}" title="Website Accessibility Link" target="_blank">Accessibility<span class="sr-only"> (opens in a new tab)</span></a>
                             </p>
+                            <p>Unless explicitly stated otherwise, all material is copyright &copy; {{ date('Y') }} <a href="https://www.ed.ac.uk" title="University of Edinburgh Home" target="_blank">University of Edinburgh<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+                        </div>
+                        <div class="is-logo">
+                            <a href="https://www.ed.ac.uk/information-services" target="_blank" class="islogo" title="University of Edinburgh Information Services Home"><span class="sr-only">(opens in a new tab)</span></a>
                         </div>
                     </div>
                 </footer>

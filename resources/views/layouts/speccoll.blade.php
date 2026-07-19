@@ -117,25 +117,14 @@
     <div id="main" tabindex="-1" role="main">
         <div class="col-main">
             @yield('content')
-
-            <footer>
-                <div class="footer-disclaimer">
-                    <div class="footer-policies">
-                        <p>
-                            <a href="https://www.ed.ac.uk/about/website/privacy" title="Privacy and Cookies Link" target="_blank" rel="noopener">Privacy &amp; Cookies<span class="sr-only"> (Opens in a new tab)</span></a>
-                            &nbsp;&nbsp;<a href="{{ url('/speccoll/takedown') }}" title="Takedown Policy Link">Takedown Policy</a>
-                            &nbsp;&nbsp;<a href="{{ url('/speccoll/licensing') }}" title="Licensing and Copyright Link">Licensing &amp; Copyright</a>
-                            &nbsp;&nbsp;<a href="{{ url('/speccoll/accessibility') }}" title="Website Accessibility Link" target="_blank" rel="noopener">Accessibility<span class="sr-only"> (Opens in a new tab)</span></a>
-                        </p>
-                    </div>
-                </div>
-            </footer>
         </div>
 
         @hasSection('sidebar')
             @yield('sidebar')
         @endif
     </div>
+
+    @include('speccoll.partials.footer')
 
     <script src="{{ asset('assets/fancybox/lib/jquery.mousewheel-3.0.6.pack.js') }}"></script>
     <script src="{{ asset('assets/fancybox/source/jquery.fancybox.pack.js') }}?v=2.1.4"></script>
