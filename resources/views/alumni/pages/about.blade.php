@@ -1,6 +1,6 @@
 @extends('layouts.alumni')
 
-@section('title', 'About - University of Edinburgh Art Collection')
+@section('title', 'About - University of Edinburgh Historical Alumni')
 
 @section('content')
 <div class="content">

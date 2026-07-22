@@ -90,23 +90,13 @@
                 <a href="{{ url('/alumni') }}" class="menulogo" title="University of Edinburgh Historical Alumni  Home"></a>
             </div>
             <div id="collection-search">
-            <!--<section class="search">-->
                 <form action="{{ url('/alumni/redirect') }}" method="post">
                     @csrf
-                    <!--<div class="container-fluid">
-                        <div class="input-group">-->
-                            <fieldset class="search">
-                                <input type="text" name="q" value="{{ isset($searchbox_query) ? urldecode($searchbox_query) : '' }}" id="q">
-                                <!--<div class="input-group-append">-->
-                                <input type="submit" name="submit_search" class="btn" value="Search" id="submit_search" />
-                                    <!--<input type="button" class="btn btn-outline-secondary" name="submit_search"
-                                        value="Advanced Search" onclick="location.href='{{ url('/art/advanced') }}';" />-->
-                                <!--</div>-->
-                            </fieldset>
-                        <!--</div>
-                    </div>-->
+                    <fieldset class="search">
+                        <input type="text" name="q" value="{{ isset($searchbox_query) ? urldecode($searchbox_query) : '' }}" id="q">
+                        <input type="submit" name="submit_search" class="btn" value="Search" id="submit_search" />
+                    </fieldset>
                 </form>
-            <!--</section>-->
             </div>
         </header>
 
