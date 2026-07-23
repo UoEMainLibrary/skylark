@@ -63,6 +63,48 @@ it('serves the anatomy home page at /anatomy', function (): void {
         ->assertSee(url('/anatomy/about'), false);
 });
 
+it('renders the legacy anatomy footer with site links, socials and University Collections disclaimer', function (): void {
+    fakeAnatomySolr();
+
+    $html = $this->get('/anatomy')->assertSuccessful()->getContent();
+
+    // Legacy footer.php: .footer-links > (.site-links + .social-links) then
+    // .footer-disclaimer > (.footer-logo luclogo + .footer-policies + .is-logo islogo).
+    expect($html)
+        ->toContain('<div class="footer-links">')
+        ->toContain('<div class="site-links">')
+        ->toContain('University of Edinburgh Anatomical Collection</a>')
+        ->toContain('About this Collection</a>')
+        ->toContain('Feedback</a>')
+        ->toContain('class="social-icons"')
+        ->toContain('class="facebook-icon"')
+        ->toContain('class="twitter-icon"')
+        ->toContain('<div class="footer-disclaimer">')
+        ->toContain('class="luclogo"')
+        ->toContain('class="islogo"')
+        ->toContain('This collection is part of')
+        ->toContain('>University Collections</a>')
+        ->toContain('all material is copyright');
+});
+
+it('hides the Skip to content link and inline "(Opens in a new tab)" annotations', function (): void {
+    fakeAnatomySolr();
+
+    $html = $this->get('/anatomy')->assertSuccessful()->getContent();
+    $css = file_get_contents(public_path('collections/anatomy/css/style.css'));
+
+    // The link and annotations still exist in the markup (a11y), but the CSS
+    // hides them off-screen so they don't appear beside the visible content.
+    expect($html)
+        ->toContain('<a class="sr-only" href="')
+        ->toContain('>Skip to content</a>')
+        ->toContain('class="sr-only"');
+    expect($css)
+        ->toContain('.sr-only')
+        ->toContain('clip-path')
+        ->toContain('position: absolute');
+});
+
 it('serves every anatomy static page', function (string $path): void {
     fakeAnatomySolr();
 

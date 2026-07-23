@@ -77,6 +77,14 @@
             <div class="clearfix"></div>
 
             <h3 class="site-tag">An online portal to collections of movement, dance and physical education archives in Scotland, 1890-1990</h3>
+
+            <div class="quick-links">
+                <ul>
+                    <li><a class="quick-link" href="{{ $collectionUrl('about') }}#project-anchor">About the Project</a></li>
+                    <li><a class="quick-link" href="{{ $collectionUrl('catalogue') }}">View the Catalogue</a></li>
+                    <li><a class="quick-link" href="{{ $collectionUrl('people') }}">Meet the People</a></li>
+                </ul>
+            </div>
         </header>
 
         <div id="main" role="main" class="clearfix">
@@ -84,16 +92,25 @@
                 @yield('content')
 
                 <footer>
-                    <div class="footer-disclaimer">
-                        <div class="footer-policies">
-                            <p>
-                                <a href="https://www.ed.ac.uk/about/website/privacy" title="Privacy and Cookies Link" target="_blank" rel="noopener">Privacy &amp; Cookies<span class="sr-only"> (Opens in a new tab)</span></a>
-                                &nbsp;&nbsp;<a href="{{ $collectionUrl('takedown') }}" title="Takedown Policy Link">Takedown Policy</a>
-                                &nbsp;&nbsp;<a href="{{ $collectionUrl('licensing') }}" title="Licensing and Copyright Link">Licensing &amp; Copyright</a>
-                                &nbsp;&nbsp;<a href="{{ $collectionUrl('accessibility') }}" title="Website Accessibility Link">Accessibility</a>
-                            </p>
-                            <p class="footer-copyright">Unless explicitly stated otherwise, all material is copyright &copy; {{ date('Y') }} <a href="https://www.ed.ac.uk" target="_blank" rel="noopener">The University of Edinburgh<span class="sr-only"> (Opens in a new tab)</span></a>.</p>
+                    <div class="footer-links">
+                        <div class="site-links">
+                            <div><a class="footer-link" href="{{ $collectionUrl('about') }}">About</a></div>
+                            <div><a class="footer-link" href="{{ $collectionUrl('catalogue') }}">Catalogue</a></div>
+                            <div><a class="footer-link" href="{{ $collectionUrl('people') }}">People</a></div>
+                            <div><a class="footer-link last" href="{{ $collectionUrl('contact') }}">Contact Us</a></div>
                         </div>
+                    </div>
+
+                    <div class="footer-disclaimer">
+                        <a href="https://www.ed.ac.uk" target="_blank" rel="noopener"><div class="uoe-logo"></div></a>
+                        <div class="footer-policies">
+                            <a class="footer-link" href="https://www.ed.ac.uk/about/website/privacy" title="Privacy and Cookies Link" target="_blank" rel="noopener">Privacy &amp; Cookies</a>
+                            &nbsp;&nbsp;<a class="footer-link" href="https://www.ed.ac.uk/information-services/library-museum-gallery/crc/services/copying-and-digitisation/image-licensing/takedown-policy" target="_blank" rel="noopener" title="Takedown Policy Link">Takedown Policy</a>
+                            &nbsp;&nbsp;<a class="footer-link" href="{{ $collectionUrl('licensing') }}" title="Licensing and Copyright Link">Licensing &amp; Copyright</a>
+                            &nbsp;&nbsp;<a class="footer-link" href="https://www.ed.ac.uk/about/website/accessibility" title="Website Accessibility Link" target="_blank" rel="noopener">Accessibility</a>
+                            <p class="footer-copyright">Unless explicitly stated otherwise, all material is copyright &copy; {{ date('Y') }} <a href="https://www.ed.ac.uk" title="University of Edinburgh Home" target="_blank" rel="noopener">University of Edinburgh</a>.</p>
+                        </div>
+                        <a href="https://www.ed.ac.uk" target="_blank" rel="noopener"><div class="uoe-logo"></div></a>
                     </div>
                 </footer>
             </div>
