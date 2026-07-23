@@ -38,6 +38,7 @@ it('registers every expected iconics named route', function (string $name): void
     'iconics.takedown',
     'iconics.accessibility',
     'iconics.feedback',
+    'iconics.browse',
 ]);
 
 it('routes /iconics/search/{query} via SearchController@index', function (): void {

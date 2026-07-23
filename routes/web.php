@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\Collections\Alumni\PageController as AlumniController;
 use App\Http\Controllers\Collections\Anatomy\PageController as AnatomyController;
 use App\Http\Controllers\Collections\Archivemedia\PageController as ArchivemediaController;
 use App\Http\Controllers\Collections\Art\PageController as ArtController;
-use App\Http\Controllers\Collections\Calendars\PageController as CalendarsController;
 use App\Http\Controllers\Collections\Bodylanguage\PageController as BodylanguageController;
+use App\Http\Controllers\Collections\Calendars\PageController as CalendarsController;
 use App\Http\Controllers\Collections\Cockburn\PageController as CockburnController;
 use App\Http\Controllers\Collections\Coimbra\PageController as CoimbraController;
 use App\Http\Controllers\Collections\CoimbraColls\PageController as CoimbraCollsController;
@@ -207,6 +208,9 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'feedback' => true,
     'extra_routes' => function () {
         Route::get('/laing', [CalendarsController::class, 'laing'])->name('laing');
+        Route::get('/browse/{facet}', [BrowseController::class, 'show'])
+            ->where('facet', '[A-Za-z]+')
+            ->name('browse');
     },
 ]);
 
@@ -216,6 +220,11 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'home' => [AnatomyController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/browse/{facet}', [BrowseController::class, 'show'])
+            ->where('facet', '[A-Za-z]+')
+            ->name('browse');
+    },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
@@ -225,6 +234,11 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'mirador_view' => 'mimed.mirador',
     'iiif' => [ArchivemediaController::class, 'iiif'],
     'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/browse/{facet}', [BrowseController::class, 'show'])
+            ->where('facet', '[A-Za-z]+')
+            ->name('browse');
+    },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
@@ -243,6 +257,11 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'mirador_view' => 'mimed.mirador',
     'iiif' => [IconicsController::class, 'iiif'],
     'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/browse/{facet}', [BrowseController::class, 'show'])
+            ->where('facet', '[A-Za-z]+')
+            ->name('browse');
+    },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
@@ -344,6 +363,11 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'home' => [SpeccollController::class, 'home'],
     'mirador_view' => 'mimed.mirador',
     'feedback' => true,
+    'extra_routes' => function () {
+        Route::get('/browse/{facet}', [BrowseController::class, 'show'])
+            ->where('facet', '[A-Za-z]+')
+            ->name('browse');
+    },
 ]);
 
 CollectionRouteRegistrar::registerDspacePrefixedCollection([

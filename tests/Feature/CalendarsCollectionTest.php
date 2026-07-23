@@ -38,6 +38,7 @@ it('registers every expected calendars named route', function (string $name): vo
     'calendars.accessibility',
     'calendars.feedback',
     'calendars.laing',
+    'calendars.browse',
 ]);
 
 it('routes /calendars/search/{query} via SearchController@index', function (): void {

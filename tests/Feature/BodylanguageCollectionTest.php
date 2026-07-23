@@ -48,6 +48,62 @@ it('serves the bodylanguage home page', function (): void {
         ->assertSee('An online portal', false);
 });
 
+it('renders the legacy bodylanguage header quick-links inside <header>', function (): void {
+    fakeArchivesSpaceSolr();
+
+    $html = $this->get('/bodylanguage')->assertSuccessful()->getContent();
+
+    // Legacy header.php places <div class="quick-links"><ul>...</ul></div>
+    // right after <h3 class="site-tag">, still inside <header>.
+    expect($html)
+        ->toContain('<div class="quick-links">')
+        ->toContain('About the Project</a>')
+        ->toContain('View the Catalogue</a>')
+        ->toContain('Meet the People</a>')
+        ->toContain('#project-anchor');
+
+    // Order: site-tag then quick-links then </header>.
+    $tagPos = strpos($html, 'class="site-tag"');
+    $qlPos = strpos($html, 'class="quick-links"');
+    $endHeaderPos = strpos($html, '</header>');
+    expect($tagPos)->toBeLessThan($qlPos)
+        ->and($qlPos)->toBeLessThan($endHeaderPos);
+});
+
+it('renders the legacy bodylanguage footer with site-links, uoe-logo and CRC Takedown URL', function (): void {
+    fakeArchivesSpaceSolr();
+
+    $html = $this->get('/bodylanguage')->assertSuccessful()->getContent();
+
+    expect($html)
+        ->toContain('<div class="footer-links">')
+        ->toContain('<div class="site-links">')
+        ->toContain('>About</a>')
+        ->toContain('>Catalogue</a>')
+        ->toContain('>People</a>')
+        ->toContain('>Contact Us</a>')
+        ->toContain('<div class="footer-disclaimer">')
+        ->toContain('<div class="uoe-logo"></div>')
+        ->toContain('class="footer-copyright"')
+        // Takedown is the external CRC policy URL, not internal.
+        ->toContain('https://www.ed.ac.uk/information-services/library-museum-gallery/crc/services/copying-and-digitisation/image-licensing/takedown-policy');
+});
+
+it('hides the Skip to content link and inline "(Opens in a new tab)" annotations', function (): void {
+    fakeArchivesSpaceSolr();
+
+    $html = $this->get('/bodylanguage')->assertSuccessful()->getContent();
+    $css = file_get_contents(public_path('collections/bodylanguage/css/style.css'));
+
+    expect($html)
+        ->toContain('>Skip to content</a>')
+        ->toContain('class="sr-only"');
+    expect($css)
+        ->toContain('.sr-only')
+        ->toContain('clip-path')
+        ->toContain('position: absolute');
+});
+
 it('serves every bodylanguage static page', function (string $path): void {
     fakeArchivesSpaceSolr();
 

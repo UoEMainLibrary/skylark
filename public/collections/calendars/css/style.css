@@ -508,3 +508,40 @@ table tr:last-child                 { border: 0; border-bottom: none; }
 
 .italic { font-style: italic; }
 .bold { font-weight: bold; }
+
+/*------------------------------
+    Screen Reader Only Text
+------------------------------*/
+.sr-only,
+.screen-reader-text {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+.sr-only:hover, .sr-only:active, .sr-only:focus,
+.screen-reader-text:hover, .screen-reader-text:active, .screen-reader-text:focus {
+    clip: auto !important;
+    clip-path: none;
+    z-index: 100000;
+    top: 5px;
+    left: 5px;
+    display: block;
+    width: auto;
+    height: auto;
+    text-decoration: none;
+    color: #00315F;
+    border-radius: 3px;
+    background-color: #fff;
+    font-size: 12pt;
+    font-weight: bold;
+    line-height: normal;
+    padding: 15px 23px 14px;
+}
