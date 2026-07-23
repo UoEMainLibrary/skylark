@@ -387,7 +387,7 @@ class SearchController extends Controller
     protected function buildBaseSearchUrl(string $query, array $filters): string
     {
         $prefix = CollectionUrl::pathPrefix();
-        $url = url("{$prefix}/search/{$query}");
+        $url = url("{$prefix}/search/".$this->encodeSearchQuerySegment($query));
 
         foreach ($filters as $filter) {
             $encoded = urlencode($filter);
@@ -398,6 +398,35 @@ class SearchController extends Controller
         }
 
         return $url;
+    }
+
+    /**
+     * Encode the {query} URL segment so it survives round-tripping through
+     * anchor `href` attributes without breaking pagination and facet links.
+     *
+     * Laravel decodes route parameters, so a request for
+     * `/stcecilias/search/%22Keyboard+grouping%22` reaches this controller
+     * as the string `"Keyboard+grouping"` (literal `"`, literal `+`).
+     * Interpolating that raw value back into an `<a href="...">` closes the
+     * attribute early and every downstream link (page 2, facet chips, etc.)
+     * truncates to `/{collection}/search` and 404s.
+     *
+     * We rawurlencode the whole segment for RFC 3986 safety, then restore
+     * the sub-delim / gen-delim characters that legacy skylight links (and
+     * DSpace's own filter values) rely on unencoded:
+     *   - `:` so Solr syntax like `*:*` and inline field queries stay readable
+     *     in the URL.
+     *   - `+` so DSpace-style filter values (`term+%7C%7C%7C+Term`) and legacy
+     *     CI links keep working when a query contains a literal `+`.
+     *   - `*` so wildcard queries like `*:*` don't get encoded to `%2A:%2A`,
+     *     which would still round-trip but breaks every existing bookmark
+     *     and link out there.
+     */
+    protected function encodeSearchQuerySegment(string $query): string
+    {
+        $encoded = rawurlencode($query);
+
+        return str_replace(['%3A', '%2B', '%2A'], [':', '+', '*'], $encoded);
     }
 
     /**
