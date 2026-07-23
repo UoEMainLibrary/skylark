@@ -37,6 +37,7 @@ it('registers every expected anatomy named route', function (string $name): void
     'anatomy.takedown',
     'anatomy.accessibility',
     'anatomy.feedback',
+    'anatomy.browse',
 ]);
 
 it('routes /anatomy/search/{query} via SearchController@index', function (): void {

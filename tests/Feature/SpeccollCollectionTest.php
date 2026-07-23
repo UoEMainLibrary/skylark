@@ -34,6 +34,7 @@ it('registers every expected speccoll named route', function (string $name): voi
     'speccoll.takedown',
     'speccoll.accessibility',
     'speccoll.feedback',
+    'speccoll.browse',
 ]);
 
 it('routes /speccoll/search/{query} via SearchController@index', function (): void {

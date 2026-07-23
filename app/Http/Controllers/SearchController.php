@@ -495,6 +495,17 @@ class SearchController extends Controller
     /**
      * Build pagination links
      */
+    /**
+     * Build pagination links matching legacy skylight markup.
+     *
+     * Legacy CI Pagination emits `&nbsp;<span class="curpage">N</span>` for
+     * the current page and `&nbsp;<a href="...">N</a>` for the rest, with
+     * `&lt;` / `&gt;` prev/next chevrons and a `Last &rsaquo;` jump when
+     * the current page is far enough from the end. Every collection CSS
+     * (calendars, archivemedia, anatomy, iconics, speccoll, ...) styles
+     * `.pagination a` / `.curpage`, not Bootstrap `.pagination > li`, so
+     * the bootstrap markup previously emitted here rendered unstyled.
+     */
     protected function buildPaginationLinks(
         int $total,
         int $rows,
@@ -502,44 +513,56 @@ class SearchController extends Controller
         string $baseUrl,
         string $baseParameters
     ): string {
-        $currentPage = floor($offset / $rows) + 1;
-        $totalPages = max(1, ceil($total / $rows));
-        $numLinks = 4; // Number of links on each side
+        $currentPage = (int) (floor($offset / $rows) + 1);
+        $totalPages = max(1, (int) ceil($total / $rows));
+        $numLinks = 4; // number of page links on each side of the current
 
-        $links = '<ul class="pagination pagination-sm pagination-xs">';
-
-        // Previous link
-        if ($currentPage > 1) {
-            $prevOffset = ($currentPage - 2) * $rows;
-            $prevUrl = $baseUrl.$baseParameters.($baseParameters ? '&' : '?')."offset={$prevOffset}";
-            $links .= "<li><a href=\"{$prevUrl}\">&laquo;</a></li>";
+        if ($totalPages <= 1) {
+            return '';
         }
 
-        // Page links
+        $urlFor = function (int $page) use ($baseUrl, $baseParameters, $rows): string {
+            $pageOffset = ($page - 1) * $rows;
+            $separator = $baseParameters !== '' ? '&' : '?';
+
+            return $baseUrl.$baseParameters.$separator.'offset='.$pageOffset;
+        };
+
+        $out = '';
+
+        // First « (only when the current page is far enough into the list)
+        if ($currentPage > ($numLinks + 1)) {
+            $out .= '<a href="'.$urlFor(1).'">&lsaquo; First</a>&nbsp;';
+        }
+
+        // Previous <
+        if ($currentPage > 1) {
+            $out .= '&nbsp;<a href="'.$urlFor($currentPage - 1).'">&lt;</a>';
+        }
+
+        // Windowed page links
         $start = max(1, $currentPage - $numLinks);
         $end = min($totalPages, $currentPage + $numLinks);
 
         for ($i = $start; $i <= $end; $i++) {
-            $pageOffset = ($i - 1) * $rows;
-            $pageUrl = $baseUrl.$baseParameters.($baseParameters ? '&' : '?')."offset={$pageOffset}";
-
-            if ($i == $currentPage) {
-                $links .= "<li class=\"active\"><span>{$i}</span></li>";
+            if ($i === $currentPage) {
+                $out .= '&nbsp;<span class="curpage">'.$i.'</span>';
             } else {
-                $links .= "<li><a href=\"{$pageUrl}\">{$i}</a></li>";
+                $out .= '&nbsp;<a href="'.$urlFor($i).'">'.$i.'</a>';
             }
         }
 
-        // Next link
+        // Next >
         if ($currentPage < $totalPages) {
-            $nextOffset = $currentPage * $rows;
-            $nextUrl = $baseUrl.$baseParameters.($baseParameters ? '&' : '?')."offset={$nextOffset}";
-            $links .= "<li><a href=\"{$nextUrl}\">&raquo;</a></li>";
+            $out .= '&nbsp;<a href="'.$urlFor($currentPage + 1).'">&gt;</a>&nbsp;';
         }
 
-        $links .= '</ul>';
+        // Last »
+        if (($currentPage + $numLinks) < $totalPages) {
+            $out .= '&nbsp;<a href="'.$urlFor($totalPages).'">Last &rsaquo;</a>';
+        }
 
-        return $links;
+        return $out;
     }
 
     protected function searchFailureResponse(\Throwable $e, string $query)

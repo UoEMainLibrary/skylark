@@ -38,6 +38,7 @@ it('registers every expected archivemedia named route', function (string $name):
     'archivemedia.takedown',
     'archivemedia.accessibility',
     'archivemedia.feedback',
+    'archivemedia.browse',
 ]);
 
 it('routes /archivemedia/search/{query} via SearchController@index', function (): void {
