@@ -85,21 +85,6 @@
                         <div class="item-div">
                             <div class="iteminfo">
 
-                                @if(array_key_exists($authorField, $doc))
-                                    @php
-                                        $authors = is_array($doc[$authorField]) ? $doc[$authorField] : [$doc[$authorField]];
-                                    @endphp
-                                    @foreach($authors as $author)
-                                        @php
-                                            $origFilter = urlencode($author);
-                                            $lowerOrigFilter = urlencode(strtolower($author));
-                                        @endphp
-                                        <a class="author" href="./search/*:*/Author:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">
-                                            {{ $author }}
-                                        </a>
-                                    @endforeach
-                                @endif
-
                                 <h3>
                                     <a href="{{ url('/calendars/record/' . $doc['id'].'?highlight='.$query) }}">
                                         {{ $title }}
@@ -107,6 +92,20 @@
                                 </h3>
 
                                 <div class="tags">
+                                    @if(array_key_exists($subjectField, $doc))
+                                        @php
+                                            $subjects = is_array($doc[$subjectField]) ? $doc[$subjectField] : [$doc[$subjectField]];
+                                        @endphp
+                                        @foreach($subjects as $subject)
+                                            @php
+                                                $cleanSubject = str_replace(["\r\n", "\n", "\r"], ' ', (string) $subject);
+                                                $origFilter = urlencode($cleanSubject);
+                                                $lowerOrigFilter = urlencode(strtolower($cleanSubject));
+                                            @endphp
+                                            <a href="./search/*:*/Subject:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">{{ $subject }}</a>
+                                        @endforeach
+                                    @endif
+
                                     @if(array_key_exists($abstractField, $doc))
                                         @php
                                             $abstract = is_array($doc[$abstractField]) ? ($doc[$abstractField][0] ?? '') : $doc[$abstractField];

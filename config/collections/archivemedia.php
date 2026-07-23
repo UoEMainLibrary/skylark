@@ -19,6 +19,11 @@ return array_merge($dspaceDefaults, [
     'sitemap_type' => 'external',
 
     'field_mappings' => [
+        // Legacy Skylight config didn't map "Author" (only meta_fields had it as
+        // dc.contributor.authorza.en). The live Solr index today exposes the
+        // author under dc.contributor.author.en, so we use that here to power
+        // the record-page byline and related-items Artist filter links.
+        'Author' => 'dc.contributor.author.en',
         'Date' => 'dc.coverage.temporal.en',
         'Description' => 'dc.description.en',
         'Abstract' => 'dc.description.abstract',

@@ -2,13 +2,15 @@
 
 @section('title', 'Library and University Collections - Iconics')
 
+@section('layout', 'full')
+
 @section('content')
 
     <div class="record">
         <div class="content byEditor">
             <div class="tag-line">
-                <h1>These iconic items are the most beautiful, important and unique treasures in the University's collections.
-                    Some, like the Rashid al-Din manuscript, are known across the world. Others, like Clement Litill's charter
+                <h1>These iconic items are the most beautiful, important and unique treasures in the University&rsquo;s collections.
+                    Some, like the Rashid al-Din manuscript, are known across the world. Others, like Clement Litill&rsquo;s charter
                     which founded the Library, are key to the story of our collections. Some choices may
                     <a href="{{ url('/iconics') }}">surprise</a> you!
                     &nbsp; &nbsp;<a href="{{ url('/iconics/search/*:*') }}">View All</a>
@@ -17,14 +19,14 @@
         </div>
     </div>
 
-    @if(! empty($randomItems))
-        @php
-            $titleField = str_replace('.', '', config('skylight.field_mappings.Title', ''));
-            $bitstreamField = str_replace('.', '', config('skylight.field_mappings.Bitstream', ''));
-            $thumbnailField = str_replace('.', '', config('skylight.field_mappings.Thumbnail', ''));
-        @endphp
+    <div class="randoms">
+        @if(! empty($randomItems))
+            @php
+                $titleField = str_replace('.', '', config('skylight.field_mappings.Title', ''));
+                $bitstreamField = str_replace('.', '', config('skylight.field_mappings.Bitstream', ''));
+                $thumbnailField = str_replace('.', '', config('skylight.field_mappings.Thumbnail', ''));
+            @endphp
 
-        <div class="randoms">
             <div class="container-random">
                 @foreach($randomItems as $index => $doc)
                     @php
@@ -104,23 +106,23 @@
                     </div>
                 @endforeach
             </div>
+        @endif
 
-            <div>
-                <p>
-                    <a target="_blank" href="https://images.is.ed.ac.uk/luna/servlet/iiif/collection/g/376">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/International_Image_Interoperability_Framework_logo.png" class="iiiflogo" alt="IIIF logo" title="Right-click, Copy Link to get the full IIIF manifest for the collection." />
-                        <span class="sr-only"> (Opens in a new tab)</span>
-                    </a>
-                    <a target="_blank" href="https://images.is.ed.ac.uk/luna/servlet/iiif/collection/g/376">
-                        <img src="https://images.is.ed.ac.uk/luna/images/LUNAIIIF80.png" class="lunaiiif" alt="LUNA IIIF logo" title="Right-click, Copy Link to get the full IIIF manifest for the collection." />
-                        <span class="sr-only"> (Opens in a new tab)</span>
-                    </a>
-                    This collection is IIIF-compliant. <a href="{{ url('/iconics/iiif') }}">See more</a>.
-                </p>
-            </div>
-
-            <div class="clearfix"></div>
+        <div>
+            <p>
+                <a target="_blank" rel="noopener noreferrer" href="https://images.is.ed.ac.uk/luna/servlet/iiif/collection/g/376">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/International_Image_Interoperability_Framework_logo.png" class="iiiflogo" alt="IIIF logo" title="Right-click, Copy Link to get the full IIIF manifest for the collection." />
+                    <span class="sr-only"> (Opens in a new tab)</span>
+                </a>
+                <a target="_blank" rel="noopener noreferrer" href="https://images.is.ed.ac.uk/luna/servlet/iiif/collection/g/376">
+                    <img src="https://images.is.ed.ac.uk/luna/images/LUNAIIIF80.png" class="lunaiiif" alt="LUNA IIIF logo" title="Right-click, Copy Link to get the full IIIF manifest for the collection." />
+                    <span class="sr-only"> (Opens in a new tab)</span>
+                </a>
+                This collection is IIIF-compliant. <a href="{{ url('/iconics/iiif') }}">See more</a>.
+            </p>
         </div>
-    @endif
+
+        <div class="clearfix"></div>
+    </div>
 
 @endsection

@@ -6,6 +6,7 @@
 
 <head>
     <meta charset="utf-8">
+    <base href="{{ \App\Support\CollectionUrl::baseHref() }}">
     <title>@yield('title', 'Library and University Collections - Iconics')</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -14,12 +15,10 @@
     <meta name="title" content="Library and University Collections - Iconics">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <base href="{{ \App\Support\CollectionUrl::baseHref() }}">
-
     <link rel="shortcut icon" href="{{ asset('collections/iconics/images/favicon.ico') }}">
     <link rel="apple-touch-icon" href="{{ asset('collections/iconics/images/apple-touch-icon.png') }}">
 
-    <!-- CSS: implied media="all" -->
+    <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('collections/iconics/css/style.css') }}?v=2">
     <link rel="stylesheet" href="{{ asset('assets/fancybox/source/jquery.fancybox.css') }}?v=2.1.4" type="text/css" media="screen" />
     <link rel="stylesheet" href="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-buttons.css') }}?v=1.0.5" type="text/css" media="screen" />
@@ -27,12 +26,12 @@
     <link rel="stylesheet" href="{{ asset('assets/flowplayer-7.0.4/skin/skin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/font-awesome/css/font-awesome.min.css') }}">
 
-    <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
     <script src="{{ asset('assets/modernizr/modernizr-1.7.min.js') }}"></script>
     <script src="{{ asset('assets/jquery-1.11.0/jquery-1.11.0.min.js') }}"></script>
     <script src="{{ asset('assets/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js') }}"></script>
     <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/jquery-1.11.0/jcarousel/jquery.jcarousel.min.js') }}"></script>
+    <script src="{{ asset('assets/openseadragon/openseadragon.min.js') }}"></script>
 
     @if(config('skylight.ga_code'))
         <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('skylight.ga_code') }}"></script>
@@ -45,11 +44,16 @@
     @endif
 
     <script src="{{ asset('assets/flowplayer-7.0.4/flowplayer.min.js') }}"></script>
-    <script>
-        flowplayer.conf = {
-            analytics: "{{ config('skylight.ga_code') }}"
-        };
-    </script>
+    @if(config('skylight.ga_code'))
+        <script>
+            flowplayer.conf = {
+                analytics: @json(config('skylight.ga_code'))
+            };
+        </script>
+    @endif
+
+    @yield('head')
+    @stack('styles')
 </head>
 
 <body>
@@ -59,61 +63,68 @@
 
     <div id="container">
         <header>
+            <nav id="menu">
+                <ul class="social-links">
+                    <li><a href="https://www.facebook.com/crc.edinburgh" class="facebook-icon" target="_blank" rel="noopener noreferrer" title="CRC on Facebook"><span class="sr-only">CRC on Facebook (opens in a new tab)</span></a></li>
+                    <li><a href="https://twitter.com/CRC_EdUni" class="twitter-icon" target="_blank" rel="noopener noreferrer" title="CRC on Twitter"><span class="sr-only">CRC on Twitter (opens in a new tab)</span></a></li>
+                    <li><a href="https://www.flickr.com/photos/crcedinburgh" class="flickr-icon" target="_blank" rel="noopener noreferrer" title="CRC on Flickr"><span class="sr-only">CRC on Flickr (opens in a new tab)</span></a></li>
+                </ul>
+                <ul class="menu-links">
+                    <li><a href="{{ url('/iconics/feedback') }}" title="Feedback Link" class="last">Feedback</a></li>
+                    <li><a href="https://www.ed.ac.uk/schools-departments/information-services/library-museum-gallery/crc/projects" title="CRC Projects Link" target="_blank" rel="noopener noreferrer">Projects</a></li>
+                    <li><a href="http://libraryblogs.is.ed.ac.uk/" title="Library and University Collections Blog" target="_blank" rel="noopener noreferrer">Blog</a></li>
+                    <li><a href="https://www.ed.ac.uk/schools-departments/information-services/library-museum-gallery/crc" title="Centre for Research Collections Link" target="_blank" rel="noopener noreferrer">CRC</a></li>
+                    <li><a href="{{ url('/iconics/about') }}" title="About this site">About</a></li>
+                    <li><a href="{{ url('/iconics') }}" title="University Collections Home">Home</a></li>
+                </ul>
+            </nav>
+            <div class="clearfix"></div>
             <div id="collection-title">
-                <a href="https://www.ed.ac.uk" class="uoelogo" title="The University of Edinburgh Home (opens in a new tab)" target="_blank"><span class="sr-only">(Opens in a new tab)</span></a>
-                <a href="{{ url('/iconics') }}" class="iconicslogo" title="Library and University Collections - Iconics Home"></a>
-                <a href="{{ url('/iconics') }}" class="menulogo" title="Library and University Collections - Iconics Home"></a>
+                <a href="https://www.ed.ac.uk" class="uoelogo" title="The University of Edinburgh Home" target="_blank" rel="noopener noreferrer"><span class="sr-only">The University of Edinburgh Home (opens in a new tab)</span></a>
+                <a href="{{ url('/iconics') }}" class="iconicslogo" title="University of Edinburgh Collections Home"><span class="sr-only">University of Edinburgh Iconics Home</span></a>
             </div>
             <div id="collection-search">
                 <form action="{{ url('/iconics/redirect') }}" method="post">
                     @csrf
                     <fieldset class="search">
-                        <input type="text" name="q" value="<?php if (isset($searchbox_query)) {
-                            echo urldecode($searchbox_query);
-                        } ?>" id="q" />
+                        <input type="text" name="q" value="{{ isset($searchbox_query) ? urldecode($searchbox_query) : '' }}" id="q" placeholder="search the iconics" />
                         <input type="submit" name="submit_search" class="btn" value="Search" id="submit_search" />
-                        <a href="{{ url('/iconics/advanced') }}" class="advanced">Advanced search</a>
                     </fieldset>
                 </form>
             </div>
         </header>
 
+        @php
+            $iconicsLayout = trim($__env->yieldContent('layout', 'sidebar'));
+        @endphp
+
         <div id="main" role="main" class="clearfix">
-            <div class="col-main">
+            @if($iconicsLayout === 'full')
+                <div class="col-main-full">
+                    @yield('content')
 
-                @yield('content')
+                    @include('iconics.partials.footer')
+                </div>
+            @else
+                <div class="col-main">
+                    @yield('content')
 
-                <footer>
-                    <div class="footer-disclaimer">
-                        <div class="footer-policies">
-                            <p>
-                                <a href="https://www.ed.ac.uk/about/website/privacy" title="Privacy and Cookies Link" target="_blank">Privacy &amp; Cookies<span class="sr-only"> (Opens in a new tab)</span></a>
-                                &nbsp;&nbsp;<a href="{{ url('/iconics/takedown') }}" title="Takedown Policy Link">Takedown Policy</a>
-                                &nbsp;&nbsp;<a href="{{ url('/iconics/licensing') }}" title="Licensing and Copyright Link">Licensing &amp; Copyright</a>
-                                &nbsp;&nbsp;<a href="{{ url('/iconics/accessibility') }}" title="Website Accessibility Link" target="_blank">Accessibility<span class="sr-only"> (Opens in a new tab)</span></a>
-                            </p>
-                        </div>
-                    </div>
-                </footer>
+                    @include('iconics.partials.footer')
+                </div>
 
-            </div>
-
-            <div class="col-sidebar">
-                @hasSection('sidebar')
-                    @yield('sidebar')
-                @else
-                    @include('defaults.search.partials.facets')
-                @endif
-            </div>
-
+                <div class="col-sidebar">
+                    @hasSection('sidebar')
+                        @yield('sidebar')
+                    @else
+                        @include('defaults.search.partials.facets')
+                    @endif
+                </div>
+            @endif
         </div> <!-- close main -->
     </div> <!-- close container -->
 
-    <!-- Add mousewheel plugin (this is optional) -->
     <script src="{{ asset('assets/fancybox/lib/jquery.mousewheel-3.0.6.pack.js') }}"></script>
-    <!-- Add fancyBox -->
     <script src="{{ asset('assets/fancybox/source/jquery.fancybox.pack.js') }}?v=2.1.4"></script>
-    <!-- Optionally add helpers - button, thumbnail and/or media -->
     <script src="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-buttons.js') }}?v=1.0.5"></script>
     <script src="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-media.js') }}?v=1.0.5"></script>
     <script src="{{ asset('assets/fancybox/source/helpers/jquery.fancybox-thumbs.js') }}?v=1.0.7"></script>
@@ -121,5 +132,6 @@
     <script src="{{ asset('assets/plugins/plugins.js') }}"></script>
     <script src="{{ asset('assets/script/script.js') }}"></script>
 
+    @stack('scripts')
 </body>
 </html>

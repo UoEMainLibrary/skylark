@@ -4,340 +4,173 @@
 
 @section('content')
 @php
-
-
     $fieldMappings = config('skylight.field_mappings', []);
-    /*
-    $titleField = str_replace('.', '', $fieldMappings['Title'] ?? 'dctitleen');
-    $dateField = str_replace('.', '', $fieldMappings['Date'] ?? '');
-    $abstractField = str_replace('.', '', $fieldMappings['Abstract'] ?? '');
-    $subjectField = str_replace('.', '', $fieldMappings['Subject'] ?? '');
-    */
+    $manifestEndpoint = rtrim((string) config('skylight.manifest_endpoint', ''), '/').'/';
 
-    $authorField = str_replace('.', '', $fieldMappings['Author'] ?? '');
-    $typeField = str_replace('.', '', $fieldMappings['Type'] ?? '');
-    $bitstreamField = str_replace('.', '', $fieldMappings['Bitstream']  ?? '');
-    $thumbnailField = str_replace('.', '', $fieldMappings['Thumbnail'] ?? '');
-    $imageUriField = str_replace('.', '', $fieldMappings['ImageUri'] ?? '');
-    $permalinkField = str_replace('.', '', $fieldMappings['Permalink'] ?? '');
-    $accNoField = str_replace('.', '', $fieldMappings['Accession Number'] ?? '');
+    $titleField     = str_replace('.', '', $fieldMappings['Title']     ?? 'dctitleen');
+    $authorField    = str_replace('.', '', $fieldMappings['Author']    ?? '');
+    $shelfmarkField = str_replace('.', '', $fieldMappings['Shelfmark'] ?? '');
+    $dateField      = str_replace('.', '', $fieldMappings['Date']      ?? '');
+    $manifestField  = str_replace('.', '', $fieldMappings['Manifest']  ?? '');
+    $imageUriField  = str_replace('.', '', $fieldMappings['ImageURI']  ?? '');
 
-    $filters = array_keys(config('skylight.filters', []));
-    $mediaUri = config('skylight.media_url_prefix');
-    $schema = config('skylight.schema_links', []);
+    $firstValue = static function (array $doc, string $field, string $fallback = ''): string {
+        if ($field === '' || ! isset($doc[$field])) {
+            return $fallback;
+        }
+        $value = $doc[$field];
 
-    $type = 'Unknown';
-    if (isset($record[$typeField])) {
-        $typeValue = is_array($record[$typeField]) ? ($record[$typeField][0] ?? '') : $record[$typeField];
-        $type = 'media-' . strtolower(str_replace(' ', '-', $typeValue));
-    }
+        return (string) (is_array($value) ? ($value[0] ?? $fallback) : $value);
+    };
 
-    $manifest = null;
-    $jsonLink = '';
-    $accno = '';
+    // Legacy record.php builds the section-1 header by iterating every value of
+    // each field and letting the last one win, so multi-value fields (like
+    // Author) end up showing the last entry. Mirror that here so the title bar
+    // reads identically to old.collections.
+    $lastValue = static function (array $doc, string $field, string $fallback = ''): string {
+        if ($field === '' || ! isset($doc[$field])) {
+            return $fallback;
+        }
+        $value = $doc[$field];
+        if (is_array($value)) {
+            return (string) ($value[array_key_last($value)] ?? $fallback);
+        }
+
+        return (string) $value;
+    };
+
+    $title      = $lastValue($record, $titleField, 'Unnamed item');
+    $maker      = $lastValue($record, $authorField, 'Unknown author');
+    $date       = $lastValue($record, $dateField, 'Undated');
+    $shelfmark  = $firstValue($record, $shelfmarkField);
+    $manifestId = $firstValue($record, $manifestField);
+
+    $manifest  = $manifestId !== '' && $manifestEndpoint !== '/'
+        ? $manifestEndpoint.$manifestId.'/manifest'
+        : null;
+
+    $requestUri = request()->getRequestUri();
 @endphp
 
-@if(isset($record[$bitstreamField]))
-    @php
-        $bitstreamArray = [];
-        foreach ($record[$bitstreamField] as $bitstreamForArray) {
-            $segments = explode('##', $bitstreamForArray);
-            $seq = $segments[4] ?? null;
-            if ($seq !== null) {
-                $bitstreamArray[$seq] = $bitstreamForArray;
-            }
-        }
-        ksort($bitstreamArray);
-    @endphp
+<div class="container-fluid content">
+    <nav class="navbar navbar-fixed-top second-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#record-navbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div>
+                <div class="collapse navbar-collapse" id="record-navbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="{{ $requestUri }}#stc-section1">Top</a></li>
+                        <li><a href="{{ $requestUri }}#stc-section2">Image</a></li>
+                        <li><a href="{{ $requestUri }}#stc-section3">Description</a></li>
+                        <li><a href="{{ $requestUri }}#stc-section5">Catalogue Data</a></li>
+                        <li><a href="{{ $requestUri }}#stc-section6">Related Items</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    @foreach($bitstreamArray as $bitstream)
-        @php
-            $bSegments = explode('##', $bitstream);
-            $bFilename = $bSegments[1] ?? '';
-            $bHandle = $bSegments[3] ?? '';
-            $bSeq = $bSegments[4] ?? '';
-            $bHandleId = preg_replace('/^.*\//', '', $bHandle);
-        @endphp
-
-        @if(str_contains(strtolower($bFilename), '.json'))
-            @php
-                if (isset($record[$accNoField])) {
-                    $accno = is_array($record[$accNoField]) ? ($record[$accNoField][0] ?? '') : $record[$accNoField];
-                }
-
-                $manifest = url('/speccoll/record/' . $bHandleId . '/' . $bSeq . '/' . $bFilename);
-
-                $jsonLink  = '<span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest=' . $manifest . '" target="_blank" class="uvlogo" title="View in UV"></a></span>';
-                $jsonLink .= '<span class="json-link-item"><a target="_blank" href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest=' . $manifest . '" class="miradorlogo" title="View in Mirador"></a></span>';
-                $jsonLink .= '<span class="json-link-item"><a href="' . $manifest . '" target="_blank" class="iiiflogo" title="IIIF manifest"></a></span>';
-            @endphp
-        @endif
-    @endforeach
-@endif
-
-    <h1 class="itemtitle">{{ $recordTitle }}</h1>
-
-    <div class="tags">
-        @if(isset($record[$authorField]))
-            @foreach($record[$authorField] as $author)
-                @php
-                    $origFilter = preg_replace('/ /', '+', $author);
-                    $origFilter = preg_replace('/,/', '%2C', $origFilter);
-                @endphp
-                <a href='./search/*/Author:"{{ $origFilter }}"'>{{ $author }}</a>
-            @endforeach
-        @endif
+    <div id="stc-section1" class="container-fluid record-content">
+        <h2 class="itemtitle hidden-sm hidden-xs">{{ $title }} | {{ $maker }} | {{ $date }}</h2>
+        <h4 class="itemtitle hidden-lg hidden-md">{{ $title }} | {{ $maker }} | {{ $date }}</h4>
     </div>
 
-    <div class="content">
-        @if(isset($manifest))
-            <div class="img-container">
-                <iframe
-                    class="img-frame"
-                    src="{{ url('/speccoll/mirador') }}?manifest={{ urlencode($manifest) }}"
-                    height="100%"
-                    width="100%"
-                    title="Image Showcase">
-                </iframe>
+    @if($manifest)
+        <div id="stc-section2" class="container-fluid">
+            <div class="uv-cell">
+                <div class="uv-fill">
+                    <iframe class="uv-sizer" allowfullscreen="true" src="https://librarylabs.ed.ac.uk/iiif/uv/?manifest={{ $manifest }}"></iframe>
+                </div>
             </div>
             <div class="json-link">
-                <p>{!! $jsonLink !!}</p>
+                <p>
+                    <span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest={{ $manifest }}" target="_blank" rel="noopener" class="uvlogo" title="View in UV"></a></span>
+                    <span class="json-link-item"><a target="_blank" rel="noopener" title="View in Mirador" href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest={{ $manifest }}" class="miradorlogo"></a></span>
+                    <span class="json-link-item"><a href="{{ $manifest }}" target="_blank" rel="noopener" class="iiiflogo" title="IIIF manifest"></a></span>
+                </p>
             </div>
-        @endif
+        </div>
+    @endif
 
-        <table>
-            <caption>Description</caption>
-            <tbody>
-            @php $excludes = ['']; @endphp
-            @foreach($recordDisplay as $key)
-                @php
-                    $element = str_replace('.', '', $fieldMappings[$key] ?? '');
-                @endphp
-
-                @if(isset($record[$element]) && !in_array($key, $excludes))
-                    <tr>
-                        <th>{{ $key }}</th>
-                        <td>
-                            @foreach($record[$element] as $index => $metadatavalue)
-                                @if(in_array($key, $filters))
-                                    @php
-                                        $origFilter = urlencode($metadatavalue);
-                                        $lowerOrigFilter = urlencode(strtolower($metadatavalue));
-                                    @endphp
-                                    <a href="./search/*:*/{{ $key }}:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22" title="{{ $metadatavalue }}">{{ $metadatavalue }}</a>
-                                @else
-                                    {{ $metadatavalue }}
-                                @endif
-
-                                @if($index < count($record[$element]) - 1)
-                                    ;
-                                @endif
-                            @endforeach
-                        </td>
-                    </tr>
+    <div id="stc-section5" class="panel panel-default container-fluid">
+        <div class="panel-heading straight-borders">
+            <h2 class="panel-title hidden-sm hidden-xs">
+                <a class="accordion-toggle" data-toggle="collapse" href="#collapse1">Catalogue Data <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+            </h2>
+            <h4 class="panel-title hidden-md hidden-lg">
+                <a class="accordion-toggle" data-toggle="collapse" href="#collapse1">Catalogue Data <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+            </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse">
+            <div class="panel-body">
+                @if($shelfmark !== '')
+                    <p><strong>Shelfmark:</strong> {{ $shelfmark }}</p>
                 @endif
-            @endforeach
-            </tbody>
-        </table>
-
-        @if(isset($record[$bitstreamField]))
-            @php
-                $descriptionField = str_replace('.', '', $fieldMappings['Description'] ?? '');
-                $descriptionValue = '';
-                if ($descriptionField && isset($record[$descriptionField])) {
-                    $descriptionValue = is_array($record[$descriptionField])
-                        ? ($record[$descriptionField][0] ?? '')
-                        : $record[$descriptionField];
-                }
-                $altText = $descriptionValue !== '' ? $descriptionValue : $recordTitle;
-
-                $bitstreamArray = [];
-                foreach ($record[$bitstreamField] as $bitstreamForArray) {
-                    $segments = explode('##', $bitstreamForArray);
-                    $seq = $segments[4] ?? null;
-                    if ($seq !== null) {
-                        $bitstreamArray[$seq] = $bitstreamForArray;
-                    }
-                }
-                ksort($bitstreamArray);
-
-                $thumbnailMap = [];
-                if (isset($record[$thumbnailField])) {
-                    foreach ($record[$thumbnailField] as $thumbnail) {
-                        $tSegments = explode('##', $thumbnail);
-                        $tFilename = $tSegments[1] ?? '';
-                        if ($tFilename !== '') {
-                            $thumbnailMap[$tFilename] = $thumbnail;
-                        }
-                    }
-                }
-
-                $imageLinks = [];
-                $audioLink = '';
-                $videoLink = '';
-                $audioFile = false;
-                $videoFile = false;
-            @endphp
-
-            <div class="record_bitstreams">
-                <h3>Digital Objects</h3>
-
-                <p>Click on the thumbnail to see the image in greater detail.</p>
-
-                @foreach($bitstreamArray as $bitstream)
-                    @php
-                        $bSegments = explode('##', $bitstream);
-                        $bFilename = $bSegments[1] ?? '';
-                        $bHandle = $bSegments[3] ?? '';
-                        $bSeq = $bSegments[4] ?? '';
-                        $bHandleId = preg_replace('/^.*\//', '', $bHandle);
-                        $bUri = './record/' . $bHandleId . '/' . $bSeq . '/' . $bFilename;
-                    @endphp
-
-                    @if(str_contains(strtolower($bFilename), '.jpg') || str_contains(strtolower($bFilename), '.jpeg'))
-                        @php
-                            $thumbnailKey = $bFilename . '.jpg';
-                            if (isset($thumbnailMap[$thumbnailKey])) {
-                                $tSegments = explode('##', $thumbnailMap[$thumbnailKey]);
-                                $tSeq = $tSegments[4] ?? '';
-                                $tFilename = $tSegments[1] ?? '';
-                                $tUri = './record/' . $bHandleId . '/' . $tSeq . '/' . $tFilename;
-
-                                $imageLinks[] = '<a title="' . e($recordTitle) . '" class="fancybox" href="' . $bUri . '">'
-                                    . '<img src="' . $tUri . '" title="' . e($recordTitle) . '" alt="' . e($altText) . '"></a>';
-                            }
-                        @endphp
-
-                    @elseif(str_contains(strtolower($bFilename), '.mp3'))
-                        @php
-                            $audioLink .= '<audio controls>';
-                            $audioLink .= '<source src="' . $bUri . '" type="audio/mpeg" />Audio loading...';
-                            $audioLink .= '</audio>';
-                            $audioFile = true;
-                        @endphp
-
-                    @elseif(str_contains(strtolower($bFilename), '.mp4'))
-                        @php
-                            $bUri = $mediaUri . $bHandleId . '/' . $bSeq . '/' . $bFilename;
-                            $ua = (string) request()->userAgent();
-                            $mp4ok = ! str_contains($ua, 'Chrome') || str_contains($ua, 'Edge');
-
-                            if ($mp4ok) {
-                                $videoLink .= '<div class="flowplayer" title="' . e($recordTitle) . ': ' . e($bFilename) . '">';
-                                $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
-                                $videoLink .= '<source src="' . $bUri . '" type="video/mp4" />Video loading...';
-                                $videoLink .= '</video></div>';
-                                $videoFile = true;
-                            }
-                        @endphp
-
-                    @elseif(str_contains(strtolower($bFilename), '.webm'))
-                        @php
-                            $ua = (string) request()->userAgent();
-                            if (! str_contains($ua, 'Edge') && str_contains($ua, 'Chrome')) {
-                                $bUri = $mediaUri . $bHandleId . '/' . $bSeq . '/' . $bFilename;
-                                $videoLink .= '<div class="flowplayer" title="' . e($recordTitle) . ': ' . e($bFilename) . '">';
-                                $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
-                                $videoLink .= '<source src="' . $bUri . '" type="video/webm" />Video loading...';
-                                $videoLink .= '</video></div>';
-                                $videoFile = true;
-                            }
-                        @endphp
-                    @endif
-                @endforeach
-
-                {!! implode(' ', $imageLinks) !!}
-
-                @if($audioFile)
-                    {!! $audioLink !!}
-                @endif
-
-                @if($videoFile)
-                    {!! $videoLink !!}
-                @endif
-
-                {{-- Legacy low-resolution disclaimer mirrored from the live Special Collections record page. --}}
-                <p>Please note: for performance and security reasons, we only show low resolution media on this site. If you need access to the high resolution original, please send the Centre for Research Collections an <a href="{{ url('/speccoll/feedback') }}">email</a>.</p>
             </div>
-            <div class="clearfix"></div>
-        @endif
+        </div>
     </div>
 
-    <input type="button" value="Back to Search Results" class="backbtn" onClick="history.go(-1);">
+    <div id="stc-section6" class="col-xs-12 related inactive container-fluid">
+        <h2 class="itemtitle hidden-sm hidden-xs">Related Items</h2>
+        <h4 class="itemtitle hidden-md hidden-lg">Related Items</h4>
 
-@endsection
+        @if(! empty($relatedItems))
+            <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 150 }'>
+                @foreach($relatedItems as $relatedItem)
+                    @php
+                        $relatedTitle = $firstValue($relatedItem, $titleField, 'Untitled');
 
-@if(! empty($relatedItems))
-    @section('sidebar')
-        @php
-            $relatedTitleField = str_replace('.', '', config('skylight.field_mappings.Title', ''));
-            $relatedTypeField = str_replace('.', '', config('skylight.field_mappings.Type', ''));
-            $relatedDateField = str_replace('.', '', config('skylight.field_mappings.Date', ''));
-            $relatedThumbnailField = str_replace('.', '', config('skylight.field_mappings.Thumbnail', ''));
-            $relatedImageUriField = str_replace('.', '', config('skylight.field_mappings.ImageUri', ''));
-            $relatedCount = count($relatedItems);
-        @endphp
+                        $relatedId = '';
+                        if (isset($relatedItem['id'])) {
+                            $relatedId = is_array($relatedItem['id'])
+                                ? ($relatedItem['id'][0] ?? '')
+                                : $relatedItem['id'];
+                        }
 
-        <h4>Related Items</h4>
-        <ul class="related">
-            @foreach($relatedItems as $index => $relatedItem)
-                @php
-                    $relatedTitle = 'Untitled';
-                    if (! empty($relatedItem[$relatedTitleField])) {
-                        $titleValue = $relatedItem[$relatedTitleField];
-                        $relatedTitle = is_array($titleValue) ? ($titleValue[0] ?? 'Untitled') : $titleValue;
-                    }
+                        $lunaUrl = null;
+                        if ($imageUriField !== '' && ! empty($relatedItem[$imageUriField])) {
+                            $imageUris = is_array($relatedItem[$imageUriField])
+                                ? $relatedItem[$imageUriField]
+                                : [$relatedItem[$imageUriField]];
+                            foreach ($imageUris as $candidate) {
+                                if (str_contains((string) $candidate, 'luna')) {
+                                    $lunaUrl = str_replace('http://', 'https://', (string) $candidate);
+                                    break;
+                                }
+                            }
+                        }
+                    @endphp
 
-                    $relatedId = null;
-                    if (isset($relatedItem['id'])) {
-                        $relatedId = is_array($relatedItem['id']) ? ($relatedItem['id'][0] ?? null) : $relatedItem['id'];
-                    } elseif (isset($relatedItem['handle'])) {
-                        $handle = is_array($relatedItem['handle']) ? ($relatedItem['handle'][0] ?? '') : $relatedItem['handle'];
-                        $relatedId = preg_replace('/^.*\//', '', (string) $handle);
-                    }
-
-                    $relatedType = null;
-                    if (! empty($relatedItem[$relatedTypeField])) {
-                        $typeValue = $relatedItem[$relatedTypeField];
-                        $relatedType = is_array($typeValue) ? ($typeValue[0] ?? null) : $typeValue;
-                    }
-
-                    $relatedDate = null;
-                    if ($relatedDateField && ! empty($relatedItem[$relatedDateField])) {
-                        $dateValue = $relatedItem[$relatedDateField];
-                        $relatedDate = is_array($dateValue) ? ($dateValue[0] ?? null) : $dateValue;
-                    }
-
-                    $iconClass = 'small-icon';
-                    if ($relatedType !== null) {
-                        $iconClass .= ' media-' . strtolower(str_replace(' ', '-', $relatedType));
-                    } else {
-                        $iconClass .= ' media-image';
-                    }
-
-                    $liClass = '';
-                    if ($index === 0) {
-                        $liClass = ' class="first"';
-                    } elseif ($index === $relatedCount - 1) {
-                        $liClass = ' class="last"';
-                    }
-                @endphp
-
-                <li{!! $liClass !!}>
-                    <span class="{{ $iconClass }}"></span>
-                    @if($relatedId)
-                        <a href="./record/{{ $relatedId }}" title="{{ $relatedTitle }}">{{ $relatedTitle }}</a>
-                    @else
-                        <span>{{ $relatedTitle }}</span>
-                    @endif
-
-                    <div class="tags">
-                        @if($relatedDate)
-                            <span>({{ $relatedDate }})</span>
+                    <div class="grid-item thumbnail">
+                        @if($lunaUrl)
+                            <a href="./record/{{ $relatedId }} " title="{{ $relatedTitle }}"><img src="{{ $lunaUrl }}" class="record-thumbnail-landscape" title="{{ $relatedTitle }}" alt="{{ $relatedTitle }}" /></a>
+                        @else
+                            <a href="./record/{{ $relatedId }}" title="{{ $relatedTitle }}"> No Image for this </a>
                         @endif
+                        <p class="text-center hidden-xs">
+                            <a href="./record/{{ $relatedId }} ">{{ $relatedTitle }}</a>
+                        </p>
+                        <p class="text-center hidden-md hidden-sm hidden-lg">
+                            <small><a href="./record/{{ $relatedId }} ">{{ $relatedTitle }}</a></small>
+                        </p>
                     </div>
-                </li>
-            @endforeach
-        </ul>
-    @endsection
-@endif
+                @endforeach
+                <script>
+                    var $grid = $('.grid').imagesLoaded( function() {
+                        $grid.masonry({});
+                    });
+                </script>
+            </div>
+        @else
+            None.
+            <div class="spacer"></div>
+        @endif
+    </div>
+</div>
+@endsection

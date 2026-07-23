@@ -1,6 +1,6 @@
-@extends('layouts.art')
+@extends('layouts.alumni')
 
-@section('title', 'Advanced Search - University of Edinburgh Art Collection')
+@section('title', 'Advanced Search - University of Edinburgh Historical Alumni')
 
 @section('content')
 
@@ -9,7 +9,7 @@
 
 <div class="searchform" style="display:block">
     <p><strong>Hint: </strong> To match an exact phrase, try using quotation marks, eg. <em>"a search phrase"</em></p>
-<form action="{{ url('/art/advanced/post') }}" method="post" accept-charset="utf-8">
+<form action="{{ url('/alumni/advanced/post') }}" method="post" accept-charset="utf-8">
 @csrf
 @foreach($searchFields as $label => $field)
 @php $escapedLabel = str_replace(' ', '_', $label); @endphp

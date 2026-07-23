@@ -2,6 +2,8 @@
 
 @section('title', 'Library and University Collections - Iconics - About')
 
+@section('layout', 'full')
+
 @section('content')
 <div class="content">
     <div class="content byEditor">

@@ -88,6 +88,110 @@ it('links the Laing 2015 calendar with the double-encoded subject filter shape',
         ->and($html)->toContain('/Subject:%22images+from+the+david+laing+collection+2015%7C%7C%7CImages+from+the+David+Laing+Collection+2015%22');
 });
 
+it('renders calendars search results with the legacy Subject byline and no Author link', function (): void {
+    config([
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Author' => 'dc.contributor.author.en',
+            'Subject' => 'dc.subject.en',
+            'Bitstream' => 'dc.format.original.en',
+            'Thumbnail' => 'dc.format.thumbnail.en',
+            'ImageUri' => 'dc.identifier.uri.en',
+        ],
+    ]);
+
+    $html = view('calendars.search.results', [
+        'query' => '*:*',
+        'docs' => [
+            [
+                'id' => '52840',
+                'dctitleen' => ['Civitates Orbis Terrarum'],
+                'dccontributorauthoren' => ['Georg Braun'],
+                'dcsubjecten' => ['Cities of the World 2016'],
+            ],
+        ],
+        'total' => 130,
+        'startRow' => 1,
+        'endRow' => 1,
+        'sort_options' => ['Title' => 'dc.title_sort'],
+        'base_search' => './search/*:*',
+        'base_parameters' => '',
+        'paginationLinks' => '',
+    ])->render();
+
+    expect($html)
+        ->toContain('Civitates Orbis Terrarum')
+        ->and($html)->toContain('/Subject:%22cities+of+the+world+2016+%7C%7C%7C+Cities+of+the+World+2016%22')
+        ->and($html)->toContain('>Cities of the World 2016</a>')
+        ->and($html)->not->toContain('class="author"')
+        ->and($html)->not->toContain('/Author:%22georg+braun');
+});
+
+it('renders the calendars record page as the legacy main-image + full-metadata layout', function (): void {
+    config([
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Author' => 'dc.contributor.author.en',
+            'Subject' => 'dc.subject.en',
+            'Description' => 'dc.description.en',
+            'Shelf Mark' => 'dc.identifier.en',
+            'Link' => 'dc.identifier.uri.en',
+            'Bitstream' => 'dc.format.original.en',
+            'Thumbnail' => 'dc.format.thumbnail.en',
+        ],
+        'skylight.filters' => [
+            'Subject' => 'subject_filter',
+        ],
+        'skylight.schema_links' => [
+            'Title' => 'name',
+            'Author' => 'creator',
+            'Description' => 'description',
+        ],
+    ]);
+
+    $html = view('calendars.record.show', [
+        'record' => [
+            'dctitleen' => ["A 'wind-chariot' on the beach in Holland"],
+            'dccontributorauthoren' => ['Michael van Meer'],
+            'dcsubjecten' => ['Travel 2008'],
+            'dcdescriptionen' => ['Album Amicorum details.'],
+            'dcidentifierurien' => ['http://images.is.ed.ac.uk/luna/servlet/s/89hg46'],
+            'dcformatoriginalen' => [
+                'thumb##January.jpg##desc##10683/19397##1##',
+            ],
+        ],
+        'recordTitle' => "A 'wind-chariot' on the beach in Holland",
+        'recordDisplay' => ['Title', 'Author', 'Subject', 'Description'],
+        'fieldMappings' => config('skylight.field_mappings'),
+        'filters' => array_keys(config('skylight.filters', [])),
+        'bitstreamField' => 'dcformatoriginalen',
+        'thumbnailField' => 'dcformatthumbnailen',
+        'bitstreams' => [],
+        'relatedItems' => [],
+    ])->render();
+
+    // Legacy calendars record.php:
+    //  - `<h1 class="itemtitle">` (no date suffix)
+    //  - schema.org CreativeWork wrapper
+    //  - .tags with buggy legacy subject link shape (%22SubjectXX+|||+YY%22)
+    //  - .record_bitstreams > .main-image (fancybox) for the first .jpg
+    //  - .full-metadata > table with .schema.org spans, facet links for
+    //    filter fields, and a "Zoomable Image" row for images.is.ed.ac.uk
+    //    links.
+    expect($html)
+        ->toContain('<h1 class="itemtitle">')
+        ->and($html)->toContain('itemscope itemtype="http://schema.org/CreativeWork"')
+        ->and($html)->toContain('/%22Subjecttravel+2008+%7C%7C%7C+Travel+2008%22')
+        ->and($html)->toContain('<div class="main-image">')
+        ->and($html)->toContain('class="record-main-image"')
+        ->and($html)->toContain('<div class="full-metadata">')
+        ->and($html)->toContain('<span itemprop="creator">')
+        ->and($html)->toContain('<span itemprop="description">')
+        ->and($html)->toContain('/Subject:%22travel+2008+%7C%7C%7C+Travel+2008%22')
+        ->and($html)->toContain('<tr><th>Zoomable Image</th>')
+        ->and($html)->toContain('fa-file-image-o');
+});
+
 it('loads calendars-specific skylight config when /calendars is requested', function (): void {
     fakeCalendarsSolr();
 

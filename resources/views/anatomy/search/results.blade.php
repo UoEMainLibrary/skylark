@@ -94,15 +94,27 @@
                                             $origFilter = urlencode($author);
                                             $lowerOrigFilter = urlencode(strtolower($author));
                                         @endphp
-                                        <a class="author" href="./search/*:*/Author:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">
-                                            {{ $author }}
-                                        </a>
+                                        <a class="artist" href="./search/*:*/Author:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">{{ $author }}</a>
                                     @endforeach
                                 @endif
 
+                                @php
+                                    $dateSuffix = '';
+                                    if (array_key_exists($dateField, $doc)) {
+                                        $dateVal = is_array($doc[$dateField]) ? ($doc[$dateField][0] ?? '') : $doc[$dateField];
+                                        if ($dateVal !== '') {
+                                            $dateSuffix = ' ('.$dateVal.')';
+                                        }
+                                    } elseif (array_key_exists('dateIssuedyear', $doc)) {
+                                        $issued = is_array($doc['dateIssuedyear']) ? ($doc['dateIssuedyear'][0] ?? '') : $doc['dateIssuedyear'];
+                                        if ($issued !== '') {
+                                            $dateSuffix = ' ( '.$issued.')';
+                                        }
+                                    }
+                                @endphp
                                 <h3>
                                     <a href="{{ url('/anatomy/record/' . $doc['id'].'?highlight='.$query) }}">
-                                        {{ $title }}
+                                        {{ $title }}{{ $dateSuffix }}
                                     </a>
                                 </h3>
 
