@@ -263,6 +263,15 @@ class SearchController extends Controller
 
     /**
      * Display advanced search results
+     *
+     * Builds a Solr `q` Lucene query from the user-supplied search fields
+     * combined with the chosen operator (AND/OR). We do not use `fq` for the
+     * user terms because the legacy DSpace 6 client wrapped fq values with
+     * `*value*` substring wildcards — without that wrapping, `fq=text:test`
+     * matches only documents whose text field equals exactly "test" (and
+     * `text` is typically a copy field that is searchable as the default
+     * field, not as a direct fq target). Putting the terms into `q` lets
+     * Solr apply its analyzer and default search field correctly.
      */
     public function advancedSearch(Request $request, ?string $filters = null)
     {
@@ -273,7 +282,7 @@ class SearchController extends Controller
         $rows = (int) $request->get('num_results', config('skylight.results_per_page'));
         $offset = (int) $request->get('offset', 0);
         $sortBy = $request->get('sort_by', '');
-        $operator = $request->get('operator', 'OR');
+        $operator = strtoupper($request->get('operator', 'OR')) === 'AND' ? 'AND' : 'OR';
 
         // Parse filter segments from the URL path
         $rawUri = strtok($request->getRequestUri(), '?');
@@ -281,9 +290,15 @@ class SearchController extends Controller
         $pos = strpos($rawUri, $searchPrefix);
         $filterString = $pos !== false ? substr($rawUri, $pos + strlen($searchPrefix)) : '';
 
-        $solrFilters = [];
+        // Fall back to the route parameter when the URI doesn't include the
+        // expected prefix (e.g. dedicated host that mounts the routes at /).
+        if ($filterString === '' && is_string($filters) && $filters !== '') {
+            $filterString = $filters;
+        }
+
         $urlFilters = [];
         $savedSearch = [];
+        $queryClauses = [];
         $message = '<h3>Currently searching the following fields:</h3>';
 
         if (! empty($filterString)) {
@@ -298,31 +313,53 @@ class SearchController extends Controller
 
                 if (count($parts) === 2) {
                     $fieldLabel = $parts[0];
-                    $fieldValue = $parts[1];
+                    $fieldValue = trim($parts[1]);
 
-                    if (isset($searchFields[$fieldLabel])) {
-                        $solrFilters[] = $searchFields[$fieldLabel].':'.$fieldValue;
-                        $savedSearch[$fieldLabel] = $fieldValue;
-                        $message .= '<strong>'.$fieldLabel.'</strong> : '.urldecode($fieldValue).'<br/>';
+                    if ($fieldValue === '' || ! isset($searchFields[$fieldLabel])) {
+                        continue;
+                    }
+
+                    $solrField = $searchFields[$fieldLabel];
+                    $savedSearch[$fieldLabel] = $fieldValue;
+                    $message .= '<strong>'.$fieldLabel.'</strong> : '.$fieldValue.'<br/>';
+
+                    // Wrap unquoted multi-word values in parentheses so that the
+                    // operator joining clauses doesn't accidentally split them.
+                    $clauseValue = $fieldValue;
+                    if (! str_starts_with($clauseValue, '"') && str_contains($clauseValue, ' ')) {
+                        $clauseValue = '('.$clauseValue.')';
+                    }
+
+                    // For the special `text` copy field (which DSpace exposes
+                    // as the default search field), drop the field prefix so
+                    // Solr falls back to its `df` rather than trying to query
+                    // `text` directly as a Lucene field.
+                    if ($solrField === 'text' || $solrField === '_text_') {
+                        $queryClauses[] = $clauseValue;
+                    } else {
+                        $queryClauses[] = $solrField.':'.$clauseValue;
                     }
                 }
             }
         }
 
+        $queryString = empty($queryClauses)
+            ? '*:*'
+            : implode(' '.$operator.' ', $queryClauses);
+
         $repository = $this->repositoryFactory->current();
-        $solrFilters = SolrFilterQuery::onlyValid($solrFilters);
 
         try {
             $results = $repository->searchWithHighlighting(
-                '*:*',
-                $solrFilters,
+                $queryString,
+                [],
                 $offset,
                 $sortBy,
                 $rows,
                 []
             );
         } catch (\Exception $e) {
-            return $this->searchFailureResponse($e, '*:*');
+            return $this->searchFailureResponse($e, $queryString);
         }
 
         $baseSearch = url("{$prefix}/advanced/search");
@@ -349,7 +386,7 @@ class SearchController extends Controller
         $data = [
             'docs' => $results['docs'],
             'total' => $results['total'],
-            'query' => '*:*',
+            'query' => $queryString,
             'searchbox_query' => '',
             'base_search' => $baseSearch,
             'base_parameters' => $baseParameters,
@@ -487,6 +524,17 @@ class SearchController extends Controller
     /**
      * Build pagination links
      */
+    /**
+     * Build pagination links matching legacy skylight markup.
+     *
+     * Legacy CI Pagination emits `&nbsp;<span class="curpage">N</span>` for
+     * the current page and `&nbsp;<a href="...">N</a>` for the rest, with
+     * `&lt;` / `&gt;` prev/next chevrons and a `Last &rsaquo;` jump when
+     * the current page is far enough from the end. Every collection CSS
+     * (calendars, archivemedia, anatomy, iconics, speccoll, ...) styles
+     * `.pagination a` / `.curpage`, not Bootstrap `.pagination > li`, so
+     * the bootstrap markup previously emitted here rendered unstyled.
+     */
     protected function buildPaginationLinks(
         int $total,
         int $rows,
@@ -494,44 +542,56 @@ class SearchController extends Controller
         string $baseUrl,
         string $baseParameters
     ): string {
-        $currentPage = floor($offset / $rows) + 1;
-        $totalPages = max(1, ceil($total / $rows));
-        $numLinks = 4; // Number of links on each side
+        $currentPage = (int) (floor($offset / $rows) + 1);
+        $totalPages = max(1, (int) ceil($total / $rows));
+        $numLinks = 4; // number of page links on each side of the current
 
-        $links = '<ul class="pagination pagination-sm pagination-xs">';
-
-        // Previous link
-        if ($currentPage > 1) {
-            $prevOffset = ($currentPage - 2) * $rows;
-            $prevUrl = $baseUrl.$baseParameters.($baseParameters ? '&' : '?')."offset={$prevOffset}";
-            $links .= "<li><a href=\"{$prevUrl}\">&laquo;</a></li>";
+        if ($totalPages <= 1) {
+            return '';
         }
 
-        // Page links
+        $urlFor = function (int $page) use ($baseUrl, $baseParameters, $rows): string {
+            $pageOffset = ($page - 1) * $rows;
+            $separator = $baseParameters !== '' ? '&' : '?';
+
+            return $baseUrl.$baseParameters.$separator.'offset='.$pageOffset;
+        };
+
+        $out = '';
+
+        // First « (only when the current page is far enough into the list)
+        if ($currentPage > ($numLinks + 1)) {
+            $out .= '<a href="'.$urlFor(1).'">&lsaquo; First</a>&nbsp;';
+        }
+
+        // Previous <
+        if ($currentPage > 1) {
+            $out .= '&nbsp;<a href="'.$urlFor($currentPage - 1).'">&lt;</a>';
+        }
+
+        // Windowed page links
         $start = max(1, $currentPage - $numLinks);
         $end = min($totalPages, $currentPage + $numLinks);
 
         for ($i = $start; $i <= $end; $i++) {
-            $pageOffset = ($i - 1) * $rows;
-            $pageUrl = $baseUrl.$baseParameters.($baseParameters ? '&' : '?')."offset={$pageOffset}";
-
-            if ($i == $currentPage) {
-                $links .= "<li class=\"active\"><span>{$i}</span></li>";
+            if ($i === $currentPage) {
+                $out .= '&nbsp;<span class="curpage">'.$i.'</span>';
             } else {
-                $links .= "<li><a href=\"{$pageUrl}\">{$i}</a></li>";
+                $out .= '&nbsp;<a href="'.$urlFor($i).'">'.$i.'</a>';
             }
         }
 
-        // Next link
+        // Next >
         if ($currentPage < $totalPages) {
-            $nextOffset = $currentPage * $rows;
-            $nextUrl = $baseUrl.$baseParameters.($baseParameters ? '&' : '?')."offset={$nextOffset}";
-            $links .= "<li><a href=\"{$nextUrl}\">&raquo;</a></li>";
+            $out .= '&nbsp;<a href="'.$urlFor($currentPage + 1).'">&gt;</a>&nbsp;';
         }
 
-        $links .= '</ul>';
+        // Last »
+        if (($currentPage + $numLinks) < $totalPages) {
+            $out .= '&nbsp;<a href="'.$urlFor($totalPages).'">Last &rsaquo;</a>';
+        }
 
-        return $links;
+        return $out;
     }
 
     protected function searchFailureResponse(\Throwable $e, string $query)

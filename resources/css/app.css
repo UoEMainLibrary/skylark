@@ -54,6 +54,38 @@
 }
 
 @layer components {
+    /*
+     * Shared pagination styles for collections that use Tailwind/`app.css`
+     * (geddes-v2, public-art-v2, eerc-v2, …). Skylark's shared
+     * SearchController::buildPaginationLinks() emits Bootstrap-style
+     * `<ul class="pagination"><li>…</li></ul>` markup, which relies on
+     * Bootstrap CSS to lay items out inline. Tailwind's preflight clears
+     * list styles but leaves `<li>` at `display: list-item`, so the page
+     * numbers stack vertically. Force them inline here.
+     */
+    ul.pagination {
+        @apply inline-flex flex-wrap items-center justify-center gap-1 p-0;
+        list-style: none;
+    }
+
+    ul.pagination > li {
+        @apply inline-block;
+        list-style: none;
+    }
+
+    ul.pagination > li > a,
+    ul.pagination > li > span {
+        @apply inline-block rounded px-3 py-1 text-sm no-underline;
+    }
+
+    ul.pagination > li > a {
+        @apply text-gray-700 hover:bg-gray-100 hover:underline;
+    }
+
+    ul.pagination > li.active > span {
+        @apply bg-gray-200 font-semibold text-gray-900;
+    }
+
     .geddes-content h1 {
         @apply text-xl leading-6 font-bold text-geddes-heading;
     }

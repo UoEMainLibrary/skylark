@@ -80,6 +80,24 @@ it('renders geddes v2 home slideshow without duplicate breakpoint columns', func
         ->assertDontSee('class="col-lg"', false);
 });
 
+it('compiles shared pagination styles so ul.pagination renders inline in Tailwind layouts', function () {
+    // Geddes v2, public-art v2, eerc v2 etc. all rely on @vite('resources/css/app.css').
+    // The shared ul.pagination CSS rules must survive the Vite/Tailwind
+    // preflight so any view that still emits Bootstrap-shaped pagination
+    // renders on one line rather than stacking as list items.
+    $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+    $cssEntry = collect($manifest)
+        ->first(fn (array $entry): bool => isset($entry['file']) && str_ends_with($entry['file'], '.css'));
+
+    expect($cssEntry)->not->toBeNull();
+
+    $css = file_get_contents(public_path('build/'.$cssEntry['file']));
+
+    expect($css)
+        ->toContain('ul.pagination')
+        ->toContain('inline-block');
+});
+
 it('renders the geddes accessibility statement as a standalone Viki-template page', function (string $skin): void {
     config(['skylight.geddes_skin_version' => $skin === 'v1' ? 1 : 2]);
 
