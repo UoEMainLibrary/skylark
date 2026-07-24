@@ -86,7 +86,7 @@
                             <div class="iteminfo">
 
                                 <h3>
-                                    <a href="{{ url('/calendars/record/' . $doc['id'].'?highlight='.$query) }}">
+                                    <a href="{{ url('/calendars/record/' . $doc['id']).'?highlight='.urlencode($query) }}">
                                         {{ $title }}
                                     </a>
                                 </h3>
