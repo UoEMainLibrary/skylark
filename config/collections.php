@@ -56,6 +56,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Temporarily disabled collections
+    |--------------------------------------------------------------------------
+    |
+    | Comma-separated collection keys in DISABLED_COLLECTIONS (e.g.
+    | "bodylanguage" or "bodylanguage,anatomy"). Matching prefixes/hosts
+    | return HTTP 503 with a short "temporarily unavailable" page.
+    | Routes and config stay in the codebase — flip the env var to re-enable.
+    | See docs/collection-migration.md § "Temporarily disable a collection".
+    |
+    */
+    'disabled' => array_values(array_filter(array_map(
+        static fn (string $name): string => trim($name),
+        explode(',', (string) env('DISABLED_COLLECTIONS', '')),
+    ))),
+
+    /*
+    |--------------------------------------------------------------------------
     | Collection Detection
     |--------------------------------------------------------------------------
     |

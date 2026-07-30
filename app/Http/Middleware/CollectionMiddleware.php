@@ -45,6 +45,15 @@ class CollectionMiddleware
         view()->share('collection_at_dedicated_host', $atDedicatedHost);
         view()->share('collectionUrl', static fn (string $path = ''): string => CollectionUrl::url($path));
 
+        if (in_array($collection, config('collections.disabled', []), true)) {
+            return response()
+                ->view('errors.collection-unavailable', [
+                    'collection' => $collection,
+                    'fullname' => (string) config('skylight.fullname', $collection),
+                ], 503)
+                ->header('Retry-After', '3600');
+        }
+
         return $next($request);
     }
 
