@@ -6,8 +6,6 @@
 @php
     $fieldMappings = config('skylight.field_mappings', []);
     $filters       = array_keys(config('skylight.filters', []));
-    $mediaUri      = (string) config('skylight.media_url_prefix', '');
-
     $fieldKey = static function (string $displayName) use ($fieldMappings): string {
         return str_replace('.', '', $fieldMappings[$displayName] ?? '');
     };
@@ -55,6 +53,14 @@
             }
         }
 
+        $recordHasMp4 = false;
+        foreach ($bitstreamArray as $bitstreamForVideoCheck) {
+            if (str_contains(strtolower(explode('##', (string) $bitstreamForVideoCheck)[1] ?? ''), '.mp4')) {
+                $recordHasMp4 = true;
+                break;
+            }
+        }
+
         foreach ($bitstreamArray as $bs) {
             $bSegments = explode('##', (string) $bs);
             $bFilename = $bSegments[1] ?? '';
@@ -93,26 +99,13 @@
                 $audioLink .= '<source src="'.$bUri.'" type="audio/mpeg" />Audio loading...';
                 $audioLink .= '</audio>';
                 $audioFile = true;
-            } elseif (str_contains($lower, '.mp4')) {
-                $mediaBUri = $mediaUri.$bHandleId.'/'.$bSeq.'/'.$bFilename;
-                $ua = (string) request()->userAgent();
-                if (! str_contains($ua, 'Chrome') || str_contains($ua, 'Edge')) {
-                    $videoLink .= '<div class="flowplayer" title="'.e($recordTitle).': '.e($bFilename).'">';
-                    $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
-                    $videoLink .= '<source src="'.$mediaBUri.'" type="video/mp4" />Video loading...';
-                    $videoLink .= '</video></div>';
-                    $videoFile = true;
-                }
-            } elseif (str_contains($lower, '.webm')) {
-                $ua = (string) request()->userAgent();
-                if (! str_contains($ua, 'Edge') && str_contains($ua, 'Chrome')) {
-                    $mediaBUri = $mediaUri.$bHandleId.'/'.$bSeq.'/'.$bFilename;
-                    $videoLink .= '<div class="flowplayer" title="'.e($recordTitle).': '.e($bFilename).'">';
-                    $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
-                    $videoLink .= '<source src="'.$mediaBUri.'" type="video/webm" />Video loading...';
-                    $videoLink .= '</video></div>';
-                    $videoFile = true;
-                }
+            } elseif (\App\Helpers\BitstreamHelper::shouldRenderVideoFilename($bFilename, $recordHasMp4)) {
+                $videoType = str_contains($lower, '.webm') ? 'video/webm' : 'video/mp4';
+                $videoLink .= '<div class="flowplayer" title="'.e($recordTitle).': '.e($bFilename).'">';
+                $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
+                $videoLink .= '<source src="'.e($bUri).'" type="'.$videoType.'" />Video loading...';
+                $videoLink .= '</video></div>';
+                $videoFile = true;
             }
         }
     }

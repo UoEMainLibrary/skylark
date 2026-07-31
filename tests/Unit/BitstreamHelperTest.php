@@ -1,8 +1,9 @@
 <?php
 
 use App\Helpers\BitstreamHelper;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class);
+uses(TestCase::class);
 
 it('rejects json mime even when filename ends with .pdf', function () {
     $s = 'application/json##0340008c.pdf##123##10683/121624##1##';
@@ -40,4 +41,26 @@ it('builds root bitstream proxy URL when collection path prefix is empty', funct
     $url = BitstreamHelper::getCollectionProxiedUrl($meta);
     expect($url)->toContain('/record/121624/1/doc.pdf');
     expect($url)->not->toContain('/openbooks/');
+});
+
+it('drops webm bitstreams when an mp4 sibling is present', function () {
+    $mp4 = 'video/mp4##clip.mp4##0##10683/22138##2##';
+    $webm = 'video/webm##clip.webm##0##10683/22138##3##';
+
+    expect(BitstreamHelper::preferMp4VideoBitstreams([$webm, $mp4]))
+        ->toBe([$mp4]);
+});
+
+it('keeps webm when no mp4 is available', function () {
+    $webm = 'video/webm##clip.webm##0##10683/22138##3##';
+
+    expect(BitstreamHelper::preferMp4VideoBitstreams([$webm]))
+        ->toBe([$webm]);
+});
+
+it('renders mp4 always and webm only when the record has no mp4', function () {
+    expect(BitstreamHelper::shouldRenderVideoFilename('clip.mp4', true))->toBeTrue()
+        ->and(BitstreamHelper::shouldRenderVideoFilename('clip.webm', true))->toBeFalse()
+        ->and(BitstreamHelper::shouldRenderVideoFilename('clip.webm', false))->toBeTrue()
+        ->and(BitstreamHelper::shouldRenderVideoFilename('photo.jpg', true))->toBeFalse();
 });
