@@ -240,4 +240,68 @@ class BitstreamHelper
 
         return str_contains($lower, '.mp4') || str_contains($lower, '.webm');
     }
+
+    public static function isMp4(string $metadataValue): bool
+    {
+        return str_contains(strtolower(self::getFilename($metadataValue)), '.mp4');
+    }
+
+    public static function isWebm(string $metadataValue): bool
+    {
+        return str_contains(strtolower(self::getFilename($metadataValue)), '.webm');
+    }
+
+    /**
+     * Prefer MP4 over WebM when both formats are present for a record.
+     *
+     * Legacy Skylight sniffed the User-Agent and showed one format per browser.
+     * Modern browsers play MP4 reliably, so we drop WebM siblings whenever any
+     * MP4 exists. WebM-only records still return their WebM bitstreams.
+     *
+     * @param  list<string>  $metadataValues
+     * @return list<string>
+     */
+    public static function preferMp4VideoBitstreams(array $metadataValues): array
+    {
+        $videos = array_values(array_filter(
+            $metadataValues,
+            static fn (string $b): bool => self::isVideo($b)
+        ));
+
+        $hasMp4 = false;
+        foreach ($videos as $video) {
+            if (self::isMp4($video)) {
+                $hasMp4 = true;
+                break;
+            }
+        }
+
+        if (! $hasMp4) {
+            return $videos;
+        }
+
+        return array_values(array_filter(
+            $videos,
+            static fn (string $b): bool => self::isMp4($b)
+        ));
+    }
+
+    /**
+     * Whether a video filename should be rendered, given whether the record
+     * already has at least one MP4 bitstream.
+     */
+    public static function shouldRenderVideoFilename(string $filename, bool $recordHasMp4): bool
+    {
+        $lower = strtolower($filename);
+
+        if (str_contains($lower, '.mp4')) {
+            return true;
+        }
+
+        if (str_contains($lower, '.webm')) {
+            return ! $recordHasMp4;
+        }
+
+        return false;
+    }
 }

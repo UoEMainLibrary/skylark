@@ -142,6 +142,7 @@ class RecordController extends Controller
         // Sort and process bitstreams
         $imageArray = [];
         $pdfBitstreams = [];
+        $videoBitstreams = [];
         foreach ($bitstreams as $bitstream) {
             $seq = BitstreamHelper::getSequence($bitstream);
 
@@ -153,13 +154,17 @@ class RecordController extends Controller
                     'filename' => BitstreamHelper::getFilename($bitstream),
                 ];
             } elseif (BitstreamHelper::isVideo($bitstream)) {
-                $parsed['video'][] = [
-                    'uri' => BitstreamHelper::getUri($bitstream),
-                    'filename' => BitstreamHelper::getFilename($bitstream),
-                ];
+                $videoBitstreams[] = $bitstream;
             } elseif (BitstreamHelper::isPdf($bitstream)) {
                 $pdfBitstreams[] = $bitstream;
             }
+        }
+
+        foreach (BitstreamHelper::preferMp4VideoBitstreams($videoBitstreams) as $bitstream) {
+            $parsed['video'][] = [
+                'uri' => BitstreamHelper::getCollectionProxiedUrl($bitstream),
+                'filename' => BitstreamHelper::getFilename($bitstream),
+            ];
         }
 
         foreach (BitstreamHelper::orderPdfBitstreamsForDownload($pdfBitstreams) as $bitstream) {

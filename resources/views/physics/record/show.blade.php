@@ -23,7 +23,6 @@
     $accNoField = str_replace('.', '', $fieldMappings['Accession Number'] ?? '');
 
     $filters = array_keys(config('skylight.filters', []));
-    $mediaUri = config('skylight.media_url_prefix');
     $schema = config('skylight.schema_links', []);
 
     $type = 'Unknown';
@@ -177,6 +176,14 @@
                 $videoLink = '';
                 $audioFile = false;
                 $videoFile = false;
+                $recordHasMp4 = false;
+                foreach ($bitstreamArray as $bitstreamForVideoCheck) {
+                    $checkName = strtolower(explode('##', $bitstreamForVideoCheck)[1] ?? '');
+                    if (str_contains($checkName, '.mp4')) {
+                        $recordHasMp4 = true;
+                        break;
+                    }
+                }
             @endphp
 
             <div class="record_bitstreams">
@@ -191,6 +198,8 @@
                         $bHandle = $bSegments[3] ?? '';
                         $bSeq = $bSegments[4] ?? '';
                         $bHandleId = preg_replace('/^.*\//', '', $bHandle);
+                        // Same app-proxy path as image thumbnails so dedicated SOPA_HOST
+                        // and /physics both resolve via <base href> + /record/...
                         $bUri = './record/' . $bHandleId . '/' . $bSeq . '/' . $bFilename;
                     @endphp
 
@@ -216,32 +225,14 @@
                             $audioFile = true;
                         @endphp
 
-                    @elseif(str_contains(strtolower($bFilename), '.mp4'))
+                    @elseif(\App\Helpers\BitstreamHelper::shouldRenderVideoFilename($bFilename, $recordHasMp4))
                         @php
-                            $bUri = $mediaUri . $bHandleId . '/' . $bSeq . '/' . $bFilename;
-                            $ua = (string) request()->userAgent();
-                            $mp4ok = ! str_contains($ua, 'Chrome') || str_contains($ua, 'Edge');
-
-                            if ($mp4ok) {
-                                $videoLink .= '<div class="flowplayer" title="' . e($recordTitle) . ': ' . e($bFilename) . '">';
-                                $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
-                                $videoLink .= '<source src="' . $bUri . '" type="video/mp4" />Video loading...';
-                                $videoLink .= '</video></div>';
-                                $videoFile = true;
-                            }
-                        @endphp
-
-                    @elseif(str_contains(strtolower($bFilename), '.webm'))
-                        @php
-                            $ua = (string) request()->userAgent();
-                            if (! str_contains($ua, 'Edge') && str_contains($ua, 'Chrome')) {
-                                $bUri = $mediaUri . $bHandleId . '/' . $bSeq . '/' . $bFilename;
-                                $videoLink .= '<div class="flowplayer" title="' . e($recordTitle) . ': ' . e($bFilename) . '">';
-                                $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
-                                $videoLink .= '<source src="' . $bUri . '" type="video/webm" />Video loading...';
-                                $videoLink .= '</video></div>';
-                                $videoFile = true;
-                            }
+                            $videoType = str_contains(strtolower($bFilename), '.webm') ? 'video/webm' : 'video/mp4';
+                            $videoLink .= '<div class="flowplayer" title="' . e($recordTitle) . ': ' . e($bFilename) . '">';
+                            $videoLink .= '<video preload="auto" loop width="100%" height="auto" controls width="660">';
+                            $videoLink .= '<source src="' . e($bUri) . '" type="' . $videoType . '" />Video loading...';
+                            $videoLink .= '</video></div>';
+                            $videoFile = true;
                         @endphp
                     @endif
                 @endforeach

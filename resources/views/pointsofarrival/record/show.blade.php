@@ -70,6 +70,13 @@
                 }
             }
             ksort($byOrder);
+            $recordHasMp4 = false;
+            foreach ($byOrder as $bitstreamForVideoCheck) {
+                if (str_contains(strtolower(explode('##', $bitstreamForVideoCheck)[1] ?? ''), '.mp4')) {
+                    $recordHasMp4 = true;
+                    break;
+                }
+            }
             foreach ($byOrder as $bs) {
                 $segs = explode('##', $bs);
                 $bFilename = $segs[1] ?? '';
@@ -85,12 +92,10 @@
                 if (str_ends_with($lower, '.mp3')) {
                     $audioLink .= '<div itemprop="audio" itemscope itemtype="http://schema.org/AudioObject"></div>';
                     $audioLink .= '<audio controls><source src="' . e($localUri) . '" type="audio/mpeg" />Audio loading...</audio>';
-                } elseif (str_ends_with($lower, '.mp4')) {
+                } elseif (\App\Helpers\BitstreamHelper::shouldRenderVideoFilename($bFilename, $recordHasMp4)) {
+                    $videoType = str_ends_with($lower, '.webm') ? 'video/webm' : 'video/mp4';
                     $videoLink .= '<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject"></div>';
-                    $videoLink .= '<div class="flowplayer" data-analytics="' . e(config('skylight.ga_code')) . '" title="' . e($recordTitle . ': ' . $bFilename) . '"><video preload="auto" loop controls width="100%" height="auto"><source src="' . e($remoteUri) . '" type="video/mp4" />Video loading...</video></div>';
-                } elseif (str_ends_with($lower, '.webm')) {
-                    $videoLink .= '<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject"></div>';
-                    $videoLink .= '<div class="flowplayer" data-analytics="' . e(config('skylight.ga_code')) . '" title="' . e($recordTitle . ': ' . $bFilename) . '"><video preload="auto" loop controls width="100%" height="auto"><source src="' . e($remoteUri) . '" type="video/webm" />Video loading...</video></div>';
+                    $videoLink .= '<div class="flowplayer" data-analytics="' . e(config('skylight.ga_code')) . '" title="' . e($recordTitle . ': ' . $bFilename) . '"><video preload="auto" loop controls width="100%" height="auto"><source src="' . e($remoteUri) . '" type="' . $videoType . '" />Video loading...</video></div>';
                 } elseif (str_ends_with($lower, '.json')) {
                     $manifest = url("/pointsofarrival/record/{$bHandleId}/{$bSeq}/{$bFilename}");
                     $jsonLink .= '<span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest=' . e($manifest) . '" target="_blank" rel="noopener" class="uvlogo" title="View in UV"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
