@@ -213,6 +213,7 @@ $record = $this->solr->getRecord('10683/98434');
 ## Documentation
 
 - **[docs/collection-migration.md](docs/collection-migration.md)** — Registering collections, config, routes, views, and migrating templates from Skylight (CodeIgniter).
+- **[docs/laravel-upgrade-guide.md](docs/laravel-upgrade-guide.md)** — How to patch Laravel within the current major, how to approach a major upgrade, and which Composer hooks already run in this repository.
 
 ## Technology Stack
 
@@ -311,7 +312,7 @@ php artisan app:solr-poc [--query=search_term]
 3. **`npm install`** then **`npm run build`** — Node deps and a Vite production asset build.
 4. **Clears Laravel caches** — `config:clear`, `view:clear`, `route:clear`, `cache:clear`.
 
-Run it from the project root (e.g. `./deploy.sh`). It does **not** run database migrations, `php artisan optimize`, or queue restarts—add those separately if your environment needs them.
+Run it from the project root (e.g. `./deploy.sh`). It **does** run database migrations. It does **not** run `php artisan optimize` or queue restarts, so add those separately if your environment needs them.
 
 ## Environment Variables
 

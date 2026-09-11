@@ -40,7 +40,7 @@
 
                 <p>The work of the EERC and the RESP has been entirely funded by the Scotland Inheritance Fund and now, through this website, is preserved and made available on an open access basis under the ongoing care of the Centre for Research Collections at the University of Edinburgh.</p>
 
-                <p>You can <a href="{{ asset('collections/eerc/documents/background-to-the-resp-26-3-26.docx') }}" class="font-medium text-resp-teal-600 hover:underline" target="_blank" rel="noopener">read more about the EERC, RESP and the Archive Project<span class="sr-only"> (opens in a new tab)</span></a> here.</p>
+                <p>You can <a href="{{ asset('collections/eerc/documents/background-to-the-resp-26-3-26.pdf') }}" class="font-medium text-resp-teal-600 hover:underline" target="_blank" rel="noopener">read more about the EERC, RESP and the Archive Project<span class="sr-only"> (opens in a new tab)</span></a> here.</p>
 
                 <div class="clear-both"></div>
             @endif

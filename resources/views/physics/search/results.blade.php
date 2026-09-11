@@ -101,7 +101,7 @@
                                 @endif
 
                                 <h3>
-                                    <a href="{{ url('/physics/record/' . $doc['id'].'?highlight='.$query) }}">
+                                    <a href="{{ url('/physics/record/' . $doc['id']).'?highlight='.urlencode($query) }}">
                                         {{ $title }}
                                     </a>
                                 </h3>

@@ -127,6 +127,42 @@ it('renders pagination links on the physics search results page', function (): v
         ->and($html)->not->toContain('{!! $paginationLinks !!}');
 });
 
+it('renders record videos via the /record/ proxy and prefers mp4 over webm', function (): void {
+    config([
+        'skylight.field_mappings' => [
+            'Title' => 'dc.title.en',
+            'Bitstream' => 'dc.format.original.en',
+            'Thumbnail' => 'dc.format.thumbnail.en',
+        ],
+        // Empty media_url_prefix used to produce broken src="22138/2/file.mp4".
+        'skylight.media_url_prefix' => '',
+    ]);
+
+    $html = view('physics.record.show', [
+        'record' => [
+            'dctitleen' => ['EMEC Billia Croo'],
+            'dcformatoriginalen' => [
+                'video/mp4##clip.mp4##0##10683/22138##2##',
+                'video/webm##clip.webm##0##10683/22138##3##',
+            ],
+        ],
+        'recordTitle' => 'EMEC Billia Croo',
+        'recordDisplay' => [],
+        'fieldMappings' => config('skylight.field_mappings'),
+        'filters' => [],
+        'bitstreamField' => 'dcformatoriginalen',
+        'thumbnailField' => 'dcformatthumbnailen',
+        'bitstreams' => [],
+        'relatedItems' => [],
+    ])->render();
+
+    expect($html)
+        ->toContain('src="./record/22138/2/clip.mp4"')
+        ->and($html)->toContain('type="video/mp4"')
+        ->and($html)->not->toContain('clip.webm')
+        ->and($html)->not->toContain('src="22138/2/clip.mp4"');
+});
+
 it('renders bitstreams as inline thumbnails (not as a full-resolution main image)', function (): void {
     config([
         'skylight.field_mappings' => [

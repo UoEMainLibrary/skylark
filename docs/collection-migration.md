@@ -230,6 +230,48 @@ Work **per directory** (e.g. one collection’s views at a time) and review each
 
 ---
 
+## Temporarily disable a collection
+
+Use this when a collection should stay in the codebase but not be publicly reachable (e.g. not ready for launch).
+
+### What to set
+
+In the environment (Laravel Cloud / `.env`), set:
+
+```dotenv
+DISABLED_COLLECTIONS=bodylanguage
+```
+
+Multiple collections, comma-separated:
+
+```dotenv
+DISABLED_COLLECTIONS=bodylanguage,anatomy
+```
+
+Keys must match entries in [`config/collections.php`](../config/collections.php) (`available` / `prefixes`), e.g. `bodylanguage`, `iog`, `art-on-campus` is **not** the key — Public Art’s key is `public-art` (the URL prefix `art-on-campus` maps to that key; disable with `public-art`).
+
+### What visitors see
+
+Any URL for that collection (home, search, record, dedicated hostname if configured) returns **HTTP 503** with a short “temporarily unavailable” page ([`resources/views/errors/collection-unavailable.blade.php`](../resources/views/errors/collection-unavailable.blade.php)). Routes and views stay in the repo — nothing is deleted.
+
+### Re-enable
+
+Remove the key from `DISABLED_COLLECTIONS`, or clear the variable entirely, then refresh config if it is cached:
+
+```bash
+php artisan config:clear
+```
+
+(or redeploy so the new env is picked up).
+
+### Notes for operators
+
+- No code deploy is required for on/off if you only change the env var — but **cached config** must be cleared or the app redeployed.
+- Disabling the **default** collection (`clds` unless overridden) will 503 the site root (`/`). Prefer not to do that unless intentional.
+- Feature tests leave `DISABLED_COLLECTIONS` empty so collection suites keep exercising the live UI.
+
+---
+
 ## Optional improvements for many collections
 
 - **Route registration:** Extend [`CollectionRouteRegistrar`](../app/Routing/CollectionRouteRegistrar.php) or add metadata in `config/collections.php` so new DSpace collections only declare options, not copy-paste route groups.

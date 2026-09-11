@@ -113,7 +113,7 @@
                                     }
                                 @endphp
                                 <h3>
-                                    <a href="{{ url('/archivemedia/record/' . $doc['id'].'?highlight='.$query) }}">
+                                    <a href="{{ url('/archivemedia/record/' . $doc['id']).'?highlight='.urlencode($query) }}">
                                         {{ $title }}{{ $dateSuffix }}
                                     </a>
                                 </h3>
