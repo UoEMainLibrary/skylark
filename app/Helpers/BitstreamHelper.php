@@ -136,7 +136,7 @@ class BitstreamHelper
 
         return str_replace(
             'https://digitalpreservation.is.ed.ac.uk',
-            rtrim(config('app.url'), '/'),
+            rtrim((string) config('services.dspace.rewrite_base_url', config('app.url')), '/'),
             $url
         );
     }

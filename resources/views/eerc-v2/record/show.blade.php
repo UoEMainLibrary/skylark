@@ -105,6 +105,16 @@
                                                 $photos = [];
                                                 $audioFiles = [];
                                                 $videoFiles = [];
+                                                $transcriptMatchKeys = [];
+
+                                                $buildMatchKey = static function (string $title, string $uriPath): string {
+                                                    $trimmedTitle = trim($title);
+                                                    if ($trimmedTitle !== '' && str_contains($trimmedTitle, '.')) {
+                                                        return strtolower(pathinfo($trimmedTitle, PATHINFO_FILENAME));
+                                                    }
+
+                                                    return strtolower(pathinfo(rawurldecode($uriPath), PATHINFO_FILENAME));
+                                                };
 
                                                 foreach ($digitalObjectIds as $digitalObjectId) {
                                                     try {
@@ -127,19 +137,28 @@
                                                                 foreach ($jsonArray as $digitalObj) {
                                                                     $digitalObj = is_string($digitalObj) ? json_decode($digitalObj, true) : $digitalObj;
 
+                                                                    if (! is_array($digitalObj)) {
+                                                                        continue;
+                                                                    }
+
                                                                     if (isset($digitalObj['file_versions'][0])) {
                                                                         $doFile = $digitalObj['title'] ?? '';
-                                                                        $doUrl = \App\Helpers\BitstreamHelper::rewriteBitstreamUrl($digitalObj['file_versions'][0]['file_uri'] ?? '');
+                                                                        $fileUri = $digitalObj['file_versions'][0]['file_uri'] ?? '';
+                                                                        $doUrl = \App\Helpers\BitstreamHelper::rewriteBitstreamUrl($fileUri);
+                                                                        $normalizedTitle = strtolower(trim($doFile));
+                                                                        $normalizedUriPath = strtolower(rawurldecode((string) parse_url($fileUri, PHP_URL_PATH)));
+                                                                        $matchKey = $buildMatchKey($doFile, $normalizedUriPath);
 
-                                                                        if (str_ends_with(strtolower($doFile), '.mp3') || str_ends_with(strtolower($doFile), '.wav')) {
+                                                                        if (str_ends_with($normalizedTitle, '.mp3') || str_ends_with($normalizedTitle, '.wav') || str_ends_with($normalizedUriPath, '.mp3') || str_ends_with($normalizedUriPath, '.wav')) {
                                                                             $audioFiles[] = ['url' => $doUrl, 'file' => $doFile];
-                                                                        } elseif (str_ends_with(strtolower($doFile), '.jpg') || str_ends_with(strtolower($doFile), '.jpeg') || str_ends_with(strtolower($doFile), '.png') || str_ends_with(strtolower($doFile), '.gif') || str_ends_with(strtolower($doFile), '.webp')) {
+                                                                        } elseif (str_ends_with($normalizedTitle, '.jpg') || str_ends_with($normalizedTitle, '.jpeg') || str_ends_with($normalizedTitle, '.png') || str_ends_with($normalizedTitle, '.gif') || str_ends_with($normalizedTitle, '.webp') || str_ends_with($normalizedUriPath, '.jpg') || str_ends_with($normalizedUriPath, '.jpeg') || str_ends_with($normalizedUriPath, '.png') || str_ends_with($normalizedUriPath, '.gif') || str_ends_with($normalizedUriPath, '.webp')) {
                                                                             $doTitleShort = substr($doFile, 0, strrpos($doFile, '.'));
-                                                                            $photos[] = ['url' => $doUrl, 'title' => $doTitleShort];
-                                                                        } elseif (str_ends_with(strtolower($doFile), '.pdf')) {
+                                                                            $photos[] = ['url' => $doUrl, 'title' => $doTitleShort, 'match_key' => $matchKey];
+                                                                        } elseif (str_ends_with($normalizedTitle, '.pdf') || str_ends_with($normalizedUriPath, '.pdf')) {
                                                                             $doTitleShort = substr($doFile, 0, strrpos($doFile, '.'));
-                                                                            $transcripts[] = ['url' => $doUrl, 'title' => $doTitleShort];
-                                                                        } elseif (str_ends_with(strtolower($doFile), '.mp4') || str_ends_with(strtolower($doFile), '.mov') || str_ends_with(strtolower($doFile), '.m4v')) {
+                                                                            $transcripts[] = ['url' => $doUrl, 'title' => $doTitleShort, 'match_key' => $matchKey];
+                                                                            $transcriptMatchKeys[$matchKey] = $doUrl;
+                                                                        } elseif (str_ends_with($normalizedTitle, '.mp4') || str_ends_with($normalizedTitle, '.mov') || str_ends_with($normalizedTitle, '.m4v') || str_ends_with($normalizedUriPath, '.mp4') || str_ends_with($normalizedUriPath, '.mov') || str_ends_with($normalizedUriPath, '.m4v')) {
                                                                             $videoFiles[] = ['url' => $doUrl, 'file' => $doFile];
                                                                         }
                                                                     }
@@ -148,12 +167,50 @@
                                                         }
                                                     } catch (\Exception $e) {}
                                                 }
+
+                                                $pairedPhotoMatchKeys = [];
+
+                                                foreach ($photos as &$photo) {
+                                                    $matchKey = $photo['match_key'] ?? '';
+                                                    if ($matchKey !== '' && isset($transcriptMatchKeys[$matchKey])) {
+                                                        $photo['link_url'] = $transcriptMatchKeys[$matchKey];
+                                                        $photo['links_to_pdf'] = true;
+                                                        $pairedPhotoMatchKeys[] = $matchKey;
+                                                    } else {
+                                                        $photo['link_url'] = $photo['url'];
+                                                        $photo['links_to_pdf'] = false;
+                                                    }
+                                                }
+                                                unset($photo);
+
+                                                $standalonePhotos = array_values(array_filter($photos, static function (array $photo): bool {
+                                                    return ! ($photo['links_to_pdf'] ?? false);
+                                                }));
+
+                                                $pdfLinkedPhotos = array_values(array_filter($photos, static function (array $photo): bool {
+                                                    return $photo['links_to_pdf'] ?? false;
+                                                }));
+
+                                                $transcripts = array_values(array_filter($transcripts, static function (array $transcript) use ($pairedPhotoMatchKeys): bool {
+                                                    return ! in_array($transcript['match_key'] ?? '', $pairedPhotoMatchKeys, true);
+                                                }));
                                             @endphp
 
-                                            @if(count($photos) > 0)
+                                            @if(count($standalonePhotos) > 0)
                                                 <div class="flex flex-wrap gap-3 mb-4">
-                                                    @foreach($photos as $photo)
-                                                        <a href="{{ $photo['url'] }}" title="Photograph {{ $photo['title'] }}">
+                                                    @foreach($standalonePhotos as $photo)
+                                                        <a href="{{ $photo['link_url'] }}" title="Photograph {{ $photo['title'] }}">
+                                                            <img src="{{ $photo['url'] }}" alt="Photograph {{ $photo['title'] }}" class="w-60 rounded-lg shadow-sm">
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+
+                                            @if(count($pdfLinkedPhotos) > 0)
+                                                <p class="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-600">PDF links</p>
+                                                <div class="flex flex-wrap gap-3 mb-4">
+                                                    @foreach($pdfLinkedPhotos as $photo)
+                                                        <a href="{{ $photo['link_url'] }}" title="Photograph {{ $photo['title'] }}">
                                                             <img src="{{ $photo['url'] }}" alt="Photograph {{ $photo['title'] }}" class="w-60 rounded-lg shadow-sm">
                                                         </a>
                                                     @endforeach
@@ -180,6 +237,7 @@
                                                     @endforeach
                                                 </div>
                                             @endif
+
                                         @elseif($displayField === 'Interview summary')
                                             @php
                                                 $summary = is_array($record[$displayField]) ? ($record[$displayField][0] ?? '') : $record[$displayField];

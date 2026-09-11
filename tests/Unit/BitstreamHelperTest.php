@@ -43,6 +43,18 @@ it('builds root bitstream proxy URL when collection path prefix is empty', funct
     expect($url)->not->toContain('/openbooks/');
 });
 
+it('rewrites bitstream URLs to the configured rewrite base URL', function () {
+    config([
+        'services.dspace.rewrite_bitstream_urls' => true,
+        'services.dspace.rewrite_base_url' => 'http://localhost:8080',
+        'app.url' => 'http://localhost',
+    ]);
+
+    $url = BitstreamHelper::rewriteBitstreamUrl('https://digitalpreservation.is.ed.ac.uk/bitstream/handle/20.500.12734/57108/image.jpg');
+
+    expect($url)->toBe('http://localhost:8080/bitstream/handle/20.500.12734/57108/image.jpg');
+});
+
 it('drops webm bitstreams when an mp4 sibling is present', function () {
     $mp4 = 'video/mp4##clip.mp4##0##10683/22138##2##';
     $webm = 'video/webm##clip.webm##0##10683/22138##3##';
