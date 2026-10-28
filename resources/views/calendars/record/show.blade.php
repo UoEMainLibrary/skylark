@@ -129,7 +129,7 @@
                     $orig  = urlencode($subject);
                     $lower = urlencode(strtolower($subject));
                 @endphp
-                <a class="$month" href="./search/*:*/%22Subject{{ $lower }}+%7C%7C%7C+{{ $orig }}%22">{{ $subject }}</a>
+                <a class="$month" href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/%22Subject{{ $lower }}+%7C%7C%7C+{{ $orig }}%22">{{ $subject }}</a>
             @endforeach
         @endif
     </div>
@@ -181,7 +181,7 @@
                                 $orig  = urlencode($metadatavalue);
                                 $lower = urlencode(strtolower($metadatavalue));
                                 if ($isFilter) {
-                                    $link = '<a href="./search/*:*/'.$key.':%22'.$lower.'+%7C%7C%7C+'.$orig.'%22" title="'.e($metadatavalue).'">'.e($metadatavalue).'</a>';
+                                    $link = '<a href="'.e(\App\Support\CollectionUrl::url('search/*:*')).'/'.$key.':%22'.$lower.'+%7C%7C%7C+'.$orig.'%22" title="'.e($metadatavalue).'">'.e($metadatavalue).'</a>';
                                     $rowsHtml .= $schemaProp
                                         ? '<span itemprop="'.e($schemaProp).'">'.$link.'</span>'
                                         : $link;
@@ -266,7 +266,7 @@
                                     $orig  = ucwords(urlencode($author));
                                     $lower = urlencode(strtolower($author));
                                 @endphp
-                                <a href="./search/*:*/Maker:%22{{ $lower }}+%7C%7C%7C+{{ $orig }}%22">{{ $author }}</a>
+                                <a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Maker:%22{{ $lower }}+%7C%7C%7C+{{ $orig }}%22">{{ $author }}</a>
                             @endforeach
                         @endif
                     </div>

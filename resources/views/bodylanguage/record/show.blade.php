@@ -56,7 +56,7 @@
                                 @foreach($values as $index => $metadatavalue)
                                     @if(in_array($displayField, $filterKeys, true) && is_string($metadatavalue))
                                         @php $origFilter = urlencode($metadatavalue); @endphp
-                                        <a href="./search/*:*/{{ $displayField }}:%22{{ $origFilter }}%22" class="resultslist-link">{{ $metadatavalue }}</a>
+                                        <a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/{{ $displayField }}:%22{{ $origFilter }}%22" class="resultslist-link">{{ $metadatavalue }}</a>
                                     @elseif($displayField === 'Identifier')
                                         @if(! $idShown)
                                             {{ $metadatavalue }}

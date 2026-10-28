@@ -144,7 +144,7 @@
                             $orig  = urlencode($author);
                             $lower = urlencode(strtolower($author));
                         @endphp
-                        <a class="artist" href="./search/*:*/Artist:%22{{ $lower }}+%7C%7C%7C+{{ $orig }}%22">{{ $author }}</a>
+                        <a class="artist" href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Artist:%22{{ $lower }}+%7C%7C%7C+{{ $orig }}%22">{{ $author }}</a>
                     @endforeach
                 @endif
             </div>
@@ -268,7 +268,7 @@
                                     $orig  = ucwords(urlencode($author));
                                     $lower = urlencode(strtolower($author));
                                 @endphp
-                                <a href="./search/*:*/Artist:%22{{ $lower }}+%7C%7C%7C+{{ $orig }}%22" title="{{ $author }}">{{ $author }}</a>
+                                <a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Artist:%22{{ $lower }}+%7C%7C%7C+{{ $orig }}%22" title="{{ $author }}">{{ $author }}</a>
                             @endforeach
                         @endif
                     </div>
