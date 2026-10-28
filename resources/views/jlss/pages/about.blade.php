@@ -106,16 +106,16 @@
             <li class="list-group-item active">
                 <a href="./browse/Collection" alt="sidae bar facet link" title="Click to view all Collections">Collection</a>
             </li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;theatre+%7C%7C%7C+Theatre&quot;">Theatre</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;serving+their+country+%7C%7C%7C+Serving+Their+Country&quot;">Serving Their Country</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;migration+%7C%7C%7C+Migration&quot;">Migration</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;refugee+period+%7C%7C%7C+Refugee+Period&quot;">Refugee Period</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;religious+life+%7C%7C%7C+Religious+life&quot;">Religious Life</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;art+%7C%7C%7C+Art&quot;">Art</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;soviet+jewry+%7C%7C%7C+Soviet+Jewry&quot;">Soviet Jewry</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;scottish+communities+%7C%7C%7C+Scottish+Communities&quot;">Scottish Communities</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;women+%7C%7C%7C+Women&quot;">Women</a></li>
-            <li class="list-group-item"><a href="./search/*:*/Collection:&quot;relations+with+wider+community+%7C%7C%7C+Relations+with+wider+community&quot;">Relations with the Wider Community</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;theatre+%7C%7C%7C+Theatre&quot;">Theatre</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;serving+their+country+%7C%7C%7C+Serving+Their+Country&quot;">Serving Their Country</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;migration+%7C%7C%7C+Migration&quot;">Migration</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;refugee+period+%7C%7C%7C+Refugee+Period&quot;">Refugee Period</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;religious+life+%7C%7C%7C+Religious+life&quot;">Religious Life</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;art+%7C%7C%7C+Art&quot;">Art</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;soviet+jewry+%7C%7C%7C+Soviet+Jewry&quot;">Soviet Jewry</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;scottish+communities+%7C%7C%7C+Scottish+Communities&quot;">Scottish Communities</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;women+%7C%7C%7C+Women&quot;">Women</a></li>
+            <li class="list-group-item"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Collection:&quot;relations+with+wider+community+%7C%7C%7C+Relations+with+wider+community&quot;">Relations with the Wider Community</a></li>
         </ul>
     </div>
 </div>

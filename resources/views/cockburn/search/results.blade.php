@@ -94,7 +94,7 @@
                                             $origFilter = urlencode($author);
                                             $lowerOrigFilter = urlencode(strtolower($author));
                                         @endphp
-                                        <a class="author" href="./search/*:*/Author:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">
+                                        <a class="author" href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Author:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">
                                             {{ $author }}
                                         </a>
                                     @endforeach

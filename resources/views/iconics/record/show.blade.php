@@ -202,7 +202,7 @@
                                 $lower = urlencode(strtolower($metadatavalue));
                                 $inner = '';
                                 if ($isFilter) {
-                                    $inner = '<a href="./search/*:*/'.$key.':%22'.$lower.'+%7C%7C%7C+'.$orig.'%22" title="'.e($metadatavalue).'">'.e($metadatavalue).'</a>';
+                                    $inner = '<a href="'.e(\App\Support\CollectionUrl::url('search/*:*')).'/'.$key.':%22'.$lower.'+%7C%7C%7C+'.$orig.'%22" title="'.e($metadatavalue).'">'.e($metadatavalue).'</a>';
                                     if ($schemaProp !== null) {
                                         $inner = '<span itemprop="'.e($schemaProp).'">'.$inner.'</span>';
                                     }
@@ -252,7 +252,7 @@
                         $orig  = urlencode($tag);
                         $lower = urlencode(strtolower($tag));
                     @endphp
-                    <span class="crowd-tag"><a href="./search/*:*/Tags:%22{{ $lower }}+%7C%7C%7C+{{ $orig }}%22"><i class="fa fa-tags fa-lg">&nbsp;</i>{{ $tag }}</a></span>
+                    <span class="crowd-tag"><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Tags:%22{{ $lower }}+%7C%7C%7C+{{ $orig }}%22"><i class="fa fa-tags fa-lg">&nbsp;</i>{{ $tag }}</a></span>
                 @endforeach
                 <div class="crowd-info">
                     <form id="libraylabs" method="get" action="https://librarylabs.ed.ac.uk/games/gameCrowdSourcing.php" target="_blank">

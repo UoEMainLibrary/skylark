@@ -89,7 +89,7 @@
                     $origFilter = preg_replace('/ /', '+', $author);
                     $origFilter = preg_replace('/,/', '%2C', $origFilter);
                 @endphp
-                <a href='./search/*/Author:"{{ $origFilter }}"'>{{ $author }}</a>
+                <a href='{{ \App\Support\CollectionUrl::url('search/*') }}/Author:"{{ $origFilter }}"'>{{ $author }}</a>
             @endforeach
         @endif
     </div>
@@ -128,7 +128,7 @@
                                         $origFilter = urlencode($metadatavalue);
                                         $lowerOrigFilter = urlencode(strtolower($metadatavalue));
                                     @endphp
-                                    <a href="./search/*:*/{{ $key }}:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22" title="{{ $metadatavalue }}">{{ $metadatavalue }}</a>
+                                    <a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/{{ $key }}:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22" title="{{ $metadatavalue }}">{{ $metadatavalue }}</a>
                                 @else
                                     {{ $metadatavalue }}
                                 @endif
@@ -366,7 +366,7 @@
 
                     <div class="tags">
                         @if($relatedType && $relatedTypeFilter)
-                            <a href="./search/*:*/Type:%22{{ $relatedTypeFilter }}%22">{{ $relatedType }}</a>
+                            <a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Type:%22{{ $relatedTypeFilter }}%22">{{ $relatedType }}</a>
                         @endif
                     </div>
                 </li>
