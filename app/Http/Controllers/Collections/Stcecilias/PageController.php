@@ -21,8 +21,12 @@ class PageController extends Controller
      * to `stcecilias.pages.<name>` via the per-collection view convention;
      * the IIIF info page is custom and rendered by {@see iiif()} below.
      */
-    public function home()
+    public function home(): View
     {
+        if (config('stcecilias.museum_enabled')) {
+            return app(MuseumController::class)->page();
+        }
+
         return view('stcecilias.home');
     }
 
