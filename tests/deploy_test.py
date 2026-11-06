@@ -88,17 +88,29 @@ esac
     def test_launcher_can_configure_without_deploying(self):
         self.check_launcher(configure=True)
 
-    def check_launcher(self, configure=False):
+    def test_launcher_enters_keychain_password_without_displaying_it(self):
+        self.check_launcher(configure=True, authenticate=True)
+
+    def check_launcher(self, configure=False, authenticate=False):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             ssh = root / 'ssh'
-            ssh.write_text("#!/usr/bin/env python3\nimport os,sys\nfrom pathlib import Path\nprint('$ ', end='', flush=True)\nsys.stdin.readline()\nprint('$ ', end='', flush=True)\nsys.stdin.readline()\nprint('# ', end='', flush=True)\ncommand=''\nwhile True:\n line=sys.stdin.readline()\n command+=line\n if line.strip()=='SKYLARK_LAUNCH' or (not command.startswith('bash ') and line.startswith('cd /apps/')): break\nPath(os.environ['CAPTURE']).write_text(command)\n")
+            ssh.write_text("#!/usr/bin/env python3\nimport os,sys\nfrom pathlib import Path\nprint('$ ', end='', flush=True)\nsys.stdin.readline()\nprint('$ ', end='', flush=True)\nsys.stdin.readline()\nprint('# ', end='', flush=True)\nsys.stdin.readline()\nprint('\\n__UOE_USER__lacddt\\n', flush=True)\ncommand=''\nwhile True:\n line=sys.stdin.readline()\n command+=line\n if line.strip()=='SKYLARK_LAUNCH' or (not command.startswith('bash ') and line.startswith('cd /apps/')): break\nPath(os.environ['CAPTURE']).write_text(command)\n")
+            if authenticate:
+                content = ssh.read_text()
+                content = content.replace("sys.stdin.readline()\nprint('# ',", "sys.stdin.readline()\nprint('Password: ', end='', flush=True)\npassword=sys.stdin.readline().strip()\nassert password=='FAKE_KEYCHAIN_PASSWORD', password\nprint('# ',")
+                ssh.write_text(content)
             ssh.chmod(0o755)
             env = dict(os.environ, PATH=f'{root}:{os.environ["PATH"]}', CAPTURE=str(root / 'command'))
             launcher = SCRIPT.parent.parent / 'deploy-staging'
             capture = (root / 'output').open('w+b')
             arguments = ['--configure-museum'] if configure else ['feature/museum', '--museum']
-            process = subprocess.Popen([str(launcher), *arguments], env=env, stdin=subprocess.PIPE, stdout=capture, stderr=subprocess.PIPE)
+            launch = [str(launcher), *arguments]
+            if authenticate:
+                harness = root / 'keychain-test.exp'
+                harness.write_text('rename exec real_exec\nproc exec {args} { if {[lindex $args 0] eq "/usr/bin/security"} { return "FAKE_KEYCHAIN_PASSWORD" }; return [uplevel 1 [linsert $args 0 real_exec]] }\nset script [lindex $argv 0]\nset argv [lrange $argv 1 end]\nset argc [llength $argv]\nsource $script\n')
+                launch = ['/usr/bin/expect', str(harness), str(launcher), *arguments]
+            process = subprocess.Popen(launch, env=env, stdin=subprocess.PIPE, stdout=capture, stderr=subprocess.PIPE)
             try:
                 try:
                     process.wait(timeout=10)
@@ -108,6 +120,8 @@ esac
                     self.fail((root / 'output').read_text() + errors.decode())
                 output, errors = process.communicate()
                 self.assertEqual(process.returncode, 0, errors.decode())
+                if authenticate:
+                    self.assertNotIn('FAKE_KEYCHAIN_PASSWORD', (root / 'output').read_text())
                 command = (root / 'command').read_text()
                 check = subprocess.run(['bash', '-n'], input=command, text=True, capture_output=True)
                 self.assertEqual(check.returncode, 0, check.stderr)
