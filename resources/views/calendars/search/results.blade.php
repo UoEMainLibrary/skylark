@@ -102,7 +102,7 @@
                                                 $origFilter = urlencode($cleanSubject);
                                                 $lowerOrigFilter = urlencode(strtolower($cleanSubject));
                                             @endphp
-                                            <a href="./search/*:*/Subject:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">{{ $subject }}</a>
+                                            <a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Subject:%22{{ $lowerOrigFilter }}+%7C%7C%7C+{{ $origFilter }}%22">{{ $subject }}</a>
                                         @endforeach
                                     @endif
 

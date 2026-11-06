@@ -115,14 +115,15 @@ it('renders calendars search results with the legacy Subject byline and no Autho
         'startRow' => 1,
         'endRow' => 1,
         'sort_options' => ['Title' => 'dc.title_sort'],
-        'base_search' => './search/*:*',
+        'base_search' => url('/search/*:*'),
         'base_parameters' => '',
         'paginationLinks' => '',
     ])->render();
 
     expect($html)
         ->toContain('Civitates Orbis Terrarum')
-        ->and($html)->toContain('/Subject:%22cities+of+the+world+2016+%7C%7C%7C+Cities+of+the+World+2016%22')
+        ->and($html)->toContain(url('/search/*:*').'/Subject:%22cities+of+the+world+2016+%7C%7C%7C+Cities+of+the+World+2016%22')
+        ->and($html)->not->toContain('href="./search')
         ->and($html)->toContain('>Cities of the World 2016</a>')
         ->and($html)->not->toContain('class="author"')
         ->and($html)->not->toContain('/Author:%22georg+braun');

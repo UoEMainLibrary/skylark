@@ -24,6 +24,7 @@ use App\Http\Controllers\Collections\Physics\PageController as PhysicsController
 use App\Http\Controllers\Collections\Pointsofarrival\PageController as PointsofarrivalController;
 use App\Http\Controllers\Collections\PublicArt\PageController as PublicArtController;
 use App\Http\Controllers\Collections\Speccoll\PageController as SpeccollController;
+use App\Http\Controllers\Collections\Stcecilias\MuseumController;
 use App\Http\Controllers\Collections\Stcecilias\PageController as StceciliasController;
 use App\Http\Controllers\Collections\Towardsdolly\PageController as TowardsdollyController;
 use App\Http\Controllers\PageController;
@@ -381,6 +382,9 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'feedback' => true,
     'extra_routes' => function () {
         Route::get('/iiif', [StceciliasController::class, 'iiif'])->name('iiif');
+        Route::get('/whats-on', [MuseumController::class, 'events'])->name('museum.events');
+        Route::get('/{slug}', [MuseumController::class, 'page'])
+            ->where('slug', 'planning-your-visit|venue-hire')->name('museum.page');
 
         // Legacy "More …" link from the search-results facet sidebar.
         Route::get('/browse/{facet}', [StceciliasController::class, 'browse'])

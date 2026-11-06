@@ -29,3 +29,6 @@ Thumbs.db
 # Local-only agent notes (collection-migration gotchas, personal scratch).
 # See AGENTS.md for committed Laravel Boost guidelines.
 AGENTS.local.md
+
+# Generated nightly by app:refresh-map-data; retain one copy per environment.
+/public/data/eerc_map_locations.json

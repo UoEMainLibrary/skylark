@@ -30,7 +30,7 @@
                                         $origFilter = urlencode($metadataValue);
                                         $lowerFilter = strtolower($metadataValue);
                                         $lowerFilter = urlencode($lowerFilter);
-                                        $searchUrl = "./search/*:*/{$label}:%22{$lowerFilter}+%7C%7C%7C+{$origFilter}%22";
+                                        $searchUrl = \App\Support\CollectionUrl::url('search/*:*')."/{$label}:%22{$lowerFilter}+%7C%7C%7C+{$origFilter}%22";
                                     @endphp
                                     <a href="{{ $searchUrl }}" title="{{ $metadataValue }}">{{ $metadataValue }}</a>
                                 @else

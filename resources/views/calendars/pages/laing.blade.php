@@ -105,7 +105,7 @@
         </p>
 
         {{-- Legacy link uses the double-encoded `|||` filter shape (see AGENTS.local.md). --}}
-        <h2><a href="./search/*:*/Subject:%22images+from+the+david+laing+collection+2015%7C%7C%7CImages+from+the+David+Laing+Collection+2015%22">View 2015 Calendar: Images from the Laing Collection</a></h2>
+        <h2><a href="{{ \App\Support\CollectionUrl::url('search/*:*') }}/Subject:%22images+from+the+david+laing+collection+2015%7C%7C%7CImages+from+the+David+Laing+Collection+2015%22">View 2015 Calendar: Images from the Laing Collection</a></h2>
     </div>
 </div>
 @endsection

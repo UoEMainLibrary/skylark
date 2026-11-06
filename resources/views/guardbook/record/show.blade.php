@@ -50,7 +50,7 @@
                                     @php
                                         $orig_filter = urlencode($metadatavalue);
                                         $lower_orig_filter = urlencode(strtolower($metadatavalue));
-                                        $filterUrl = './search/*:*/' . $key . ':%22' . $lower_orig_filter . '+%7C%7C%7C+' . $orig_filter . '%22';
+                                        $filterUrl = \App\Support\CollectionUrl::url('search/*:*').'/' . $key . ':%22' . $lower_orig_filter . '+%7C%7C%7C+' . $orig_filter . '%22';
                                     @endphp
 
                                     @if(isset($schema[$key]))

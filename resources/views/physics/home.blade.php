@@ -59,7 +59,7 @@
                                     $authorFilter = str_replace(' ', '+', $author);
                                     $authorFilter = str_replace(',', '%2C', $authorFilter);
                                 @endphp
-                                <a href='./search/*/Author:"{{ $authorFilter }}"'>{{ $author }}</a>@if($authorIndex < count($doc[$authorField]) - 1) @endif
+                                <a href='{{ \App\Support\CollectionUrl::url('search/*') }}/Author:"{{ $authorFilter }}"'>{{ $author }}</a>@if($authorIndex < count($doc[$authorField]) - 1) @endif
                             @endforeach
                         @endif
                     </div>
