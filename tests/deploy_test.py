@@ -35,11 +35,71 @@ esac
                 path.write_text(stub)
                 path.chmod(0o755)
             env = dict(os.environ, PATH=f'{binary}:{os.environ["PATH"]}', DEPLOY_ROOT=str(root), TRACE=str(root / 'trace'), SCENARIO=scenario)
-            args = ['bash', str(SCRIPT), 'feature/museum', 'https://example.test']
+            args = ['bash', str(SCRIPT), 'staging', 'https://example.test']
             if museum:
                 args.append('--museum')
             result = subprocess.run(args, env=env, capture_output=True, text=True)
             return result, (root / 'trace').read_text()
+
+    def test_staging_promotion_preserves_both_branches_and_rejects_unsafe_updates(self):
+        promotion = SCRIPT.parent / 'promote-staging.sh'
+        for scenario in ['success', 'conflict', 'dirty', 'push-rejected']:
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                remote = root / 'remote.git'
+                repo = root / 'local'
+                repo.mkdir()
+                subprocess.run(['git', 'init', '--bare', str(remote)], check=True, capture_output=True)
+                def git(*args, check=True):
+                    return subprocess.run(['git', *args], cwd=repo, check=check, capture_output=True, text=True).stdout.strip()
+                git('init', '-b', 'staging')
+                git('config', 'user.email', 'deploy-test@example.test')
+                git('config', 'user.name', 'Deployment Test')
+                (repo / 'shared.txt').write_text('base\n')
+                git('add', '.')
+                git('commit', '-m', 'Base')
+                git('remote', 'add', 'origin', str(remote))
+                git('push', '-u', 'origin', 'staging')
+                git('checkout', '-b', 'feature/museum')
+                (repo / 'museum.txt').write_text('museum content\n')
+                if scenario == 'conflict':
+                    (repo / 'shared.txt').write_text('feature change\n')
+                git('add', '.')
+                git('commit', '-m', 'Museum')
+                git('push', '-u', 'origin', 'feature/museum')
+                git('checkout', 'staging')
+                (repo / 'existing-staging.txt').write_text('other staging work\n')
+                if scenario == 'conflict':
+                    (repo / 'shared.txt').write_text('staging change\n')
+                git('add', '.')
+                git('commit', '-m', 'Other staging work')
+                git('push', 'origin', 'staging')
+                previous_staging = git('rev-parse', 'staging')
+                git('checkout', 'feature/museum')
+                previous_feature = git('rev-parse', 'HEAD')
+                if scenario == 'dirty':
+                    (repo / 'uncommitted.txt').write_text('keep this\n')
+                if scenario == 'push-rejected':
+                    hook = remote / 'hooks/pre-receive'
+                    hook.write_text('#!/bin/sh\nexit 1\n')
+                    hook.chmod(0o755)
+                result = subprocess.run(['bash', str(promotion), 'feature/museum'], env=dict(os.environ, DEPLOY_ROOT=str(repo)), capture_output=True, text=True)
+                self.assertEqual(result.returncode == 0, scenario == 'success', result.stderr)
+                self.assertEqual(git('branch', '--show-current'), 'feature/museum')
+                self.assertEqual(git('rev-parse', 'HEAD'), previous_feature)
+                self.assertEqual(len(git('worktree', 'list', '--porcelain').split('worktree ')) - 1, 1)
+                git('fetch', 'origin', 'staging')
+                if scenario == 'success':
+                    self.assertEqual(git('show', 'origin/staging:museum.txt'), 'museum content')
+                    self.assertEqual(git('show', 'origin/staging:existing-staging.txt'), 'other staging work')
+                    self.assertEqual(git('status', '--porcelain'), '')
+                else:
+                    self.assertEqual(git('rev-parse', 'origin/staging'), previous_staging)
+
+    def test_server_refuses_feature_branch_checkout(self):
+        result = subprocess.run(['bash', str(SCRIPT), 'feature/museum', 'https://example.test'], capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('managed by Puppet on staging', result.stderr)
 
     def test_generated_map_survives_real_branch_switch(self):
         for fail_fetch in [False, True]:
@@ -58,7 +118,7 @@ esac
                 (repo / '.gitignore').write_text('/storage/\n/vendor/\n/.env\n')
                 git('add', '.')
                 git('commit', '-m', 'Tracked map')
-                git('checkout', '-b', 'feature/museum')
+                git('checkout', '-b', 'staging')
                 git('rm', 'public/data/eerc_map_locations.json')
                 with (repo / '.gitignore').open('a') as handle:
                     handle.write('/public/data/eerc_map_locations.json\n')
@@ -79,7 +139,7 @@ esac
                     stub = binary / command
                     stub.write_text('#!/bin/sh\n' + ('printf 200\n' if command == 'curl' else 'exit 0\n'))
                     stub.chmod(0o755)
-                result = subprocess.run(['bash', str(SCRIPT), 'feature/museum', 'https://example.test'], env=dict(os.environ, PATH=f'{binary}:{os.environ["PATH"]}', DEPLOY_ROOT=str(repo)), capture_output=True, text=True)
+                result = subprocess.run(['bash', str(SCRIPT), 'staging', 'https://example.test'], env=dict(os.environ, PATH=f'{binary}:{os.environ["PATH"]}', DEPLOY_ROOT=str(repo)), capture_output=True, text=True)
                 self.assertEqual(result.returncode == 0, not fail_fetch, result.stderr)
                 self.assertEqual(generated.read_bytes(), current)
                 backups = list((repo / 'storage/app/deploy-backups').glob('eerc-map-*'))
@@ -150,7 +210,12 @@ esac
                 ssh.write_text(content)
             ssh.chmod(0o755)
             env = dict(os.environ, PATH=f'{root}:{os.environ["PATH"]}', CAPTURE=str(root / 'command'))
-            launcher = SCRIPT.parent.parent / 'deploy-staging'
+            launcher = root / 'deploy-staging'
+            launcher.write_bytes((SCRIPT.parent.parent / 'deploy-staging').read_bytes())
+            launcher.chmod(0o755)
+            (root / 'skylark').mkdir()
+            (root / 'skylark/deploy-staging.sh').write_bytes(SCRIPT.read_bytes())
+            (root / 'skylark/promote-staging.sh').write_text('echo "simulated promotion: $1"\n')
             capture = (root / 'output').open('w+b')
             arguments = ['--configure-museum'] if configure else ['feature/museum', '--museum']
             launch = [str(launcher), *arguments]
@@ -178,10 +243,11 @@ esac
                     self.assertIn('php artisan config:clear', command)
                     self.assertNotIn('nohup', command)
                 else:
+                    self.assertIn('simulated promotion: feature/museum', (root / 'output').read_text())
                     self.assertIn('nohup env DEPLOY_ROOT=', command)
                     self.assertLess(command.index(': > "$log" || exit 1'), command.index('nohup env DEPLOY_ROOT='))
                     self.assertIn('tail --pid=', command)
-                    self.assertIn("'feature/museum' 'https://test.collections.ed.ac.uk' '--museum'", command)
+                    self.assertIn("'staging' 'https://test.collections.ed.ac.uk' '--museum'", command)
             finally:
                 capture.close()
                 if process.poll() is None:

@@ -12,6 +12,10 @@ if [[ -z "$branch" || ! "$base_url" =~ ^https?://[A-Za-z0-9.-]+(:[0-9]+)?$ || ( 
     exit 2
 fi
 git check-ref-format --branch "$branch" >/dev/null
+if [[ "$branch" != staging ]]; then
+    echo 'ERROR: This server is managed by Puppet on staging. Promote the feature branch with the local deploy-staging launcher first.' >&2
+    exit 1
+fi
 for command in git composer php npm curl flock; do
     command -v "$command" >/dev/null || { echo "Missing required command: $command" >&2; exit 1; }
 done
