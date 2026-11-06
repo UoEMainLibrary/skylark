@@ -22,6 +22,7 @@
 }
 
 .sch-site {
+    --sch-gutter: max(5vw, calc((100vw - 1280px) / 2));
     background:#faf9f6;
     color:#25221f;
     font-family:'Libre Franklin',Arial,sans-serif;
@@ -68,13 +69,13 @@
     display:flex;
     justify-content:space-between;
     gap:20px;
-    padding:9px 5%;
+    padding:9px var(--sch-gutter);
     font-size:11px;
     letter-spacing:.025em;
 }
 
 .sch-header {
-    padding:27px 5%;
+    padding:27px var(--sch-gutter);
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -127,7 +128,7 @@
 }
 
 .sch-hero-copy {
-    padding:80px 11% 60px;
+    padding:80px clamp(24px, 4vw, 64px) 60px var(--sch-gutter);
     background:#650100;
     color:#fff;
 }
@@ -197,7 +198,7 @@
     justify-content:space-between;
     gap:20px;
     flex-wrap:wrap;
-    padding:22px 5%;
+    padding:22px var(--sch-gutter);
     border-bottom:1px solid #dedbd4;
     font-size:12px;
 }
@@ -208,9 +209,7 @@
 }
 
 .sch-content-shell {
-    max-width:1280px;
-    margin:auto;
-    padding:75px 5%;
+    padding:75px var(--sch-gutter);
     display:flex;
     gap:70px;
 }
@@ -252,6 +251,10 @@
 .sch-rich {
     font-size:15px;
     line-height:1.9;
+}
+
+.sch-rich > p, .sch-rich > ul, .sch-rich > ol {
+    max-width:75ch;
 }
 
 .sch-rich p {
@@ -303,7 +306,7 @@
 }
 
 .sch-page-heading {
-    padding:60px 8% 65px;
+    padding:60px var(--sch-gutter) 65px;
     border-bottom:1px solid #dedbd4;
     background:#f0ede6;
 }
@@ -348,9 +351,7 @@
 }
 
 .sch-events-section {
-    max-width:1440px;
-    margin:auto;
-    padding:65px 5% 85px;
+    padding:65px var(--sch-gutter) 85px;
 }
 
 .sch-section-title {
@@ -436,7 +437,7 @@
 
 .sch-collection-banner {
     background:#ece8df;
-    padding:70px 8%;
+    padding:70px var(--sch-gutter);
 }
 
 .sch-collection-banner h2 {
@@ -456,7 +457,7 @@
 }
 
 .sch-footer {
-    padding:65px 5% 20px;
+    padding:65px var(--sch-gutter) 20px;
     background:#650100;
     color:#f7eee9;
     font-size:12px;
@@ -506,7 +507,7 @@
     }
 
     .sch-hero-copy {
-        padding:45px 9%;
+        padding:45px var(--sch-gutter);
     }
 
     .sch-hero h1 {
@@ -524,6 +525,10 @@
 }
 
 @media(max-width:640px) {
+    .sch-site {
+        --sch-gutter: 7vw;
+    }
+
     .sch-university {
         font-size:9px;
     }
@@ -534,7 +539,7 @@
     }
 
     .sch-header {
-        padding:22px 6%;
+        padding:22px var(--sch-gutter);
     }
 
     .sch-wordmark {
@@ -556,7 +561,7 @@
     }
 
     .sch-hero-copy {
-        padding:45px 7%;
+        padding:45px var(--sch-gutter);
     }
 
     .sch-hero h1 {
@@ -574,7 +579,7 @@
 
     .sch-content-shell {
         display:block;
-        padding:40px 7%;
+        padding:40px var(--sch-gutter);
     }
 
     .sch-on-this-page {
@@ -589,7 +594,7 @@
     }
 
     .sch-page-heading {
-        padding:40px 7%;
+        padding:40px var(--sch-gutter);
     }
 
     .sch-lead {
@@ -601,7 +606,7 @@
     }
 
     .sch-events-section {
-        padding:40px 7%;
+        padding:40px var(--sch-gutter);
     }
 
     .sch-content-section h2 {
@@ -609,7 +614,7 @@
     }
 
     .sch-footer {
-        padding:45px 7% 25px;
+        padding:45px var(--sch-gutter) 25px;
     }
 
 }
@@ -653,7 +658,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 10px 24px;
-    padding: 14px 5%;
+    padding: 14px var(--sch-gutter);
     background: #ececec;
     color: #650100;
     font-size: 12px;
@@ -662,7 +667,7 @@
     font-weight: 600;
 }
 .sch-visitor-notice {
-    padding: 16px 5%;
+    padding: 16px var(--sch-gutter);
     background: #ead2ac;
     color: #25221f;
     font-size: 14px;
@@ -708,11 +713,6 @@
     padding-top: 48px;
     padding-bottom: 60px;
 }
-.sch-home-events > * {
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-}
 .sch-home-events .sch-event-art {
     background: #650100;
     color: white;
@@ -740,7 +740,7 @@
     .sch-opening-bar {
         display: grid;
         grid-template-columns: 1fr auto;
-        padding: 14px 7%;
+        padding: 14px var(--sch-gutter);
         font-size: 11px;
     }
     .sch-opening-bar > span:nth-child(2) {
