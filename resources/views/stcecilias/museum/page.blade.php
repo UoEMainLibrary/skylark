@@ -25,7 +25,7 @@
             <section class="sch-visitor-overview"><p class="sch-eyebrow">Your visit at a glance</p><h2>{{ $visitorInformation['admission'] ?? '' }}</h2><p>{{ $visitorInformation['opening_hours'] ?? '' }}<br>{{ $visitorInformation['last_entry'] ?? '' }} · {{ $visitorInformation['closed_days'] ?? '' }}</p><p>{{ $visitorInformation['address'] ?? '' }}</p></section>
         @endif
         @foreach($page->sections ?? [] as $section)
-            
+
             <section class="sch-content-section" id="section-{{ $loop->index }}"><h2>{{ $section['heading'] }}</h2>@if(str_contains($section['content'] ?? '', '<table'))<p class="sch-table-hint">Scroll horizontally to see all prices and additional charges.</p>@endif
             <div class="sch-rich" @if(str_contains($section['content'] ?? '', '<table')) tabindex="0" role="region" aria-label="{{ $section['heading'] }} — scroll to see all columns" @endif>{!! \Filament\Forms\Components\RichEditor\RichContentRenderer::make($section['content'] ?? '')->toHtml() !!}</div>
             @if(! empty($section['video_url']) && str_starts_with($section['video_url'], 'https://'))
