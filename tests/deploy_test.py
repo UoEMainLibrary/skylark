@@ -41,6 +41,54 @@ esac
             result = subprocess.run(args, env=env, capture_output=True, text=True)
             return result, (root / 'trace').read_text()
 
+    def test_generated_map_survives_real_branch_switch(self):
+        for fail_fetch in [False, True]:
+            with self.subTest(fail_fetch=fail_fetch), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                repo = root / 'checkout'
+                repo.mkdir()
+                def git(*args):
+                    return subprocess.run(['git', *args], cwd=repo, check=True, capture_output=True, text=True).stdout.strip()
+                git('init', '-b', 'old')
+                git('config', 'user.email', 'deploy-test@example.test')
+                git('config', 'user.name', 'Deployment Test')
+                generated = repo / 'public/data/eerc_map_locations.json'
+                generated.parent.mkdir(parents=True)
+                generated.write_text('old tracked map')
+                (repo / '.gitignore').write_text('/storage/\n/vendor/\n/.env\n')
+                git('add', '.')
+                git('commit', '-m', 'Tracked map')
+                git('checkout', '-b', 'feature/museum')
+                git('rm', 'public/data/eerc_map_locations.json')
+                with (repo / '.gitignore').open('a') as handle:
+                    handle.write('/public/data/eerc_map_locations.json\n')
+                git('add', '.gitignore')
+                git('commit', '-m', 'Untrack generated map')
+                git('checkout', 'old')
+                git('remote', 'add', 'origin', str(repo) if not fail_fetch else str(root / 'missing'))
+                current = b'{"locations":[{"name":"Current staging data"}]}\n'
+                generated.parent.mkdir(parents=True, exist_ok=True)
+                generated.write_bytes(current)
+                (repo / '.env').write_text('STCECILIAS_MUSEUM_ENABLED=true\n')
+                panel = repo / 'vendor/filament/filament/src/PanelProvider.php'
+                panel.parent.mkdir(parents=True)
+                panel.touch()
+                binary = root / 'bin'
+                binary.mkdir()
+                for command in ['composer', 'php', 'npm', 'curl', 'flock']:
+                    stub = binary / command
+                    stub.write_text('#!/bin/sh\n' + ('printf 200\n' if command == 'curl' else 'exit 0\n'))
+                    stub.chmod(0o755)
+                result = subprocess.run(['bash', str(SCRIPT), 'feature/museum', 'https://example.test'], env=dict(os.environ, PATH=f'{binary}:{os.environ["PATH"]}', DEPLOY_ROOT=str(repo)), capture_output=True, text=True)
+                self.assertEqual(result.returncode == 0, not fail_fetch, result.stderr)
+                self.assertEqual(generated.read_bytes(), current)
+                backups = list((repo / 'storage/app/deploy-backups').glob('eerc-map-*'))
+                self.assertEqual(len(backups), 1)
+                self.assertEqual(backups[0].read_bytes(), current)
+                if not fail_fetch:
+                    self.assertEqual(git('status', '--porcelain'), '')
+                    self.assertEqual(git('ls-files', 'public/data/eerc_map_locations.json'), '')
+
     def test_success_checks_all_pages_and_images(self):
         result, trace = self.run_deploy(museum=True)
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -131,6 +179,7 @@ esac
                     self.assertNotIn('nohup', command)
                 else:
                     self.assertIn('nohup env DEPLOY_ROOT=', command)
+                    self.assertLess(command.index(': > "$log" || exit 1'), command.index('nohup env DEPLOY_ROOT='))
                     self.assertIn('tail --pid=', command)
                     self.assertIn("'feature/museum' 'https://test.collections.ed.ac.uk' '--museum'", command)
             finally:

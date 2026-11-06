@@ -20,7 +20,18 @@ exec 9>storage/logs/deploy.lock
 flock -n 9 || { echo 'Another deployment is already running.' >&2; exit 1; }
 trap 'code=$?; echo "ERROR: Deployment failed at line $LINENO (exit $code). See the deployment log. Staging may be partially updated." >&2; exit "$code"' ERR
 
-if [[ -n "$(git status --porcelain)" ]]; then
+# This scheduled output is the only permitted server-side checkout difference.
+generated_map=public/data/eerc_map_locations.json
+map_backup=
+restore_generated_map() {
+    if [[ -n "$map_backup" ]]; then
+        mkdir -p public/data
+        cp -p "$map_backup" "$generated_map"
+    fi
+}
+trap restore_generated_map EXIT
+
+if [[ -n "$(git status --porcelain -- . ":!$generated_map")" ]]; then
     echo 'ERROR: Server checkout has local changes or untracked files. Review them before deploying.' >&2
     exit 1
 fi
@@ -29,11 +40,22 @@ if [[ "$museum" == --museum ]] && ! grep -Eq '^STCECILIAS_MUSEUM_ENABLED=(true|"
     exit 1
 fi
 
+if [[ -f "$generated_map" ]]; then
+    mkdir -p storage/app/deploy-backups
+    map_backup="$(pwd)/$(mktemp storage/app/deploy-backups/eerc-map-XXXXXXXX)"
+    cp -p "$generated_map" "$map_backup"
+    echo "==> Preserved generated EERC map: $map_backup"
+fi
+
 echo "==> Fetching branch: $branch"
 git fetch origin "refs/heads/$branch"
 target=$(git rev-parse FETCH_HEAD)
 echo "==> Previous commit: $(git rev-parse HEAD)"
 echo "==> Target commit: $target ($branch)"
+# Git must see the original tracked copy while moving to the branch that untracks it.
+if [[ -n "$map_backup" ]] && git ls-files --error-unmatch "$generated_map" >/dev/null 2>&1; then
+    git restore --source=HEAD --staged --worktree -- "$generated_map"
+fi
 if git show-ref --verify --quiet "refs/heads/$branch"; then
     git checkout "$branch"
     git merge --ff-only "$target"
@@ -41,6 +63,9 @@ else
     git checkout -b "$branch" "$target"
 fi
 [[ "$(git rev-parse HEAD)" == "$target" ]] || { echo 'ERROR: Local branch is ahead of the requested remote commit.' >&2; exit 1; }
+
+restore_generated_map
+map_backup=
 
 echo '==> Installing dependencies and building assets'
 composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
