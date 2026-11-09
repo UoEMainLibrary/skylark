@@ -4,9 +4,9 @@ namespace App\Filament\Resources\StceciliasEvents\Pages;
 
 use App\Filament\Resources\StceciliasEvents\StceciliasEventResource;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\ListRecords;
 
-class ManageStceciliasEvents extends ManageRecords
+class ManageStceciliasEvents extends ListRecords
 {
     protected static string $resource = StceciliasEventResource::class;
 

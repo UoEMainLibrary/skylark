@@ -23,6 +23,11 @@ class StceciliasPagePolicy
         return $user->isCmsAdministrator() || $user->isStceciliasEditor();
     }
 
+    public function reorder(User $user): bool
+    {
+        return $user->isCmsAdministrator() || $user->isStceciliasEditor();
+    }
+
     /**
      * Determine whether the user can create models.
      */

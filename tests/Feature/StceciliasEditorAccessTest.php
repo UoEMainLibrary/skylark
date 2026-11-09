@@ -1,14 +1,15 @@
 <?php
 
 use App\Filament\Resources\CmsPages\Resp\Pages\EditRespCmsPage;
-use App\Filament\Resources\StceciliasEvents\Pages\ManageStceciliasEvents;
+use App\Filament\Resources\StceciliasEvents\Pages\CreateStceciliasEvent;
+use App\Filament\Resources\StceciliasEvents\Pages\EditStceciliasEvent;
+use App\Filament\Resources\StceciliasPages\Pages\EditStceciliasPage;
 use App\Filament\Resources\StceciliasPages\Pages\ManageStceciliasPages;
 use App\Models\CmsPage;
 use App\Models\StceciliasEvent;
 use App\Models\StceciliasPage;
 use App\Models\User;
 use Database\Seeders\CmsPagesSeeder;
-use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
@@ -80,17 +81,17 @@ it('rechecks legacy editing rights after an administrator becomes a museum edito
 it('lets a museum editor edit a page and create and edit events', function (): void {
     $this->actingAs(User::factory()->stceciliasEditor()->create());
     $page = StceciliasPage::factory()->create(['slug' => 'venue-hire']);
-    Livewire::test(ManageStceciliasPages::class)
-        ->callAction(TestAction::make('edit')->table($page), data: ['title' => 'New venue copy', 'slug' => 'venue-hire', 'is_visible' => true, 'navigation_order' => 0])
-        ->assertHasNoActionErrors();
+    Livewire::test(EditStceciliasPage::class, ['record' => $page->id])
+        ->fillForm(['title' => 'New venue copy', 'slug' => 'venue-hire', 'is_visible' => true])
+        ->call('save')->assertHasNoFormErrors();
     expect($page->fresh()->title)->toBe('New venue copy');
-    Livewire::test(ManageStceciliasEvents::class)
-        ->callAction('create', data: ['title' => 'New concert', 'slug' => 'new-concert', 'starts_at' => '2026-12-01 12:00:00'])
-        ->assertHasNoActionErrors();
+    Livewire::test(CreateStceciliasEvent::class)
+        ->fillForm(['title' => 'New concert', 'slug' => 'new-concert', 'starts_at' => '2026-12-01 12:00:00'])
+        ->call('create')->assertHasNoFormErrors();
     $event = StceciliasEvent::where('slug', 'new-concert')->firstOrFail();
-    Livewire::test(ManageStceciliasEvents::class)
-        ->callAction(TestAction::make('edit')->table($event), data: ['price' => 'Free'])
-        ->assertHasNoActionErrors();
+    Livewire::test(EditStceciliasEvent::class, ['record' => $event->id])
+        ->fillForm(['price' => 'Free'])
+        ->call('save')->assertHasNoFormErrors();
     expect($event->fresh()->price)->toBe('Free');
 });
 
@@ -126,4 +127,63 @@ it('refuses case variants of an existing email address', function (): void {
 it('rejects invalid login details without creating an account', function (): void {
     $this->artisan('app:create-stcecilias-editor', ['email' => 'not-an-email'])->assertFailed();
     expect(User::count())->toBe(0);
+});
+
+it('lets administrators and museum editors reorder pages and updates public navigation', function (bool $restricted): void {
+    $user = $restricted ? User::factory()->stceciliasEditor()->create() : User::factory()->create();
+    config(['filament.admin_emails' => [$user->email], 'stcecilias.museum_enabled' => true]);
+    $this->actingAs($user);
+    $home = StceciliasPage::factory()->create(['slug' => 'home', 'navigation_order' => 0]);
+    $visit = StceciliasPage::factory()->create(['slug' => 'planning-your-visit', 'navigation_order' => 1]);
+    $events = StceciliasPage::factory()->create(['slug' => 'whats-on', 'navigation_order' => 2]);
+    $venue = StceciliasPage::factory()->create(['slug' => 'venue-hire', 'navigation_order' => 3]);
+
+    Livewire::test(ManageStceciliasPages::class)
+        ->assertTableColumnDoesNotExist('navigation_order')
+        ->call('toggleTableReordering')
+        ->call('reorderTable', [$home->id, $venue->id, $events->id, $visit->id])
+        ->assertCanSeeTableRecords([$home, $venue, $events, $visit], inOrder: true)
+        ->call('toggleTableReordering');
+    Livewire::test(EditStceciliasPage::class, ['record' => $venue->id])
+        ->fillForm(['title' => 'Updated venue'])
+        ->call('save')->assertHasNoFormErrors();
+
+    expect($venue->fresh()->navigation_order)->toBe(2);
+    $this->get('/stcecilias')->assertSuccessful()->assertViewHas('navigation', fn ($navigation): bool => $navigation->pluck('slug')->all() === ['home', 'venue-hire', 'whats-on', 'planning-your-visit']);
+})->with([false, true]);
+
+it('does not expose an order field when editing a page', function (): void {
+    $this->actingAs(User::factory()->stceciliasEditor()->create());
+    $page = StceciliasPage::factory()->create(['slug' => 'venue-hire', 'navigation_order' => 7]);
+    Livewire::test(EditStceciliasPage::class, ['record' => $page->id])
+        ->assertFormFieldDoesNotExist('navigation_order');
+});
+
+it('opens museum edit and create screens as dedicated authorized pages', function (): void {
+    $this->actingAs(User::factory()->stceciliasEditor()->create());
+    $page = StceciliasPage::factory()->create(['slug' => 'venue-hire']);
+    $event = StceciliasEvent::factory()->create();
+    $this->get('/admin/stcecilias-pages')->assertSuccessful()->assertSee('/admin/stcecilias-pages/'.$page->id.'/edit', false);
+    $this->get('/admin/stcecilias-events')->assertSuccessful()->assertSee('/admin/stcecilias-events/'.$event->id.'/edit', false)->assertSee('/admin/stcecilias-events/create', false);
+    foreach (['/admin/stcecilias-pages/'.$page->id.'/edit', '/admin/stcecilias-events/'.$event->id.'/edit', '/admin/stcecilias-events/create'] as $path) {
+        $this->get($path)->assertSuccessful();
+    }
+    $this->actingAs(User::factory()->create());
+    config(['filament.admin_emails' => []]);
+    foreach (['/admin/stcecilias-pages/'.$page->id.'/edit', '/admin/stcecilias-events/'.$event->id.'/edit', '/admin/stcecilias-events/create'] as $path) {
+        $this->get($path)->assertForbidden();
+    }
+});
+
+it('cannot reorder pages after museum editing access is revoked', function (): void {
+    $user = User::factory()->stceciliasEditor()->create();
+    config(['filament.admin_emails' => []]);
+    $this->actingAs($user);
+    $visit = StceciliasPage::factory()->create(['slug' => 'planning-your-visit', 'navigation_order' => 1]);
+    $venue = StceciliasPage::factory()->create(['slug' => 'venue-hire', 'navigation_order' => 2]);
+    $component = Livewire::test(ManageStceciliasPages::class)->call('toggleTableReordering');
+    $user->cms_role = null;
+    $user->save();
+    $component->call('reorderTable', [$venue->id, $visit->id]);
+    expect($visit->fresh()->navigation_order)->toBe(1)->and($venue->fresh()->navigation_order)->toBe(2);
 });
