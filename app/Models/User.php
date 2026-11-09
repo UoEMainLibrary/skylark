@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,8 +12,12 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    public const ROLE_STCECILIAS_EDITOR = 'stcecilias_editor';
+
+    protected $attributes = ['cms_role' => null];
 
     /**
      * The attributes that are mass assignable.
@@ -50,6 +55,20 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
+        return $this->isCmsAdministrator() || $this->isStceciliasEditor();
+    }
+
+    public function isStceciliasEditor(): bool
+    {
+        return $this->cms_role === self::ROLE_STCECILIAS_EDITOR;
+    }
+
+    public function isCmsAdministrator(): bool
+    {
+        if ($this->cms_role !== null) {
+            return false;
+        }
+
         if (app()->isLocal()) {
             return true;
         }
