@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\StceciliasEvents;
 
+use App\Filament\Resources\StceciliasEvents\Pages\CreateStceciliasEvent;
+use App\Filament\Resources\StceciliasEvents\Pages\EditStceciliasEvent;
 use App\Filament\Resources\StceciliasEvents\Pages\ManageStceciliasEvents;
 use App\Models\StceciliasEvent;
 use BackedEnum;
@@ -68,6 +70,10 @@ class StceciliasEventResource extends Resource
 
     public static function getPages(): array
     {
-        return ['index' => ManageStceciliasEvents::route('/')];
+        return [
+            'index' => ManageStceciliasEvents::route('/'),
+            'create' => CreateStceciliasEvent::route('/create'),
+            'edit' => EditStceciliasEvent::route('/{record}/edit'),
+        ];
     }
 }

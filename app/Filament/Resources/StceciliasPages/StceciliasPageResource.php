@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\StceciliasPages;
 
+use App\Filament\Resources\StceciliasPages\Pages\EditStceciliasPage;
 use App\Filament\Resources\StceciliasPages\Pages\ManageStceciliasPages;
 use App\Models\StceciliasPage;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -68,7 +70,6 @@ class StceciliasPageResource extends Resource
                 TextInput::make('alt')->required()->maxLength(255),
                 TextInput::make('caption')->maxLength(255),
             ])->collapsible()->columnSpanFull(),
-            TextInput::make('navigation_order')->numeric()->minValue(0)->default(0)->required(),
             TextInput::make('seo_title')->label('Search engine title')->maxLength(255),
             Textarea::make('seo_description')->label('Search engine description')->maxLength(320),
         ]);
@@ -79,12 +80,19 @@ class StceciliasPageResource extends Resource
         return $table->columns([
             TextColumn::make('title')->searchable(),
             IconColumn::make('is_visible')->label('Visible')->boolean(),
-            TextColumn::make('navigation_order')->numeric()->sortable(),
-        ])->defaultSort('navigation_order')->recordActions([EditAction::make()]);
+        ])->defaultSort('navigation_order')
+            ->reorderable('navigation_order')
+            ->reorderRecordsTriggerAction(fn (Action $action, bool $isReordering): Action => $action
+                ->button()
+                ->label($isReordering ? 'Done reordering' : 'Reorder pages'))
+            ->recordActions([EditAction::make()]);
     }
 
     public static function getPages(): array
     {
-        return ['index' => ManageStceciliasPages::route('/')];
+        return [
+            'index' => ManageStceciliasPages::route('/'),
+            'edit' => EditStceciliasPage::route('/{record}/edit'),
+        ];
     }
 }

@@ -1,12 +1,11 @@
 <?php
 
-use App\Filament\Resources\StceciliasEvents\Pages\ManageStceciliasEvents;
-use App\Filament\Resources\StceciliasPages\Pages\ManageStceciliasPages;
+use App\Filament\Resources\StceciliasEvents\Pages\EditStceciliasEvent;
+use App\Filament\Resources\StceciliasPages\Pages\EditStceciliasPage;
 use App\Models\StceciliasEvent;
 use App\Models\StceciliasPage;
 use App\Models\User;
 use Database\Seeders\StceciliasMuseumSeeder;
-use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
@@ -83,13 +82,13 @@ it('allows an authorized editor to edit public page content and validates slugs'
     config(['filament.admin_emails' => [$user->email]]);
     $this->actingAs($user);
     $page = StceciliasPage::factory()->create(['slug' => 'venue-hire']);
-    Livewire::test(ManageStceciliasPages::class)
-        ->callAction(TestAction::make('edit')->table($page), data: ['title' => 'Edited venue title', 'slug' => 'venue-hire', 'is_visible' => true, 'navigation_order' => 0])
-        ->assertHasNoActionErrors();
+    Livewire::test(EditStceciliasPage::class, ['record' => $page->id])
+        ->fillForm(['title' => 'Edited venue title', 'slug' => 'venue-hire', 'is_visible' => true])
+        ->call('save')->assertHasNoFormErrors();
     $this->get('/stcecilias/venue-hire')->assertSee('Edited venue title');
-    Livewire::test(ManageStceciliasPages::class)
-        ->callAction(TestAction::make('edit')->table($page), data: ['slug' => 'unroutable-page'])
-        ->assertHasActionErrors(['slug']);
+    Livewire::test(EditStceciliasPage::class, ['record' => $page->id])
+        ->fillForm(['slug' => 'unroutable-page'])
+        ->call('save')->assertHasFormErrors(['slug']);
 });
 
 it('rejects events ending before their start and accepts editing a booking link', function (): void {
@@ -97,12 +96,12 @@ it('rejects events ending before their start and accepts editing a booking link'
     config(['filament.admin_emails' => [$user->email]]);
     $this->actingAs($user);
     $event = StceciliasEvent::factory()->create();
-    Livewire::test(ManageStceciliasEvents::class)
-        ->callAction(TestAction::make('edit')->table($event), data: ['starts_at' => '2026-11-20 15:00:00', 'ends_at' => '2026-11-20 14:00:00'])
-        ->assertHasActionErrors(['ends_at']);
-    Livewire::test(ManageStceciliasEvents::class)
-        ->callAction(TestAction::make('edit')->table($event), data: ['booking_url' => 'https://example.com/tickets'])
-        ->assertHasNoActionErrors();
+    Livewire::test(EditStceciliasEvent::class, ['record' => $event->id])
+        ->fillForm(['starts_at' => '2026-11-20 15:00:00', 'ends_at' => '2026-11-20 14:00:00'])
+        ->call('save')->assertHasFormErrors(['ends_at']);
+    Livewire::test(EditStceciliasEvent::class, ['record' => $event->id])
+        ->fillForm(['booking_url' => 'https://example.com/tickets'])
+        ->call('save')->assertHasNoFormErrors();
     expect($event->fresh()->booking_url)->toBe('https://example.com/tickets');
 });
 
@@ -135,15 +134,15 @@ it('uses the visitor editor as the single source for hours and admission across 
     config(['filament.admin_emails' => [$user->email]]);
     $this->actingAs($user);
     $page = StceciliasPage::where('slug', 'planning-your-visit')->firstOrFail();
-    Livewire::test(ManageStceciliasPages::class)
-        ->callAction(TestAction::make('edit')->table($page), data: [
+    Livewire::test(EditStceciliasPage::class, ['record' => $page->id])
+        ->fillForm([
             'visitor_information' => [
                 'opening_hours' => 'Wednesday–Saturday, 11:00–16:00',
                 'admission' => 'Free entry for everyone',
                 'address' => '50 Niddry Street, Edinburgh',
                 'notice' => 'Closed for maintenance on 10 November.',
             ],
-        ])->assertHasNoActionErrors();
+        ])->call('save')->assertHasNoFormErrors();
     foreach (['/stcecilias', '/stcecilias/planning-your-visit', '/stcecilias/venue-hire', '/stcecilias/whats-on'] as $path) {
         $this->get($path)->assertSuccessful()->assertSee('Wednesday–Saturday, 11:00–16:00')->assertSee('Free entry for everyone')->assertSee('Closed for maintenance on 10 November.');
     }

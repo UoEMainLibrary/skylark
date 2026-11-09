@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\StceciliasPages\Pages;
 
 use App\Filament\Resources\StceciliasPages\StceciliasPageResource;
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\ListRecords;
 
-class ManageStceciliasPages extends ManageRecords
+class ManageStceciliasPages extends ListRecords
 {
     protected static string $resource = StceciliasPageResource::class;
 
