@@ -54,7 +54,7 @@
                     pictures of land and water transport. These depictions were accompanied by Braun&rsquo;s printed account of the city&rsquo;s history, situation and commerce.</p>
                 <p>
                     Buy online at the University
-                    <a href="http://www.giftshop.ed.ac.uk/2016-library-university-collections-calendar.html" target="_blank" title="Gift Shop Link">gift shop<span class="sr-only"> (opens in a new tab)</span></a>.
+                    No longer available to buy:(
                 </p>
             </div>
 
