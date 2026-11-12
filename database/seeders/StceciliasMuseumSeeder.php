@@ -11,7 +11,7 @@ class StceciliasMuseumSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (['museum-concert.jpg' => 'concert-room.jpg', 'museum-laigh.jpg' => 'laigh-hall.jpg', 'museum-saltire.jpg' => 'saltire.jpg', 'museum-luke-wright.jpg' => 'luke-wright.jpg', 'museum-cello.jpg' => 'cello.jpg'] as $source => $target) {
+        foreach (['museum-concert.jpg' => 'concert-room.jpg', 'museum-gallery-visitors.webp' => 'gallery-visitors.webp', 'museum-laigh.jpg' => 'laigh-hall.jpg', 'museum-saltire.jpg' => 'saltire.jpg', 'museum-luke-wright.jpg' => 'luke-wright.jpg', 'museum-cello.jpg' => 'cello.jpg'] as $source => $target) {
             if (! Storage::disk('public')->exists('stcecilias/'.$target)) {
                 Storage::disk('public')->put('stcecilias/'.$target, file_get_contents(public_path('collections/stcecilia/images/'.$source)));
             }
@@ -20,7 +20,7 @@ class StceciliasMuseumSeeder extends Seeder
 [
     {
         "slug": "home",
-        "title": "A living museum of music",
+        "title": "A Live Museum of Music",
         "intro": "Scotland’s oldest purpose-built concert hall, home to the University of Edinburgh’s collection of historic musical instruments.",
         "body": "<p>Discover the history of musical instruments and music performance in the heart of Edinburgh’s Old Town.</p>",
         "sections": [
@@ -34,8 +34,8 @@ class StceciliasMuseumSeeder extends Seeder
             }
         ],
         "navigation_order": 0,
-        "image_path": "stcecilias/concert-room.jpg",
-        "image_alt": "Musicians in the elliptical Sypert Concert Room. Photograph: Jim Stephenson.",
+        "image_path": "stcecilias/gallery-visitors.webp",
+        "image_alt": "Visitors looking at string instruments in a gallery display case.",
         "is_visible": true
     },
     {
@@ -139,6 +139,15 @@ class StceciliasMuseumSeeder extends Seeder
 JSON, true, flags: JSON_THROW_ON_ERROR);
         foreach ($pages as $page) {
             StceciliasPage::query()->firstOrCreate(['slug' => $page['slug']], $page);
+            if ($page['slug'] === 'home') {
+                StceciliasPage::query()->where('slug', 'home')
+                    ->where('title', 'A living museum of music')
+                    ->update(['title' => $page['title']]);
+                StceciliasPage::query()->where('slug', 'home')
+                    ->where('image_path', 'stcecilias/concert-room.jpg')
+                    ->where('image_alt', 'Musicians in the elliptical Sypert Concert Room. Photograph: Jim Stephenson.')
+                    ->update(['image_path' => $page['image_path'], 'image_alt' => $page['image_alt']]);
+            }
         }
         $events = json_decode(<<<'JSON'
 [
@@ -149,7 +158,7 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
         "ends_at": "2026-11-03 15:00",
         "category": "Tour",
         "intro": "Join volunteer Claire for a tour of the Binks and 1812 Galleries and learn about all things keyboards.",
-        "price": "Free / Donations appreciated",
+        "price": "Free / donations appreciated",
         "booking_url": "https://www.eventbrite.co.uk/e/november-tours-at-st-cecilias-hall-tickets-2003337255660",
         "is_visible": true,
         "venue": "St Cecilia’s Hall"
@@ -161,7 +170,7 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
         "ends_at": "2026-11-13 15:00",
         "category": "Tour",
         "intro": "Join volunteer Dona for a tour of the Binks and 1812 Galleries and learn about some of the oldest keyboard instruments in our collection.",
-        "price": "Free / Donations appreciated",
+        "price": "Free / donations appreciated",
         "booking_url": "https://www.eventbrite.co.uk/e/november-tours-at-st-cecilias-hall-tickets-2003337255660",
         "is_visible": true,
         "venue": "St Cecilia’s Hall"
@@ -185,7 +194,7 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
         "ends_at": "2026-12-19 15:00",
         "category": "Family activity",
         "intro": "Join us this Winter for a free, fun, themed family trail! Spot the eight snow people hidden throughout the galleries and answer their music-related questions.",
-        "price": "Free / Donations appreciated",
+        "price": "Free / donations appreciated",
         "booking_url": "https://www.eventbrite.co.uk/e/winter-family-trail-tickets-2004059840932",
         "is_visible": true,
         "venue": "St Cecilia’s Hall"
@@ -197,7 +206,7 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
         "ends_at": "2026-11-20 15:00",
         "category": "Tour",
         "intro": "Join volunteer Sabine for a tour of the brass collection at St Cecilia’s Hall.",
-        "price": "Free / Donations appreciated",
+        "price": "Free / donations appreciated",
         "booking_url": "https://www.eventbrite.co.uk/e/november-tours-at-st-cecilias-hall-tickets-2003337255660",
         "is_visible": true,
         "venue": "St Cecilia’s Hall"
@@ -221,7 +230,7 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
         "ends_at": "2026-11-28 15:00",
         "category": "Tour",
         "intro": "Join volunteer Jim for a tour of the Wolfson Gallery and learn about the development of instruments over time.",
-        "price": "Free / Donations appreciated",
+        "price": "Free / donations appreciated",
         "booking_url": "https://www.eventbrite.co.uk/e/november-tours-at-st-cecilias-hall-tickets-2003337255660",
         "is_visible": true,
         "venue": "St Cecilia’s Hall"
@@ -304,7 +313,12 @@ JSON, true, flags: JSON_THROW_ON_ERROR);
                 $event['image_path'] = 'stcecilias/'.$images[$event['slug']].'.jpg';
                 $event['image_alt'] = $event['title'];
             }
-            StceciliasEvent::query()->firstOrCreate(['slug' => $event['slug']], $event);
+            $record = StceciliasEvent::query()->firstOrCreate(['slug' => $event['slug']], $event);
+            if ($event['price'] === 'Free / donations appreciated' && $record->price === 'Free / Donations appreciated') {
+                StceciliasEvent::query()->where('slug', $event['slug'])
+                    ->where('price', 'Free / Donations appreciated')
+                    ->update(['price' => $event['price']]);
+            }
         }
     }
 }

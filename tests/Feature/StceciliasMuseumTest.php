@@ -22,7 +22,7 @@ it('renders the four populated milestone pages without a catalogue request', fun
     $this->get($path)->assertSuccessful()->assertSee($text)->assertDontSee('<form', false);
     Http::assertNothingSent();
 })->with([
-    ['/stcecilias', 'A living museum of music'],
+    ['/stcecilias', 'A Live Museum of Music'],
     ['/stcecilias/planning-your-visit', 'Wheelchairs and lift'],
     ['/stcecilias/venue-hire', '£960'],
     ['/stcecilias/whats-on', 'What’s on'],
@@ -70,6 +70,21 @@ it('preserves editorial changes when the milestone is reseeded', function (): vo
     $this->seed(StceciliasMuseumSeeder::class);
     expect(StceciliasPage::count())->toBe(4)->and(StceciliasEvent::count())->toBe(11);
     expect(StceciliasPage::where('slug', 'home')->first()->title)->toBe('Sarah’s edited title');
+});
+
+it('updates the original homepage and event defaults on reseed', function (): void {
+    $this->seed(StceciliasMuseumSeeder::class);
+    StceciliasPage::where('slug', 'home')->update([
+        'title' => 'A living museum of music',
+        'image_path' => 'stcecilias/concert-room.jpg',
+        'image_alt' => 'Musicians in the elliptical Sypert Concert Room. Photograph: Jim Stephenson.',
+    ]);
+    StceciliasEvent::where('slug', 'volunteer-led-tour-7')->update(['price' => 'Free / Donations appreciated']);
+
+    $this->seed(StceciliasMuseumSeeder::class);
+
+    $this->get('/stcecilias')->assertSee('A Live Museum of Music')->assertSee('gallery-visitors.webp');
+    expect(StceciliasEvent::where('slug', 'volunteer-led-tour-7')->value('price'))->toBe('Free / donations appreciated');
 });
 
 it('requires authentication for the museum editors', function (): void {
@@ -123,9 +138,9 @@ it('denies museum administration to users outside the configured admin list', fu
 it('shows practical information before the hero and puts events before editorial content', function (): void {
     $this->seed(StceciliasMuseumSeeder::class);
     $this->get('/stcecilias')->assertSuccessful()->assertSeeInOrder([
-        'Free admission', 'Tuesday–Saturday, 10:00–17:00', 'A living museum of music',
+        'Free admission', 'Tuesday–Saturday, 10:00–17:00', 'A Live Museum of Music',
         'See what’s on', 'id="whats-on"', 'Music, history and discovery',
-    ], false)->assertSee('Footer useful links')->assertSee('SCHEvents@ed.ac.uk');
+    ], false)->assertSee('gallery-visitors.webp')->assertSee('Visitors looking at string instruments in a gallery display case.')->assertSee('Footer useful links')->assertSee('SCHEvents@ed.ac.uk');
 });
 
 it('uses the visitor editor as the single source for hours and admission across all four pages', function (): void {
