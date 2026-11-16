@@ -7,6 +7,13 @@ cd "${DEPLOY_ROOT:-$(dirname "$0")}"
 branch=${1:-}
 base_url=${2:-}
 museum=${3:-}
+museum_archive=${4:-}
+if [[ -n "$museum_archive" ]]; then
+    [[ "$museum" == --museum && "$base_url" == https://test.collections.ed.ac.uk && "$museum_archive" =~ ^/tmp/skylark-museum-[a-zA-Z0-9]+/content\.tar\.gz$ && -r "$museum_archive" ]] || {
+        echo 'ERROR: The staging museum archive is missing or invalid.' >&2
+        exit 2
+    }
+fi
 if [[ -z "$branch" || ! "$base_url" =~ ^https?://[A-Za-z0-9.-]+(:[0-9]+)?$ || ( -n "$museum" && "$museum" != --museum ) ]]; then
     echo 'Usage: deploy-staging.sh BRANCH https://staging-host [--museum]' >&2
     exit 2
@@ -27,13 +34,20 @@ trap 'code=$?; echo "ERROR: Deployment failed at line $LINENO (exit $code). See 
 # This scheduled output is the only permitted server-side checkout difference.
 generated_map=public/data/eerc_map_locations.json
 map_backup=
+import_dir=
 restore_generated_map() {
     if [[ -n "$map_backup" ]]; then
         mkdir -p public/data
         cp -p "$map_backup" "$generated_map"
     fi
 }
-trap restore_generated_map EXIT
+cleanup() {
+    restore_generated_map
+    if [[ -n "$import_dir" ]]; then
+        rm -rf -- "$import_dir"
+    fi
+}
+trap cleanup EXIT
 
 if [[ -n "$(git status --porcelain -- . ":!$generated_map")" ]]; then
     echo 'ERROR: Server checkout has local changes or untracked files. Review them before deploying.' >&2
@@ -87,6 +101,11 @@ if [[ "$museum" == --museum ]]; then
     fi
     [[ -r public/storage/stcecilias/concert-room.jpg ]] || { echo 'ERROR: Public museum images are not readable.' >&2; exit 1; }
 fi
+if [[ -n "$museum_archive" ]]; then
+    import_dir=$(mktemp -d storage/app/skylark-museum-XXXXXXXX)
+    tar -xzf "$museum_archive" -C "$import_dir"
+    php artisan app:import-stcecilias-content "$import_dir" --staging --no-interaction
+fi
 php artisan view:clear
 php artisan route:clear
 php artisan cache:clear
@@ -101,4 +120,19 @@ for path in "${paths[@]}"; do
     [[ "$status" == 200 ]] || { echo "ERROR: $path returned HTTP $status (expected 200)." >&2; exit 1; }
     echo "OK $path"
 done
+if [[ -n "$museum_archive" ]]; then
+    verify_museum_page() {
+        local path=$1 expected=$2 html
+        html=$(curl --fail --silent --show-error --connect-timeout 15 --max-time 60 "$base_url$path")
+        [[ "$html" == *"$expected"* ]] || {
+            echo "ERROR: $path did not contain the expected page content ($expected)." >&2
+            return 1
+        }
+        echo "OK $path contains $expected"
+    }
+    verify_museum_page /stcecilias/our-story '<h1>Our Story</h1>'
+    verify_museum_page /stcecilias/tours/binks/harpsichords '<audio'
+    verify_museum_page /stcecilias/learning/primary/music-and-ritual '<h1>Music and Ritual'
+    verify_museum_page /stcecilias/whats-on/archive '<h1>Past events</h1>'
+fi
 echo "==> Deployment complete: $target ($branch) at $(date -u +%FT%TZ)"
