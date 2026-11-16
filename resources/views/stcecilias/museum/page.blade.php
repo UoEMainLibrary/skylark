@@ -16,7 +16,7 @@
 @endif
 <div class="sch-content-shell">
     @if($page->slug !== 'home' && count($page->sections ?? []))
-    <aside class="sch-on-this-page"><p class="sch-eyebrow">On this page</p><nav aria-label="On this page">@foreach($page->sections as $section)<a href="#section-{{ $loop->index }}">{{ $section['heading'] }}</a>@endforeach</nav></aside>
+    <aside class="sch-on-this-page"><p class="sch-eyebrow">On this page</p><nav aria-label="On this page">@foreach($page->sections as $section)<a href="#{{ $section['anchor'] ?? 'section-'.$loop->index }}">{{ $section['heading'] }}</a>@endforeach</nav></aside>
     @endif
     <article class="sch-article">
         @if($page->body)<div class="sch-rich">{!! \Filament\Forms\Components\RichEditor\RichContentRenderer::make($page->body)->toHtml() !!}</div>@endif
@@ -26,9 +26,13 @@
         @endif
         @foreach($page->sections ?? [] as $section)
 
-            <section class="sch-content-section" id="section-{{ $loop->index }}"><h2>{{ $section['heading'] }}</h2>@if(str_contains($section['content'] ?? '', '<table'))<p class="sch-table-hint">Scroll horizontally to see all prices and additional charges.</p>@endif
-            <div class="sch-rich" @if(str_contains($section['content'] ?? '', '<table')) tabindex="0" role="region" aria-label="{{ $section['heading'] }} — scroll to see all columns" @endif>{!! \Filament\Forms\Components\RichEditor\RichContentRenderer::make($section['content'] ?? '')->toHtml() !!}</div>
-            @if(! empty($section['video_url']) && str_starts_with($section['video_url'], 'https://'))
+            <section class="sch-content-section" id="{{ $section['anchor'] ?? 'section-'.$loop->index }}"><h2>{{ $section['heading'] }}</h2>@if(str_contains($section['content'] ?? '', '<table'))<p class="sch-table-hint">Scroll horizontally to see all prices and additional charges.</p>@endif
+            @if(! empty($section['content']))<div class="sch-rich" @if(str_contains($section['content'], '<table')) tabindex="0" role="region" aria-label="{{ $section['heading'] }} — scroll to see all columns" @endif>{!! \Filament\Forms\Components\RichEditor\RichContentRenderer::make($section['content'])->toHtml() !!}</div>@endif
+            @if(! empty($section['audio_url']) && str_starts_with($section['audio_url'], '/storage/stcecilias/migration/'))
+                <audio controls preload="none" aria-label="{{ $page->title }}"><source src="{{ $section['audio_url'] }}" type="audio/mpeg"></audio>
+                <p><a href="{{ $section['audio_url'] }}">Download the audio guide</a></p>
+            @endif
+            @if(! empty($section['video_url']) && (str_starts_with($section['video_url'], 'https://') || str_starts_with($section['video_url'], '/storage/stcecilias/migration/')))
                 <video class="sch-video" controls preload="none" aria-label="Visitor information in British Sign Language"><source src="{{ $section['video_url'] }}" type="video/mp4">Your browser does not support this video.</video>
                 <p><a href="{{ $section['video_url'] }}">Watch the visitor information video in British Sign Language</a></p>
             @endif

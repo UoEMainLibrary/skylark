@@ -383,8 +383,10 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'extra_routes' => function () {
         Route::get('/iiif', [StceciliasController::class, 'iiif'])->name('iiif');
         Route::get('/whats-on', [MuseumController::class, 'events'])->name('museum.events');
+        Route::get('/whats-on/archive', [MuseumController::class, 'archive'])->name('museum.archive');
+        Route::get('/event/{slug}', [MuseumController::class, 'event'])->where('slug', '[a-z0-9-]+')->name('museum.event');
         Route::get('/{slug}', [MuseumController::class, 'page'])
-            ->where('slug', 'planning-your-visit|venue-hire')->name('museum.page');
+            ->where('slug', 'planning-your-visit|venue-hire|about-us|our-story|colonial-legacies|galleries|contact-us|get-involved|playing-instruments|research|(?:tours|learning|blog)(?:/[a-z0-9-]+)*|archive/[a-z0-9-]+')->name('museum.page');
 
         // Legacy "More …" link from the search-results facet sidebar.
         Route::get('/browse/{facet}', [StceciliasController::class, 'browse'])

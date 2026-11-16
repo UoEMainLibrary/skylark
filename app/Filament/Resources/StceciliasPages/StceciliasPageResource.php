@@ -43,7 +43,7 @@ class StceciliasPageResource extends Resource
     {
         return $schema->components([
             TextInput::make('title')->required()->maxLength(255),
-            TextInput::make('slug')->required()->maxLength(255)->regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')->unique(ignoreRecord: true)->in(['home', 'planning-your-visit', 'venue-hire', 'whats-on'])->helperText('First milestone: home, planning-your-visit, venue-hire or whats-on.'),
+            TextInput::make('slug')->required()->maxLength(255)->disabled(fn (?StceciliasPage $record): bool => $record !== null)->regex('~^(home|planning-your-visit|venue-hire|whats-on|about-us|our-story|colonial-legacies|galleries|contact-us|get-involved|playing-instruments|research|(?:tours|learning|blog)(?:/[a-z0-9-]+)*|archive/[a-z0-9-]+)$~')->unique(ignoreRecord: true),
             Toggle::make('is_visible')->label('Visible on the website')->default(false),
             Textarea::make('intro')->label('Introduction')->maxLength(2000)->columnSpanFull(),
             RichEditor::make('body')->label('Main content')->fileAttachments(false)->columnSpanFull(),
@@ -62,7 +62,9 @@ class StceciliasPageResource extends Resource
                 ])->columnSpanFull(),
             Repeater::make('sections')->collapsed()->itemLabel(fn (array $state): ?string => $state['heading'] ?? null)->schema([
                 TextInput::make('heading')->required()->maxLength(255),
-                TextInput::make('video_url')->label('Video URL')->url()->maxLength(2048),
+                TextInput::make('anchor')->maxLength(255)->regex('/^[a-z0-9-]+$/'),
+                TextInput::make('video_url')->label('Video URL')->maxLength(2048),
+                TextInput::make('audio_url')->label('Audio URL')->maxLength(2048),
                 RichEditor::make('content')->fileAttachments(false)->columnSpanFull(),
             ])->collapsible()->columnSpanFull(),
             Repeater::make('gallery')->schema([

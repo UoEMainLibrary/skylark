@@ -169,3 +169,53 @@ it('makes venue pricing tables named keyboard-accessible scroll regions', functi
         ->assertSee('tabindex="0" role="region" aria-label="Sypert Concert Room pricing (Laigh Hall included if needed) — scroll to see all columns"', false)
         ->assertSee('tabindex="0" role="region" aria-label="Laigh Hall pricing — scroll to see all columns"', false);
 });
+
+it('renders published nested museum pages with local audio and keeps drafts hidden', function (): void {
+    StceciliasPage::factory()->create([
+        'slug' => 'tours/binks/harpsichords',
+        'sections' => [[
+            'heading' => 'Audio guide',
+            'anchor' => 'listen',
+            'audio_url' => '/storage/stcecilias/migration/harpsichords.mp3',
+        ]],
+        'is_visible' => true,
+    ]);
+    StceciliasPage::factory()->create(['slug' => 'research', 'is_visible' => false]);
+
+    $this->get('/stcecilias/tours/binks/harpsichords')->assertSuccessful()
+        ->assertSee('id="listen"', false)->assertSee('<audio', false)
+        ->assertSee('/storage/stcecilias/migration/harpsichords.mp3');
+    $this->get('/stcecilias/research')->assertNotFound();
+});
+
+it('keeps past events browsable and omits booking links for finished events', function (): void {
+    StceciliasPage::factory()->create(['slug' => 'whats-on', 'is_visible' => true]);
+    StceciliasEvent::factory()->create([
+        'slug' => 'archived-concert',
+        'title' => 'Archived concert',
+        'starts_at' => now()->subWeek(),
+        'ends_at' => now()->subWeek()->addHour(),
+        'booking_url' => 'https://example.com/expired-booking',
+        'is_visible' => true,
+    ]);
+    StceciliasEvent::factory()->create([
+        'slug' => 'private-concert',
+        'is_visible' => false,
+    ]);
+
+    $this->get('/stcecilias/whats-on')->assertSuccessful()->assertDontSee('Archived concert');
+    $this->get('/stcecilias/whats-on/archive')->assertSuccessful()->assertSee('Archived concert');
+    $this->get('/stcecilias/event/archived-concert')->assertSuccessful()
+        ->assertSee('Archived concert')->assertDontSee('https://example.com/expired-booking');
+    $this->get('/stcecilias/event/private-concert')->assertNotFound();
+});
+
+it('rejects staging imports addressed to the production site before reading the bundle', function (): void {
+    config(['app.url' => 'https://collections.ed.ac.uk']);
+
+    $this->artisan('app:import-stcecilias-content', ['directory' => '/missing', '--staging' => true])
+        ->expectsOutput('Run this from the local SQLite preview or the enabled Collections staging site.')
+        ->assertFailed();
+
+    expect(StceciliasPage::count())->toBe(0)->and(StceciliasEvent::count())->toBe(0);
+});
