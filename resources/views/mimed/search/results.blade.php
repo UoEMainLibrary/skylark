@@ -1,176 +1,123 @@
-@extends('layouts.mimed')
+@extends('layouts.mimed-catalogue')
 
-@section('title')
-    @if($query !== '*' && $query !== '*:*')
-        Search Results for "{{ urldecode($query) }}" - Musical Instrument Museums Edinburgh
-    @else
-        Search Results - Musical Instrument Museums Edinburgh
-    @endif
+@section('title', 'Search results - Musical Instrument Museums Edinburgh')
+
+@section('head')
+    <link rel="stylesheet" href="{{ asset('assets/fancybox/source/jquery.fancybox.css') }}?v=2.1.4">
 @endsection
 
 @section('content')
-<div class="col-main">
-<div class="content">
-    @if(isset($searchFields))
-
-<h1>Advanced Search</h1>
-
-<p><strong><a href="#" id="showform">Change Advanced Search options</a></strong></p>
-
-<div class="searchform" style="display:none">
-    <p><strong>Hint: </strong> To match an exact phrase, try using quotation marks, eg. <em>"a search phrase"</em></p>
-<form action="{{ url('/mimed/advanced/post') }}" method="post" accept-charset="utf-8">
-@csrf
-@foreach($searchFields as $label => $field)
-@php $escapedLabel = str_replace(' ', '_', $label); @endphp
-<p><label for="{{ $escapedLabel }}" style="width: 100px; float: left; display: block; text-align: right;">{{ $label }}</label><input type="text" name="{{ $escapedLabel }}" value="" id="{{ $escapedLabel }}" style="margin-left: 15px;"  /></p>
-@endforeach
-<p><label for="operators" style="width: 100px; float: left; display: block; text-align: right;">Default search operator</label><select name="operator" style="margin-left:15px;">
-<option value="OR"{{ ($operator ?? 'OR') === 'OR' ? ' selected="selected"' : '' }}>OR (any terms may match)</option>
-<option value="AND"{{ ($operator ?? 'OR') === 'AND' ? ' selected="selected"' : '' }}>AND (all terms must match)</option>
-</select></p><p style="margin-left: 120px;"><em>Use <strong>AND</strong> for narrow searches and <strong>OR</strong> for broad searches</em></p><input type="submit" name="search" value="Search" style="margin-left: 120px" class="btn" /></form>
-</div>
-
-<script>
-    $("#showform").click(function() {
-        $(".searchform").show();
-        $(this).hide();
-        $(".message").hide();
-        @if(isset($savedSearch))
-            @foreach($savedSearch as $key => $val)
-                $("input#{{ str_replace(' ', '_', $key) }}").val('{{ urldecode($val) }}');
-            @endforeach
+@php
+    $isStCeciliasLocation = urldecode($query) === 'dc.coverage.spatialloc:"St Cecilia\'s Hall"';
+@endphp
+<div class="mimed-search-band">
+    <div class="mimed-wrap">
+        <h1>{{ isset($searchFields) ? 'Advanced search results' : 'Catalogue search' }}</h1>
+        @if($isStCeciliasLocation)
+            <p class="mimed-search-scope">Collection location: <strong>St Cecilia’s Hall</strong></p>
         @endif
-        return false;
-    });
-</script>
-    @endif
-    @if(isset($message))
-        <div class="message">{!! $message !!}</div>
-    @endif
+        @include('mimed.search.partials.form', ['searchbox_query' => $isStCeciliasLocation ? '' : ($searchbox_query ?? '')])
+    </div>
 </div>
-    @if($total === 0)
-        <div class="content">
-            <h1>No results found</h1>
-            <p>Your search for <strong>{{ urldecode($query) }}</strong> did not return any results.</p>
-            <p>Try broadening your search or <a href="{{ url('/mimed/search/*:*') }}">browse all items</a>.</p>
-        </div>
-    @else
-        <div class="listing-filter">
-            <span class="no-results">
-                <strong>{{ $startRow }}-{{ $endRow }}</strong> of
-                <strong>{{ number_format($total) }}</strong> results
-            </span>
-            <span class="sort">
-                <strong>Sort by</strong>
-                @foreach(config('skylight.sort_fields', []) as $label => $field)
-                    @if($label === 'Relevancy')
-                        <em><a href="{{ $base_search }}{{ $base_parameters }}{{ str_contains($base_parameters, '?') ? '&' : '?' }}sort_by={{ $field }}+desc">{{ $label }}</a></em>
-                    @else
-                        <em>{{ $label }}</em>
-                        <a href="{{ $base_search }}{{ $base_parameters }}{{ str_contains($base_parameters, '?') ? '&' : '?' }}sort_by={{ $field }}+asc">A-Z</a> |
-                        <a href="{{ $base_search }}{{ $base_parameters }}{{ str_contains($base_parameters, '?') ? '&' : '?' }}sort_by={{ $field }}+desc">Z-A</a>
-                    @endif
-                @endforeach
-            </span>
-        </div>
 
-        <ul class="listing">
-            @foreach($docs as $index => $doc)
-                @php
-                    $fieldMappings = config('skylight.field_mappings', []);
-                    $titleField = str_replace('.', '', $fieldMappings['Title'] ?? 'dctitleen');
-                    $authorField = str_replace('.', '', $fieldMappings['Maker'] ?? $fieldMappings['Author'] ?? '');
-                    $abstractField = str_replace('.', '', $fieldMappings['Abstract'] ?? '');
-                    $typeField = str_replace('.', '', $fieldMappings['Instrument'] ?? $fieldMappings['Type'] ?? '');
-                    $imageUriField = str_replace('.', '', $fieldMappings['ImageUri'] ?? '');
+<div class="mimed-wrap mimed-results-layout">
+    @if(!empty($facets))
+        <aside class="mimed-filters" aria-labelledby="filters-title">
+            <h2 id="filters-title">Refine results</h2>
+            @include('mimed.search.partials.facets')
+        </aside>
+    @endif
 
-                    $title = $doc[$titleField][0] ?? 'Untitled';
-                    $docId = $doc['id'] ?? '';
-                    if (is_array($docId)) { $docId = $docId[0] ?? ''; }
-                @endphp
-                <li @class(['first' => $index === 0, 'last' => $index === count($docs) - 1])>
-                    <div class="item-div">
-                        <div class="iteminfo">
-                            <h3><a href="{{ url('/mimed/record/' . $docId) }}?highlight={{ urlencode($query) }}">{{ $title }}</a></h3>
-                            <div class="tags">
-                                @if(isset($doc[$authorField]) && !empty($doc[$authorField]))
-                                    @php
-                                        $authors = is_array($doc[$authorField]) ? $doc[$authorField] : [$doc[$authorField]];
-                                    @endphp
-                                    @foreach($authors as $author)
-                                        @php
-                                            $origFilter = urlencode($author);
-                                            $lowerFilter = urlencode(strtolower($author));
-                                        @endphp
-                                        <a href="{{ url('/mimed/search/*:*/Maker:%22' . $lowerFilter . '+%7C%7C%7C+' . $origFilter . '%22') }}">{{ str_replace('|', "\u{00A0}", $author) }}</a>
-                                    @endforeach
-                                @endif
+    <section class="mimed-results" aria-label="Search results">
+        @if(isset($searchFields))
+            @if(!empty($savedSearch))
+                <p class="mimed-advanced-terms">
+                    @foreach($savedSearch as $label => $value)
+                        <span><strong>{{ $label }}</strong> {{ $value }}</span>
+                    @endforeach
+                </p>
+            @endif
+            <details class="mimed-advanced-options">
+                <summary>Change advanced search options</summary>
+                @include('mimed.search.partials.advanced-form')
+            </details>
+        @endif
+        @if($total === 0)
+            <div class="mimed-empty">
+                <h2>No results found</h2>
+                <p>Try broadening your search or <a href="{{ route('mimed.search.index', ['query' => '*:*']) }}">browse all instruments</a>.</p>
+            </div>
+        @else
+            <div class="mimed-result-toolbar">
+                <p>Showing <strong>{{ $startRow }}–{{ $endRow }}</strong> of <strong>{{ number_format($total) }}</strong> results</p>
+                <details>
+                    <summary>Sort results</summary>
+                    <div class="mimed-sort-options">
+                        @foreach(config('skylight.sort_fields', []) as $label => $field)
+                            @php
+                                $sortUrl = $base_search.$base_parameters.(str_contains($base_parameters, '?') ? '&' : '?').'sort_by='.urlencode($field);
+                            @endphp
+                            @if($label === 'Relevancy')
+                                <a href="{{ $sortUrl }}+desc">{{ $label }}</a>
+                            @else
+                                <span>{{ $label }} <a href="{{ $sortUrl }}+asc" aria-label="{{ $label }}, ascending">A–Z</a> · <a href="{{ $sortUrl }}+desc" aria-label="{{ $label }}, descending">Z–A</a></span>
+                            @endif
+                        @endforeach
+                    </div>
+                </details>
+            </div>
 
-                                @if(isset($doc[$abstractField]) && !empty($doc[$abstractField]))
-                                    @php
-                                        $abstract = is_array($doc[$abstractField]) ? $doc[$abstractField][0] : $doc[$abstractField];
-                                        $abstract = str_replace('|', "\u{00A0}", $abstract);
-                                        $words = explode(' ', $abstract);
-                                        $max = min(40, count($words));
-                                        $suffix = count($words) > 40 ? '...' : '';
-                                        $shortened = implode(' ', array_slice($words, 0, $max));
-                                    @endphp
-                                    <p>{{ $shortened }}{{ $suffix }}</p>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="thumbnail-image">
-                            @if(isset($doc[$imageUriField]) && !empty($doc[$imageUriField]))
-                                @php
-                                    $imageUris = is_array($doc[$imageUriField]) ? $doc[$imageUriField] : [$doc[$imageUriField]];
-                                    $imageUri = null;
-                                    foreach ($imageUris as $uri) {
-                                        $uri = str_replace('http://', 'https://', $uri);
-                                        if (str_contains($uri, 'luna')) {
-                                            $imageUri = $uri;
-                                            break;
-                                        }
-                                    }
-                                @endphp
-                                @if($imageUri)
-                                    <div class="thumbnail-placeholder"></div>
-                                    <a title="{{ $title }}" class="fancybox" rel="group" href="{{ $imageUri }}">
-                                        <img src="{{ $imageUri }}" class="record-thumbnail-search" title="{{ $title }}" loading="lazy"/>
-                                    </a>
-                                @endif
+            @php
+                $fieldMappings = config('skylight.field_mappings', []);
+                $titleField = str_replace('.', '', $fieldMappings['Title'] ?? 'dctitleen');
+                $makerField = str_replace('.', '', $fieldMappings['Maker'] ?? $fieldMappings['Author'] ?? '');
+                $abstractField = str_replace('.', '', $fieldMappings['Abstract'] ?? '');
+                $imageUriField = str_replace('.', '', $fieldMappings['ImageUri'] ?? '');
+            @endphp
+            <ul class="mimed-result-list">
+                @foreach($docs as $doc)
+                    @php
+                        $title = Illuminate\Support\Arr::wrap($doc[$titleField] ?? [])[0] ?? 'Untitled';
+                        $docId = Illuminate\Support\Arr::wrap($doc['id'] ?? [])[0] ?? '';
+                        $abstract = Illuminate\Support\Arr::wrap($doc[$abstractField] ?? [])[0] ?? '';
+                        $makers = Illuminate\Support\Arr::wrap($doc[$makerField] ?? []);
+                        $imageUri = collect(Illuminate\Support\Arr::wrap($doc[$imageUriField] ?? []))
+                            ->first(fn (string $uri): bool => str_contains($uri, 'luna'));
+                        $recordUrl = route('mimed.record.show', ['id' => $docId, 'highlight' => $query]);
+                    @endphp
+                    <li class="mimed-result">
+                        <div class="mimed-result-image">
+                            @if($imageUri)
+                                @php $imageUri = str_replace('http://', 'https://', $imageUri); @endphp
+                                <a href="{{ $imageUri }}" class="mimed-photo" data-fancybox-group="catalogue" aria-label="Enlarge image of {{ $title }}">
+                                    <img src="{{ str_replace('/full/full/', '/full/!360,360/', $imageUri) }}" alt="" loading="lazy">
+                                </a>
                             @endif
                         </div>
-                        <div class="clearfix"></div>
-                    </div>
-                </li>
-            @endforeach
-        </ul>
-
-        <div class="pagination">
-            <span class="no-results">
-                <strong>{{ $startRow }}-{{ $endRow }}</strong> of
-                <strong>{{ number_format($total) }}</strong> results
-            </span>
-            {!! $paginationLinks !!}
-        </div>
-
-        <script>
-            const thumbnailImages = document.querySelectorAll(".thumbnail-image")
-            thumbnailImages.forEach(div => {
-                const img = div.querySelector("img")
-                const placeholder = div.querySelector(".thumbnail-placeholder")
-                if (!img || !placeholder) return;
-                function loaded() { placeholder.style.display = "none"; }
-                if (img.complete) { loaded() }
-                else { img.addEventListener("load", loaded) }
-            })
-        </script>
-    @endif
-</div>
-
-<div class="col-sidebar">
-    @include('mimed.search.partials.facets')
+                        <div>
+                            <h2><a href="{{ $recordUrl }}">{{ $title }}</a></h2>
+                            @if($makers)
+                                <p class="mimed-result-makers">
+                                    @foreach($makers as $maker)
+                                        <a href="{{ url('/mimed/search/*:*/Maker:%22'.urlencode(strtolower($maker)).'+%7C%7C%7C+'.urlencode($maker).'%22') }}">{{ str_replace('|', "\u{00A0}", $maker) }}</a>@unless($loop->last) · @endunless
+                                    @endforeach
+                                </p>
+                            @endif
+                            @if($abstract)<p>{{ Str::words(str_replace('|', "\u{00A0}", $abstract), 40, '…') }}</p>@endif
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+            @if($paginationLinks)
+                <nav class="mimed-pagination" aria-label="Search results pages">{!! $paginationLinks !!}</nav>
+            @endif
+        @endif
+    </section>
 </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('assets/fancybox/lib/jquery-1.9.0.min.js') }}"></script>
+    <script src="{{ asset('assets/fancybox/source/jquery.fancybox.pack.js') }}?v=2.1.4"></script>
+    <script>if (window.jQuery?.fn.fancybox) { jQuery('.mimed-photo').fancybox(); }</script>
+@endpush

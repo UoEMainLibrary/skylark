@@ -1,12 +1,20 @@
-@extends('layouts.mimed')
+@extends('layouts.mimed-catalogue')
 
 @section('title', $recordTitle . ' - Musical Instrument Museums Edinburgh')
 
+@section('head')
+    @if(!empty($bitstreams['main_image']))
+        <script src="{{ asset('assets/openseadragon/openseadragon.min.js') }}"></script>
+    @endif
+@endsection
+
 @section('content')
-<div class="col-main">
-    <div class="content">
-        <h1 class="itemtitle">{{ $recordTitle }}</h1>
-        <div itemscope itemtype="http://schema.org/CreativeWork">
+<div class="mimed-record-heading"><div class="mimed-wrap">
+    <a class="mimed-back" id="mimed-back" href="{{ route('mimed.search.index', ['query' => '*:*']) }}">← Browse the catalogue</a>
+    <h1>{{ $recordTitle }}</h1>
+</div></div>
+<div class="mimed-wrap mimed-record-layout">
+    <article itemscope itemtype="https://schema.org/CreativeWork">
 
             {{-- Maker tags --}}
             @php
@@ -15,7 +23,7 @@
                 $schema = config('skylight.schema_links', []);
             @endphp
 
-            <div class="tags">
+            <div class="mimed-record-makers">
                 @if(isset($record[$makerField]) && !empty($record[$makerField]))
                     @php $makers = is_array($record[$makerField]) ? $record[$makerField] : [$record[$makerField]]; @endphp
                     @foreach($makers as $maker)
@@ -35,7 +43,6 @@
                 $bitstreamFieldName = str_replace('.', '', $fieldMappings['Bitstream'] ?? '');
                 $accno = '';
                 $manifest = null;
-                $jsonLink = '';
 
                 if (isset($record[$accNoField])) {
                     $accnoVal = is_array($record[$accNoField]) ? $record[$accNoField][0] : $record[$accNoField];
@@ -54,11 +61,6 @@
 
                             if (str_contains(strtolower($bFilename), '.json')) {
                                 $manifest = url("/mimed/record/{$bHandleId}/{$bSeq}/{$bFilename}");
-                                $jsonLink .= '<span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest=' . $manifest . '" target="_blank" class="uvlogo" title="View in UV"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                                $jsonLink .= '<span class="json-link-item"><a target="_blank" href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest=' . $manifest . '" class="miradorlogo" title="View in Mirador"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                                $jsonLink .= '<span class="json-link-item"><a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&q=' . $accno . '" class="lunalogo" title="View in LUNA" target="_blank"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                                $jsonLink .= '<span class="json-link-item"><a href="' . $manifest . '" target="_blank" class="iiiflogo" title="IIIF manifest"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                                $jsonLink .= '<span class="json-link-item"><a href="https://creativecommons.org/licenses/by/3.0/" class="ccbylogo" title="All images CC-BY" target="_blank"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
                             }
                         }
                     }
@@ -67,19 +69,22 @@
 
             @if(isset($record[$imageUriField]) && !empty($record[$imageUriField]) && $manifest)
                 <div class="img-container">
-                    <iframe class="img-frame" src="{{ url('/mimed/mirador') }}?manifest={{ urlencode($manifest) }}" height="100%" width="100%" title="Image Showcase"></iframe>
+                    <iframe class="img-frame" src="{{ url('/mimed/mirador') }}?manifest={{ urlencode($manifest) }}" height="100%" width="100%" title="Zoomable images of {{ $recordTitle }}"></iframe>
                 </div>
 
                 <div class="json-link">
-                    <p>{!! $jsonLink !!}</p>
-                    <p>(Note: Each icon above opens in a new tab.)</p>
+                    <a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest={{ urlencode($manifest) }}">Universal Viewer</a>
+                    <a href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest={{ urlencode($manifest) }}">Mirador</a>
+                    <a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&amp;q={{ urlencode($accno) }}">LUNA</a>
+                    <a href="{{ $manifest }}">IIIF manifest</a>
+                    <a href="https://creativecommons.org/licenses/by/3.0/">Image licence (CC BY)</a>
                 </div>
             @endif
 
             {{-- Main Image (OpenSeadragon fallback for non-Mirador records) --}}
             @if(!$manifest && !empty($bitstreams['main_image']))
                 <div class="main-image">
-                    <div id="openseadragon" style="width: 100%; height: 600px;"></div>
+                    <div id="openseadragon" class="mimed-zoom"></div>
                     @if(!empty($bitstreams['main_image']['description']))
                         <div><p><i>Image: {{ $bitstreams['main_image']['description'] }}</i></p></div>
                     @endif
@@ -95,27 +100,27 @@
                             sequenceMode: true,
                             tileSources: [{
                                 type: 'image',
-                                url: '{{ $bitstreams['main_image']['uri'] }}'
+                                url: {{ Illuminate\Support\Js::from($bitstreams['main_image']['uri']) }}
                             }]
                         });
                     </script>
                 </div>
-                <div class="clearfix"></div>
+
             @endif
 
             {{-- Record metadata --}}
             <div class="record-content">
                 <div class="full-metadata">
-                    <table>
-                        <tbody>
+                    <h2>Instrument details</h2>
+                    <dl class="mimed-metadata">
                         @foreach($recordDisplay as $key)
                             @php
                                 $element = str_replace('.', '', $fieldMappings[$key] ?? '');
                             @endphp
                             @if(isset($record[$element]) && !empty($record[$element]))
-                                <tr>
-                                    <td @if($key === 'Maker') class="first" @endif>
-                                        <h4>{{ $key }}</h4>
+                                <div>
+                                    <dt>{{ $key }}</dt>
+                                    <dd>
                                         @php
                                             $values = is_array($record[$element]) ? $record[$element] : [$record[$element]];
                                         @endphp
@@ -135,15 +140,14 @@
                                             @endif
                                             @if($idx < count($values) - 1); @endif
                                         @endforeach
-                                    </td>
-                                </tr>
+                                    </dd>
+                                </div>
                             @endif
                         @endforeach
-                        </tbody>
-                    </table>
+                    </dl>
                 </div>
 
-                <div class="clearfix"></div>
+
             </div>
 
             {{-- Audio and Video --}}
@@ -152,8 +156,8 @@
                     @if(!empty($bitstreams['audio']))
                         <h2>Audio</h2>
                         @foreach($bitstreams['audio'] as $audio)
-                            <audio controls>
-                                <source src="{{ $audio['uri'] }}" type="audio/mpeg">Audio loading...</source>
+                            <audio controls preload="none">
+                                <source src="{{ $audio['uri'] }}" type="audio/mpeg">
                             </audio>
                         @endforeach
                     @endif
@@ -161,30 +165,26 @@
                     @if(!empty($bitstreams['video']))
                         <h2>Video</h2>
                         @foreach($bitstreams['video'] as $video)
-                            <video preload="auto" loop width="100%" height="auto" controls>
-                                <source src="{{ $video['uri'] }}" type="video/{{ pathinfo($video['filename'], PATHINFO_EXTENSION) }}">Video loading...</source>
+                            <video preload="metadata" loop controls>
+                                <source src="{{ $video['uri'] }}" type="video/{{ pathinfo($video['filename'], PATHINFO_EXTENSION) }}">
                             </video>
                         @endforeach
                     @endif
                 </div>
-                <div class="clearfix"></div>
+
             @endif
 
             {{-- PDF files --}}
             @if(!empty($bitstreams['pdf']))
                 @foreach($bitstreams['pdf'] as $pdf)
-                    <p>Click <a href="{{ $pdf['uri'] }}" target="_blank">here</a> to download. (<span class="bitstream_size">{{ $pdf['size'] }}</span>)</p>
+                    <p><a href="{{ $pdf['uri'] }}">Download {{ $pdf['filename'] ?? 'PDF' }}</a> ({{ $pdf['size'] }})</p>
                 @endforeach
             @endif
-        </div>
-    </div>
+    </article>
 
-    <input type="button" value="Back to Search Results" class="backbtn" onClick="history.go(-1);">
-</div>
-
-<div class="col-sidebar">
-    {{-- Related items --}}
-    <h4>Related Items</h4>
+    <aside class="mimed-record-sidebar">
+        @include('mimed.search.partials.form')
+        <h2>Related instruments</h2>
     <ul class="related">
         @if(!empty($relatedItems) && count($relatedItems) > 0)
             @php
@@ -204,6 +204,20 @@
         @else
             <li>None.</li>
         @endif
-    </ul>
+        </ul>
+    </aside>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    if (document.referrer) {
+        const previousPage = new URL(document.referrer);
+        if (previousPage.origin === location.origin && /^\/mimed\/(?:search|advanced\/search)\//.test(previousPage.pathname)) {
+            const backLink = document.getElementById('mimed-back');
+            backLink.href = previousPage.href;
+            backLink.textContent = '← Back to search results';
+        }
+    }
+</script>
+@endpush

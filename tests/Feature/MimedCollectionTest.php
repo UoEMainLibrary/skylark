@@ -38,3 +38,30 @@ it('serves the mimed accessibility route as a standalone page', function (): voi
         ->and($html)->not->toContain('Search MIMEd')
         ->and($html)->not->toContain('/mimed/about');
 });
+
+it('leads with catalogue search and links to its featured instruments and St Cecilia’s Hall', function (): void {
+    $this->get('/mimed')->assertSuccessful()
+        ->assertSeeInOrder(['Search the catalogue', 'Featured instruments', 'About this collection'])
+        ->assertSee(route('mimed.search.redirect'))
+        ->assertSee(route('mimed.record.show', ['id' => 16327]))
+        ->assertSee(route('stcecilias.home'))
+        ->assertSee('reopened in 2017')
+        ->assertDontSee('the two collections will be brought together');
+});
+
+it('renders the catalogue results and keeps the existing record and pagination URLs', function (): void {
+    config(['skylight.field_mappings' => ['Title' => 'dc.title', 'ImageUri' => 'dc.image']]);
+
+    $html = view('mimed.search.results', [
+        'query' => 'harpsichord',
+        'total' => 15,
+        'startRow' => 1,
+        'endRow' => 10,
+        'docs' => [['id' => '16327', 'dctitle' => ['Triple-manual harpsichord'], 'dcimage' => ['https://images.is.ed.ac.uk/luna/example.jpg']]],
+        'base_search' => url('/mimed/search/harpsichord'),
+        'base_parameters' => '',
+        'paginationLinks' => '<a href="/mimed/search/harpsichord?offset=10">2</a>',
+    ])->render();
+
+    expect($html)->toContain('Triple-manual harpsichord', '/mimed/record/16327?highlight=harpsichord', '?offset=10', 'Enlarge image of');
+});
