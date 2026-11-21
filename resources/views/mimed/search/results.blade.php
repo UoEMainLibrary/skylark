@@ -31,11 +31,22 @@
     <section class="mimed-results" aria-label="Search results">
         @if(isset($searchFields))
             @if(!empty($savedSearch))
-                <p class="mimed-advanced-terms">
+                <ul class="mimed-advanced-terms" aria-label="Active search criteria">
                     @foreach($savedSearch as $label => $value)
-                        <span><strong>{{ $label }}</strong> {{ $value }}</span>
+                        @php
+                            $searchPath = parse_url($base_search, PHP_URL_PATH);
+                            $segments = explode('/', $searchPath);
+                            $remainingSegments = array_filter($segments, function (string $segment) use ($label, $delimiter): bool {
+                                return explode($delimiter, urldecode($segment), 2)[0] !== $label;
+                            });
+                            $removeCriterionUrl = url(implode('/', $remainingSegments)).$base_parameters;
+                        @endphp
+                        <li>
+                            <span><strong>{{ $label }}</strong><span>{{ $value }}</span></span>
+                            <a href="{{ $removeCriterionUrl }}" aria-label="Remove {{ $label }} criterion: {{ $value }}" title="Remove {{ $label }} criterion"><span aria-hidden="true">×</span></a>
+                        </li>
                     @endforeach
-                </p>
+                </ul>
             @endif
             <details class="mimed-advanced-options">
                 <summary>Change advanced search options</summary>
