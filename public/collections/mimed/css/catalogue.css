@@ -195,3 +195,6 @@
     .mimed-advanced-form { grid-template-columns: minmax(0, 1fr); }
     .mimed-advanced-form button { grid-column: 1; }
 }
+
+.mimed-record-layout .json-link a { display: inline-flex; align-items: center; justify-content: center; min-width: 50px; min-height: 50px; }
+.mimed-record-layout .json-link img { width: auto; height: 50px; object-fit: contain; }

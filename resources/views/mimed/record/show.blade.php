@@ -73,11 +73,11 @@
                 </div>
 
                 <div class="json-link">
-                    <a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest={{ urlencode($manifest) }}">Universal Viewer</a>
-                    <a href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest={{ urlencode($manifest) }}">Mirador</a>
-                    <a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&amp;q={{ urlencode($accno) }}">LUNA</a>
-                    <a href="{{ $manifest }}">IIIF manifest</a>
-                    <a href="https://creativecommons.org/licenses/by/3.0/">Image licence (CC BY)</a>
+                    <a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest={{ urlencode($manifest) }}" aria-label="Universal Viewer" title="Universal Viewer"><img src="{{ asset('collections/mimed/images/uv.png') }}" alt="Universal Viewer" height="50"></a>
+                    <a href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest={{ urlencode($manifest) }}" aria-label="Mirador" title="Mirador"><img src="{{ asset('collections/mimed/images/mirador-logo.png') }}" alt="Mirador" height="50"></a>
+                    <a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&amp;q={{ urlencode($accno) }}" aria-label="LUNA" title="LUNA"><img src="{{ asset('collections/mimed/images/LUNAIIIF.png') }}" alt="LUNA" height="50"></a>
+                    <a href="{{ $manifest }}" aria-label="IIIF manifest" title="IIIF manifest"><img src="{{ asset('collections/mimed/images/iiiflogo.png') }}" alt="IIIF manifest" height="50"></a>
+                    <a href="https://creativecommons.org/licenses/by/3.0/" aria-label="Image licence (CC BY)" title="Image licence (CC BY)"><img src="{{ asset('collections/mimed/images/cc-by.png') }}" alt="Image licence (CC BY)" height="50"></a>
                 </div>
             @endif
 
