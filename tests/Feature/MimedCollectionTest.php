@@ -65,3 +65,17 @@ it('renders the catalogue results and keeps the existing record and pagination U
 
     expect($html)->toContain('Triple-manual harpsichord', '/mimed/record/16327?highlight=harpsichord', '?offset=10', 'Enlarge image of');
 });
+
+it('links the IIIF logo to the instrument manifest', function (): void {
+    $html = view('mimed.record.show', [
+        'recordTitle' => 'Harpsichord',
+        'fieldMappings' => ['ImageUri' => 'image', 'Bitstream' => 'bitstream'],
+        'record' => ['image' => ['image.jpg'], 'bitstream' => ['file##manifest.json##description##10683/16327##1']],
+        'recordDisplay' => [],
+        'bitstreams' => [],
+        'relatedItems' => [],
+    ])->render();
+
+    expect($html)->toContain('href="'.url('/mimed/record/16327/1/manifest.json').'" aria-label="IIIF manifest"')
+        ->toContain('collections/mimed/images/iiiflogo.png', 'alt="IIIF manifest"', 'images/uv.png', 'images/mirador-logo.png', 'images/LUNAIIIF.png', 'images/cc-by.png');
+});
