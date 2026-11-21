@@ -194,11 +194,16 @@
             @foreach($relatedItems as $rIndex => $relDoc)
                 @php
                     $relTitle = $relDoc[$titleFieldName][0] ?? 'Untitled';
+                    $dateFieldName = str_replace('.', '', $fieldMappings['Date Made'] ?? '');
+                    $relatedMaker = Illuminate\Support\Arr::wrap($relDoc[$authorFieldName] ?? [])[0] ?? null;
+                    $relatedDate = Illuminate\Support\Arr::wrap($relDoc[$dateFieldName] ?? [])[0] ?? null;
+                    $relatedDetails = implode(' · ', array_filter([$relatedMaker, $relatedDate]));
                     $relId = $relDoc['id'] ?? '';
                     if (is_array($relId)) { $relId = $relId[0] ?? ''; }
                 @endphp
                 <li @class(['first' => $rIndex === 0, 'last' => $rIndex === count($relatedItems) - 1])>
                     <a class="related-record" href="{{ url('/mimed/record/' . $relId) }}" title="{{ $relTitle }}">{{ $relTitle }}</a>
+                    @if($relatedDetails)<span class="mimed-related-details">{{ $relatedDetails }}</span>@endif
                 </li>
             @endforeach
         @else

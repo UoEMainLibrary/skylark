@@ -110,7 +110,12 @@
 .mimed-results-layout { display: grid; grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); gap: clamp(1.25rem, 4vw, 3.75rem); padding-block: 2.55rem 4rem; }
 .mimed-results-layout:not(:has(.mimed-filters)) { grid-template-columns: minmax(0, 1fr); }
 .mimed-search-band .mimed-search-scope { margin-bottom: 1rem; }
-.mimed-advanced-terms { display: flex; flex-wrap: wrap; gap: .35rem 1rem; }
+.mimed-advanced-terms { display: flex; flex-wrap: wrap; gap: .55rem; list-style: none; margin: 0 0 1rem; padding: 0; }
+.mimed-advanced-terms li { display: flex; align-items: center; gap: .65rem; border: 1px solid #bbc7b9; background: #e8ebe0; border-radius: .35rem; padding: .1rem .2rem .1rem .65rem; max-width: 100%; }
+.mimed-advanced-terms li > span { display: flex; flex-wrap: wrap; gap: .2rem .5rem; min-width: 0; overflow-wrap: anywhere; }
+.mimed-advanced-terms strong { font-size: .875rem; color: var(--muted); align-self: center; }
+.mimed-advanced-terms a { display: inline-flex; flex: none; align-items: center; justify-content: center; min-width: 2rem; min-height: 2rem; font-size: 1.35rem; line-height: 1; text-decoration: none; border-radius: .2rem; }
+.mimed-advanced-terms a:hover { background: #d3ddcd; }
 .mimed-filters h2 { font-size: 1.65rem; margin-bottom: .85rem; }
 .mimed-facets details, .mimed-advanced-options { background: #fff; border: 1px solid var(--line); border-radius: .2rem; margin-bottom: .45rem; }
 .mimed-catalogue summary { cursor: pointer; font-weight: 650; padding: .65rem .85rem; }
@@ -152,7 +157,7 @@
 .mimed-metadata { margin: .85rem 0 0; }
 .mimed-metadata > div { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: .25rem 1rem; padding: .65rem 0; border-top: 1px solid var(--line); }
 .mimed-metadata dt { font-weight: 650; }
-.mimed-metadata dd { margin: 0; overflow-wrap: anywhere; white-space: pre-line; }
+.mimed-metadata dd { margin: 0; overflow-wrap: anywhere; white-space: normal; }
 .mimed-record-sidebar .mimed-search-form { border-bottom: 1px solid var(--line); margin-bottom: 1.7rem; padding-bottom: 1.1rem; }
 .mimed-record-sidebar .mimed-search-control button span { display: none; }
 .mimed-record-sidebar h2 { font-size: 1.7rem; }
@@ -198,3 +203,19 @@
 
 .mimed-record-layout .json-link a { display: inline-flex; align-items: center; justify-content: center; min-width: 50px; min-height: 50px; }
 .mimed-record-layout .json-link img { width: auto; height: 50px; object-fit: contain; }
+
+.mimed-related-details { display: block; color: var(--muted); font-size: .875rem; margin-top: .15rem; overflow-wrap: anywhere; }
+.mimed-result-toolbar details { position: relative; }
+.mimed-result-toolbar .mimed-sort-options {
+    position: absolute;
+    z-index: 3;
+    top: 100%;
+    right: -1px;
+    min-width: 12rem;
+    width: max-content;
+    max-width: 80vw;
+    padding: .65rem .85rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 .4rem 1rem #142c281a;
+}
