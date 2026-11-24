@@ -1,6 +1,6 @@
 @extends('layouts.mimed-catalogue')
 
-@section('title', 'Advanced search - Musical Instrument Museums Edinburgh')
+@section('title', 'Advanced search - Musical Instrument Collection')
 
 @section('content')
 <div class="mimed-wrap mimed-support-page">

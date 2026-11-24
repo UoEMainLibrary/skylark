@@ -46,6 +46,10 @@ it('leads with catalogue search and links to its featured instruments and St Cec
         ->assertSee(route('mimed.record.show', ['id' => 16327]))
         ->assertSee(route('stcecilias.home'))
         ->assertSee('reopened in 2017')
+        ->assertSee('Musical Instrument Collection')
+        ->assertSee('university-logo.png')
+        ->assertSee('library-branding-baton.png')
+        ->assertSee('Research')
         ->assertDontSee('the two collections will be brought together');
 });
 
@@ -79,3 +83,23 @@ it('links the IIIF logo to the instrument manifest', function (): void {
     expect($html)->toContain('href="'.url('/mimed/record/16327/1/manifest.json').'" aria-label="IIIF manifest"')
         ->toContain('collections/mimed/images/iiiflogo.png', 'alt="IIIF manifest"', 'images/uv.png', 'images/mirador-logo.png', 'images/LUNAIIIF.png', 'images/cc-by.png');
 });
+
+it('serves the supporting pages in the catalogue design', function (string $page): void {
+    $this->get('/mimed/'.$page)->assertSuccessful()
+        ->assertSee('class="mimed-catalogue"', false)
+        ->assertSee('aria-label="Collection information"', false)
+        ->assertDontSee('collections/mimed/css/style.css');
+})->with(['about', 'iiif', 'feedback', 'licensing', 'takedown']);
+
+it('keeps shared IIIF information routes in their own collection layouts', function (string $collection): void {
+    $response = $this->get('/'.$collection.'/iiif')->assertSuccessful()
+        ->assertViewIs($collection.'.pages.iiif')
+        ->assertSee('International Image Interoperability Framework');
+
+    if ($collection === 'mimed') {
+        $response->assertSee('class="mimed-catalogue"', false);
+    } else {
+        $response->assertDontSee('class="mimed-catalogue"', false)
+            ->assertDontSee('collections/mimed/css/catalogue.css');
+    }
+})->with(['mimed', 'cockburn', 'guardbook']);
