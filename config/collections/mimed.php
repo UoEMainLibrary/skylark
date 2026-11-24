@@ -4,7 +4,7 @@ $dspaceDefaults = require __DIR__.'/defaults/dspace.php';
 
 return array_merge($dspaceDefaults, [
     'appname' => 'mimed',
-    'fullname' => 'MUSICAL INSTRUMENT MUSEUMS EDINBURGH',
+    'fullname' => 'Musical Instrument Collection',
     'theme' => 'mimed',
     'url_prefix' => 'mimed',
 
@@ -64,7 +64,6 @@ return array_merge($dspaceDefaults, [
         'Date Made',
         'Description',
         'Other Information',
-        'Notes',
         'Decorations',
         'Measurements',
         'Provenance',

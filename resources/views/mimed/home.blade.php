@@ -4,8 +4,7 @@
 <section class="mimed-hero">
     <div class="mimed-wrap mimed-hero-grid">
         <div class="mimed-hero-copy">
-            <h1>Musical Instrument<br>Museums Edinburgh</h1>
-            <p>The University of Edinburgh’s collection of historic musical instruments.</p>
+            <h1>Musical Instrument Collection, University of Edinburgh</h1>
             @include('mimed.search.partials.form')
         </div>
         <figure class="mimed-hero-image">
@@ -45,19 +44,11 @@
 <section class="mimed-about-band">
     <div class="mimed-wrap mimed-about-grid">
         <div>
-            <h2>About the collection</h2>
-            <p>The University of Edinburgh’s collection of historic musical instruments ranks among the world’s most important collections of musical heritage. It has official Recognised Collection of National Significance to Scotland status.</p>
-            <p>The emphasis of the Collection is on instruments that are no longer in regular current use and the collecting
-                policy is to acquire instruments when they fall out of use rather than to collect instruments by contemporary
-                makers. The Collection thus covers the period from the 16th century (the earliest from which examples are
-                available for acquisition) to the 20th century (the most recent from which instruments can be regarded as
-                historic).</p>
-            <p>Many of the instruments are still playable and through an established concert programme and as a regular
-                venue during the Edinburgh International Festival, the Concert Room provides a contemporaneous setting for
-                performances, within which the audience can be seen as the interface between the University and the public.</p>
-            <p>The instruments are supplemented by an archive of original materials, working papers and a sound archive.
-                The Collection as a whole attracts researchers from far and wide and is an extensively cited resource in
-                international scholarship. Instruments are lent to prestigious exhibitions at home and internationally.</p>
+            <h2>About the Collection</h2>
+            <p>The University of Edinburgh’s Musical Instrument Collection ranks among the world’s most important collections of musical heritage. It has official Recognised Collection of National Significance to Scotland status and holds Accreditation status with Arts Council England. The purpose of the Collection is to promote the study of the history, construction and functions of musical instruments as well as their cultural contexts. It is used for teaching, research and enjoyment within and beyond the University: tours, hands-on research for publication, making technical drawings, building replica instruments, demonstrations, recording etc. are actively encouraged and facilitated by Museum staff. It is also open to the public with an active programme of engagement activities and events throughout the year.</p>
+            <p>The Collection covers the period from c1550 to the present day and includes instruments from many cultures around the world. There are particular strengths in keyboard instruments, brass instruments, guitars and clarinets as well as a focus on Scottish instruments. Important collections have come to us through many individuals including Mrs Gilbert Russell, Sir Nicholas Shackleton, Lynne and Rodger Mirrey, Anne Macaulay, Frank Tomes, Geoffrey Rendall, Peter Cook, Anthony Baines, James Blades and the Galpin Society. We are grateful to all of our donors and supporters.</p>
+            <p>Many of the instruments are playable by expert musicians and, through an established concert programme throughout the year, the Concert Room provides an intimate setting for public performances of many kinds.</p>
+            <p>The instruments are supplemented by an archive of original materials, working papers and a sound archive. The Collection as a whole attracts researchers from far and wide and is an extensively cited resource in international scholarship. Instruments are lent to prestigious exhibitions at home and internationally.</p>
             <a href="{{ route('mimed.about') }}">About this collection <span aria-hidden="true">→</span></a>
         </div>
         <div>
@@ -66,5 +57,11 @@
             <a href="{{ route('stcecilias.home') }}">Visit St Cecilia’s Hall <span aria-hidden="true">→</span></a>
         </div>
     </div>
+</section>
+
+<section class="mimed-wrap mimed-research" aria-labelledby="research-title">
+    <h2 id="research-title">Research</h2>
+    <p>Information about conducting research with the Musical Instrument Collection and at the Centre for Research Collections will be added here.</p>
+    <a href="https://library.ed.ac.uk/using-library/lib-locate/crc">Centre for Research Collections →</a>
 </section>
 @endsection

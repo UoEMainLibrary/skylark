@@ -1,13 +1,10 @@
-@extends('layouts.mimed')
+@extends('layouts.mimed-information')
 
-@section('title', 'Licensing and Copyright - Musical Instrument Museums Edinburgh')
+@section('title', 'Licensing and Copyright - Musical Instrument Collection')
+@section('page-heading', 'Licensing and Copyright Information')
 
-@section('content')
-<div class="col-main">
-    <div class="content">
-        <div class="content byEditor">
-            <h1>Licensing and Copyright Information</h1>
-            <p>
+@section('information')
+<p>
                 We endeavour to undertake reasonable efforts to make sure that the reproduction of content on this site is done with the consent of copyright owners.
                 All material that is reproduced here is only done so at low resolution and for the purposes of teaching and research.
             </p>
@@ -19,7 +16,4 @@
                 <li>The full details of the artist</li>
                 <li>The URL of where you found the material</li>
             </ol>
-        </div>
-    </div>
-</div>
 @endsection

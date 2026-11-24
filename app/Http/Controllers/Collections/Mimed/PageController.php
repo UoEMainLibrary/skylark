@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Collections\Mimed;
 use App\Http\Controllers\Controller;
 use App\Services\RepositoryFactory;
 use App\Support\CollectionUrl;
+use Illuminate\View\View;
 
 class PageController extends Controller
 {
@@ -36,13 +37,14 @@ class PageController extends Controller
     }
 
     /**
-     * Display the MIMEd IIIF page.
+     * Display IIIF guidance in the requesting collection’s own layout.
      *
-     * Also reused as the IIIF page for the cockburn and guardbook
-     * collections — see routes/web.php.
+     * Cockburn and Guardbook also use this action through their named routes.
      */
-    public function iiif()
+    public function iiif(): View
     {
-        return view('mimed.pages.iiif');
+        $collection = config('app.current_collection', 'mimed');
+
+        return view($collection.'.pages.iiif');
     }
 }

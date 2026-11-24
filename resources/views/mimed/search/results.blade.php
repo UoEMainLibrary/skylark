@@ -1,6 +1,6 @@
 @extends('layouts.mimed-catalogue')
 
-@section('title', 'Search results - Musical Instrument Museums Edinburgh')
+@section('title', 'Search results - Musical Instrument Collection')
 
 @section('head')
     <link rel="stylesheet" href="{{ asset('assets/fancybox/source/jquery.fancybox.css') }}?v=2.1.4">

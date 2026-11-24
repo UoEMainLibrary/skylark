@@ -1,11 +1,11 @@
 .mimed-catalogue {
-    --paper: #f8f6ef;
-    --ink: #142c28;
-    --green: #143a32;
-    --deep: #102c26;
-    --accent: #e9ba68;
-    --line: #d7d9ce;
-    --muted: #4d615a;
+    --paper: #fff;
+    --ink: #272727;
+    --green: #760069;
+    --deep: #292929;
+    --accent: #760069;
+    --line: #dedede;
+    --muted: #555;
     margin: 0;
     color: var(--ink);
     background: var(--paper);
@@ -17,10 +17,10 @@
 .mimed-catalogue figure, .mimed-catalogue h1, .mimed-catalogue h2, .mimed-catalogue p { margin: 0; }
 .mimed-catalogue p + p { margin-top: .8rem; }
 .mimed-catalogue h1, .mimed-catalogue h2, .mimed-footer-name {
-    font-family: Georgia, serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-weight: 400;
     line-height: 1.12;
-    letter-spacing: -.035em;
+    letter-spacing: -.025em;
     overflow-wrap: anywhere;
 }
 .mimed-catalogue h1 { font-size: clamp(2.5rem, 5.6vw, 5.45rem); }
@@ -50,9 +50,9 @@
 .mimed-hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: stretch; }
 .mimed-hero-copy { align-self: center; padding-block: clamp(2.5rem, 5.6vw, 5rem); }
 .mimed-hero h1 { font-size: clamp(2.4rem, 4.65vw, 4.375rem); }
-.mimed-hero-copy > p { color: #e4e7dd; font-size: 1.1rem; max-width: 38ch; margin-top: 1.25rem; }
+.mimed-hero-copy > p { color: #fff; font-size: 1.1rem; max-width: 38ch; margin-top: 1.25rem; }
 .mimed-hero-copy .mimed-search-form { margin-top: clamp(1.55rem, 4vw, 2.65rem); }
-.mimed-hero-image { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; background: #f0ece1; color: var(--ink); }
+.mimed-hero-image { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; background: #f5f3ef; color: var(--ink); }
 .mimed-hero-image > a { position: relative; display: block; min-height: 20rem; }
 .mimed-hero-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
 .mimed-hero-image figcaption { display: flex; gap: .5rem 1.2rem; justify-content: space-between; flex-wrap: wrap; padding: .85rem 1.15rem; border-top: 1px solid #d8d4c7; font-weight: 650; }
@@ -77,14 +77,14 @@
     justify-content: center;
     gap: .6rem;
     background: var(--accent);
-    color: #1f241a;
+    color: #fff;
     border: 1px solid transparent;
     border-radius: .2rem;
     padding: .65rem 1.05rem;
     font-weight: 700;
     cursor: pointer;
 }
-.mimed-search-control button:hover, .mimed-button:hover { background: #f5ce87; }
+.mimed-search-control button:hover, .mimed-button:hover { background: #510049; }
 .mimed-search-links { display: flex; flex-wrap: wrap; gap: .4rem 1.35rem; margin-top: .65rem; font-size: .93rem; }
 .mimed-search-links a { display: inline-flex; align-items: center; min-height: 2rem; }
 
@@ -95,12 +95,12 @@
 .mimed-featured-grid li { background: #fff; border: 1px solid var(--line); }
 .mimed-featured-grid a { display: block; text-decoration: none; }
 .mimed-featured-grid a:hover .mimed-featured-label { text-decoration: underline; }
-.mimed-featured-image { display: grid; place-items: center; background: #efede4; aspect-ratio: 1.44; overflow: hidden; }
-.mimed-featured-image img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.mimed-featured-image { position: relative; background: #f5f3ef; aspect-ratio: 1.44; }
+.mimed-featured-image img { position: absolute; inset: 0; width: 100%; height: 100%; padding: .8rem; object-fit: contain; mix-blend-mode: multiply; }
 .mimed-featured-label { padding: .8rem 1rem; display: flex; justify-content: space-between; gap: .6rem; font-size: 1.15rem; font-weight: 650; }
 .mimed-browse { border-top: 1px solid var(--line); padding-block: 2.5rem; }
 .mimed-browse .mimed-facets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; margin-top: 1rem; align-items: start; }
-.mimed-about-band { background: #e8ebe0; }
+.mimed-about-band { background: #f3f3f3; }
 .mimed-about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(1.5rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 4.75rem); }
 .mimed-about-grid p { max-width: 65ch; margin-top: .9rem; }
 .mimed-about-grid a { display: inline-block; margin-top: .85rem; font-weight: 650; }
@@ -111,7 +111,7 @@
 .mimed-results-layout:not(:has(.mimed-filters)) { grid-template-columns: minmax(0, 1fr); }
 .mimed-search-band .mimed-search-scope { margin-bottom: 1rem; }
 .mimed-advanced-terms { display: flex; flex-wrap: wrap; gap: .55rem; list-style: none; margin: 0 0 1rem; padding: 0; }
-.mimed-advanced-terms li { display: flex; align-items: center; gap: .65rem; border: 1px solid #bbc7b9; background: #e8ebe0; border-radius: .35rem; padding: .1rem .2rem .1rem .65rem; max-width: 100%; }
+.mimed-advanced-terms li { display: flex; align-items: center; gap: .65rem; border: 1px solid #bbc7b9; background: #f3f3f3; border-radius: .35rem; padding: .1rem .2rem .1rem .65rem; max-width: 100%; }
 .mimed-advanced-terms li > span { display: flex; flex-wrap: wrap; gap: .2rem .5rem; min-width: 0; overflow-wrap: anywhere; }
 .mimed-advanced-terms strong { font-size: .875rem; color: var(--muted); align-self: center; }
 .mimed-advanced-terms a { display: inline-flex; flex: none; align-items: center; justify-content: center; min-width: 2rem; min-height: 2rem; font-size: 1.35rem; line-height: 1; text-decoration: none; border-radius: .2rem; }
@@ -122,7 +122,7 @@
 .mimed-facets ul { padding: 0 .8rem .65rem; }
 .mimed-facets li { font-size: .94rem; overflow-wrap: anywhere; padding: .27rem 0; }
 .mimed-facets li span { color: var(--muted); }
-.mimed-facets .mimed-active-filter { background: #e8ebe0; padding: .45rem .55rem; margin-bottom: .3rem; }
+.mimed-facets .mimed-active-filter { background: #f3f3f3; padding: .45rem .55rem; margin-bottom: .3rem; }
 .mimed-active-filter a { display: block; font-size: .84rem; }
 .mimed-result-toolbar { display: flex; gap: .5rem 1rem; flex-wrap: wrap; align-items: start; justify-content: space-between; padding-bottom: .75rem; border-bottom: 1px solid var(--line); }
 .mimed-result-toolbar > p { align-self: center; }
@@ -144,13 +144,13 @@
 .mimed-empty, .mimed-support-page { padding-block: 2rem 4rem; }
 .mimed-empty p, .mimed-support-page p { margin-block: .85rem; }
 
-.mimed-record-heading { background: #e8ebe0; padding-block: clamp(1.25rem, 4vw, 3rem); }
+.mimed-record-heading { background: #f3f3f3; padding-block: clamp(1.25rem, 4vw, 3rem); }
 .mimed-record-heading h1 { font-size: clamp(2.3rem, 5.4vw, 4.35rem); margin-top: .55rem; }
 .mimed-back { font-size: .95rem; }
 .mimed-record-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, 21rem); gap: clamp(1.5rem, 4vw, 4.5rem); padding-block: 2rem 4rem; }
 .mimed-record-makers { display: flex; flex-wrap: wrap; gap: .45rem .85rem; margin-bottom: .85rem; color: var(--muted); }
 .mimed-record-makers:empty { display: none; }
-.mimed-zoom, .mimed-record-layout .img-frame { display: block; width: 100%; height: clamp(19rem, 47vw, 35rem); border: 0; background: #e8ebe0; }
+.mimed-zoom, .mimed-record-layout .img-frame { display: block; width: 100%; height: clamp(19rem, 47vw, 35rem); border: 0; background: #f3f3f3; }
 .mimed-record-layout .json-link { display: flex; flex-wrap: wrap; gap: .45rem 1rem; margin: .75rem 0 1.8rem; font-size: .9rem; }
 .mimed-record-layout .main-image, .mimed-record-layout .record_bitstreams { margin-block: 1rem 1.5rem; }
 .mimed-record-layout :is(audio, video) { display: block; width: 100%; max-width: 44rem; margin-block: .65rem 1rem; }
@@ -219,3 +219,45 @@
     border: 1px solid var(--line);
     box-shadow: 0 .4rem 1rem #142c281a;
 }
+
+.mimed-information-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(14rem, 19rem); gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 4rem); }
+.mimed-information { min-width: 0; max-width: 72ch; font-size: 1.0625rem; line-height: 1.8; overflow-wrap: anywhere; }
+.mimed-information p { margin-bottom: 1.1rem; }
+.mimed-information h2 { font-size: clamp(1.65rem, 3vw, 2.2rem); margin-block: 1.75rem .75rem; }
+.mimed-information h2:first-child { margin-top: 0; }
+.mimed-information :is(ul, ol) { padding-left: 1.4rem; margin-block: 1rem 1.5rem; }
+.mimed-information li { padding-left: .2rem; margin-block: .5rem; }
+.mimed-information-logo { display: inline-block; margin-bottom: 1rem; }
+.mimed-information-sidebar nav { display: grid; border-top: 1px solid var(--line); margin-bottom: 1.5rem; }
+.mimed-information-sidebar h2 { font-size: 1.45rem; margin-block: 1rem .5rem; }
+.mimed-information-sidebar nav a { padding-block: .65rem; border-bottom: 1px solid var(--line); }
+.mimed-information-sidebar [aria-current] { font-weight: 700; }
+@media (max-width: 680px) {
+    .mimed-information-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+/* University and Library identity shared with the Library discovery services. */
+.mimed-university { background: #fff; color: var(--ink); }
+.mimed-university .mimed-wrap { align-items: center; padding-block: 1.25rem; }
+.mimed-university img { width: 20rem; height: auto; }
+.mimed-header { background: var(--green); color: #fff; }
+.mimed-wordmark { font-size: 1.6rem; font-weight: 500; letter-spacing: -.025em; white-space: normal; line-height: 1.25; }
+.mimed-hero { background: #f3f3f3; color: var(--ink); }
+.mimed-hero-copy > p { color: var(--muted); }
+.mimed-hero h1 { font-weight: 500; }
+.mimed-search-links a { color: inherit; }
+.mimed-record-makers a, .mimed-information a, .mimed-related-details + a, .mimed-result-makers a { color: var(--green); }
+.mimed-library-baton { background: #777; padding-block: 1rem; }
+.mimed-library-baton img { width: 100%; height: auto; }
+.mimed-footer-name { font-size: 1.6rem; }
+.mimed-research { padding-block: 2.5rem 3rem; }
+.mimed-research p { max-width: 65ch; margin-block: 1rem; }
+@media (max-width: 680px) {
+    .mimed-university .mimed-wrap { gap: .85rem; }
+    .mimed-university img { width: min(18rem, 100%); }
+}
+
+.mimed-header .mimed-wordmark { display: inline-flex; align-items: center; gap: .8rem; }
+.mimed-header .mimed-wordmark strong { font-size: 1.65rem; letter-spacing: -.06em; }
+.mimed-header .mimed-wordmark span { max-width: 17rem; border-color: #ffffff80; color: #fff; font-size: .875rem; }

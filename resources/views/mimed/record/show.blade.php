@@ -1,6 +1,6 @@
 @extends('layouts.mimed-catalogue')
 
-@section('title', $recordTitle . ' - Musical Instrument Museums Edinburgh')
+@section('title', $recordTitle . ' - Musical Instrument Collection')
 
 @section('head')
     @if(!empty($bitstreams['main_image']))
