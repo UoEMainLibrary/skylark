@@ -1,5 +1,48 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
+
+it('keeps results without a record identifier visible without linking them', function (array $identifierFields): void {
+    Http::preventStrayRequests();
+    Http::fake([
+        '*' => Http::response([
+            'response' => [
+                'numFound' => 2,
+                'docs' => [
+                    array_merge([
+                        'search.resourceid' => 'd6c7d35a-8812-4422-8682-0d2f050eb7ff',
+                        'dc.title.en' => ['Piccolo, nominal pitch: C'],
+                    ], $identifierFields),
+                    ['handle' => '10683/14797', 'dc.title.en' => ['Lute']],
+                ],
+            ],
+            'facet_counts' => ['facet_fields' => []],
+        ]),
+    ]);
+
+    $response = $this->get('/mimed/search/0002')
+        ->assertSuccessful()
+        ->assertViewHas('total', 2)
+        ->assertSee('Piccolo, nominal pitch: C')
+        ->assertSee('Lute')
+        ->assertSee('href="'.route('mimed.record.show', ['id' => '14797', 'highlight' => '0002']).'"', false);
+
+    $document = new DOMDocument;
+    @$document->loadHTML($response->getContent());
+    $xpath = new DOMXPath($document);
+
+    expect($xpath->query('//li[@class="mimed-result"]/div/h2')->length)->toBe(2)
+        ->and($xpath->query('//li[@class="mimed-result"]/div/h2/a')->length)->toBe(1)
+        ->and($xpath->query('//li[@class="mimed-result"]/div/h2[not(a)]')->item(0)?->textContent)
+        ->toContain('Piccolo, nominal pitch: C');
+})->with([
+    'missing identifier' => [[]],
+    'null identifier' => [['id' => null]],
+    'empty identifier' => [['id' => '']],
+    'empty identifier array' => [['id' => []]],
+    'blank handle' => [['handle' => '']],
+]);
+
 it('renders the mimed accessibility statement as a standalone Viki-template page', function (): void {
     $html = view('mimed.pages.accessibility')->render();
 

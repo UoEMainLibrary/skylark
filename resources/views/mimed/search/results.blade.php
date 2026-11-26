@@ -94,7 +94,7 @@
                         $makers = Illuminate\Support\Arr::wrap($doc[$makerField] ?? []);
                         $imageUri = collect(Illuminate\Support\Arr::wrap($doc[$imageUriField] ?? []))
                             ->first(fn (string $uri): bool => str_contains($uri, 'luna'));
-                        $recordUrl = route('mimed.record.show', ['id' => $docId, 'highlight' => $query]);
+                        $recordUrl = filled($docId) ? route('mimed.record.show', ['id' => $docId, 'highlight' => $query]) : null;
                     @endphp
                     <li class="mimed-result">
                         <div class="mimed-result-image">
@@ -106,7 +106,13 @@
                             @endif
                         </div>
                         <div>
-                            <h2><a href="{{ $recordUrl }}">{{ $title }}</a></h2>
+                            <h2>
+                                @if($recordUrl)
+                                    <a href="{{ $recordUrl }}">{{ $title }}</a>
+                                @else
+                                    {{ $title }}
+                                @endif
+                            </h2>
                             @if($makers)
                                 <p class="mimed-result-makers">
                                     @foreach($makers as $maker)
