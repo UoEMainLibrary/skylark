@@ -3,7 +3,11 @@
 <section class="sch-page-heading"><p class="sch-eyebrow">Experience St Cecilia’s</p><h1>{{ $page->title }}</h1><p class="sch-lead">{{ $page->intro }}</p></section>
 <section class="sch-events-section" aria-label="{{ $page->title }}">
     @if($page->body)<div class="sch-rich">{!! \Filament\Forms\Components\RichEditor\RichContentRenderer::make($page->body)->toHtml() !!}</div>@endif
+    @if($detail ?? false)
+        <p><a href="{{ route('stcecilias.museum.events') }}">← Back to What’s On</a></p>
+    @else
     <p><a href="{{ ($archive ?? false) ? route('stcecilias.museum.events') : route('stcecilias.museum.archive') }}">{{ ($archive ?? false) ? 'Upcoming events' : 'Past events' }} →</a></p>
+    @endif
     @if(($archive ?? false) && ! ($detail ?? false) && $hasIcomArchive)
         <p><a href="{{ route('stcecilias.museum.page', ['slug' => 'archive/icom-music-2026']) }}">ICOM MUSIC Annual Meeting 2026 →</a></p>
     @endif

@@ -8,6 +8,7 @@ use App\Models\User;
 use Database\Seeders\StceciliasMuseumSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
@@ -103,7 +104,8 @@ it('allows an authorized editor to edit public page content and validates slugs'
     $this->get('/stcecilias/venue-hire')->assertSee('Edited venue title');
     Livewire::test(EditStceciliasPage::class, ['record' => $page->id])
         ->fillForm(['slug' => 'unroutable-page'])
-        ->call('save')->assertHasFormErrors(['slug']);
+        ->call('save')->assertHasNoFormErrors();
+    expect($page->fresh()->slug)->toBe('venue-hire');
 });
 
 it('rejects events ending before their start and accepts editing a booking link', function (): void {
@@ -218,4 +220,77 @@ it('rejects staging imports addressed to the production site before reading the 
         ->assertFailed();
 
     expect(StceciliasPage::count())->toBe(0)->and(StceciliasEvent::count())->toBe(0);
+});
+
+it('renders menu children only beneath a published parent and preserves ordinary page access', function (): void {
+    StceciliasPage::factory()->create(['slug' => 'home']);
+    $parent = StceciliasPage::factory()->create(['slug' => 'whats-on', 'is_visible' => true]);
+    StceciliasPage::factory()->create([
+        'slug' => 'festival',
+        'title' => 'Festival',
+        'navigation_label' => 'Summer festival',
+        'show_in_navigation' => true,
+        'navigation_parent_id' => $parent->id,
+        'is_visible' => true,
+    ]);
+    $this->get('/stcecilias')->assertSuccessful()->assertSee('Summer festival')->assertSee('More in');
+    $parent->update(['is_visible' => false]);
+    $this->get('/stcecilias')->assertSuccessful()->assertDontSee('Summer festival');
+    $this->get('/stcecilias/festival')->assertSuccessful();
+});
+
+it('shows blog cards and leaves unpublished articles out', function (): void {
+    StceciliasPage::factory()->create(['slug' => 'blog', 'is_visible' => true]);
+    StceciliasPage::factory()->create(['slug' => 'blog/story', 'title' => 'Museum story', 'is_visible' => true]);
+    StceciliasPage::factory()->create(['slug' => 'blog/draft', 'title' => 'Hidden story', 'is_visible' => false]);
+
+    $this->get('/stcecilias/blog')->assertSuccessful()->assertSee('Museum story')
+        ->assertSee('Read more')->assertDontSee('Hidden story');
+});
+
+it('links an event back to What’s On without the archive link', function (): void {
+    StceciliasPage::factory()->create(['slug' => 'whats-on', 'is_visible' => true]);
+    $event = StceciliasEvent::factory()->create(['is_visible' => true]);
+
+    $this->get('/stcecilias/event/'.$event->slug)->assertSuccessful()
+        ->assertSee('Back to What’s On')->assertDontSee('Past events');
+});
+
+it('prepares old WordPress URLs as permanent redirects to their new destinations', function (): void {
+    config(['app.url' => 'https://collections.ed.ac.uk']);
+    $this->get('https://www.stcecilias.ed.ac.uk/binks-harpsichord/')
+        ->assertRedirect('https://collections.ed.ac.uk/stcecilias/tours/binks/harpsichords')
+        ->assertStatus(301);
+    $this->get('https://collections.ed.ac.uk/stcecilias/binks-harpsichord')
+        ->assertRedirect(url('/stcecilias/tours/binks/harpsichords'))
+        ->assertStatus(301);
+});
+
+it('rejects self-parenting and nested menu parents', function (): void {
+    $parent = StceciliasPage::factory()->create(['slug' => 'about-us']);
+    $child = StceciliasPage::factory()->create(['slug' => 'history', 'navigation_parent_id' => $parent->id]);
+
+    expect(fn () => $parent->update(['navigation_parent_id' => $child->id]))
+        ->toThrow(ValidationException::class);
+    expect(fn () => $child->update(['navigation_parent_id' => $child->id]))
+        ->toThrow(ValidationException::class);
+});
+
+it('rejects the homepage as a dropdown parent', function (): void {
+    $home = StceciliasPage::factory()->create(['slug' => 'home']);
+    $page = StceciliasPage::factory()->create(['slug' => 'tours']);
+
+    expect(fn () => $page->update(['navigation_parent_id' => $home->id]))
+        ->toThrow(ValidationException::class);
+    expect($page->fresh()->navigation_parent_id)->toBeNull();
+});
+
+it('uses a migrated article image when a blog card has no manually selected main image', function (): void {
+    $post = StceciliasPage::factory()->make([
+        'slug' => 'blog/story',
+        'image_path' => null,
+        'body' => '<p>Story</p><img src="/storage/stcecilias/migration/story.jpg">',
+    ]);
+
+    expect($post->blogCardImageUrl())->toBe('/storage/stcecilias/migration/story.jpg');
 });

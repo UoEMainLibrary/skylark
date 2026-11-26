@@ -35,9 +35,13 @@ use App\Support\CollectionUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// These routes take effect when the retired WordPress host is directed to Skylark.
+Route::domain('www.stcecilias.ed.ac.uk')->group(function (): void {
+    Route::get('/{path?}', [MuseumController::class, 'legacy'])->where('path', '.*')->name('stcecilias.legacy');
+});
+
 /*
- * Dedicated collection hostnames (OPENBOOKS_HOST, SJAC_HOST, etc.) register Route::domain(...) groups here
- * before the unconstrained `/` route so GET / resolves to the collection home, not clds.home.
+ * Dedicated collection hostnames register domain groups before the root route.
  */
 CollectionRouteRegistrar::registerDspacePrefixedCollection([
     'prefix' => 'openbooks',
@@ -386,7 +390,7 @@ CollectionRouteRegistrar::registerDspacePrefixedCollection([
         Route::get('/whats-on/archive', [MuseumController::class, 'archive'])->name('museum.archive');
         Route::get('/event/{slug}', [MuseumController::class, 'event'])->where('slug', '[a-z0-9-]+')->name('museum.event');
         Route::get('/{slug}', [MuseumController::class, 'page'])
-            ->where('slug', 'planning-your-visit|venue-hire|about-us|our-story|colonial-legacies|galleries|contact-us|get-involved|playing-instruments|research|(?:tours|learning|blog)(?:/[a-z0-9-]+)*|archive/[a-z0-9-]+')->name('museum.page');
+            ->where('slug', '(?!(?:search|record|browse|advanced|redirect|event|iiif|mirador|feedback|licensing|takedown|accessibility)(?:/|$))[a-z0-9]+(?:[-/][a-z0-9]+)*')->name('museum.page');
 
         // Legacy "More …" link from the search-results facet sidebar.
         Route::get('/browse/{facet}', [StceciliasController::class, 'browse'])

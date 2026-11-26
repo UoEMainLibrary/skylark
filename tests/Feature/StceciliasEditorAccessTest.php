@@ -3,6 +3,7 @@
 use App\Filament\Resources\CmsPages\Resp\Pages\EditRespCmsPage;
 use App\Filament\Resources\StceciliasEvents\Pages\CreateStceciliasEvent;
 use App\Filament\Resources\StceciliasEvents\Pages\EditStceciliasEvent;
+use App\Filament\Resources\StceciliasPages\Pages\CreateStceciliasPage;
 use App\Filament\Resources\StceciliasPages\Pages\EditStceciliasPage;
 use App\Filament\Resources\StceciliasPages\Pages\ManageStceciliasPages;
 use App\Models\CmsPage;
@@ -186,4 +187,76 @@ it('cannot reorder pages after museum editing access is revoked', function (): v
     $user->save();
     $component->call('reorderTable', [$venue->id, $visit->id]);
     expect($visit->fresh()->navigation_order)->toBe(1)->and($venue->fresh()->navigation_order)->toBe(2);
+});
+
+it('allows museum editors to delete a page through its edit screen', function (): void {
+    $this->actingAs(User::factory()->stceciliasEditor()->create());
+    $page = StceciliasPage::factory()->create(['slug' => 'tours']);
+
+    Livewire::test(EditStceciliasPage::class, ['record' => $page->id])
+        ->callAction('delete');
+
+    $this->assertModelMissing($page);
+});
+
+it('loads imported past event HTML as editable paragraphs and saves description changes', function (): void {
+    $this->actingAs(User::factory()->stceciliasEditor()->create());
+    $event = StceciliasEvent::factory()->create([
+        'starts_at' => '2021-05-07 10:30:00',
+        'ends_at' => '2021-05-07 11:30:00',
+        'body' => '<div><div><strong>Original description</strong></div></div><p>Booking details.</p>',
+    ]);
+
+    Livewire::test(EditStceciliasEvent::class, ['record' => $event->id])
+        ->assertFormSet(['body' => '<p><strong>Original description</strong></p><p>Booking details.</p>'])
+        ->fillForm(['body' => '<p>Updated description.</p>'])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($event->fresh()->body)->toContain('Updated description.');
+});
+
+it('lets a museum editor create a page and add it beneath an existing menu item', function (): void {
+    config(['stcecilias.museum_enabled' => true]);
+    $this->actingAs(User::factory()->stceciliasEditor()->create());
+    $parent = StceciliasPage::factory()->create(['slug' => 'whats-on', 'is_visible' => true]);
+
+    Livewire::test(CreateStceciliasPage::class)
+        ->fillForm([
+            'title' => 'Special concert',
+            'slug' => 'special-concert',
+            'body' => '<p>Concert details.</p>',
+            'is_visible' => true,
+            'show_in_navigation' => true,
+            'navigation_parent_id' => $parent->id,
+        ])->call('create')->assertHasNoFormErrors();
+
+    $page = StceciliasPage::where('slug', 'special-concert')->firstOrFail();
+    expect($page->navigation_parent_id)->toBe($parent->id);
+    $this->get('/stcecilias/special-concert')->assertSuccessful()->assertSee('Concert details.');
+});
+
+it('rejects a CMS page address that would overlap a functional route', function (string $slug): void {
+    $this->actingAs(User::factory()->stceciliasEditor()->create());
+
+    Livewire::test(CreateStceciliasPage::class)
+        ->fillForm(['title' => 'New page', 'slug' => $slug])
+        ->call('create')->assertHasFormErrors(['slug']);
+})->with(['search/example', 'event/example', 'about', 'whats-on/archive']);
+
+it('prevents selecting the homepage as a dropdown parent', function (): void {
+    $this->actingAs(User::factory()->stceciliasEditor()->create());
+    $home = StceciliasPage::factory()->create(['slug' => 'home']);
+    $page = StceciliasPage::factory()->create(['slug' => 'tours']);
+
+    Livewire::test(CreateStceciliasPage::class)
+        ->fillForm(['title' => 'New page', 'slug' => 'new-page', 'navigation_parent_id' => $home->id])
+        ->call('create')->assertHasFormErrors(['navigation_parent_id']);
+
+    Livewire::test(EditStceciliasPage::class, ['record' => $page->id])
+        ->fillForm(['navigation_parent_id' => $home->id])
+        ->call('save')->assertHasFormErrors(['navigation_parent_id']);
+
+    expect($page->fresh()->navigation_parent_id)->toBeNull();
+    $this->assertDatabaseMissing('stcecilias_pages', ['slug' => 'new-page']);
 });

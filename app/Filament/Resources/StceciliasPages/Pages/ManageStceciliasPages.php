@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\StceciliasPages\Pages;
 
 use App\Filament\Resources\StceciliasPages\StceciliasPageResource;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ManageStceciliasPages extends ListRecords
@@ -11,6 +12,6 @@ class ManageStceciliasPages extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [CreateAction::make()];
     }
 }
