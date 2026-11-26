@@ -24,6 +24,7 @@ return array_merge($dspaceDefaults, [
         'Abstract' => 'dc.description.abstract.en',
         'Date' => 'dc.date.created',
         'Bitstream' => 'dc.format.original.en',
+        'Manifest' => 'dc.identifier.manifest',
         'Thumbnail' => 'dc.format.thumbnail.en',
         'Place Made' => 'dc.coverage.spatial.en',
         'Date Made' => 'dc.coverage.temporal.en',

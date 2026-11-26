@@ -34,15 +34,24 @@
                 $accNoField = str_replace('.', '', $fieldMappings['Accession Number'] ?? '');
                 $bitstreamFieldName = str_replace('.', '', $fieldMappings['Bitstream'] ?? '');
                 $accno = '';
-                $manifest = null;
-                $jsonLink = '';
+                $manifestField = str_replace('.', '', $fieldMappings['Manifest'] ?? '');
+                $manifest = collect(Illuminate\Support\Arr::wrap($record[$manifestField] ?? []))
+                    ->filter(fn (mixed $value): bool => is_string($value) && filled(trim($value)))
+                    ->map(fn (string $value): string => trim($value))
+                    ->first(fn (string $value): bool => filter_var($value, FILTER_VALIDATE_URL)
+                        && in_array(strtolower(parse_url($value, PHP_URL_SCHEME) ?? ''), ['http', 'https'], true));
+                $hasMetadataManifest = $manifest !== null;
+
+                if ($manifest) {
+                    $manifest = preg_replace('~^https?://n2t\.net(?=[:/?#]|$)~i', 'https://id.collections.ed.ac.uk', $manifest);
+                }
 
                 if (isset($record[$accNoField])) {
                     $accnoVal = is_array($record[$accNoField]) ? $record[$accNoField][0] : $record[$accNoField];
                     $accno = $accnoVal;
                 }
 
-                if (isset($record[$bitstreamFieldName])) {
+                if (! $manifest && isset($record[$bitstreamFieldName])) {
                     $bitstreamArray = is_array($record[$bitstreamFieldName]) ? $record[$bitstreamFieldName] : [$record[$bitstreamFieldName]];
                     foreach ($bitstreamArray as $bs) {
                         $bSegments = explode('##', $bs);
@@ -54,25 +63,28 @@
 
                             if (str_contains(strtolower($bFilename), '.json')) {
                                 $manifest = url("/mimed/record/{$bHandleId}/{$bSeq}/{$bFilename}");
-                                $jsonLink .= '<span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest=' . $manifest . '" target="_blank" class="uvlogo" title="View in UV"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                                $jsonLink .= '<span class="json-link-item"><a target="_blank" href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest=' . $manifest . '" class="miradorlogo" title="View in Mirador"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                                $jsonLink .= '<span class="json-link-item"><a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&q=' . $accno . '" class="lunalogo" title="View in LUNA" target="_blank"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                                $jsonLink .= '<span class="json-link-item"><a href="' . $manifest . '" target="_blank" class="iiiflogo" title="IIIF manifest"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                                $jsonLink .= '<span class="json-link-item"><a href="https://creativecommons.org/licenses/by/3.0/" class="ccbylogo" title="All images CC-BY" target="_blank"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
                             }
                         }
                     }
                 }
             @endphp
 
-            @if(isset($record[$imageUriField]) && !empty($record[$imageUriField]) && $manifest)
-                <div class="img-container">
-                    <iframe class="img-frame" src="{{ url('/mimed/mirador') }}?manifest={{ urlencode($manifest) }}" height="100%" width="100%" title="Image Showcase"></iframe>
-                </div>
+            @if($manifest && ($hasMetadataManifest || !empty($record[$imageUriField])))
+                <div data-mimed-viewer>
+                    <div class="img-container">
+                        <iframe class="img-frame" src="{{ url('/mimed/mirador') }}?manifest={{ urlencode($manifest) }}" height="100%" width="100%" title="Image Showcase"></iframe>
+                    </div>
 
-                <div class="json-link">
-                    <p>{!! $jsonLink !!}</p>
-                    <p>(Note: Each icon above opens in a new tab.)</p>
+                    <div class="json-link">
+                        <p>
+                            <span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest={{ urlencode($manifest) }}" target="_blank" class="uvlogo" title="View in UV"><span class="visually-hidden"> (opens in a new tab)</span></a></span>
+                            <span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest={{ urlencode($manifest) }}" target="_blank" class="miradorlogo" title="View in Mirador"><span class="visually-hidden"> (opens in a new tab)</span></a></span>
+                            <span class="json-link-item"><a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&amp;q={{ urlencode($accno) }}" target="_blank" class="lunalogo" title="View in LUNA"><span class="visually-hidden"> (opens in a new tab)</span></a></span>
+                            <span class="json-link-item"><a href="{{ $manifest }}" target="_blank" class="iiiflogo" title="IIIF manifest"><span class="visually-hidden"> (opens in a new tab)</span></a></span>
+                            <span class="json-link-item"><a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" class="ccbylogo" title="All images CC-BY"><span class="visually-hidden"> (opens in a new tab)</span></a></span>
+                        </p>
+                        <p>(Note: Each icon above opens in a new tab.)</p>
+                    </div>
                 </div>
             @endif
 
@@ -207,3 +219,7 @@
     </ul>
 </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('collections/mimed/js/record-images.js') }}"></script>
+@endpush

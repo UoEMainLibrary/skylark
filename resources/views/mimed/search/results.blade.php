@@ -155,18 +155,6 @@
             </span>
             {!! $paginationLinks !!}
         </div>
-
-        <script>
-            const thumbnailImages = document.querySelectorAll(".thumbnail-image")
-            thumbnailImages.forEach(div => {
-                const img = div.querySelector("img")
-                const placeholder = div.querySelector(".thumbnail-placeholder")
-                if (!img || !placeholder) return;
-                function loaded() { placeholder.style.display = "none"; }
-                if (img.complete) { loaded() }
-                else { img.addEventListener("load", loaded) }
-            })
-        </script>
     @endif
 </div>
 
@@ -174,3 +162,7 @@
     @include('mimed.search.partials.facets')
 </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('collections/mimed/js/record-images.js') }}"></script>
+@endpush
