@@ -33,7 +33,7 @@ class StceciliasPagePolicy
      */
     public function create(User $user): bool
     {
-        return $user->isCmsAdministrator();
+        return $user->isCmsAdministrator() || $user->isStceciliasEditor();
     }
 
     /**
@@ -49,7 +49,7 @@ class StceciliasPagePolicy
      */
     public function delete(User $user, StceciliasPage $stceciliasPage): bool
     {
-        return $user->isCmsAdministrator();
+        return $user->isCmsAdministrator() || $user->isStceciliasEditor();
     }
 
     /**

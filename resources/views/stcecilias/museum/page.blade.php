@@ -19,8 +19,22 @@
     <aside class="sch-on-this-page"><p class="sch-eyebrow">On this page</p><nav aria-label="On this page">@foreach($page->sections as $section)<a href="#{{ $section['anchor'] ?? 'section-'.$loop->index }}">{{ $section['heading'] }}</a>@endforeach</nav></aside>
     @endif
     <article class="sch-article">
-        @if($page->body)<div class="sch-rich">{!! \Filament\Forms\Components\RichEditor\RichContentRenderer::make($page->body)->toHtml() !!}</div>@endif
-        @if($page->slug !== 'home' && $page->imageUrl())<figure class="sch-page-image"><img src="{{ $page->imageUrl() }}" alt="{{ $page->image_alt }}" width="1536" height="1229"><figcaption>{{ $page->image_alt }}</figcaption></figure>@endif
+        @if($page->slug === 'blog')
+            <div class="sch-blog-grid">
+                @forelse($blogPosts as $post)
+                    <article class="sch-blog-card">
+                        @if($post->blogCardImageUrl())<img src="{{ $post->blogCardImageUrl() }}" alt="{{ $post->image_alt ?: $post->title }}" loading="lazy">@endif
+                        <h2>{{ $post->title }}</h2>
+                        <p>{{ $post->intro ?: Illuminate\Support\Str::limit(Illuminate\Support\Str::squish(html_entity_decode(strip_tags(str_replace('</p>', ' ', $post->body ?? '')))), 240) }}</p>
+                        <a class="sch-button" href="{{ route('stcecilias.museum.page', ['slug' => $post->slug]) }}">Read more <span class="sr-only">about {{ $post->title }}</span> →</a>
+                    </article>
+                @empty
+                    <p>There are no blog posts to show at the moment.</p>
+                @endforelse
+            </div>
+        @endif
+        @if($page->body && $page->slug !== 'blog')<div class="sch-rich">{!! \Filament\Forms\Components\RichEditor\RichContentRenderer::make($page->body)->toHtml() !!}</div>@endif
+        @if($page->slug !== 'home' && $page->imageUrl())<figure class="sch-page-image sch-image-{{ $page->image_size }}"><img src="{{ $page->imageUrl() }}" alt="{{ $page->image_alt }}" width="1536" height="1229"><figcaption>{{ $page->image_alt }}</figcaption></figure>@endif
         @if($page->slug === 'planning-your-visit' && $visitorInformation)
             <section class="sch-visitor-overview"><p class="sch-eyebrow">Your visit at a glance</p><h2>{{ $visitorInformation['admission'] ?? '' }}</h2><p>{{ $visitorInformation['opening_hours'] ?? '' }}<br>{{ $visitorInformation['last_entry'] ?? '' }} · {{ $visitorInformation['closed_days'] ?? '' }}</p><p>{{ $visitorInformation['address'] ?? '' }}</p></section>
         @endif

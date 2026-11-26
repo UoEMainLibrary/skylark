@@ -45,7 +45,7 @@ class StceciliasEventResource extends Resource
             TextInput::make('slug')->required()->maxLength(255)->regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')->unique(ignoreRecord: true),
             Toggle::make('is_visible')->label('Visible on the website')->default(false),
             Textarea::make('intro')->label('Introduction')->maxLength(2000)->columnSpanFull(),
-            RichEditor::make('body')->label('Main content')->fileAttachments(false)->columnSpanFull(),
+            RichEditor::make('body')->label('Main content')->resizableImages()->fileAttachments(false)->columnSpanFull(),
             FileUpload::make('image_path')->label('Main image')->image()->disk('public')->directory('stcecilias')->maxSize(5120),
             TextInput::make('image_alt')->label('Image description (alt text)')->maxLength(255)->requiredWith('image_path'),
             DateTimePicker::make('starts_at')->required()->timezone('Europe/London'),
