@@ -1,0 +1,263 @@
+.mimed-catalogue {
+    --paper: #fff;
+    --ink: #272727;
+    --green: #760069;
+    --deep: #292929;
+    --accent: #760069;
+    --line: #dedede;
+    --muted: #555;
+    margin: 0;
+    color: var(--ink);
+    background: var(--paper);
+    font: 1rem/1.6 system-ui, sans-serif;
+}
+
+.mimed-catalogue *, .mimed-catalogue *::before, .mimed-catalogue *::after { box-sizing: border-box; }
+.mimed-catalogue img { display: block; max-width: 100%; }
+.mimed-catalogue figure, .mimed-catalogue h1, .mimed-catalogue h2, .mimed-catalogue p { margin: 0; }
+.mimed-catalogue p + p { margin-top: .8rem; }
+.mimed-catalogue h1, .mimed-catalogue h2, .mimed-footer-name {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -.025em;
+    overflow-wrap: anywhere;
+}
+.mimed-catalogue h1 { font-size: clamp(2.5rem, 5.6vw, 5.45rem); }
+.mimed-catalogue h2 { font-size: clamp(1.6rem, 3vw, 2.65rem); }
+.mimed-catalogue a { color: inherit; text-underline-offset: .19em; }
+.mimed-catalogue a:hover { text-decoration-thickness: .12em; }
+.mimed-catalogue :focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+.mimed-catalogue :is(input, button, select) { font: inherit; }
+.mimed-wrap { width: min(90%, 78rem); margin-inline: auto; }
+.mimed-skip { position: absolute; left: 1rem; top: 1rem; z-index: 10; padding: .65rem 1rem; background: white; transform: translateY(-200%); }
+.mimed-skip:focus { transform: translateY(0); }
+
+.mimed-university { background: var(--deep); color: #fff; font-size: .875rem; }
+.mimed-university .mimed-wrap { display: flex; justify-content: space-between; gap: .5rem 1rem; flex-wrap: wrap; padding-block: .48rem; }
+.mimed-university a, .mimed-header a { text-decoration: none; }
+.mimed-university a:hover, .mimed-header a:hover { text-decoration: underline; }
+.mimed-header { border-bottom: 1px solid var(--line); }
+.mimed-header-inner { display: flex; justify-content: space-between; align-items: center; gap: .65rem 2rem; padding-block: .85rem; }
+.mimed-wordmark { display: inline-flex; gap: .7rem; align-items: center; font-weight: 800; font-size: 1.55rem; white-space: nowrap; letter-spacing: -.075em; }
+.mimed-wordmark span { max-width: 12rem; padding-left: .75rem; border-left: 1px solid var(--line); font-size: .76rem; line-height: 1.25; letter-spacing: normal; white-space: normal; }
+.mimed-header nav { display: flex; align-items: center; flex-wrap: wrap; gap: .25rem clamp(.75rem, 2vw, 1.75rem); font-size: .94rem; }
+.mimed-header nav a { display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; }
+.mimed-header nav [aria-current] { text-decoration: underline; }
+.mimed-header .mimed-visit-link { font-weight: 650; }
+
+.mimed-hero, .mimed-search-band { background: var(--green); color: var(--paper); }
+.mimed-hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: stretch; }
+.mimed-hero-copy { align-self: center; padding-block: clamp(2.5rem, 5.6vw, 5rem); }
+.mimed-hero h1 { font-size: clamp(2.4rem, 4.65vw, 4.375rem); }
+.mimed-hero-copy > p { color: #fff; font-size: 1.1rem; max-width: 38ch; margin-top: 1.25rem; }
+.mimed-hero-copy .mimed-search-form { margin-top: clamp(1.55rem, 4vw, 2.65rem); }
+.mimed-hero-image { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; background: #f5f3ef; color: var(--ink); }
+.mimed-hero-image > a { position: relative; display: block; min-height: 20rem; }
+.mimed-hero-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.mimed-hero-image figcaption { display: flex; gap: .5rem 1.2rem; justify-content: space-between; flex-wrap: wrap; padding: .85rem 1.15rem; border-top: 1px solid #d8d4c7; font-weight: 650; }
+.mimed-image-credit { font-size: .8rem; font-weight: 400; color: var(--muted); }
+
+.mimed-search-form { max-width: 46rem; }
+.mimed-search-form label { display: block; font-weight: 650; margin-bottom: .6rem; }
+.mimed-search-control { display: flex; gap: .35rem; }
+.mimed-search-control input, .mimed-advanced-form :is(input, select) {
+    width: 100%;
+    min-width: 0;
+    min-height: 3.25rem;
+    padding: .6rem .8rem;
+    border: 1px solid #7b8c82;
+    border-radius: .2rem;
+    color: var(--ink);
+    background: #fff;
+}
+.mimed-search-control button, .mimed-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid transparent;
+    border-radius: .2rem;
+    padding: .65rem 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.mimed-search-control button:hover, .mimed-button:hover { background: #510049; }
+.mimed-search-links { display: flex; flex-wrap: wrap; gap: .4rem 1.35rem; margin-top: .65rem; font-size: .93rem; }
+.mimed-search-links a { display: inline-flex; align-items: center; min-height: 2rem; }
+
+.mimed-featured { padding-block: clamp(2.4rem, 5vw, 4.6rem); }
+.mimed-section-header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .65rem 1.25rem; margin-bottom: 1.3rem; }
+.mimed-featured-grid, .mimed-result-list, .mimed-facets ul, .mimed-record-sidebar ul { list-style: none; margin: 0; padding: 0; }
+.mimed-featured-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.mimed-featured-grid li { background: #fff; border: 1px solid var(--line); }
+.mimed-featured-grid a { display: block; text-decoration: none; }
+.mimed-featured-grid a:hover .mimed-featured-label { text-decoration: underline; }
+.mimed-featured-image { position: relative; background: #f5f3ef; aspect-ratio: 1.44; }
+.mimed-featured-image img { position: absolute; inset: 0; width: 100%; height: 100%; padding: .8rem; object-fit: contain; mix-blend-mode: multiply; }
+.mimed-featured-label { padding: .8rem 1rem; display: flex; justify-content: space-between; gap: .6rem; font-size: 1.15rem; font-weight: 650; }
+.mimed-browse { border-top: 1px solid var(--line); padding-block: 2.5rem; }
+.mimed-browse .mimed-facets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; margin-top: 1rem; align-items: start; }
+.mimed-about-band { background: #f3f3f3; }
+.mimed-about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(1.5rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 4.75rem); }
+.mimed-about-grid p { max-width: 65ch; margin-top: .9rem; }
+.mimed-about-grid a { display: inline-block; margin-top: .85rem; font-weight: 650; }
+
+.mimed-search-band .mimed-wrap { padding-block: 2rem 1.75rem; }
+.mimed-search-band h1 { font-size: clamp(2.3rem, 5vw, 3.9rem); margin-bottom: 1rem; }
+.mimed-results-layout { display: grid; grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); gap: clamp(1.25rem, 4vw, 3.75rem); padding-block: 2.55rem 4rem; }
+.mimed-results-layout:not(:has(.mimed-filters)) { grid-template-columns: minmax(0, 1fr); }
+.mimed-search-band .mimed-search-scope { margin-bottom: 1rem; }
+.mimed-advanced-terms { display: flex; flex-wrap: wrap; gap: .55rem; list-style: none; margin: 0 0 1rem; padding: 0; }
+.mimed-advanced-terms li { display: flex; align-items: center; gap: .65rem; border: 1px solid #bbc7b9; background: #f3f3f3; border-radius: .35rem; padding: .1rem .2rem .1rem .65rem; max-width: 100%; }
+.mimed-advanced-terms li > span { display: flex; flex-wrap: wrap; gap: .2rem .5rem; min-width: 0; overflow-wrap: anywhere; }
+.mimed-advanced-terms strong { font-size: .875rem; color: var(--muted); align-self: center; }
+.mimed-advanced-terms a { display: inline-flex; flex: none; align-items: center; justify-content: center; min-width: 2rem; min-height: 2rem; font-size: 1.35rem; line-height: 1; text-decoration: none; border-radius: .2rem; }
+.mimed-advanced-terms a:hover { background: #d3ddcd; }
+.mimed-filters h2 { font-size: 1.65rem; margin-bottom: .85rem; }
+.mimed-facets details, .mimed-advanced-options { background: #fff; border: 1px solid var(--line); border-radius: .2rem; margin-bottom: .45rem; }
+.mimed-catalogue summary { cursor: pointer; font-weight: 650; padding: .65rem .85rem; }
+.mimed-facets ul { padding: 0 .8rem .65rem; }
+.mimed-facets li { font-size: .94rem; overflow-wrap: anywhere; padding: .27rem 0; }
+.mimed-facets li span { color: var(--muted); }
+.mimed-facets .mimed-active-filter { background: #f3f3f3; padding: .45rem .55rem; margin-bottom: .3rem; }
+.mimed-active-filter a { display: block; font-size: .84rem; }
+.mimed-result-toolbar { display: flex; gap: .5rem 1rem; flex-wrap: wrap; align-items: start; justify-content: space-between; padding-bottom: .75rem; border-bottom: 1px solid var(--line); }
+.mimed-result-toolbar > p { align-self: center; }
+.mimed-result-toolbar details { border: 1px solid var(--line); background: #fff; }
+.mimed-sort-options { display: grid; gap: .4rem; padding: 0 .85rem .75rem; }
+.mimed-result { display: grid; grid-template-columns: minmax(0, 9.5rem) minmax(0, 1fr); gap: 1.25rem; padding-block: 1.15rem; border-bottom: 1px solid var(--line); }
+.mimed-result h2 { font-size: clamp(1.35rem, 2.6vw, 1.95rem); margin-block: .1rem .45rem; }
+.mimed-result h2 a { text-decoration: none; }
+.mimed-result h2 a:hover { text-decoration: underline; }
+.mimed-result p { color: var(--muted); overflow-wrap: anywhere; }
+.mimed-result .mimed-result-makers { color: var(--ink); font-size: .94rem; }
+.mimed-result-image:empty { display: none; }
+.mimed-result-image:empty + div { grid-column: 1 / -1; }
+.mimed-result-image a { display: block; background: #ebece4; aspect-ratio: 1.16; }
+.mimed-result-image img { width: 100%; height: 100%; object-fit: contain; }
+.mimed-pagination { display: flex; align-items: center; flex-wrap: wrap; gap: .35rem .55rem; margin-top: 1.5rem; }
+.mimed-pagination a, .mimed-pagination .curpage { display: inline-flex; align-items: center; justify-content: center; min-width: 2.6rem; min-height: 2.6rem; padding: .35rem .65rem; border: 1px solid var(--line); }
+.mimed-pagination .curpage { background: var(--green); color: #fff; }
+.mimed-empty, .mimed-support-page { padding-block: 2rem 4rem; }
+.mimed-empty p, .mimed-support-page p { margin-block: .85rem; }
+
+.mimed-record-heading { background: #f3f3f3; padding-block: clamp(1.25rem, 4vw, 3rem); }
+.mimed-record-heading h1 { font-size: clamp(2.3rem, 5.4vw, 4.35rem); margin-top: .55rem; }
+.mimed-back { font-size: .95rem; }
+.mimed-record-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, 21rem); gap: clamp(1.5rem, 4vw, 4.5rem); padding-block: 2rem 4rem; }
+.mimed-record-makers { display: flex; flex-wrap: wrap; gap: .45rem .85rem; margin-bottom: .85rem; color: var(--muted); }
+.mimed-record-makers:empty { display: none; }
+.mimed-zoom, .mimed-record-layout .img-frame { display: block; width: 100%; height: clamp(19rem, 47vw, 35rem); border: 0; background: #f3f3f3; }
+.mimed-record-layout .json-link { display: flex; flex-wrap: wrap; gap: .45rem 1rem; margin: .75rem 0 1.8rem; font-size: .9rem; }
+.mimed-record-layout .main-image, .mimed-record-layout .record_bitstreams { margin-block: 1rem 1.5rem; }
+.mimed-record-layout :is(audio, video) { display: block; width: 100%; max-width: 44rem; margin-block: .65rem 1rem; }
+.mimed-metadata { margin: .85rem 0 0; }
+.mimed-metadata > div { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: .25rem 1rem; padding: .65rem 0; border-top: 1px solid var(--line); }
+.mimed-metadata dt { font-weight: 650; }
+.mimed-metadata dd { margin: 0; overflow-wrap: anywhere; white-space: normal; }
+.mimed-record-sidebar .mimed-search-form { border-bottom: 1px solid var(--line); margin-bottom: 1.7rem; padding-bottom: 1.1rem; }
+.mimed-record-sidebar .mimed-search-control button span { display: none; }
+.mimed-record-sidebar h2 { font-size: 1.7rem; }
+.mimed-record-sidebar li { padding-block: .65rem; border-bottom: 1px solid var(--line); }
+.mimed-advanced-form { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); align-items: baseline; gap: .65rem 1rem; max-width: 46rem; padding: .75rem .85rem; }
+.mimed-advanced-form p { grid-column: 1 / -1; }
+.mimed-advanced-form button { grid-column: 2; justify-self: start; }
+
+.mimed-footer { background: var(--deep); color: var(--paper); padding-block: 2.6rem 1.35rem; }
+.mimed-footer-main { display: grid; grid-template-columns: 1.3fr 1fr 1fr auto; gap: 1.4rem; }
+.mimed-footer-main nav { display: grid; align-content: start; gap: .4rem; }
+.mimed-footer-name { font-size: clamp(1.4rem, 3vw, 2rem); text-decoration: none; }
+.mimed-footer-main p { color: #cdd8cc; margin-top: .55rem; }
+.mimed-recognition img { width: 7rem; }
+.mimed-footer-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; border-top: 1px solid #52645e; margin-top: 1.8rem; padding-top: 1rem; font-size: .85rem; }
+.mimed-footer-bottom a + a { margin-left: 1rem; }
+
+@media (max-width: 900px) {
+    .mimed-header-inner { flex-wrap: wrap; }
+    .mimed-hero-grid { gap: 1.5rem; }
+    .mimed-footer-main { grid-template-columns: 1fr 1fr; }
+    .mimed-results-layout { grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); }
+}
+
+@media (max-width: 680px) {
+    .mimed-header-inner { align-items: start; flex-direction: column; }
+    .mimed-hero-grid, .mimed-about-grid, .mimed-results-layout, .mimed-record-layout { grid-template-columns: minmax(0, 1fr); }
+    .mimed-hero-grid { gap: 0; }
+    .mimed-hero-copy { padding-bottom: 1.8rem; }
+    .mimed-hero .mimed-hero-image { margin-bottom: 1.2rem; }
+    .mimed-hero-image > a { min-height: clamp(14rem, 63vw, 24rem); }
+    .mimed-featured-grid, .mimed-browse .mimed-facets, .mimed-filters .mimed-facets { display: grid; align-items: start; gap: .55rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mimed-result { grid-template-columns: minmax(0, 6.25rem) minmax(0, 1fr); gap: .7rem; }
+    .mimed-metadata > div { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 380px) {
+    .mimed-search-control button { gap: .25rem; padding-inline: .55rem; }
+    .mimed-search-control button span { display: none; }
+    .mimed-advanced-form { grid-template-columns: minmax(0, 1fr); }
+    .mimed-advanced-form button { grid-column: 1; }
+}
+
+.mimed-record-layout .json-link a { display: inline-flex; align-items: center; justify-content: center; min-width: 50px; min-height: 50px; }
+.mimed-record-layout .json-link img { width: auto; height: 50px; object-fit: contain; }
+
+.mimed-related-details { display: block; color: var(--muted); font-size: .875rem; margin-top: .15rem; overflow-wrap: anywhere; }
+.mimed-result-toolbar details { position: relative; }
+.mimed-result-toolbar .mimed-sort-options {
+    position: absolute;
+    z-index: 3;
+    top: 100%;
+    right: -1px;
+    min-width: 12rem;
+    width: max-content;
+    max-width: 80vw;
+    padding: .65rem .85rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 .4rem 1rem #142c281a;
+}
+
+.mimed-information-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(14rem, 19rem); gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 4rem); }
+.mimed-information { min-width: 0; max-width: 72ch; font-size: 1.0625rem; line-height: 1.8; overflow-wrap: anywhere; }
+.mimed-information p { margin-bottom: 1.1rem; }
+.mimed-information h2 { font-size: clamp(1.65rem, 3vw, 2.2rem); margin-block: 1.75rem .75rem; }
+.mimed-information h2:first-child { margin-top: 0; }
+.mimed-information :is(ul, ol) { padding-left: 1.4rem; margin-block: 1rem 1.5rem; }
+.mimed-information li { padding-left: .2rem; margin-block: .5rem; }
+.mimed-information-logo { display: inline-block; margin-bottom: 1rem; }
+.mimed-information-sidebar nav { display: grid; border-top: 1px solid var(--line); margin-bottom: 1.5rem; }
+.mimed-information-sidebar h2 { font-size: 1.45rem; margin-block: 1rem .5rem; }
+.mimed-information-sidebar nav a { padding-block: .65rem; border-bottom: 1px solid var(--line); }
+.mimed-information-sidebar [aria-current] { font-weight: 700; }
+@media (max-width: 680px) {
+    .mimed-information-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+/* University and Library identity shared with the Library discovery services. */
+.mimed-university { background: #fff; color: var(--ink); }
+.mimed-university .mimed-wrap { align-items: center; padding-block: 1.25rem; }
+.mimed-university img { width: 20rem; height: auto; }
+.mimed-header { background: var(--green); color: #fff; }
+.mimed-wordmark { font-size: 1.6rem; font-weight: 500; letter-spacing: -.025em; white-space: normal; line-height: 1.25; }
+.mimed-hero { background: #f3f3f3; color: var(--ink); }
+.mimed-hero-copy > p { color: var(--muted); }
+.mimed-hero h1 { font-weight: 500; }
+.mimed-search-links a { color: inherit; }
+.mimed-record-makers a, .mimed-information a, .mimed-related-details + a, .mimed-result-makers a { color: var(--green); }
+.mimed-library-baton { background: #777; padding-block: 1rem; }
+.mimed-library-baton img { width: 100%; height: auto; }
+.mimed-footer-name { font-size: 1.6rem; }
+.mimed-research { padding-block: 2.5rem 3rem; }
+.mimed-research p { max-width: 65ch; margin-block: 1rem; }
+@media (max-width: 680px) {
+    .mimed-university .mimed-wrap { gap: .85rem; }
+    .mimed-university img { width: min(18rem, 100%); }
+}
+
+.mimed-header .mimed-wordmark { display: inline-flex; align-items: center; gap: .8rem; }
+.mimed-header .mimed-wordmark strong { font-size: 1.65rem; letter-spacing: -.06em; }
+.mimed-header .mimed-wordmark span { max-width: 17rem; border-color: #ffffff80; color: #fff; font-size: .875rem; }

@@ -1,14 +1,10 @@
-@extends('layouts.mimed')
+@extends('layouts.mimed-information')
 
-@section('title', 'Takedown Policy - Musical Instrument Museums Edinburgh')
+@section('title', 'Takedown Policy - Musical Instrument Collection')
+@section('page-heading', 'Takedown Policy')
 
-@section('content')
-<div class="col-main">
-    <div class="content">
-        <div class="content byEditor">
-            <h1>Takedown Policy</h1>
-
-            <p>Collections on the platform <a href="http://collections.ed.ac.uk" title="University Collections Home">collections.ed.ac.uk</a> make every effort to ensure that published content
+@section('information')
+<p>Collections on the platform <a href="https://collections.ed.ac.uk" title="University Collections Home">collections.ed.ac.uk</a> make every effort to ensure that published content
                 does not infringe any person's rights, or applicable UK laws.</p>
 
             <p>However, if you believe that content, in any of the sites hosted on this platform, may be illegal, please
@@ -54,7 +50,4 @@
                 that it is ostensibly legitimate, the file will be permanently removed from public access.<br/>
                 <strong>OR</strong><br/>
                 If the Legal Advisor confirms that it does not breach any law then the item will be reinstated.</p>
-        </div>
-    </div>
-</div>
 @endsection
