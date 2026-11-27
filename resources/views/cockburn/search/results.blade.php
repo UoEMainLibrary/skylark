@@ -133,8 +133,6 @@
                                     @foreach($imageUris as $imageUri)
                                         @php
                                             $imageUri = str_replace('http://', 'https://', $imageUri);
-                                            //test imagelinks
-                                            $imageUri = str_replace('images.', 'imagelinks.', $imageUri);
                                         @endphp
 
                                         @if(!$displayedImage && str_contains($imageUri, 'luna'))
