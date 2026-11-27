@@ -49,6 +49,7 @@ return array_merge($dspaceDefaults, [
         'Alt Image' => 'dc.image.primary.en',
         'Bitstream' => 'dc.format.original.en',
         'Thumbnail' => 'dc.format.thumbnail.en',
+        'Manifest' => 'dc.identifier.manifest',
     ],
 
     'recorddisplay' => [

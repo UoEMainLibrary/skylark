@@ -15,15 +15,44 @@
     $tagsField = str_replace('.', '', $fieldMappings['Tags'] ?? '');
     $filters = array_keys(config('skylight.filters', []));
     $schema = config('skylight.schema_links', []);
+    $manifestField = str_replace('.', '', $fieldMappings['Manifest'] ?? '');
 
     $accno = '';
-    $manifest = null;
     $jsonLink = '';
 
     if (isset($record[$accNoField])) {
         $accnoVal = is_array($record[$accNoField]) ? $record[$accNoField][0] : $record[$accNoField];
         $accno = $accnoVal;
     }
+
+    $manifest = null;
+
+
+    $manifest = collect(Illuminate\Support\Arr::wrap($record[$manifestField] ?? []))
+        ->filter(fn (mixed $value): bool => is_string($value) && filled(trim($value)))
+        ->map(fn (string $value): string => trim($value))
+        ->first(fn (string $value): bool => filter_var($value, FILTER_VALIDATE_URL)
+            && in_array(strtolower(parse_url($value, PHP_URL_SCHEME) ?? ''), ['http', 'https'], true));
+    $hasMetadataManifest = $manifest !== null;
+
+
+    if (isset($record[$manifestField])) {
+        $manifest = is_array($record[$manifestField])
+            ? ($record[$manifestField][0] ?? null)
+            : $record[$manifestField];
+        
+        $manifest = preg_replace('~^https?://n2t\.net(?=[:/?#]|$)~i', 'https://id.collections.ed.ac.uk', $manifest);
+        $edcLink = preg_replace('~/manifest$~', '', $manifest);
+
+        if ($manifest !== null) {
+
+            $jsonLink = '<span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest=' . $manifest . '" target="_blank" class="uvlogo" title="View in UV"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
+            $jsonLink .= '<span class="json-link-item"><a target="_blank" href="' . url('/art/mirador') . '?manifest=' . urlencode($manifest) . '&display=full" class="miradorlogo" title="View in Mirador"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
+            $jsonLink .= '<span class="json-link-item"><a href="' . $edcLink . '" target="_blank" class="edclogo" title="View in Edinburgh Digital Collections" target="_blank"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
+            $jsonLink .= '<span class="json-link-item"><a href="' . $manifest . '" target="_blank" class="iiiflogo" title="View IIIF manifest"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
+        }
+    }
+
 
     if (isset($record[$bitstreamFieldName])) {
         $bitstreamArray = is_array($record[$bitstreamFieldName]) ? $record[$bitstreamFieldName] : [$record[$bitstreamFieldName]];
@@ -44,13 +73,15 @@
                 $bSeq = $bSegments[4] ?? '';
                 $bHandleId = preg_replace('/^.*\//', '', $bHandle);
 
-                if (str_contains(strtolower($bFilename), '.json')) {
-                    $manifest = url("/art/record/{$bHandleId}/{$bSeq}/{$bFilename}");
+                /*if (str_contains(strtolower($bFilename), '.json')) {
+                    //$manifest = url("/art/record/{$bHandleId}/{$bSeq}/{$bFilename}");
+                    //echo "MANIFEST:".$manifest;
+                    $manifest= str_replace('n2t.net', 'manifest.collections.ed.ac.uk/v3/', $manifest);
                     $jsonLink  = '<span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest=' . $manifest . '" target="_blank" class="uvlogo" title="View in UV"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
                     $jsonLink .= '<span class="json-link-item"><a target="_blank" href="' . url('/art/mirador') . '?manifest=' . urlencode($manifest) . '&display=full" class="miradorlogo" title="View in Mirador"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
                     $jsonLink .= '<span class="json-link-item"><a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&q=' . $accno . '" class="lunalogo" title="View in LUNA" target="_blank"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
                     $jsonLink .= '<span class="json-link-item"><a href="' . $manifest . '" target="_blank" class="iiiflogo" title="View IIIF manifest"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                }
+                }*/
             }
         }
     }

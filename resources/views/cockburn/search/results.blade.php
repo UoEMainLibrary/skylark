@@ -151,7 +151,7 @@
                                             @endphp
 
                                             <a title="{{ $title }}" class="fancybox" rel="group" href="{{ $imageUri }}">
-                                                <img src="{{ $thumbUrl }}" class="record-thumbnail-search" title="{{ $title }}" />
+                                                <img src="{{ $thumbUrl }}" class="record-thumbnail-search" title="{{ $title }}" onerror="this.closest('a').remove()" />
                                             </a>
 
                                             @php $displayedImage = true; @endphp

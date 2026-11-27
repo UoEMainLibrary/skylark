@@ -141,7 +141,7 @@
                                 @endphp
                                 @if($imageUri)
                                     <a title="{{ $title }}" class="fancybox" rel="group" href="{{ $imageUri }}">
-                                        <img src="{{ $iiifUrlSmall }}" class="record-thumbnail-search" alt="{{ $title }}" loading="lazy" />
+                                        <img src="{{ $iiifUrlSmall }}" class="record-thumbnail-search" alt="{{ $title }}" loading="lazy" onerror="this.closest('a').remove()" />
                                     </a>
                                 @endif
                             @endif
