@@ -40,6 +40,7 @@ return array_merge($dspaceDefaults, [
         'ImageUri' => 'dc.identifier.imageUri.en',
         'Permalink' => 'dc.contributor.authorpermalink.en',
         'SketchFabURI' => 'dc.identifier.sketchuri.en',
+        'Manifest' => 'dc.identifier.manifest',
     ],
 
     'schema_links' => [

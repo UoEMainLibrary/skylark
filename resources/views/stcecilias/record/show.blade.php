@@ -20,6 +20,7 @@
         $thumbnailField = $fieldKey('Thumbnail');
         $linkUriField = $fieldKey('ImageURI');
         $accNoField = $fieldKey('Accession Number');
+        $manifestField = str_replace('.', '', $fieldMappings['Manifest'] ?? '');
 
         $filters = array_keys(config('skylight.filters', []));
         $schema = config('skylight.schema_links', []);
@@ -59,7 +60,34 @@
         if (! empty($record[$accNoField])) {
             $accNo = is_array($record[$accNoField]) ? ($record[$accNoField][0] ?? '') : $record[$accNoField];
         }
+            
+        $manifest = null;
 
+
+        $manifest = collect(Illuminate\Support\Arr::wrap($record[$manifestField] ?? []))
+            ->filter(fn (mixed $value): bool => is_string($value) && filled(trim($value)))
+            ->map(fn (string $value): string => trim($value))
+            ->first(fn (string $value): bool => filter_var($value, FILTER_VALIDATE_URL)
+                && in_array(strtolower(parse_url($value, PHP_URL_SCHEME) ?? ''), ['http', 'https'], true));
+        $hasMetadataManifest = $manifest !== null;
+
+
+        if (isset($record[$manifestField])) {
+            $manifest = is_array($record[$manifestField])
+                ? ($record[$manifestField][0] ?? null)
+                : $record[$manifestField];
+            
+            $manifest = preg_replace('~^https?://n2t\.net(?=[:/?#]|$)~i', 'https://id.collections.ed.ac.uk', $manifest);
+            $edcLink = preg_replace('~/manifest$~', '', $manifest);
+
+            if ($manifest !== null) {
+                $jsonLink  = '<span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest=' . $manifest . '" target="_blank" class="uvlogo" title="View in UV"></a></span>';
+                $jsonLink .= '<span class="json-link-item"><a target="_blank" href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest=' . $manifest . '" class="miradorlogo" title="View in Mirador"></a></span>';
+                $jsonLink .= '<span class="json-link-item"><a href="' . $edcLink . '" target="_blank" class="edclogo" title="View in Edinburgh Digital Collections" target="_blank"></a></span>';
+                $jsonLink .= '<span class="json-link-item"><a href="' . $manifest . '" target="_blank" class="iiiflogo" title="IIIF manifest"></a></span>';
+                $jsonLink .= '<span class="json-link-item"><a href="https://creativecommons.org/licenses/by/3.0/" class="ccbylogo" title="All images CC-BY" target="_blank"></a></span>'; 
+            }
+        }
         if (! empty($record[$bitstreamField])) {
             $bitstreams = is_array($record[$bitstreamField]) ? $record[$bitstreamField] : [$record[$bitstreamField]];
             $byOrder = [];
@@ -97,12 +125,12 @@
                     $videoLink .= '<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject"></div>';
                     $videoLink .= '<div class="flowplayer" data-analytics="' . e(config('skylight.ga_code')) . '" title="' . e($recordTitle . ': ' . $bFilename) . '"><video preload="auto" loop controls width="100%" height="auto"><source src="' . e($remoteUri) . '" type="' . $videoType . '" />Video loading...</video></div>';
                 } elseif (str_ends_with($lower, '.json')) {
-                    $manifest = url("/stcecilias/record/{$bHandleId}/{$bSeq}/{$bFilename}");
+                    /*$manifest = url("/stcecilias/record/{$bHandleId}/{$bSeq}/{$bFilename}");
                     $jsonLink .= '<span class="json-link-item"><a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest=' . e($manifest) . '" target="_blank" rel="noopener" class="uvlogo" title="View in UV"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
                     $jsonLink .= '<span class="json-link-item"><a target="_blank" rel="noopener" href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest=' . e($manifest) . '" class="miradorlogo" title="View in Mirador"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
                     $jsonLink .= '<span class="json-link-item"><a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&q=' . e($accNo) . '" target="_blank" rel="noopener" class="lunalogo" title="View in LUNA"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
                     $jsonLink .= '<span class="json-link-item"><a href="' . e($manifest) . '" target="_blank" rel="noopener" class="iiiflogo" title="IIIF manifest"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
-                    $jsonLink .= '<span class="json-link-item"><a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener" class="ccbylogo" title="All images CC-BY"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';
+                    $jsonLink .= '<span class="json-link-item"><a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener" class="ccbylogo" title="All images CC-BY"><span class="visually-hidden"> (opens in a new tab)</span></a></span>';*/
                 }
             }
         }

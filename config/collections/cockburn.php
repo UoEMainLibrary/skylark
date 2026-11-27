@@ -33,6 +33,7 @@ return array_merge($dspaceDefaults, [
         'Thumbnail'=> 'dc.format.thumbnail.en',
         'ImageUri' => 'dc.identifier.imageUri.en',
         'ArchivesSpace Number' => 'dc.identifier.archive',
+        'Manifest' => 'dc.identifier.manifest',
     ],
 
     'recorddisplay' => [

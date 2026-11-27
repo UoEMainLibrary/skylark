@@ -64,7 +64,7 @@
                                 <div class="thumbnail-cont">
                                     <a href="{{ url('/stcecilias/record/' . $docId) }}" title="View {{ $title }}">
                                         @if($thumbnailUri)
-                                            <img class="img-responsive record-thumbnail-search" src="{{ $thumbnailUri }}" title="Read more about the {{ $title }}" loading="lazy" alt="{{ $title }}" />
+                                            <img class="img-responsive record-thumbnail-search" src="{{ $thumbnailUri }}" title="Read more about the {{ $title }}" loading="lazy" alt="{{ $title }}"  onerror="this.closest('a').remove()"/>
                                         @else
                                             <img class="img-responsive record-thumbnail-search" src="{{ asset('collections/stcecilia/images/comingsoon.gif') }}" title="Read more about the {{ $title }}" alt="{{ $title }}" />
                                         @endif

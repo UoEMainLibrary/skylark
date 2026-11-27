@@ -491,3 +491,4 @@ div[id^="openseadragon"] {
 .lunalogo                        { display: inline-block; width: 50px; height: 50px;  background: url(../images/LUNAIIIF.png) no-repeat 0px 0px;}
 .uvlogo                          { display: inline-block; width: 50px; height: 50px;  background: url(../images/uv.png) no-repeat 0px 0px;}
 .miradorlogo                     { display: inline-block; width: 50px; height: 50px;  background: url(../images/mirador-logo.png) no-repeat 0px 0px;}
+.edclogo                         { display: inline-block; width: 50px; height: 50px;  background: url(../images/edc_archipelago.png) no-repeat 0px 0px; background-size: contain;}

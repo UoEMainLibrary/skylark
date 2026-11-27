@@ -65,6 +65,7 @@ return array_merge($dspaceDefaults, [
         'Hornbostel Sachs Classification' => 'dc.subject.classification.en',
         'Grouping' => 'dc.coverage.spatiallogical.en',
         'Specific Type' => 'dc.type.specific.en',
+        'Manifest' => 'dc.identifier.manifest',
     ],
 
     'recorddisplay' => [
