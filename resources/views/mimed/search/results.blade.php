@@ -134,6 +134,7 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('collections/mimed/js/record-images.js') }}"></script>
     <script src="{{ asset('assets/fancybox/lib/jquery-1.9.0.min.js') }}"></script>
     <script src="{{ asset('assets/fancybox/source/jquery.fancybox.pack.js') }}?v=2.1.4"></script>
     <script>if (window.jQuery?.fn.fancybox) { jQuery('.mimed-photo').fancybox(); }</script>

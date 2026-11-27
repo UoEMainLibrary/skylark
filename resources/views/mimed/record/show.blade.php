@@ -42,14 +42,24 @@
                 $accNoField = str_replace('.', '', $fieldMappings['Accession Number'] ?? '');
                 $bitstreamFieldName = str_replace('.', '', $fieldMappings['Bitstream'] ?? '');
                 $accno = '';
-                $manifest = null;
+                $manifestField = str_replace('.', '', $fieldMappings['Manifest'] ?? '');
+                $manifest = collect(Illuminate\Support\Arr::wrap($record[$manifestField] ?? []))
+                    ->filter(fn (mixed $value): bool => is_string($value) && filled(trim($value)))
+                    ->map(fn (string $value): string => trim($value))
+                    ->first(fn (string $value): bool => filter_var($value, FILTER_VALIDATE_URL)
+                        && in_array(strtolower(parse_url($value, PHP_URL_SCHEME) ?? ''), ['http', 'https'], true));
+                $hasMetadataManifest = $manifest !== null;
+
+                if ($manifest) {
+                    $manifest = preg_replace('~^https?://n2t\.net(?=[:/?#]|$)~i', 'https://id.collections.ed.ac.uk', $manifest);
+                }
 
                 if (isset($record[$accNoField])) {
                     $accnoVal = is_array($record[$accNoField]) ? $record[$accNoField][0] : $record[$accNoField];
                     $accno = $accnoVal;
                 }
 
-                if (isset($record[$bitstreamFieldName])) {
+                if (! $manifest && isset($record[$bitstreamFieldName])) {
                     $bitstreamArray = is_array($record[$bitstreamFieldName]) ? $record[$bitstreamFieldName] : [$record[$bitstreamFieldName]];
                     foreach ($bitstreamArray as $bs) {
                         $bSegments = explode('##', $bs);
@@ -67,17 +77,19 @@
                 }
             @endphp
 
-            @if(isset($record[$imageUriField]) && !empty($record[$imageUriField]) && $manifest)
-                <div class="img-container">
-                    <iframe class="img-frame" src="{{ url('/mimed/mirador') }}?manifest={{ urlencode($manifest) }}" height="100%" width="100%" title="Zoomable images of {{ $recordTitle }}"></iframe>
-                </div>
+            @if($manifest && ($hasMetadataManifest || !empty($record[$imageUriField])))
+                <div data-mimed-viewer>
+                    <div class="img-container">
+                        <iframe class="img-frame" src="{{ url('/mimed/mirador') }}?manifest={{ urlencode($manifest) }}" height="100%" width="100%" title="Zoomable images of {{ $recordTitle }}"></iframe>
+                    </div>
 
-                <div class="json-link">
-                    <a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest={{ urlencode($manifest) }}" aria-label="Universal Viewer" title="Universal Viewer"><img src="{{ asset('collections/mimed/images/uv.png') }}" alt="Universal Viewer" height="50"></a>
-                    <a href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest={{ urlencode($manifest) }}" aria-label="Mirador" title="Mirador"><img src="{{ asset('collections/mimed/images/mirador-logo.png') }}" alt="Mirador" height="50"></a>
-                    <a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&amp;q={{ urlencode($accno) }}" aria-label="LUNA" title="LUNA"><img src="{{ asset('collections/mimed/images/LUNAIIIF.png') }}" alt="LUNA" height="50"></a>
-                    <a href="{{ $manifest }}" aria-label="IIIF manifest" title="IIIF manifest"><img src="{{ asset('collections/mimed/images/iiiflogo.png') }}" alt="IIIF manifest" height="50"></a>
-                    <a href="https://creativecommons.org/licenses/by/3.0/" aria-label="Image licence (CC BY)" title="Image licence (CC BY)"><img src="{{ asset('collections/mimed/images/cc-by.png') }}" alt="Image licence (CC BY)" height="50"></a>
+                    <div class="json-link">
+                        <a href="https://librarylabs.ed.ac.uk/iiif/uv/?manifest={{ urlencode($manifest) }}" aria-label="Universal Viewer" title="Universal Viewer"><img src="{{ asset('collections/mimed/images/uv.png') }}" alt="Universal Viewer" height="50"></a>
+                        <a href="https://librarylabs.ed.ac.uk/iiif/mirador/?manifest={{ urlencode($manifest) }}" aria-label="Mirador" title="Mirador"><img src="{{ asset('collections/mimed/images/mirador-logo.png') }}" alt="Mirador" height="50"></a>
+                        <a href="https://images.is.ed.ac.uk/luna/servlet/view/search?search=SUBMIT&amp;q={{ urlencode($accno) }}" aria-label="LUNA" title="LUNA"><img src="{{ asset('collections/mimed/images/LUNAIIIF.png') }}" alt="LUNA" height="50"></a>
+                        <a href="{{ $manifest }}" aria-label="IIIF manifest" title="IIIF manifest"><img src="{{ asset('collections/mimed/images/iiiflogo.png') }}" alt="IIIF manifest" height="50"></a>
+                        <a href="https://creativecommons.org/licenses/by/3.0/" aria-label="Image licence (CC BY)" title="Image licence (CC BY)"><img src="{{ asset('collections/mimed/images/cc-by.png') }}" alt="Image licence (CC BY)" height="50"></a>
+                    </div>
                 </div>
             @endif
 
@@ -215,6 +227,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('collections/mimed/js/record-images.js') }}"></script>
 <script>
     if (document.referrer) {
         const previousPage = new URL(document.referrer);
