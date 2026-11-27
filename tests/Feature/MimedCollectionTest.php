@@ -1,5 +1,48 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
+
+it('keeps results without a record identifier visible without linking them', function (array $identifierFields): void {
+    Http::preventStrayRequests();
+    Http::fake([
+        '*' => Http::response([
+            'response' => [
+                'numFound' => 2,
+                'docs' => [
+                    array_merge([
+                        'search.resourceid' => 'd6c7d35a-8812-4422-8682-0d2f050eb7ff',
+                        'dc.title.en' => ['Piccolo, nominal pitch: C'],
+                    ], $identifierFields),
+                    ['handle' => '10683/14797', 'dc.title.en' => ['Lute']],
+                ],
+            ],
+            'facet_counts' => ['facet_fields' => []],
+        ]),
+    ]);
+
+    $response = $this->get('/mimed/search/0002')
+        ->assertSuccessful()
+        ->assertViewHas('total', 2)
+        ->assertSee('Piccolo, nominal pitch: C')
+        ->assertSee('Lute')
+        ->assertSee('href="'.route('mimed.record.show', ['id' => '14797', 'highlight' => '0002']).'"', false);
+
+    $document = new DOMDocument;
+    @$document->loadHTML($response->getContent());
+    $xpath = new DOMXPath($document);
+
+    expect($xpath->query('//li[@class="mimed-result"]/div/h2')->length)->toBe(2)
+        ->and($xpath->query('//li[@class="mimed-result"]/div/h2/a')->length)->toBe(1)
+        ->and($xpath->query('//li[@class="mimed-result"]/div/h2[not(a)]')->item(0)?->textContent)
+        ->toContain('Piccolo, nominal pitch: C');
+})->with([
+    'missing identifier' => [[]],
+    'null identifier' => [['id' => null]],
+    'empty identifier' => [['id' => '']],
+    'empty identifier array' => [['id' => []]],
+    'blank handle' => [['handle' => '']],
+]);
+
 it('renders the mimed accessibility statement as a standalone Viki-template page', function (): void {
     $html = view('mimed.pages.accessibility')->render();
 
@@ -38,3 +81,68 @@ it('serves the mimed accessibility route as a standalone page', function (): voi
         ->and($html)->not->toContain('Search MIMEd')
         ->and($html)->not->toContain('/mimed/about');
 });
+
+it('leads with catalogue search and links to its featured instruments and St Cecilia’s Hall', function (): void {
+    $this->get('/mimed')->assertSuccessful()
+        ->assertSeeInOrder(['Search the catalogue', 'Featured instruments', 'About this collection'])
+        ->assertSee(route('mimed.search.redirect'))
+        ->assertSee(route('mimed.record.show', ['id' => 16327]))
+        ->assertSee(route('stcecilias.home'))
+        ->assertSee('reopened in 2017')
+        ->assertSee('Musical Instrument Collection')
+        ->assertSee('university-logo.png')
+        ->assertSee('library-branding-baton.png')
+        ->assertSee('Research')
+        ->assertDontSee('the two collections will be brought together');
+});
+
+it('renders the catalogue results and keeps the existing record and pagination URLs', function (): void {
+    config(['skylight.field_mappings' => ['Title' => 'dc.title', 'ImageUri' => 'dc.image']]);
+
+    $html = view('mimed.search.results', [
+        'query' => 'harpsichord',
+        'total' => 15,
+        'startRow' => 1,
+        'endRow' => 10,
+        'docs' => [['id' => '16327', 'dctitle' => ['Triple-manual harpsichord'], 'dcimage' => ['https://images.is.ed.ac.uk/luna/example.jpg']]],
+        'base_search' => url('/mimed/search/harpsichord'),
+        'base_parameters' => '',
+        'paginationLinks' => '<a href="/mimed/search/harpsichord?offset=10">2</a>',
+    ])->render();
+
+    expect($html)->toContain('Triple-manual harpsichord', '/mimed/record/16327?highlight=harpsichord', '?offset=10', 'Enlarge image of');
+});
+
+it('links the IIIF logo to the instrument manifest', function (): void {
+    $html = view('mimed.record.show', [
+        'recordTitle' => 'Harpsichord',
+        'fieldMappings' => ['ImageUri' => 'image', 'Bitstream' => 'bitstream'],
+        'record' => ['image' => ['image.jpg'], 'bitstream' => ['file##manifest.json##description##10683/16327##1']],
+        'recordDisplay' => [],
+        'bitstreams' => [],
+        'relatedItems' => [],
+    ])->render();
+
+    expect($html)->toContain('href="'.url('/mimed/record/16327/1/manifest.json').'" aria-label="IIIF manifest"')
+        ->toContain('collections/mimed/images/iiiflogo.png', 'alt="IIIF manifest"', 'images/uv.png', 'images/mirador-logo.png', 'images/LUNAIIIF.png', 'images/cc-by.png');
+});
+
+it('serves the supporting pages in the catalogue design', function (string $page): void {
+    $this->get('/mimed/'.$page)->assertSuccessful()
+        ->assertSee('class="mimed-catalogue"', false)
+        ->assertSee('aria-label="Collection information"', false)
+        ->assertDontSee('collections/mimed/css/style.css');
+})->with(['about', 'iiif', 'feedback', 'licensing', 'takedown']);
+
+it('keeps shared IIIF information routes in their own collection layouts', function (string $collection): void {
+    $response = $this->get('/'.$collection.'/iiif')->assertSuccessful()
+        ->assertViewIs($collection.'.pages.iiif')
+        ->assertSee('International Image Interoperability Framework');
+
+    if ($collection === 'mimed') {
+        $response->assertSee('class="mimed-catalogue"', false);
+    } else {
+        $response->assertDontSee('class="mimed-catalogue"', false)
+            ->assertDontSee('collections/mimed/css/catalogue.css');
+    }
+})->with(['mimed', 'cockburn', 'guardbook']);

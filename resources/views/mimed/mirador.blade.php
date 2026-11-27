@@ -18,13 +18,13 @@
         var mirador = Mirador.viewer({
             "id": "viewer",
             "manifests": {
-                "{{ $manifest }}": {
+                [{{ Illuminate\Support\Js::from($manifest) }}]: {
                     provider: "University of Edinburgh"
                 }
             },
             "windows": [
                 {
-                    loadedManifest: "{{ $manifest }}",
+                    loadedManifest: {{ Illuminate\Support\Js::from($manifest) }},
                     thumbnailNavigationPosition: 'far-bottom',
                     allowClose: false,
                     allowFullscreen: false
